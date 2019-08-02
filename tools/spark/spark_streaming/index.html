@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Spark Streaming">
+<meta name="keywords" content="工具,Spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark Streaming">
+<meta property="og:url" content="https://xyy15926.github.io/tools/spark/spark_streaming/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Spark Streaming">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/spark_streaming_dstream_transformation.png">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark Streaming">
+<meta name="twitter:description" content="Spark Streaming">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/spark_streaming_dstream_transformation.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/spark/spark_streaming/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Spark Streaming | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/spark/spark_streaming/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Spark Streaming
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/Spark/" itemprop="url" rel="index"><span itemprop="name">Spark</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Spark Streaming</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="spark-streaming">Spark Streaming</h2>
+<p><em>Spark Streaming</em>：提供对实时数据流高吞吐、高容错、可扩展的 流式处理系统</p>
+<ul>
+<li><p>可以对多种数据源（Kafka、Flume、Twitter、ZeroMQ），进行 包括map、reduce、join等复杂操作</p></li>
+<li><p>采用Micro Batch数据处理方式，实现更细粒度资源分配，实现 动态负载均衡</p>
+<ul>
+<li>离散化数据流为为小的RDDs得到DStream交由Spark引擎处理</li>
+<li>数据存储在内存实现数据流处理、批处理、交互式一体化</li>
+<li>故障节点任务将均匀分散至集群中，实现更快的故障恢复</li>
+</ul></li>
+</ul>
+<h3 id="streaming.streamingcontext"><code>streaming.StreamingContext</code></h3>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.streaming.<span class="type">StreamingContext</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StreamingContext</span>(<span class="params">?conf: <span class="type">SparkConf</span>, ?slices: <span class="type">Int</span></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 开始接受、处理流式数据</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">start</span></span>()</span><br><span class="line">	<span class="comment">// 结束流式处理过程</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">stop</span></span>(?stop_spark_context=<span class="type">True</span>)</span><br><span class="line">	<span class="comment">// 等待计算完成</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">awaitTermination</span></span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.&#123;<span class="type">SparkContext</span>, <span class="type">SparkConf</span>&#125;</span><br><span class="line"><span class="keyword">import</span> org.apache.spark.streaming.<span class="type">Seconds</span></span><br><span class="line"><span class="keyword">import</span> org.apache.spark.streaming.<span class="type">StreamingContext</span>._</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setAppName(<span class="string">"app name"</span>).setMaster(master)</span><br><span class="line"><span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(conf, <span class="type">Seconds</span>(<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="discreted-stream"><em>Discreted Stream</em></h2>
+<p><em>DStream</em>：代表持续性的数据流，是Spark Streaming的基础抽象</p>
+<figure>
+<img src="/imgs/spark_streaming_dstream_transformation.png" alt="spark_streaming_dstream_transformation"><figcaption>spark_streaming_dstream_transformation</figcaption>
+</figure>
+<ul>
+<li>可从外部输入源、已有DStream转换得到
+<ul>
+<li>可在流应用中并行创建多个输入DStream接收多个数据流</li>
+</ul></li>
+<li>在内部实现
+<ul>
+<li>DStream由时间上连续的RDD表示，每个RDD包含特定时间 间隔内的数据流</li>
+<li>对DStream中各种操作也是<strong>映射到内部RDD上分别进行</strong> （部分如<code>transform</code>等则以RDD为基本单元）
+<ul>
+<li>转换操作仍然得到DStream</li>
+<li>最终结果也是以批量方式生成的batch</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>对DStream操作参见<em>tools/spark/spark_rdd</em></li>
+</ul>
+</blockquote></li>
+<li>（大部分）输入流DStream和一个<em>Receiver</em>对象相关联
+<ul>
+<li><code>Recevier</code>对象作为长期任务运行，会占用独立计算核， 若分配核数量不够，系统将只能接收数据而不能处理</li>
+<li><em>reliable receiver</em>：可靠的receiver正确应答可靠源， 数据收到、且被正确复制至Spark</li>
+<li><em>unreliable receiver</em>：不可靠recevier不支持应答</li>
+</ul></li>
+</ul>
+<h3 id="basic-sources"><em>Basic Sources</em></h3>
+<p>基本源：在<code>StreamingContext</code>中直接可用</p>
+<ul>
+<li>套接字连接</li>
+<li>Akka中Actor</li>
+<li>RDD队列数据流</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 套接字连接TCP源获取数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">socketTextStream</span></span>(?host: <span class="type">String</span>, ?port: <span class="type">Int</span>): <span class="type">DStream</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义actor流</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">actorStream</span></span>(actorProps: ?, actorName: <span class="type">String</span>): <span class="type">DStream</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// RDD队列流</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">queueStream</span></span>(queueOfRDDs: <span class="type">Seq</span>[<span class="type">RDD</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="文件系统">文件系统</h4>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件流获取数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">fileStream</span></span>[keyClass, valueClass, inputFormatClass]</span><br><span class="line">	(dataDirectory: <span class="type">String</span>): <span class="type">DStream</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">textFileStream</span></span>(dataDirectory)</span><br></pre></td></tr></table></figure>
+<p>文件系统：<code>StreamingContext</code>将监控目标目录，处理目录下任何 文件（不包括嵌套目录）</p>
+<ul>
+<li>文件须具有相同数据格式</li>
+<li>文件需要直接位于目标目录下</li>
+<li>已处理文件追加数据不被处理</li>
+</ul>
+<blockquote>
+<ul>
+<li>文件流无需运行<code>receiver</code></li>
+</ul>
+</blockquote>
+<h3 id="advanced-sources"><em>Advanced Sources</em></h3>
+<p>高级源：需要额外的依赖</p>
+<ul>
+<li>Flume</li>
+<li>Kinesis</li>
+<li>Twitter</li>
+</ul>
+<h4 id="kafka">Kafka</h4>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建多个Kafka输入流</span></span><br><span class="line"><span class="keyword">val</span> kafkaStreams = (<span class="number">1</span> to numStreams).map(_ =&gt; kafkaUtils.createStream())</span><br><span class="line"><span class="keyword">val</span> unifiedStream = streamingContext.union(kafkaStreams)</span><br></pre></td></tr></table></figure>
+<h3 id="性能调优">性能调优</h3>
+<ul>
+<li>减少批数据处理时间
+<ul>
+<li>创建多个<em>receiver</em>接收输入流，提高数据接受并行水平</li>
+<li>提高数据处理并行水平</li>
+<li>减少输入数据序列化、RDD数据序列化成本</li>
+<li>减少任务启动开支</li>
+</ul></li>
+<li><p>设置正确的批容量，保证系统能正常、稳定处理数据</p></li>
+<li><p>内存调优，调整内存使用、应用的垃圾回收行为</p></li>
+</ul>
+<h2 id="checkpoint"><em>Checkpoint</em></h2>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置checkpoint存储信息目录</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">checkpoint</span></span>(?checkpointDirectory: <span class="type">String</span>)</span><br><span class="line"><span class="comment">// 从checkpoint中恢复（若目录存在）、或创建新streaming上下文</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">StreamingContext</span>.<span class="title">getOrCreate</span></span>(?checkPointDirectory: <span class="type">String</span>, ?functionToCreateContext: () =&gt; <span class="type">StreamingContext</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>为保证流应用程序全天运行，需要checkpoint足够信息到容错 存储系统，使得系统能从程序逻辑无关错误中恢复</p>
+<ul>
+<li><em>metadata checkpointing</em>：流计算的定义信息，用于恢复 worker节点故障</li>
+<li><em>configuration</em>：streaming程序配置</li>
+<li><em>DStream operation</em>：streaming程序操作集合</li>
+<li><em>imcomplete batches</em>：操作队列中未完成批</li>
+<li><em>data checkpointing</em>：中间生成的RDD，在有状态的转换 操作中必须，避免RDD依赖链无限增长</li>
+</ul></li>
+<li>需要开启checkpoint场合
+<ul>
+<li>使用有状态转换操作：<code>updateStateByKey</code>、 <code>reduceByKeyAndWindow</code>等</li>
+<li>从程序的driver故障中恢复</li>
+</ul></li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">functionToCreateContext</span></span>(): <span class="type">StreamingContext</span> = &#123;</span><br><span class="line">	<span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>()</span><br><span class="line">	<span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(conf)</span><br><span class="line">	<span class="comment">// other streaming setting</span></span><br><span class="line">	ssc.checkpoint(<span class="string">"checkpointDirectory"</span>)</span><br><span class="line">	ssc</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/Spark/" rel="tag"># Spark</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_models/model_enhancement/model_enhancement/" rel="next" title="Model Enhancement">
+                <i class="fa fa-chevron-left"></i> Model Enhancement
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_mixin/unconstrained_optimization/unconstrained_specials/" rel="prev" title="无约束优化特殊问题">
+                无约束优化特殊问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#spark-streaming"><span class="nav-number">1.</span> <span class="nav-text">Spark Streaming</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#streaming.streamingcontext"><span class="nav-number">1.1.</span> <span class="nav-text">streaming.StreamingContext</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#discreted-stream"><span class="nav-number">2.</span> <span class="nav-text">Discreted Stream</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#basic-sources"><span class="nav-number">2.1.</span> <span class="nav-text">Basic Sources</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件系统"><span class="nav-number">2.1.1.</span> <span class="nav-text">文件系统</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#advanced-sources"><span class="nav-number">2.2.</span> <span class="nav-text">Advanced Sources</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kafka"><span class="nav-number">2.2.1.</span> <span class="nav-text">Kafka</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能调优"><span class="nav-number">2.3.</span> <span class="nav-text">性能调优</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#checkpoint"><span class="nav-number">3.</span> <span class="nav-text">Checkpoint</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

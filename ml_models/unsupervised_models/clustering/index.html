@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="聚类">
+<meta name="keywords" content="模型,无监督模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聚类">
+<meta property="og:url" content="https://xyy15926.github.io/ml_models/unsupervised_models/clustering/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="聚类">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聚类">
+<meta name="twitter:description" content="聚类">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_models/unsupervised_models/clustering/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>聚类 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_models/unsupervised_models/clustering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">聚类
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/" itemprop="url" rel="index"><span itemprop="name">模型</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/无监督模型/" itemprop="url" rel="index"><span itemprop="name">无监督模型</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">聚类</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="k-means">K-means</h2>
+<p>最常用的聚类分析</p>
+<h3 id="发展">发展</h3>
+<ul>
+<li>基于密度
+<ul>
+<li>DBSCAN</li>
+</ul></li>
+<li><p>高维数据：data in sparse</p></li>
+<li><p>Graph theorethic clustering</p></li>
+<li><p>Clustering for unstructrued data</p></li>
+<li><p>Large-scale clustering</p></li>
+<li><p>Multi-way clustering</p></li>
+<li><p>clustering for hetergeneous data</p></li>
+</ul>
+<h3 id="特点">特点</h3>
+<ul>
+<li><p>同聚类中对象相似度较高 不同聚类中对象相似度较低</p></li>
+<li>优势在于简洁快速</li>
+<li>缺点
+<ul>
+<li>需要输入参数：k-聚类数目</li>
+<li>结果不稳定</li>
+</ul></li>
+<li>影响结果因素
+<ul>
+<li>原始问题是否可分</li>
+<li>分类数目k</li>
+<li>初始点选择</li>
+</ul></li>
+<li>K值选择
+<ul>
+<li>经验选择</li>
+<li>特殊方法：Elbow Method，肘部法则，画出距离和K的点图， 选择剧烈变化的点的K值</li>
+</ul></li>
+</ul>
+<h3 id="规则">规则</h3>
+<h4 id="指定k个组">指定k个组</h4>
+<ul>
+<li>数据：<span class="math inline">\(\Omega={X_1, X_2, \dots, X_n}\)</span></li>
+<li>每个样本点包含p个特征：<span class="math inline">\(X_i = (x_1, x_2, \dots, x_p)\)</span></li>
+<li>分k个组 <span class="math display">\[
+C_1, C_2, \dots, C_k \\
+C_1 \cup C_2 \cup \dots \cup C_k = \Omega \\
+\]</span></li>
+<li><p>目标：极小化每个样本点到聚类中心距离之和 <span class="math display">\[
+\arg_{C_1, C_2, \dots, C_k} \min \sum_{i=1}^k
+    \sum_{x_j in \C_i} d(x_j, C_i)
+\]</span></p>
+<ul>
+<li>若定义距离为平方欧式距离，则根据组间+组内=全， 极小化目标就是中心点距离极大化</li>
+</ul></li>
+<li><p>优化问题是NP-hard问题，需要采用近似方法</p></li>
+</ul>
+<h3 id="lloyds-algorithm">Lloyd's Algorithm</h3>
+<h4 id="步骤">步骤</h4>
+<ul>
+<li>选择k个初始聚类中心</li>
+<li>计算每个样本点到k个聚类中心的距离，把样本点分到最近的 聚类中心对应的类 Assignmet Step</li>
+<li>重新计算新类的聚类中心（算术平均），重复以上步骤直到收敛 （最终聚类中不一定是样本点） Update Step</li>
+</ul>
+<h4 id="算法特点">算法特点</h4>
+<ul>
+<li>算法时间效率：<span class="math inline">\(\in O(kn^{pi})\)</span></li>
+</ul>
+<h3 id="应用">应用</h3>
+<h4 id="用户细分">用户细分</h4>
+<ul>
+<li><p>Goal: Subdivede a market into distinct subsets of customers. Each subset: a market target to be reached with a distinct marketing mix</p></li>
+<li><p>Approach:</p></li>
+</ul>
+<h2 id="fuzzy-c-meansfcm">Fuzzy C-means(FCM)</h2>
+<p><em>FCM</em>：对K-means的推广</p>
+<ul>
+<li><em>soft cluster</em>：点可以属于多个类</li>
+</ul>
+<h3 id="fcm-algorithm">FCM Algorithm</h3>
+<ul>
+<li>初始步骤</li>
+<li>Assignment Step：计算每个样本点到k个聚类中新的距离， 得到权重 <span class="math display">\[
+w_k(x_i) = \frac 1 \sum_{i=1}^k 
+    (\frac {d(x_i, \mu_k)} {d(x_i, \mu_i} )^{1/(m-2)})
+\]</span></li>
+</ul>
+<h2 id="hierachical-cluster">Hierachical Cluster</h2>
+<p>层次聚类</p>
+<h3 id="距离">距离</h3>
+<p><span class="math inline">\(dist(x,y)\)</span>：不一定是空间距离，应该认为是两个对象x、y之间的 相似程度</p>
+<ul>
+<li>欧几里得距离</li>
+<li>切比雪夫距离</li>
+<li>闵科夫斯基距离</li>
+<li>曼哈顿距离</li>
+<li>余弦相似度</li>
+</ul>
+<h3 id="方法">方法</h3>
+<h4 id="agens">AGENS</h4>
+<h5 id="procedure">Procedure</h5>
+<ul>
+<li>grouped in a bottom-up fashion</li>
+<li>initally all data is in its own cluster</li>
+</ul>
+<h5 id="section"></h5>
+<ul>
+<li><p>算法复杂度：<span class="math inline">\(n^2logn\)</span></p></li>
+<li>组连接：组与组之间距离
+<ul>
+<li>single linkage</li>
+<li>average linkage</li>
+<li>complete linkage</li>
+</ul></li>
+</ul>
+<h4 id="diana">DIANA</h4>
+<p>Divisive Analysis：想法简单，具体实操有难度</p>
+<h5 id="procedure-1">Procedure</h5>
+<ul>
+<li><p>grouped in a top-down manner</p></li>
+<li>初始：所有数据归为一组<span class="math inline">\(C_1=(p_1, p_2, dots, p_n)\)</span></li>
+<li>2：计算所有点之间的距离矩阵，选择到其他点平均距离最大的 点，记为<span class="math inline">\(q\)</span>，取该点作为新组起始点</li>
+<li><p>3：<span class="math inline">\(\forall p, p \notin C_1\)</span>，计算<span class="math inline">\(d_arg(p, C_1) - d_arg(p, C_2)\)</span>， 若小于零则属于<span class="math inline">\(C_1\)</span>，否则属于<span class="math inline">\(C_2\)</span></p></li>
+</ul>
+<h2 id="density-based-scan"><em>Density-based Scan</em></h2>
+<p><em>DBSCAN</em>：</p>
+<h2 id="balanced-itertive-reducing-and-clustering-using-hierarchies"><em>Balanced Itertive Reducing and Clustering Using Hierarchies</em></h2>
+<p><em>BIRCH</em>：利用层次方法的平衡迭代规约和聚类，利用层次方法聚类 、规约数据</p>
+<ul>
+<li>特点
+<ul>
+<li>利用CF树结构快速聚类</li>
+<li>只需要单遍扫描数据</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/模型/" rel="tag"># 模型</a>
+          
+            <a href="/tags/无监督模型/" rel="tag"># 无监督模型</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_specifications/natural_language_processing/features_extractions/" rel="next" title="文本预处理">
+                <i class="fa fa-chevron-left"></i> 文本预处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_algebra/abstract_algebra/operation/" rel="prev" title="代数运算">
+                代数运算 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k-means"><span class="nav-number">1.</span> <span class="nav-text">K-means</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发展"><span class="nav-number">1.1.</span> <span class="nav-text">发展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">1.2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#规则"><span class="nav-number">1.3.</span> <span class="nav-text">规则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指定k个组"><span class="nav-number">1.3.1.</span> <span class="nav-text">指定k个组</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lloyds-algorithm"><span class="nav-number">1.4.</span> <span class="nav-text">Lloyd&#39;s Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤"><span class="nav-number">1.4.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法特点"><span class="nav-number">1.4.2.</span> <span class="nav-text">算法特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用"><span class="nav-number">1.5.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用户细分"><span class="nav-number">1.5.1.</span> <span class="nav-text">用户细分</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fuzzy-c-meansfcm"><span class="nav-number">2.</span> <span class="nav-text">Fuzzy C-means(FCM)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fcm-algorithm"><span class="nav-number">2.1.</span> <span class="nav-text">FCM Algorithm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hierachical-cluster"><span class="nav-number">3.</span> <span class="nav-text">Hierachical Cluster</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#距离"><span class="nav-number">3.1.</span> <span class="nav-text">距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">3.2.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#agens"><span class="nav-number">3.2.1.</span> <span class="nav-text">AGENS</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#procedure"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">Procedure</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#section"><span class="nav-number">3.2.1.2.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#diana"><span class="nav-number">3.2.2.</span> <span class="nav-text">DIANA</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#procedure-1"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">Procedure</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#density-based-scan"><span class="nav-number">4.</span> <span class="nav-text">Density-based Scan</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#balanced-itertive-reducing-and-clustering-using-hierarchies"><span class="nav-number">5.</span> <span class="nav-text">Balanced Itertive Reducing and Clustering Using Hierarchies</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

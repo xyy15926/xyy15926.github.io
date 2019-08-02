@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Resilient Distributed Dataset">
+<meta name="keywords" content="工具,Spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Resilient Distributed Dataset">
+<meta property="og:url" content="https://xyy15926.github.io/tools/spark/spark_rdd/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Resilient Distributed Dataset">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/spark_streaming_dstream_window_based_transformation.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/spark_dag_procedure.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/spark_dag_wide_narrow_dependecies.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/spark_dag_job_stage.png">
+<meta property="og:updated_time" content="2019-08-02T15:17:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Resilient Distributed Dataset">
+<meta name="twitter:description" content="Resilient Distributed Dataset">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/spark_streaming_dstream_window_based_transformation.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/spark/spark_rdd/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Resilient Distributed Dataset | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/spark/spark_rdd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Resilient Distributed Dataset
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-02 23:17:39" itemprop="dateCreated datePublished" datetime="2019-08-02T23:17:39+08:00">2019-08-02</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/Spark/" itemprop="url" rel="index"><span itemprop="name">Spark</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Resilient Distributed Dataset</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="rdd">RDD</h2>
+<p>RDD：容错的、immutable、分布式、确定可重复计算的数据集</p>
+<ul>
+<li>RDD可分配在集群中的多个节点中以支持并行处理
+<ul>
+<li>隶属于同一RDD数据，被划分为不同的Partition，以此为 单位分布到集群环境中各个节点上</li>
+</ul></li>
+<li><p>RDD是<strong>无结构的数据表</strong>，可以存放任何数据类型</p></li>
+<li>RDD immutable
+<ul>
+<li>对RDD进行转换，不会修改原RDD，只是返回新RDD</li>
+<li>这也是基于Lineage容错机制的要求</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>是Spark软件系统的核心概念</li>
+</ul>
+</blockquote>
+<h3 id="rdd容错机制">RDD容错机制</h3>
+<ul>
+<li><p>RDD采用基于Lineage的容错机制</p>
+<ul>
+<li>每个RDD记住确定性操作的lineage，即从其他RDD转换而来 的路径</li>
+<li>若所有RDD的转换操作是确定的，则最终转换数据一致， 无论机器发生的错误</li>
+<li>当某个RDD损坏时，Spark可以从上游RDD重新计算、创建 其数据</li>
+</ul></li>
+<li><p>容错语义</p>
+<ul>
+<li>输入源文件：Spark运行在HDFS、S3等容错文件系统上，从 任何容错数据而来的RDD都是容错的</li>
+<li>receiver：可靠接收者告知可靠数据源，保证所有数据总是 会被恰好处理一次</li>
+<li>输出：输出操作可能会使得数据被重复写出，但文件会被 之后写入覆盖</li>
+</ul></li>
+<li><p>故障类型</p>
+<ul>
+<li>worker节点故障：节点中内存数据丢失，其上接收者缓冲 数据丢失</li>
+<li>driver节点故障：spark context丢失，所有执行算子丢失</li>
+</ul></li>
+</ul>
+<h2 id="rdd操作">RDD操作</h2>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.rdd.<span class="type">RDD</span></span><br></pre></td></tr></table></figure>
+<h3 id="transformation">Transformation</h3>
+<p>转换：从已有数据集创建新数据集</p>
+<ul>
+<li><p>返回新RDD，原RDD保持不变</p></li>
+<li>转换操作Lazy
+<ul>
+<li>仅记录转换操作作用的基础数据集</li>
+<li>仅当某个<strong>动作</strong>被Driver Program（客户操作）调用DAG 的动作操作时，动作操作的一系列proceeding转换操作才会 被启动</li>
+</ul></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Transformation</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>map(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>flatMap(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>filter(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>reduceByKey(func[, numTasks])</code></td>
+<td>包含<code>(K, V)</code>键值对，返回按键聚集键值对</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>groupByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>aggregateByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>pipe()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>coalesce()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>repartition(numPartitions)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>union(other)</code></td>
+<td>无</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<ul>
+<li><code>XXXByKey</code>：RDD中应为<code>(K, V)</code>键值对</li>
+</ul>
+</blockquote>
+<h3 id="action">Action</h3>
+<p>动作：在数据集上进行计算后返回值到驱动程序</p>
+<ul>
+<li>施加于一个RDD，通过对RDD数据集的计算返回新的结果
+<ul>
+<li>默认RDD会在每次执行动作时重新计算，但可以使用 <code>cache</code>、<code>persist</code>持久化RDD至内存、硬盘中，加速下次 查询速度</li>
+</ul></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Action</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>count()</code></td>
+<td></td>
+<td>返回包含单元素RDD的DStream</td>
+</tr>
+<tr class="even">
+<td><code>collect()</code></td>
+<td>将RDD数据聚集至本地</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>countByValue()</code></td>
+<td>返回<code>(T, long)</code>键值对</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>countByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>first()</code></td>
+<td></td>
+<td>返回包含单元素RDDd的DStream</td>
+</tr>
+<tr class="even">
+<td><code>reduce(func)</code></td>
+<td></td>
+<td>返回包含单元素RDD的DStream</td>
+</tr>
+<tr class="odd">
+<td><code>take(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>foreach(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>foreachPartition(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>join(other[, numTasks])</code></td>
+<td>包含<code>(K,V)</code>，与另一<code>(K,W)</code>连接</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>cogroup(other[, numTasks])</code></td>
+<td>包含<code>(K,V)</code>、输入<code>(K,W)</code>，返回<code>(K, Seq(V), Seq(W)</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<ul>
+<li><code>numTasks</code>：默认使用Spark默认并发数目</li>
+</ul>
+</blockquote>
+<h3 id="dstream-rdd">DStream RDD</h3>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RDD级`map`：`func`以RDD为参数，自定义转换操作</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transform</span></span>(func)</span><br><span class="line"><span class="comment">// RDD级`foreach`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foreachRDD</span></span>(func)</span><br><span class="line"></span><br><span class="line"><span class="comment">// RDD级`reduce`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateStateByKey</span></span>[<span class="type">S</span>: <span class="type">ClassTag</span>](</span><br><span class="line">	<span class="comment">// `K`、`Seq[V]`：当前RDD中键`K`对应值`V`集合</span></span><br><span class="line">	<span class="comment">// `Option[S]`：上个RDD结束后键`K`对应状态</span></span><br><span class="line">	updateFunc: (<span class="type">Iterator</span>[(<span class="type">K</span>, <span class="type">Seq</span>[<span class="type">V</span>], <span class="type">Option</span>[<span class="type">S</span>])]) =&gt; <span class="type">Iterator</span>[(<span class="type">K</span>, <span class="type">S</span>)],</span><br><span class="line">	<span class="comment">// 分区算法</span></span><br><span class="line"></span><br><span class="line">	partitioner: <span class="type">Partitioner</span>,</span><br><span class="line">	<span class="comment">// 是否在接下来Streaming执行过程中产生的RDD使用相同分区算法</span></span><br><span class="line">	remmemberPartition: <span class="type">Boolean</span>,</span><br><span class="line">	<span class="comment">// 键值对的初始状态</span></span><br><span class="line">	initRDD: <span class="type">RDD</span>[(<span class="type">K</span>,<span class="type">S</span>)]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>RDD分布在多个worker节点上，对不可序列化传递对象，需要在 每个worker节点独立创建</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dstream.foreachRDD(rdd =&gt; &#123;</span><br><span class="line">	rdd.foreachPartition(partitionOfRecords =&gt; &#123;</span><br><span class="line">		<span class="comment">// 为每个partition创建不可序列化网络连接</span></span><br><span class="line">		<span class="comment">// 为每个record创建成本过高</span></span><br><span class="line">		<span class="keyword">val</span> connection = createNewConnnection()</span><br><span class="line">		<span class="comment">// 进一步可以维护静态连接对象池</span></span><br><span class="line">		<span class="comment">// val connection = ConnectionPool.getConnection()</span></span><br><span class="line">		partitionOfRecords.foreach(record =&gt; connection.send(record))</span><br><span class="line">		connection.close()</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="dstream-window-action">DStream Window Action</h3>
+<table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Window Action</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>window(windowLength, slideInterval)</code></td>
+<td>基于DStream产生的窗口化批数据产生DStream</td>
+</tr>
+<tr class="even">
+<td><code>countByWindow(windowLenght, slideInterval)</code></td>
+<td>返回滑动窗口数</td>
+</tr>
+<tr class="odd">
+<td><code>reduceByWindow(func, windowLength, slideInterval)</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>reduceByKeyAndWindow(func, windowLength, slidenInterval[, numTasks])</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>reduceByKeyAndWindow(func, invFunc, windowLength, slideInterval[, numTasks])</code></td>
+<td>须提供<code>invFunc</code>消除离开窗口RDD对reduce结果影响</td>
+</tr>
+<tr class="even">
+<td><code>countByValueAndWindow(windowLength, slideInterval[, numTasks])</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<ul>
+<li><code>windowLength</code>：窗口长度</li>
+<li><code>slideInterval</code>：滑动间隔</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>以上操作默认会持久化RDD至内存，无需手动调用<code>persist</code>等方法</li>
+</ul>
+</blockquote>
+<figure>
+<img src="/imgs/spark_streaming_dstream_window_based_transformation.png" alt="spark_streaming_dstream_window_based_operation"><figcaption>spark_streaming_dstream_window_based_operation</figcaption>
+</figure>
+<h3 id="output">Output</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Output Operation</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>print</code></td>
+<td>打印前10条元素</td>
+<td>每个RDD打印前10条元素</td>
+</tr>
+<tr class="even">
+<td><code>saveAsObjectFile(prefix[, suffix])</code></td>
+<td>保存为序列化文件</td>
+<td>命名为<code>&lt;prefix&gt;-TIME_IN_M.&lt;suffix&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><code>saveAsTextFile(prefix[, suffix])</code></td>
+<td>保存为文本文件</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>saveAsHadoopFile(prefix[, suffix])</code></td>
+<td>保存为Hadoop文件</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="persistence">Persistence</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Persistence</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>persist()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>cache()</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="directed-asycled-graph">Directed Asycled Graph</h2>
+<p>Spark中DAG：可以看作由RDD、转换操作、动作操作构成，用于表达 复杂计算</p>
+<ul>
+<li><p>当需要<strong>执行</strong>某个操作时，将重新从上游RDD进行计算</p></li>
+<li>也可以对RDD进行缓存、持久化，以便再次存取，获得更高查询 速度
+<ul>
+<li>In-mem Storage as Deserialized Java Objects</li>
+<li>In-mem Storage as Serialized Data</li>
+<li>On-Disk Storage</li>
+</ul></li>
+</ul>
+<h3 id="dag工作流示例">DAG工作流示例</h3>
+<figure>
+<img src="/imgs/spark_dag_procedure.png" alt="spark_dag_procedure"><figcaption>spark_dag_procedure</figcaption>
+</figure>
+<ul>
+<li>从HDFS装载数据至两个RDD中</li>
+<li>对RDD（和中间生成的RDD）施加一系列转换操作</li>
+<li>最后动作操作施加于最后的RDD生成最终结果、存盘</li>
+</ul>
+<h3 id="宽依赖窄依赖">宽依赖、窄依赖</h3>
+<figure>
+<img src="/imgs/spark_dag_wide_narrow_dependecies.png" alt="spark_dag_wide_narrow_dependencies"><figcaption>spark_dag_wide_narrow_dependencies</figcaption>
+</figure>
+<ul>
+<li>窄依赖：每个父RDD最多被一个子RDD分区使用
+<ul>
+<li>即单个父RDD分区经过转换操作生成子RDD分区</li>
+<li>窄依赖可以在一台机器上处理，无需Data Shuffling， 在网络上进行数据传输</li>
+</ul></li>
+<li>宽依赖：多个子RDD分区，依赖同一个父RDD分区
+<ul>
+<li>涉及宽依赖操作
+<ul>
+<li><code>groupByKey</code></li>
+<li><code>reduceByKey</code></li>
+<li><code>sortByKey</code></li>
+</ul></li>
+<li>宽依赖一般涉及Data Shuffling</li>
+</ul></li>
+</ul>
+<h3 id="dag-scheduler">DAG Scheduler</h3>
+<p><em>DAG Scheduler</em>：<em>Stage-Oriented</em>的DAG执行调度器</p>
+<figure>
+<img src="/imgs/spark_dag_job_stage.png" alt="spark_dag_job_stage"><figcaption>spark_dag_job_stage</figcaption>
+</figure>
+<ul>
+<li>使用Job、Stage概念进行作业调度
+<ul>
+<li>作业：一个提交到DAG Scheduler的工作项目，表达成DAG， 以一个RDD结束</li>
+<li>阶段：一组并行任务，每个任务对应RDD一个分区，是作业 的一部分、数据处理基本单元，负责计算部分结果，</li>
+</ul></li>
+<li>DAG Scheduler检查依赖类型
+<ul>
+<li>把一系列窄依赖RDD组织成一个阶段
+<ul>
+<li>所以说阶段中并行的每个任务对应RDD一个分区</li>
+</ul></li>
+<li>宽依赖需要跨越连续阶段
+<ul>
+<li>因为宽依赖子RDD分区依赖多个父RDD分区，涉及 Data Shuffling，数据处理不能在单独节点并行执行</li>
+<li>或者说阶段就是根据宽依赖进行划分</li>
+</ul></li>
+</ul></li>
+<li>DAG Scheduler对整个DAG进行分析
+<ul>
+<li>为作业产生一系列阶段、其间依赖关系</li>
+<li>确定需要持久化的RDD、阶段的输出</li>
+<li>找到作业运行最小代价的执行调度方案、根据Cache Status 确定的运行每个task的优选位置，把信息提交给 Task Sheduler执行</li>
+</ul></li>
+<li>容错处理
+<ul>
+<li>DAG Scheduler负责对shuffle output file丢失情况进行 处理，把已经执行过的阶段重新提交，以便重建丢失的数据</li>
+<li>stage内其他失败情况由Task Scheduler本身进行处理， 将尝试执行任务一定次数、直到取消整个阶段</li>
+</ul></li>
+</ul>
+<h2 id="dataframe">DataFrame</h2>
+<ul>
+<li><em>DataFrame</em>：类似关系型数据库中表，数据被组织到具名列中
+<ul>
+<li>相较于RDD是对分布式、结构化数据集的高层次抽象，提供 特定领域的专用API进行处理</li>
+<li>静态类型安全：相较于SQL查询语句，在编译时即可发现 语法错误</li>
+</ul></li>
+<li><em>Dataset</em>：有明确类型数据、或无明确数据类型集合，相应API 也分为两类
+<ul>
+<li>相较于DataFrame，也可组织半结构化数据，同样提供方便 易用的结构化API</li>
+<li>静态类型、运行时类型安全：相较于DataFrame，集合元素 有明确类型，在编译时即可发现分析错误</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>Spark2.0中二者API统一</li>
+<li>DataFrame可视为无明确数据类型<code>Dataset[Row]</code>别名，每行是 无类型JVM对象</li>
+</ul>
+</blockquote>
+<h3 id="创建方式">创建方式</h3>
+<ul>
+<li><p><code>.toDF</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> sqlContext = <span class="keyword">new</span> org.apache.spark.sql.<span class="type">SQLContext</span>(sc)</span><br><span class="line"><span class="keyword">import</span> sqlContext.implicits._</span><br><span class="line"></span><br><span class="line"><span class="comment">// `.toDF` + `Seq`创建</span></span><br><span class="line"><span class="keyword">val</span> df = <span class="type">Seq</span>(</span><br><span class="line">	(<span class="number">1</span>, <span class="string">"F"</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">"2019-08-02"</span>)),</span><br><span class="line">	(<span class="number">2</span>, <span class="string">"G"</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">"2019-08-01"</span>))</span><br><span class="line">).toDF(<span class="string">"id"</span>, <span class="string">"level"</span>, <span class="string">"date"</span>)</span><br><span class="line"><span class="comment">// 不指定列名，则默认为`_1`、`_2`等</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// `.toDF` + `case Class`创建</span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">name: <span class="type">String</span>, age: <span class="type">Int</span></span>)</span></span><br><span class="line"><span class="class"><span class="title">val</span> <span class="title">people</span> </span>= sc.textFile(<span class="string">"people.txt"</span>)</span><br><span class="line">	.map(_.split(<span class="string">","</span>))</span><br><span class="line">	.map(p =&gt; <span class="type">Person</span>(p(<span class="number">0</span>),p(<span class="number">1</span>).trim.toInt))</span><br><span class="line">	.toDF()</span><br></pre></td></tr></table></figure></li>
+<li><p><code>.createDataFrame</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.sql.types._</span><br><span class="line"><span class="keyword">val</span> schema = <span class="type">StrucType</span>(<span class="type">List</span>(</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">"id"</span>, <span class="type">IntegerType</span>, nullable=<span class="type">False</span>),</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">"level"</span>, <span class="type">StringType</span>, nullable=<span class="type">False</span>),</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">"date"</span>, <span class="type">DateType</span>, nullable=<span class="type">False</span>)</span><br><span class="line">))</span><br><span class="line"><span class="keyword">val</span> rdd = sc.parallelize(<span class="type">Seq</span>(</span><br><span class="line">	(<span class="number">1</span>, <span class="string">"F"</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">"2019-08-02"</span>)),</span><br><span class="line">	(<span class="number">2</span>, <span class="string">"G"</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">"2019-08-01"</span>))</span><br><span class="line">))</span><br><span class="line"><span class="keyword">val</span> df = sqlContext.createDataFrame(rdd, schema)</span><br></pre></td></tr></table></figure></li>
+<li><p>读取文件创建</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> df = sqlContext.read.parquet(<span class="string">"hdfs:/peopole.parq"</span>)</span><br><span class="line"><span class="keyword">val</span> df = spark.read.json(<span class="string">"people.json"</span>)</span><br><span class="line"><span class="comment">// 读取csv仅2.0版本`SparkSession`后可</span></span><br><span class="line"><span class="keyword">val</span> df = spark.read.format(<span class="string">"com.databricks.spark.csv"</span>)</span><br><span class="line">	.option(<span class="string">"header"</span>, <span class="string">"true"</span>)</span><br><span class="line">	.option(<span class="string">"mode"</span>, <span class="string">"DROPMALFORMED"</span>)</span><br><span class="line">	.load(<span class="string">"people.csv"</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="三种数据集对比">三种数据集对比</h3>
+<ul>
+<li>空间、时间效率：DataFrame &gt;= Dataset &gt; RDD
+<ul>
+<li>DataFrame、Dataset基于SparkSQL引擎构建，使用Catalyst 生成优化后的逻辑、物理查询计划；无类型DataFrame相较 有类型Dataset运行更快</li>
+<li>Spark作为编译器可以理解Dataset类型JVM对象，会使用 编码器将其映射为Tungsten内存内部表示</li>
+</ul></li>
+<li>RDD适合场景
+<ul>
+<li>对数据集进行最基本的转换、处理、控制</li>
+<li>希望以函数式编程而不是以特定领域表达处理数据</li>
+<li>数据为非结构化，如：流媒体、字符流</li>
+</ul></li>
+<li>DataFrame、Dataset使用场景
+<ul>
+<li>需要语义丰富、高级抽象、通用平台、特定领域API</li>
+<li>需要对半结构化数据进行高级处理，如：filter、SQL查询</li>
+<li>需要编译时/运行时类型安全、Catalyst优化、内存优化</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/Spark/" rel="tag"># Spark</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_techniques/theories/model_evaluation/" rel="next" title="模型评估">
+                <i class="fa fa-chevron-left"></i> 模型评估
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/spark/spark_core/" rel="prev" title="Spark Core">
+                Spark Core <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#rdd"><span class="nav-number">1.</span> <span class="nav-text">RDD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rdd容错机制"><span class="nav-number">1.1.</span> <span class="nav-text">RDD容错机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rdd操作"><span class="nav-number">2.</span> <span class="nav-text">RDD操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#transformation"><span class="nav-number">2.1.</span> <span class="nav-text">Transformation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#action"><span class="nav-number">2.2.</span> <span class="nav-text">Action</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dstream-rdd"><span class="nav-number">2.3.</span> <span class="nav-text">DStream RDD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dstream-window-action"><span class="nav-number">2.4.</span> <span class="nav-text">DStream Window Action</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#output"><span class="nav-number">2.5.</span> <span class="nav-text">Output</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#persistence"><span class="nav-number">2.6.</span> <span class="nav-text">Persistence</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#directed-asycled-graph"><span class="nav-number">3.</span> <span class="nav-text">Directed Asycled Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dag工作流示例"><span class="nav-number">3.1.</span> <span class="nav-text">DAG工作流示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宽依赖窄依赖"><span class="nav-number">3.2.</span> <span class="nav-text">宽依赖、窄依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dag-scheduler"><span class="nav-number">3.3.</span> <span class="nav-text">DAG Scheduler</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dataframe"><span class="nav-number">4.</span> <span class="nav-text">DataFrame</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建方式"><span class="nav-number">4.1.</span> <span class="nav-text">创建方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三种数据集对比"><span class="nav-number">4.2.</span> <span class="nav-text">三种数据集对比</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

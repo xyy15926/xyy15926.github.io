@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="用户、登陆">
+<meta name="keywords" content="Linux,Shell命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用户、登陆">
+<meta property="og:url" content="https://xyy15926.github.io/linux/shell/cmd_usrgrps/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="用户、登陆">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-20T16:49:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用户、登陆">
+<meta name="twitter:description" content="用户、登陆">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/linux/shell/cmd_usrgrps/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>用户、登陆 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/linux/shell/cmd_usrgrps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">用户、登陆
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-31 21:10:52" itemprop="dateCreated datePublished" datetime="2019-07-31T21:10:52+08:00">2019-07-31</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-21 00:49:03" itemprop="dateModified" datetime="2019-06-21T00:49:03+08:00">2019-06-21</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/Shell命令/" itemprop="url" rel="index"><span itemprop="name">Shell命令</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">用户、登陆</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>用户类型</p>
+<ul>
+<li>超级用户：root用户</li>
+<li>系统用户：与系统服务相关的用户，安装软件包时创建</li>
+<li>普通用户：root用户创建，权限有限</li>
+</ul>
+<h3 id="显示登陆用户">显示登陆用户</h3>
+<h3 id="w"><code>w</code></h3>
+<p>详细查询已登录当前计算机用户</p>
+<h3 id="who"><code>who</code></h3>
+<p>显示已登录当前计算机用户简单信息</p>
+<h3 id="logname"><code>logname</code></h3>
+<p>显示当前用户登陆名称</p>
+<h3 id="users"><code>users</code></h3>
+<p>用单独一行显示当前登陆用户</p>
+<h3 id="last"><code>last</code></h3>
+<p>显示近期用户登陆情况</p>
+<h3 id="lasttb"><code>lasttb</code></h3>
+<p>列出登陆系统失败用户信息</p>
+<h3 id="lastlog"><code>lastlog</code></h3>
+<p>查看用户上次登陆信息</p>
+<h2 id="用户用户组">用户、用户组</h2>
+<h3 id="newusers"><code>newusers</code></h3>
+<p>更新、批量创建新用户</p>
+<h3 id="lnewusers"><code>lnewusers</code></h3>
+<p>从标准输入中读取数据创建用户</p>
+<h3 id="userdel"><code>userdel</code></h3>
+<p>删除用户账户</p>
+<h3 id="groupdel"><code>groupdel</code></h3>
+<p>删除用户组</p>
+<h3 id="passwd"><code>passwd</code></h3>
+<p>设置、修改用户密码</p>
+<h3 id="chpassws"><code>chpassws</code></h3>
+<p>成批修改用户口令</p>
+<h3 id="change"><code>change</code></h3>
+<p>更改用户密码到期信息</p>
+<h3 id="chsh"><code>chsh</code></h3>
+<p>更改用户账户shell类型</p>
+<h3 id="pwck"><code>pwck</code></h3>
+<p>校验<code>/etc/passwd</code>和<code>/etc/shadow</code>文件是否合法、完整</p>
+<h3 id="grpck"><code>grpck</code></h3>
+<p>验证用户组文件<code>/etc/grous/</code>和<code>/etc/gshadow</code>完整性</p>
+<h3 id="newgrp"><code>newgrp</code></h3>
+<p>将用户账户以另一个组群身份进行登陆</p>
+<h3 id="finger"><code>finger</code></h3>
+<p>用户信息查找</p>
+<h3 id="groups"><code>groups</code></h3>
+<p>显示指定用户的组群成员身份</p>
+<h3 id="id"><code>id</code></h3>
+<p>显示用户uid及用户所属组群gid</p>
+<h3 id="su"><code>su</code></h3>
+<p>切换值其他用户账户登陆</p>
+<h3 id="sudo"><code>sudo</code></h3>
+<p>以superuser用户执行命令</p>
+<ul>
+<li>Archlinux中需要自行安装</li>
+<li>配置文件为<code>/etc/sudoers</code></li>
+</ul>
+<h3 id="useraddadduser"><code>useradd/adduser</code></h3>
+<p>创建用户账户（<code>adduser</code>：<code>useradd</code>命令的符号链接）</p>
+<ul>
+<li><code>-c</code>：用户描述</li>
+<li><code>-m</code>：创建用户目录</li>
+<li><code>-d</code>：用户起始目录</li>
+<li><code>-g</code>：指定用户所属组</li>
+<li><code>-n</code>：取消建立以用户为名称的群组</li>
+<li><code>-u</code>：指定用户ID</li>
+<li><code>-s</code>：指定用户登录shell
+<ul>
+<li>缺省为空，默认值应该是<code>/bin/sh</code>，很多发行版会设置 其为<code>/bin/bash</code></li>
+<li>查看<code>$SHELL</code>环境变量查看当前shell</li>
+<li>文件<code>/etc/shells</code>包含支持shell类型</li>
+</ul></li>
+</ul>
+<h3 id="usermod"><code>usermod</code></h3>
+<p>修改用户</p>
+<ul>
+<li><code>-e</code>：账户有效期限</li>
+<li><code>-f</code>：用户密码过期后关闭账号天数</li>
+<li><code>-g</code>：用户所属组</li>
+<li><code>-G</code>：用户所属附加组</li>
+<li><code>-l</code>：用户账号名称</li>
+<li><code>-L</code>：锁定用户账号密码</li>
+<li><code>-U</code>：解除密码锁定</li>
+</ul>
+<h3 id="groupadd"><code>groupadd</code></h3>
+<p>新建群组</p>
+<ul>
+<li><code>-g</code>：强制把某个ID分配给已经存在的用户组，必须唯一、非负</li>
+<li><code>-p</code>：用户组密码</li>
+<li><code>-r</code>：创建系统用户组</li>
+</ul>
+<h3 id="groupmod"><code>groupmod</code></h3>
+<ul>
+<li><code>-g</code>：设置GID</li>
+<li><code>-o</code>：允许多个用户组使用同一个GID</li>
+<li><code>-n</code>：设置用户组名</li>
+</ul>
+<h2 id="登陆退出关机重启">登陆、退出、关机、重启</h2>
+<h3 id="login"><code>login</code></h3>
+<p>登陆系统</p>
+<h3 id="logout"><code>logout</code></h3>
+<p>退出shell</p>
+<h3 id="exit"><code>exit</code></h3>
+<p>退出shell（常用）</p>
+<h3 id="rlogin"><code>rlogin</code></h3>
+<p>远程登陆服务器</p>
+<h3 id="poweroff"><code>poweroff</code></h3>
+<p>关闭系统，并将关闭记录写入<code>/var/log/wtmp</code>日志文件 ### <code>ctrlaltdel</code></p>
+<p>强制或安全重启服务器</p>
+<h3 id="shutdown"><code>shutdown</code></h3>
+<p>关闭系统</p>
+<h3 id="halt"><code>halt</code></h3>
+<p>关闭系统</p>
+<h3 id="reboot"><code>reboot</code></h3>
+<p>重启系统</p>
+<h3 id="init-06"><code>init 0/6</code></h3>
+<p>关机/重启</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Shell命令/" rel="tag"># Shell命令</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/linux/inst_set/centos_setting/" rel="next" title="CentOS7常用配置">
+                <i class="fa fa-chevron-left"></i> CentOS7常用配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/linux/shell/cmd_sysctl/" rel="prev" title="系统级查看、设置">
+                系统级查看、设置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#显示登陆用户"><span class="nav-number">1.</span> <span class="nav-text">显示登陆用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#w"><span class="nav-number">2.</span> <span class="nav-text">w</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#who"><span class="nav-number">3.</span> <span class="nav-text">who</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#logname"><span class="nav-number">4.</span> <span class="nav-text">logname</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#users"><span class="nav-number">5.</span> <span class="nav-text">users</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#last"><span class="nav-number">6.</span> <span class="nav-text">last</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lasttb"><span class="nav-number">7.</span> <span class="nav-text">lasttb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lastlog"><span class="nav-number">8.</span> <span class="nav-text">lastlog</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户用户组"><span class="nav-number"></span> <span class="nav-text">用户、用户组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#newusers"><span class="nav-number">1.</span> <span class="nav-text">newusers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lnewusers"><span class="nav-number">2.</span> <span class="nav-text">lnewusers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#userdel"><span class="nav-number">3.</span> <span class="nav-text">userdel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groupdel"><span class="nav-number">4.</span> <span class="nav-text">groupdel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#passwd"><span class="nav-number">5.</span> <span class="nav-text">passwd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chpassws"><span class="nav-number">6.</span> <span class="nav-text">chpassws</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#change"><span class="nav-number">7.</span> <span class="nav-text">change</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chsh"><span class="nav-number">8.</span> <span class="nav-text">chsh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwck"><span class="nav-number">9.</span> <span class="nav-text">pwck</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#grpck"><span class="nav-number">10.</span> <span class="nav-text">grpck</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#newgrp"><span class="nav-number">11.</span> <span class="nav-text">newgrp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#finger"><span class="nav-number">12.</span> <span class="nav-text">finger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groups"><span class="nav-number">13.</span> <span class="nav-text">groups</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id"><span class="nav-number">14.</span> <span class="nav-text">id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#su"><span class="nav-number">15.</span> <span class="nav-text">su</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sudo"><span class="nav-number">16.</span> <span class="nav-text">sudo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useraddadduser"><span class="nav-number">17.</span> <span class="nav-text">useradd/adduser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#usermod"><span class="nav-number">18.</span> <span class="nav-text">usermod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groupadd"><span class="nav-number">19.</span> <span class="nav-text">groupadd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groupmod"><span class="nav-number">20.</span> <span class="nav-text">groupmod</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登陆退出关机重启"><span class="nav-number"></span> <span class="nav-text">登陆、退出、关机、重启</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#login"><span class="nav-number">1.</span> <span class="nav-text">login</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#logout"><span class="nav-number">2.</span> <span class="nav-text">logout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exit"><span class="nav-number">3.</span> <span class="nav-text">exit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rlogin"><span class="nav-number">4.</span> <span class="nav-text">rlogin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#poweroff"><span class="nav-number">5.</span> <span class="nav-text">poweroff</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shutdown"><span class="nav-number">6.</span> <span class="nav-text">shutdown</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#halt"><span class="nav-number">7.</span> <span class="nav-text">halt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reboot"><span class="nav-number">8.</span> <span class="nav-text">reboot</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init-06"><span class="nav-number">9.</span> <span class="nav-text">init 0/6</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

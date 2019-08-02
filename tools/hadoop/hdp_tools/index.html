@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Zookeeper">
+<meta name="keywords" content="工具,Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zookeeper">
+<meta property="og:url" content="https://xyy15926.github.io/tools/hadoop/hdp_tools/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Zookeeper">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/zookeeper_structure.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/flume_structure_old_version.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/flume_dataflow.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/flume_distributed_deployment.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/kafka_structure.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/kafka_with_zookeeper.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/kafka_comsumer_group.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/kafka_storage.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/storm_structure.png">
+<meta property="og:updated_time" content="2019-02-17T03:57:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Zookeeper">
+<meta name="twitter:description" content="Zookeeper">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/zookeeper_structure.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/hadoop/hdp_tools/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Zookeeper | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/hadoop/hdp_tools/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Zookeeper
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:08" itemprop="dateModified" datetime="2019-02-17T11:57:08+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Zookeeper</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Zookeeper是一个协调软件服务，用于构建可靠的、分布式群组</p>
+<ul>
+<li><p>提供群组成员维护、领导人选举、工作流协同、分布式系统同步 、命名、配置信息维护等服务</p></li>
+<li><p>提供广义的分布式数据结构：锁、队列、屏障、锁存器</p></li>
+<li><p>Zookeeper促进户端间的松耦合，提供最终一致的、类似传统 文件系统中文件、目录的Znode视图，提供基本操作，如：创建 、删除、检查Znode是否存在</p></li>
+<li><p>提供事件驱动模型，客户端能观察到Znode的变化</p></li>
+<li><p>Zookeeper运行多个Zookeeper Ensemble以获得高可用性，每个 服务器上的Ensemble都持有分布式系统内存副本，为客户端读取 请求提供服务</p></li>
+</ul>
+<figure>
+<img src="/imgs/zookeeper_structure.png" alt="zookeeper_structure"><figcaption>zookeeper_structure</figcaption>
+</figure>
+<h1 id="flume">Flume</h1>
+<p>Flume是分布式日志收集系统，收集日志、事件等数据资源，并集中 存储</p>
+<h2 id="flume组件结构">Flume组件、结构</h2>
+<ul>
+<li><p>旧版本组件、结构 <img src="/imgs/flume_structure_old_version.png" alt="flume_struture_old_version"></p></li>
+<li><p>新版本组件、结构：每个Flume整体称为Agent <img src="/imgs/flume_dataflow.png" alt="flume_dataflow"></p>
+<ul>
+<li>两个版本的组件功能、数据流结构都有区别</li>
+<li>但是3大组件基本可以一一对应（功能略有差异）</li>
+</ul></li>
+<li><p>Agent是一组独立的JVM守护进程，从客户端、其他Agent接收 数据、迅速传递给下个目的节点</p></li>
+<li><p>支持多路径流量、多管道接入流量、多管道接出流量、上下文 路由</p></li>
+</ul>
+<h3 id="sourceagent">Source（Agent）</h3>
+<p>采集数据，是Flume产生数据流的地方</p>
+<ul>
+<li><p>运行在数据发生器所在的服务器上，接收数据发生器接受数据， 将数据以event格式传递给一个或多个Channel</p></li>
+<li>支持多种数据接收方式
+<ul>
+<li>Avro Source：支持Avro RPC协议，内置支持</li>
+<li>Thrift Source：支持Thrift协议</li>
+<li>Exec Source：支持Unix标准输出</li>
+<li>JMS Source：从JMS（消息、主题）读取数据</li>
+<li>Spooling Directory Source：监控指定目录内数据变更</li>
+<li>Twitter 1% firehose Source：通过API持续下载Twitter 数据</li>
+<li>Netcat Source：监控端口，将流经端口的每个文本行数据 作为Event输入</li>
+<li>Sequence Generator Source：序列生成器数据源</li>
+<li>HTTP Source：基于POST、GET方式数据源，支持JSON、BLOB 格式</li>
+</ul></li>
+<li>收集数据模式
+<ul>
+<li>Push Source：外部系统主动将数据推送到Flume中，如 RPC、syslog</li>
+<li>Polling Source：Flume主动从外部系统获取数据，如 text、exec</li>
+</ul></li>
+</ul>
+<h3 id="channel-collector">Channel （Collector）</h3>
+<p>暂时的存储容器，缓存接收到的event格式的数据，直到被sink消费</p>
+<ul>
+<li><p>在source、sink间起桥梁作用</p></li>
+<li><p>Channel基于事务传递Event，保证数据在收发时的一致性</p></li>
+<li>Channel可以和任意数量source、sink连接</li>
+<li><p>主要Channel类型有</p>
+<ul>
+<li>JDBC channel：数据持久化在数据库中，内置支持Derby</li>
+<li>File Channel：数据存储在磁盘文件中</li>
+<li>Memory Channel：数据存储在内存中</li>
+<li>Spillable Meemory Channel：优先存在内存中，内存队列 满则持久到磁盘中</li>
+<li>Custom Channel：自定义Channel实现</li>
+</ul></li>
+</ul>
+<h3 id="sinkstorage-tier">Sink（Storage Tier）</h3>
+<p>将从Channel接收数据存储到集中存储器中（HDFS、HBase）</p>
+<h2 id="flume-event">Flume Event</h2>
+<p>Flume事件是内部数据传输最小基本单元、事务处理基本单位</p>
+<ul>
+<li>由一个装载数据的byte array、可选header构成
+<ul>
+<li>数据对Flume是不透明的</li>
+<li>header是容纳键值对字符串的无需集合，键在集合内唯一</li>
+<li>header可以在上下文路由中使用扩展，如：数据清洗</li>
+</ul></li>
+<li>Event将传输数据进行封装</li>
+</ul>
+<h2 id="flume架构特性旧版">Flume架构特性（旧版）</h2>
+<h3 id="reliablity">Reliablity</h3>
+<p>Flume提供了3种数据可靠性选项</p>
+<ul>
+<li><p>End-to-End：使用磁盘日志、接受端Ack的方式，保证Flume接收 数据最终到导致目的地</p></li>
+<li><p>Store on Failure：目的地不可用时，将数据保存在本地硬盘， 但进程如果出问题，可能丢失部分数据（发送后目的地不可用）</p></li>
+<li><p>Best Effort：不做任何QoS保证</p></li>
+</ul>
+<h3 id="scalability">Scalability</h3>
+<p>易扩展性</p>
+<ul>
+<li>Flume三大组件都是可伸缩的</li>
+<li>Flume对事件的处理不需要带状态，Scalability容易实现</li>
+</ul>
+<h3 id="avaliablity">Avaliablity</h3>
+<p>高可用性：Flume引入Zookeeper用于保存配置数据</p>
+<ul>
+<li>Zookeeper本身可以保证配置数据一致性、高可用</li>
+<li>在配置数据发生变化时，Zookeeper通知Flume Master节点 Flume Master节点通过gossip协议同步数据</li>
+</ul>
+<figure>
+<img src="/imgs/flume_distributed_deployment.png" alt="flume_distributed_deployment"><figcaption>flume_distributed_deployment</figcaption>
+</figure>
+<h3 id="manageablity">Manageablity</h3>
+<p>易管理性</p>
+<ul>
+<li>多个Master，保证可以管理大量节点</li>
+</ul>
+<h3 id="extensibility">Extensibility</h3>
+<p>可开发性：可以基于Java为Flume添加各种新功能</p>
+<ul>
+<li>实现<code>Source</code>子类，自定义数据接入方式</li>
+<li>实现<code>Sink</code>子类，将数据写入特定目标</li>
+<li>实现<code>SinkDecorator</code>子类，对数据进行一定的预处理</li>
+</ul>
+<h2 id="适合场景">适合场景</h2>
+<ul>
+<li>高效率的从多个网站服务器收集日志信息存储在HDFS上</li>
+<li>将从多个服务器获取的数据迅速移交给Hadoop</li>
+<li>可以收集社交网络站点事件数据，如：facebook、amazon</li>
+</ul>
+<h1 id="kafka">Kafka</h1>
+<p>分布式、分区的、可复制的Message System（提交日志服务）， 得益于特有的设计，Kafka具有高性能、高可扩展的特点</p>
+<ul>
+<li>完全分布式系统，易于横向扩展、处理极大规模数据</li>
+<li>同时为发布、订阅提供极高吞吐能力</li>
+<li>支持多订阅，出现失败状态时，可以自动平衡消费者</li>
+<li>将消息持久化到磁盘，保证消息系统可靠性，可用于消息 批量消费应用（ETL系统）、实时应用</li>
+</ul>
+<h2 id="kafka组件">Kafka组件</h2>
+<figure>
+<img src="/imgs/kafka_structure.png" alt="kafka_structure"><figcaption>kafka_structure</figcaption>
+</figure>
+<h3 id="topic">Topic</h3>
+<p>话题：特定类型的消息流</p>
+<ul>
+<li>话题是消息的分类机制
+<ul>
+<li>消息产生器向Kafka发布消息必须指定话题</li>
+</ul></li>
+<li>Kafka安照Topic维护接收到的消息
+<ul>
+<li>话题被划分为一系列分区</li>
+<li>Kafka集群为每个Topic维护一个分区日志文件存储消息</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>消息是字节的Payload（有效载荷）</p>
+</blockquote>
+<h3 id="producer">Producer</h3>
+<p>生产者：向Kafka发布消息的进程</p>
+<ul>
+<li>生产者需要指定消息分配至哪个分区
+<ul>
+<li>采用Round-Robin方式方便均衡负载</li>
+<li>根据应用的语义要求，设置专用Partition Function进行 消息分区</li>
+</ul></li>
+</ul>
+<h3 id="broker">Broker</h3>
+<p>代理：AMQP客户端，保存已经发布消息的服务器进程</p>
+<blockquote>
+<p>AMQP：the Advanced Message Queuing Protocal，标准开放 的应用层消息中间件协议。AMQP定义了通过网络发送的字节流 的数据格式，兼容性非常好，任何实现AMQP协议的程序可以和 兼容AMQP协议兼容的其他应用程序交互，容易做到跨语言、 跨平台。</p>
+</blockquote>
+<ul>
+<li><p>一组代理服务器构成Kafka集群</p></li>
+<li><p>Kafka代理是无状态的，消费者需要自行维护已消费状态信息</p>
+<ul>
+<li><p>因此Kafka无法知晓信息是否已经被消费、应该删除，因此 代理使用简单的、基于时间的Serice Level Agreement应用 于保留策略，消息在代理中超过一定时间自动删除</p></li>
+<li>这种设计允许消费者可以重复消费已消费数据
+<ul>
+<li>虽然违反队列常见约定</li>
+<li>但是实际应用中很多消费者有这种特征</li>
+</ul></li>
+</ul></li>
+<li><p>消息代理将紧密耦合的系统设计解耦，可以对未及时处理的消息 进行缓存</p>
+<ul>
+<li>提高了吞吐能力</li>
+<li>提供了分区、复制、容错支持</li>
+</ul></li>
+<li><p>Kafka代理通过Zookeeper与其他Kafka代理协同 <img src="/imgs/kafka_with_zookeeper.png" alt="kafka_with_zookeeper"></p>
+<ul>
+<li>系统中新增代理或代理故障失效时，Zookeeper通知生产者 、消费者</li>
+<li>生产者、消费者据此开始同其他代理协同工作</li>
+</ul></li>
+</ul>
+<h3 id="consumer">Consumer</h3>
+<p>消费者：向Kafka subscribe话题，以处理Kafka消息的进程</p>
+<ul>
+<li><p>消费者可以订阅一个或多个话题，从代理拉取数据，消费已经 发布的消息</p></li>
+<li><p>消费者获取消息系统一般采用两种模型</p>
+<ul>
+<li><p>Queuing：队列模型，一组消费者从一个服务器读取信息， 每个消息仅可被其中一个消费者消费</p></li>
+<li><p>Publish Subscribe：发布订阅模型，消息被广播给所有 消费者</p></li>
+</ul></li>
+<li><p>Kafka采用一种抽象方法：消费者组Consumer Group提供对上述 两种消息系统模型的支持 <img src="/imgs/kafka_comsumer_group.png" alt="kafka_comsumer_group"></p>
+<ul>
+<li><p>给每个消费者打上属于某个消费者组的标签（这里组只是 表示同组内消费者只能有一个消费信息）</p></li>
+<li><p>每个发布到话题的消息分发给消费者组的其中一个消费者</p></li>
+<li><p>一般情况下每个话题下有多个消费者组，每个组中有多个 消费者实例，以达到扩展处理能力、容错</p></li>
+<li><p>极端情况：如果所有消费者实例都隶属于同一个消费者组， Kafka工作模式类似于队列模型；所有消费者实例隶属于 不同的消费者组，Kafka工作模式类似于发布-订阅模型</p></li>
+</ul></li>
+</ul>
+<h2 id="消息分区存储分发">消息分区、存储、分发</h2>
+<h3 id="分区日志">分区日志</h3>
+<p>每个分区是<strong>有序的</strong>、<strong>不可更改</strong>、<strong>可在末尾不断追加</strong>的 消息序列</p>
+<h4 id="分区优势">分区优势</h4>
+<ul>
+<li><p>允许Kafka处理超过一台服务器容量的日志规模</p></li>
+<li><p>分区作为并行处理基本单元，允许Kafka进行并行处理</p></li>
+<li><p>通过保证每个分区仅仅<strong>由一个消费者消费</strong>，可以保证同一 分区内消息消费的有序</p>
+<ul>
+<li>由于可以设置很多分区，仍然可以保证在不同消费者之间 实现负载均衡</li>
+<li>分区内外保证消息有序、数据分区处理对大部分实际应用 已经足够</li>
+</ul></li>
+</ul>
+<h4 id="分区管理">分区管理</h4>
+<p>每个分区由单独的（一组）服务器处理，负责该分区数据管理、消息 请求，支持多个副本以支持容错</p>
+<ul>
+<li><p>每个分区中有一台服务器作为leader、若干服务器作为follower</p></li>
+<li><p>领导者负责分区读、写请求，跟随者以被动的方式领导者数据 进行复制</p></li>
+<li><p>领导者失败，则追随者之一在Zookeeper协调下成为新领导者</p></li>
+<li><p>为保证负载均衡，每个服务器担任部分分区领导者、其他分区 追随者</p></li>
+</ul>
+<h3 id="存储布局">存储布局</h3>
+<p>Kafka存储布局非常简单</p>
+<figure>
+<img src="/imgs/kafka_storage.png" alt="kafka_storage"><figcaption>kafka_storage</figcaption>
+</figure>
+<h4 id="分区存储">分区存储</h4>
+<ul>
+<li><p>话题每个分区对应一个逻辑日志</p></li>
+<li><p>每个日志为相同的大小的一组分段文件</p></li>
+<li><p>生产者发布的消息被代理追加到对应分区最后一个段文件中</p></li>
+<li><p>发布消息数量达到设定值、经过一段时间后，段文件真正写入 磁盘，然后公开给消费者</p></li>
+</ul>
+<h4 id="offset">Offset</h4>
+<p>分区中每个消息的Sequential ID Number（Offset），唯一标识 分区中消息，并没有明确的消息ID</p>
+<ul>
+<li><p>偏移量是增量的但不连续，下个消息ID通过在其偏移量加上 消息长度得到</p></li>
+<li><p>偏移量标识每个消费者目前处理到某分区消息队列的位置， 对分区消息队列处理依赖于其（消息通过日志偏移量公开）</p></li>
+<li><p>偏移量由消费者控制，所以消费者可以以任何顺序消费消息</p>
+<ul>
+<li>可以回推偏移量重复消费消息</li>
+<li>设计消费者仅仅查看分区末尾若干消息，不改变消息， 其他消费者可以正常的消费</li>
+</ul></li>
+</ul>
+<p>从消息分区机制、消费者基于偏移量消费机制，可以看出Kafka消息 消费机制不会对集群、其他消费者造成影响</p>
+<h2 id="适合场景-1">适合场景</h2>
+<ul>
+<li><p>Messaging：消息传递，作为传递消息队列（ActiveMQ、 RabbitMQ等）替代品，提供高吞吐能力、高容错、低延迟</p></li>
+<li><p>Website Activity Tracking：网站活动跟踪，要求系统必须 快速处理产生消息</p></li>
+<li><p>Metric：度量，把分布式各个应用程序的运营数据集中，进行 汇总统计</p></li>
+<li><p>Streaming Processing：流数据处理</p></li>
+<li><p>Event Sourcing：事件溯源，把应用程序状态变化以时间顺序 存储，需要支持大量数据</p></li>
+<li><p>Commit Log：日志提交，作为分布式系统提交日志的外部存储 服务</p></li>
+</ul>
+<h1 id="storm">Storm</h1>
+<p>Storm是分布式、高容错的实时流数据处理的开源系统</p>
+<ul>
+<li>Storm为流数据处理设计，具有很高的容错性</li>
+<li>Storm保证每个消息只能得到一次完整处理，任务失败时会负责 从消息源重试消息，从而支持可靠的消息处理</li>
+<li>可以通过实现Storm通讯协议，提供其他语言支持</li>
+</ul>
+<h2 id="storm架构">Storm架构</h2>
+<figure>
+<img src="/imgs/storm_structure.png" alt="storm_structure"><figcaption>storm_structure</figcaption>
+</figure>
+<ul>
+<li>主节点的运行Nimbus守护进程
+<ul>
+<li>分配代码</li>
+<li>布置任务</li>
+<li>故障检测</li>
+</ul></li>
+<li>工作节点运行Supervisor守护进程
+<ul>
+<li>监听、开始、终止工作进程</li>
+</ul></li>
+<li>Nimbus、Supervisor都是无状态的（不负责维护客户端两次调用 之间状态维护）
+<ul>
+<li>这使得两者十分健壮</li>
+<li>两者之间的协调由Zookeeper完成</li>
+</ul></li>
+<li>Storm在ZeorMQ内部传递消息</li>
+</ul>
+<h3 id="nimbus">Nimbus</h3>
+<h3 id="supervisor">Supervisor</h3>
+<h3 id="worker">Worker</h3>
+<h2 id="storm编程模型">Storm编程模型</h2>
+<h3 id="stream">Stream</h3>
+<p>数据流：没有边界的tuple序列</p>
+<ul>
+<li>这些tuple以分布式的方式，并行的创建、处理</li>
+</ul>
+<h3 id="topology">Topology</h3>
+<p>计算拓扑：实时计算应用程序处理逻辑封装成的Topology对象</p>
+<ul>
+<li>相当于Mapreduce作业，但是MapReduce作业最终会结束、而 Topology会一直运行直到被杀死</li>
+<li>Topology由Spout、Bolt组成</li>
+</ul>
+<h4 id="spout">Spout</h4>
+<p>消息源：消息tuple生产者</p>
+<ul>
+<li>消息源可以是可靠的、不可靠的</li>
+<li>可靠的消息源可在tuple没有被storm成功处理时，可以重新发送</li>
+<li>不可靠的消息源则在发送tuple之后彻底丢弃</li>
+</ul>
+<h4 id="bolt">Bolt</h4>
+<p>消息处理者：封装所有的消息处理逻辑</p>
+<ul>
+<li>Bolt可以做很多事情，包括过滤、聚集</li>
+<li>Bolt一般数据处理流程
+<ul>
+<li>处理一个输入tuple，发送0个、多个tuple</li>
+<li>调用ack接口，通知storm子集已经处理过了</li>
+</ul></li>
+</ul>
+<h4 id="taskexecutor">Task、Executor</h4>
+<p>Topology每个Spout、Bolt转换为若干个任务在整个集群里执行</p>
+<ul>
+<li>默认情况下，每个Task对应一个线程Executor，线程用于执行 task</li>
+<li>同一个Spout/Bolt里的Task共享一个物理线程</li>
+</ul>
+<h4 id="stream-grouping">Stream Grouping</h4>
+<p>数据分发策略：定义Spout、Bolt间Tasks的数据分发</p>
+<ul>
+<li><p>Shuffle Grouping：洗牌式分组，上游Spout数据流tuples随机 分发到下游Bolt的Task</p></li>
+<li><p>Fields Grouping：按指定字段进行分组</p></li>
+<li><p>All Grouping：Spout数据tuple分发给所有下Bolt</p></li>
+<li><p>Global Grouping：Spout数据tuple分发给最小id的task</p></li>
+<li><p>Non-Grouping：类似shuffle Grouping，把具有Non-Grouping 设置Bolt推到其订阅的上游Spout、Bolt</p></li>
+<li><p>Direct Grouping：tuple生产者决定接收tuple下游bolt中的task</p></li>
+<li><p>Local or Shuffle Grouping：如果目标bolt中由一个或多个 task工作在同一进程中，tuple分配给这些task，否则同洗牌式 分组</p></li>
+<li><p>Partial Key Grouping：类似Fields Grouping，但是在下游 Bolt中做负载均衡，提高资源利用率</p></li>
+</ul>
+<h3 id="消息处理保证">消息处理保证</h3>
+<p>Storm追踪由每个SpoutTuple产生的Tuple树</p>
+<ul>
+<li>每个从Spout发出tuple，可能会生成成千上万个tuple
+<ul>
+<li>根据血缘关系形成一棵tuple树</li>
+<li>当tuple树中所有节点都被成功处理了，才说明tuple被完全 处理</li>
+</ul></li>
+<li>每个Topology都有一个消息超时设置，如果Storm在时间内无法 检验tuple树是否完全执行，该tuple标记为执行失败，之后重发</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/keras/inset/" rel="next" title="Keras按照配置">
+                <i class="fa fa-chevron-left"></i> Keras按照配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/hadoop/mapred_yarn/" rel="prev" title="MapReduce YARN">
+                MapReduce YARN <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#flume"><span class="nav-number">1.</span> <span class="nav-text">Flume</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#flume组件结构"><span class="nav-number">1.1.</span> <span class="nav-text">Flume组件、结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sourceagent"><span class="nav-number">1.1.1.</span> <span class="nav-text">Source（Agent）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#channel-collector"><span class="nav-number">1.1.2.</span> <span class="nav-text">Channel （Collector）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sinkstorage-tier"><span class="nav-number">1.1.3.</span> <span class="nav-text">Sink（Storage Tier）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flume-event"><span class="nav-number">1.2.</span> <span class="nav-text">Flume Event</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flume架构特性旧版"><span class="nav-number">1.3.</span> <span class="nav-text">Flume架构特性（旧版）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#reliablity"><span class="nav-number">1.3.1.</span> <span class="nav-text">Reliablity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scalability"><span class="nav-number">1.3.2.</span> <span class="nav-text">Scalability</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#avaliablity"><span class="nav-number">1.3.3.</span> <span class="nav-text">Avaliablity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#manageablity"><span class="nav-number">1.3.4.</span> <span class="nav-text">Manageablity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#extensibility"><span class="nav-number">1.3.5.</span> <span class="nav-text">Extensibility</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适合场景"><span class="nav-number">1.4.</span> <span class="nav-text">适合场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka"><span class="nav-number">2.</span> <span class="nav-text">Kafka</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka组件"><span class="nav-number">2.1.</span> <span class="nav-text">Kafka组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#topic"><span class="nav-number">2.1.1.</span> <span class="nav-text">Topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#producer"><span class="nav-number">2.1.2.</span> <span class="nav-text">Producer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#broker"><span class="nav-number">2.1.3.</span> <span class="nav-text">Broker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#consumer"><span class="nav-number">2.1.4.</span> <span class="nav-text">Consumer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息分区存储分发"><span class="nav-number">2.2.</span> <span class="nav-text">消息分区、存储、分发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分区日志"><span class="nav-number">2.2.1.</span> <span class="nav-text">分区日志</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分区优势"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">分区优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分区管理"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">分区管理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储布局"><span class="nav-number">2.2.2.</span> <span class="nav-text">存储布局</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分区存储"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">分区存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#offset"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">Offset</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适合场景-1"><span class="nav-number">2.3.</span> <span class="nav-text">适合场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#storm"><span class="nav-number">3.</span> <span class="nav-text">Storm</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#storm架构"><span class="nav-number">3.1.</span> <span class="nav-text">Storm架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nimbus"><span class="nav-number">3.1.1.</span> <span class="nav-text">Nimbus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#supervisor"><span class="nav-number">3.1.2.</span> <span class="nav-text">Supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker"><span class="nav-number">3.1.3.</span> <span class="nav-text">Worker</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#storm编程模型"><span class="nav-number">3.2.</span> <span class="nav-text">Storm编程模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stream"><span class="nav-number">3.2.1.</span> <span class="nav-text">Stream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#topology"><span class="nav-number">3.2.2.</span> <span class="nav-text">Topology</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#spout"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">Spout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bolt"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">Bolt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#taskexecutor"><span class="nav-number">3.2.2.3.</span> <span class="nav-text">Task、Executor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stream-grouping"><span class="nav-number">3.2.2.4.</span> <span class="nav-text">Stream Grouping</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息处理保证"><span class="nav-number">3.2.3.</span> <span class="nav-text">消息处理保证</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

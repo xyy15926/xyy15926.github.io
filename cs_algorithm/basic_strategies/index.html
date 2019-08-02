@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="算法设计策略">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法设计策略">
+<meta property="og:url" content="https://xyy15926.github.io/cs_algorithm/basic_strategies/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="算法设计策略">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-29T16:38:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法设计策略">
+<meta name="twitter:description" content="算法设计策略">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_algorithm/basic_strategies/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>算法设计策略 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_algorithm/basic_strategies/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">算法设计策略
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-30 00:38:54" itemprop="dateCreated datePublished" datetime="2019-05-30T00:38:54+08:00">2019-05-30</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">算法设计策略</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="蛮力法">蛮力法</h2>
+<p>Brute Force：简单直接解决问题的方法，常常直接基于问题的描述 和所涉及的概念定义</p>
+<h3 id="特点">特点</h3>
+<ul>
+<li>蛮力法可以解决各种问题，实际上可能是唯一几乎可以解决所有 问题的方法</li>
+<li>对某些重要问题，蛮力法可以产生合理算法，具备实用价值， 且不必限制实例规模</li>
+<li>如果解决问题实例不多，蛮力法速度可接受，设计高效算法可能 不值得</li>
+<li>蛮力法可以用于研究、教学目的，如：衡量同样问题其他更高效 算法</li>
+</ul>
+<h3 id="案例">案例</h3>
+<p>因为基本所有问题都可以使用蛮力得到<strong>理论可行</strong>的解决方法， 所以这里只包含实际可行、有价值算法</p>
+<ul>
+<li>排序
+<ul>
+<li>选择排序</li>
+<li>冒泡排序</li>
+</ul></li>
+<li>查找
+<ul>
+<li>顺序查找</li>
+<li>蛮力字符串匹配</li>
+</ul></li>
+<li>几何
+<ul>
+<li>最近对问题</li>
+<li>凸包问题</li>
+</ul></li>
+<li>组合
+<ul>
+<li>背包问题</li>
+<li>旅行商问题</li>
+<li>分配问题</li>
+</ul></li>
+<li>图处理
+<ul>
+<li>深度优先搜索</li>
+<li>广度优先搜索</li>
+</ul></li>
+</ul>
+<h2 id="recursion"><em>Recursion</em></h2>
+<blockquote>
+<ul>
+<li><em>reduction</em>：简化论，仅仅通过理解构成对象某一部分就可以 理解整个对象</li>
+<li><em>holism</em>：整体论，总体总比构成它的部分更为重要</li>
+</ul>
+</blockquote>
+<p>递归：将大问题通过简化成相同形式的小问题来解决问题</p>
+<ul>
+<li>递归的思考需要从整体角度考虑</li>
+<li>需要习惯于采用递归的稳步跳跃理念</li>
+<li>关键在于如何正确的将原始问题分解为有效的子问题
+<ul>
+<li>更加简单，且和原问题求解形式相同</li>
+<li>最终能达到简单情况，并正确解决</li>
+<li>能重新组合子问题的解得到原始问题的解</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>recursive leap of faith</em>：递归的稳步跳跃理念，任何更 简单的递归调用将正确工作</li>
+</ul>
+</blockquote>
+<h3 id="recursive-paradigm"><em>Recursive Paradigm</em></h3>
+<p>递归范型：递归函数体形式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(test <span class="keyword">for</span> simple <span class="keyword">case</span>)&#123;</span><br><span class="line">	<span class="comment">// 非递归解决简单问题</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="comment">// 将问题简化为某种形式的子问题（一个或多个）</span></span><br><span class="line">	<span class="comment">// 递归调用函数解决每个子问题</span></span><br><span class="line">	<span class="comment">// 将子问题的解组合得到原问题的解</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="返回值问题">返回值问题</h3>
+<ul>
+<li>无返回值：没有返回值回退过程、处理函数
+<ul>
+<li><strong>全局变量、引用参数记录结果</strong></li>
+<li><strong>参数传递结果，最末栈直接使用</strong></li>
+</ul></li>
+<li>有返回值：有返回值回退过程
+<ul>
+<li>可以完全类似无返回值函数调用，此时返回值无实际价值</li>
+<li>也可以最终结果在初始主调函数中得到</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>不方便使用全局变量记录结果时，可以给<strong>真实递归调用函数</strong> 添加记录结果的引用参数，外层包装其、提供实参</li>
+<li>是否有返回值不是递归调用的关键，关键是<strong>是否继续调用</strong></li>
+</ul>
+</blockquote>
+<h2 id="减治法">减治法</h2>
+<p><em>Decrease and Conquer</em>：利用问题给定实的解和同样问题较小 实例解之间某种关系，可以自底向上、自底向上的运用该关系</p>
+<ul>
+<li>自顶向下会自然导致递归算法，但是还是非递归实现较好</li>
+<li>自底向上往往是迭代实现的，从求解问题较小实例开始</li>
+</ul>
+<p>减治法有3种主要变化形式</p>
+<h3 id="decrease-by-constant"><em>Decrease-by-Constant</em></h3>
+<p>减常量：每次算法迭代总是从实例中减去相同常量</p>
+<ul>
+<li><em>新问题规模 = 原问题规模 - constant</em></li>
+<li>一般来说这个常量为1</li>
+</ul>
+<h3 id="decrease-by-a-contant-factor"><em>Decrease-by-A-Contant-Factor</em></h3>
+<p>减去常量因子：在算法迭代过程中总是减去相同的常数因子</p>
+<ul>
+<li><em>新问题规模 = 原问题规模 / constant-factor</em></li>
+<li>常数因子一般为2</li>
+</ul>
+<h3 id="variable-size-decrease"><em>Variable-Size-Decrease</em></h3>
+<p>减可变规模：算法每次迭代时，规模减小模式不同</p>
+<h3 id="案例-1">案例</h3>
+<ul>
+<li>减常量法
+<ul>
+<li>数值计算
+<ul>
+<li>自顶向下递归计算指数</li>
+<li>利用指数定义自底向上计算指数</li>
+</ul></li>
+<li>排序
+<ul>
+<li>插入排序</li>
+<li>希尔排序</li>
+</ul></li>
+<li>图问题
+<ul>
+<li>拓扑排序</li>
+</ul></li>
+<li>组合
+<ul>
+<li>生成排列</li>
+<li>生成子集</li>
+</ul></li>
+</ul></li>
+<li>减常因子法
+<ul>
+<li>数值计算
+<ul>
+<li>递归的计算<span class="math inline">\(a^{n/2}\)</span>计算指数</li>
+<li>俄式乘法</li>
+<li>约瑟夫斯问题</li>
+</ul></li>
+<li>查找
+<ul>
+<li>数值问题</li>
+</ul></li>
+</ul></li>
+<li>减可变规模
+<ul>
+<li>数值计算
+<ul>
+<li>计算最大公约数的欧几里得算法 <span class="math display">\[gcd(m, n) = gcd(n, m mod n)\]</span></li>
+</ul></li>
+<li>排序
+<ul>
+<li>顺序统计量</li>
+</ul></li>
+<li>查找
+<ul>
+<li>差值查找</li>
+<li>二叉查找树</li>
+</ul></li>
+<li>组合
+<ul>
+<li>拈游戏</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="分治法">分治法</h2>
+<p><em>Divide-and-Conquer</em></p>
+<ul>
+<li>将问题划分为同一类型的若干子问题，子问题规模最好相同</li>
+<li>对子问题求解
+<ul>
+<li>一般使用递归方法</li>
+<li>规模足够小时，有时也会利用其他算法</li>
+</ul></li>
+<li>有必要则合并子问题的解得到原始问题答案</li>
+</ul>
+<h3 id="案例-2">案例</h3>
+<ul>
+<li>查找
+<ul>
+<li>求解二叉树高度</li>
+<li>遍历二叉树</li>
+</ul></li>
+<li>数值计算
+<ul>
+<li>大整数乘法</li>
+<li>Strassen矩阵乘法</li>
+</ul></li>
+<li>几何
+<ul>
+<li>最近对问题</li>
+<li>凸包问题</li>
+</ul></li>
+</ul>
+<h2 id="变治法">变治法</h2>
+<blockquote>
+<ul>
+<li>输入增强</li>
+<li>时空权衡</li>
+</ul>
+</blockquote>
+<p>变治法分成两个阶段工作</p>
+<ul>
+<li>“变”：出于某种原因，把问题实例变得容易求解</li>
+<li>“治”：对实例问题进行求解</li>
+</ul>
+<p>根据对问题的变换方式，可以分为3类</p>
+<h3 id="instance-simplification"><em>Instance Simplification</em></h3>
+<p>实例化简：变换为同样问题的更简单、更方便的实例</p>
+<ul>
+<li>预排序：</li>
+</ul>
+<h3 id="representation-change"><em>Representation Change</em></h3>
+<p>改变表现：变换为同样实例不同表现</p>
+<h3 id="problem-reduction"><em>problem reduction</em></h3>
+<p>问题化简：变换为算法已知的另一个问题的实例</p>
+<h3 id="典例">典例</h3>
+<ul>
+<li>排序
+<ul>
+<li>预排序（线性表）
+<ul>
+<li>比较计数排序</li>
+<li>分布计数排序</li>
+</ul></li>
+</ul></li>
+<li>查找
+<ul>
+<li>预排序
+<ul>
+<li>检验线性表唯一性</li>
+<li>寻找线性表众数</li>
+<li>查找线性表中元素</li>
+</ul></li>
+<li>字符串模式增强
+<ul>
+<li><em>Horspool</em>算法</li>
+<li><em>Boyer-Moore</em>算法</li>
+<li><em>KMP</em>算法</li>
+<li>最长公共子串</li>
+</ul></li>
+</ul></li>
+<li>数值
+<ul>
+<li>高斯消元法
+<ul>
+<li>前向消去法</li>
+<li>部分选主元法</li>
+<li>反向替换法</li>
+</ul></li>
+<li>数值计算
+<ul>
+<li>霍纳法则</li>
+<li>二进制（计算）幂</li>
+<li>欧几里得算法</li>
+</ul></li>
+<li>极大、极小值转换</li>
+<li>极值转换为求导数为0点</li>
+<li>线性规划：在极点求解</li>
+<li>整数规划</li>
+</ul></li>
+<li>图
+<ul>
+<li>把问题转换为状态图求解</li>
+</ul></li>
+<li>Hash（散列）</li>
+</ul>
+<h2 id="动态规划">动态规划</h2>
+<p><em>Dynamic Programming</em>用于解决由<strong>交叠</strong>子问题构成问题 #todo</p>
+<h3 id="步骤">步骤</h3>
+<h4 id="递推关系">递推关系</h4>
+<p>导出问题实例的递推关系，其中包含较小、且交叠子问题解</p>
+<ul>
+<li><p>所以一般递推关系中往往会有<em>max</em>、<em>min</em>、<em>sum</em>等遍历比较 类型的运算，否则不会有交叠子问题</p></li>
+<li><p>事实上，一般动态规划就是用于求解<strong>离散</strong>最优化问题</p></li>
+<li><p>动态规划递推中包含一个重要思想<strong>有序组合</strong></p>
+<ul>
+<li><p>考虑变量时，有序的<strong>剔除</strong>，一般而言是单向剔除，有些 变量需要考虑双向，视为两个有约束条件的独立变量 （最优二叉树）</p></li>
+<li><p>因为<em>最优解定理</em>，最优解由子问题最优解构成</p></li>
+<li><p>更直观的，因为只需要求解全集最优解，所以只需要考虑 <strong>部分有序子集</strong>，类似于<strong>矩阵可逆</strong>只需要判断 <strong>顺序主子式</strong></p></li>
+</ul></li>
+<li><p>原问题解可能无法直接得到递推关系</p>
+<ul>
+<li><p>原始问题不是求数值解，应该寻找数值中间解构建递推关系 ，然后利用动态规划表得到最终解（最长子序列）</p></li>
+<li><p>原始问题是求<strong>宽松范围</strong>的解，即不要求解包含端点， 可以以<strong>各个元素分别作为端点</strong>的解构建递推关系，其中 最优者即为宽松范围解（最长子序列）</p></li>
+</ul></li>
+</ul>
+<h4 id="递推式">递推式</h4>
+<p>写出递推式表示递推关系</p>
+<ul>
+<li><p>递推式中<strong>因变量</strong>往往就是最优解</p></li>
+<li><p>递推式中<strong>自变量</strong>则为问题中涉及的<strong>列表</strong></p>
+<ul>
+<li><p>包括：明显离散列表、<strong>因变量限制条件</strong></p></li>
+<li><p>列表意味组合元素<strong>数量为1</strong>，若数量有限则展开，否则 其不是自变量</p></li>
+<li><p>各自变量是各自组合的笛卡尔积的关系</p></li>
+</ul></li>
+<li><p>n维列表，自变量数量+n（多维自身已经组合）</p>
+<ul>
+<li>两端都需要变化的变量视为两个独立、相互约束变量</li>
+</ul></li>
+<li><p>递推式限制条件包括：自变量限制条件</p></li>
+</ul>
+<h4 id="记录解">记录解</h4>
+<p>求出交叠子问题的解并记录在表中，避免重复求解</p>
+<ul>
+<li><p>否则就是普通递归，不能避免重复求解，或者说动态规划 就是<strong>普通递归+子问题解记录</strong></p></li>
+<li>对多维表，常常逐行、逐列填充（求解子问题），一般而言 <strong>先初始化者先填</strong>
+<ul>
+<li>先初始化行，则在初始化列过程中可以在循环中填充行</li>
+<li>先初始化列，则在初始化行过程中可以在循环中填充列</li>
+</ul></li>
+</ul>
+<h4 id="原问题求解">原问题求解</h4>
+<p>从表中得到较小问题解，并用于求解更大规模问题，直至原问题求解 完成</p>
+<ul>
+<li>需要通过回溯得到问题最优解的构成</li>
+</ul>
+<h3 id="分类">分类</h3>
+<h4 id="自底向上经典">自底向上（经典）</h4>
+<p>需要求解给定问题所有较小子问题</p>
+<ul>
+<li><p>计算用<strong>所有</strong>小问题解、填充表格</p>
+<ul>
+<li>自底向上没有对问题整体的全局把握，只能全部求解</li>
+<li><strong>循环</strong>保证所需子问题已经求解完毕</li>
+</ul></li>
+<li><p>每个小问题只求解一次</p></li>
+</ul>
+<h4 id="自顶向下">自顶向下</h4>
+<p>利用记忆功能，试图避免不必要的子问题求解</p>
+<ul>
+<li>用自顶向下方式求解给定问题</li>
+<li>同时维护类似自底向上的动态规划所使用的表格
+<ul>
+<li>初始化时所有单元格标记未被计算</li>
+<li>之后需要计算子问题解时，先检查相应单元格，然后决定 是否需要递归调用求解、记录</li>
+</ul></li>
+</ul>
+<h3 id="principle-of-optimality"><em>Principle of Optimality</em></h3>
+<p>最优化法则：最优化问题的任一实例的最优解，都是由其子问题实例 的最优解构成</p>
+<ul>
+<li><p>最优化法则在大多数情况下成立，但也存在少数例外：寻找图 中最长简单路径</p></li>
+<li><p>在动态规划算法中，可以方便检查最优化法则是否适用</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>动态规划的大多数应用都是求解最优化问题</li>
+</ul>
+</blockquote>
+<h3 id="典例-1">典例</h3>
+<ul>
+<li>组合问题
+<ul>
+<li>币值最大化问题</li>
+<li>找零问题</li>
+<li>硬币问题</li>
+<li>背包问题</li>
+<li>最优二叉查找树</li>
+<li>最长公共子序列</li>
+</ul></li>
+<li>查找问题
+<ul>
+<li>字符串
+<ul>
+<li>最长上升子序列</li>
+<li>最长公共字串</li>
+<li>编辑距离</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="贪婪技术">贪婪技术</h2>
+<p>贪婪法：通过一系列步骤构造问题的解，每步对目前构造的部分解 作扩展，直到得到问题的完整解</p>
+<h3 id="特点-1">特点</h3>
+<ul>
+<li><p>只能应用于最优问题，但可以作为一种通用设计技术</p></li>
+<li><p>贪婪法每步条件</p>
+<ul>
+<li><em>feasible</em>：必须可行，满足问题约束</li>
+<li><em>locally optimal</em>：是当前所有步骤中所有可行选择的 最佳局部选择</li>
+<li><em>irrevocable</em>：选择一旦做出不能更改</li>
+</ul></li>
+<li><p>希望通过通过一系列局部最优选择产生全局最优解</p>
+<ul>
+<li>有些问题能够通过贪婪算法获得最优解</li>
+<li>对于无法通过贪婪算法获得最优解的问题，如果满足于、 关心近似解，那么贪婪算法依然有价值</li>
+</ul></li>
+</ul>
+<h3 id="正确性证明">正确性证明</h3>
+<p>证明贪婪算法能够获得全局最优解方法</p>
+<ul>
+<li><p>数学归纳法</p></li>
+<li><p>证明在接近目标过程中，贪婪算法每步至少不比其他任何算法差</p></li>
+<li><p>基于算法的输出、而不是算法操作证明贪婪算法能够获得最优解</p></li>
+</ul>
+<h3 id="拟阵">拟阵</h3>
+<h3 id="典例-2">典例</h3>
+<ul>
+<li>图
+<ul>
+<li>Prim算法</li>
+<li>Kruskal算法</li>
+<li>Dijkstra算法</li>
+</ul></li>
+<li>组合
+<ul>
+<li>哈夫曼树（编码）</li>
+</ul></li>
+</ul>
+<h2 id="回溯法">回溯法</h2>
+<p><em>Backtracing</em>：每次只构造解的一个满足约束<strong>分量</strong>，然后评估 此<strong>部分构造解</strong></p>
+<ul>
+<li><p>尝试对部分构造解进行<strong>进一步</strong>构造（构造下个分量），若 存在不违反问题约束的下个分量，则接受<strong>首个</strong>合法选择</p></li>
+<li><p>若无法得到下个分量合法选择，则不必考虑之后分量，此时进行 回溯，将部分构造解最后一个分量替换为下个选择</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>回溯法核心就是对状态空间树进行剪枝，忽略无法产生解的分支</li>
+</ul>
+</blockquote>
+<h3 id="适合问题">适合问题</h3>
+<ul>
+<li><p>适合处理含有约束条件、困难的组合问题</p>
+<ul>
+<li>往往只需要求出<em>feasible solution</em></li>
+<li>问题往往有精确解，但是没有高效算法求解</li>
+</ul></li>
+<li><p>回溯法目标是最终输出：n元组<span class="math inline">\((x_1, x_2, \cdots, x_n)\)</span></p>
+<ul>
+<li>其中元素<span class="math inline">\(x_i\)</span>为有限线性集<span class="math inline">\(S_i\)</span>的一个元素</li>
+<li>元组可能需要满足额外约束</li>
+</ul></li>
+</ul>
+<h3 id="状态空间树">状态空间树</h3>
+<ul>
+<li><p>回溯法会显式、隐式的生成一棵空间状态树</p>
+<ul>
+<li><p>树根表示查找解之前的初始状态</p></li>
+<li><p>树的第<span class="math inline">\(i\)</span>层节点表示对第<span class="math inline">\(i\)</span>个分量的选择</p>
+<ul>
+<li>应该、可以认为是经过<span class="math inline">\(i\)</span>次<strong>可能</strong>选择后的由<span class="math inline">\(i\)</span>个 元素组成的解分量整体<span class="math inline">\((x_1, x_2, \cdots, x_i)\)</span></li>
+</ul></li>
+<li><p>叶子节点</p>
+<ul>
+<li>在<strong>完整树</strong>中为<strong>无希望解分量、完整解</strong>之一</li>
+<li>构造中的树为<strong>无希望分量、未处理解分量</strong>之一</li>
+</ul></li>
+</ul></li>
+<li><p>大部分情况下，回溯算法的状态空间树按照深度优先方式构造</p>
+<ul>
+<li><p>如果当前节点（解分量）有希望，向解分量添加 <strong>下个分量下个选择</strong>得到新的节点，处理新节点</p></li>
+<li><p>如果当前节点无希望，回溯到节点父母重新处理</p></li>
+</ul></li>
+</ul>
+<h4 id="算法">算法</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Backtrack(X[<span class="number">1.</span>.i])</span><br><span class="line">	<span class="comment">// 回溯算法通用模板</span></span><br><span class="line">	<span class="comment">// 输入：X[1..i]一个解的前i个有希望的分量</span></span><br><span class="line">	<span class="comment">// 输出；代表问题解的所有元组</span></span><br><span class="line">	<span class="keyword">if</span> X[<span class="number">1.</span>.i] 是一个解</span><br><span class="line">		write X[<span class="number">1.</span>.i]</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">for</span> 满足约束的x \in S_&#123;i+<span class="number">1</span>&#125; <span class="keyword">do</span></span><br><span class="line">			<span class="comment">// 不符合约束的不处理，即回溯</span></span><br><span class="line">			<span class="comment">// 符合约束则继续深度优先搜索</span></span><br><span class="line">			X[i+<span class="number">1</span>] = x</span><br><span class="line">			Backtrack(X[<span class="number">1.</span>.i+<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="promising">Promising</h4>
+<blockquote>
+<ul>
+<li><em>Promising</em>：有希望，当前解分量（节点）仍然有可能导致 完整解，满足 &gt; - 当前解分量符合约束：新添加分量个体约束、解分量整体 约束 &gt; - 当前解分量节点仍有未处理的子女节点</li>
+<li><em>Nonpromising</em>：没希望，当前解分量不满足有希望两个条件 ，无法导致完整解</li>
+</ul>
+</blockquote>
+<p>注意：有希望不能采用递归定义：是否有希望是当前状态的结果， 当时并不知道、不需要知道子女状态（是否有希望）</p>
+<h4 id="约束判断位置">约束判断位置</h4>
+<p>处理节点时，对子女的约束条件有两种说法</p>
+<ul>
+<li><p><em>添加下个分量满足约束的选择</em>：这里是将约束<strong>说法上</strong>提前 考虑</p>
+<ul>
+<li>此说法可能适合约束只需要考虑最后分量的情况</li>
+<li>此种情况下的<em>有希望</em>只需要满足：解分量节点有未处理、 合法子女</li>
+<li>是这里回溯法部分的说法</li>
+</ul></li>
+<li><p><em>添加下个分量下个选择</em>：这里是将约束<strong>说法上</strong>延后考虑</p>
+<ul>
+<li>此说法可能适合约束需要考虑解分量整体的情况</li>
+<li>此种情况下的<em>有希望</em>就是前面条件</li>
+<li>是这里状态空间树的说法</li>
+</ul></li>
+<li><p>但其实两者是一样的，只是说法不同</p>
+<ul>
+<li><p>前一个说法绘制状态空间树也同样需要 **绘制不满足约束的节点*</p></li>
+<li><p>后一个说法也不定会直接把元素添加解分量中</p></li>
+</ul></li>
+</ul>
+<h3 id="算法特点">算法特点</h3>
+<ul>
+<li><p>回溯法时间效率不稳定，无法保证优良性能</p>
+<ul>
+<li><p>回溯法对状态空间树剪枝，是对穷举法的改进，避免考虑 某些无效解</p></li>
+<li><p>回溯法在最坏情况下必须生成指数、甚至更快增长的状态 空间中所有解</p></li>
+<li><p>但回溯法至少可以期望在期望时间能，对规模不是很小的 问题在可接受时间内求解</p></li>
+<li><p>即使回溯法没能消去状态空间中任何元素，其依然提供了 一种特定的解题方法，方法本身就有价值</p></li>
+</ul></li>
+<li><p>回溯法状态空间树规模基本不能通过分析法求解</p>
+<ul>
+<li><p>可以通过生成一条根到叶子的随机路径，按照生成路径中 不同选择的数量<span class="math inline">\({c_i, i=1,2,\cdots,n}\)</span>信息估计规模</p></li>
+<li><p>树节点数量为:<span class="math inline">\(1 + \sum_{i=1}^n \prod_{j=1}^i c_j\)</span></p></li>
+<li><p>可以多做几次估计取平均值</p></li>
+</ul></li>
+<li><p>有些技巧可以用于缩小状态空间规模</p>
+<ul>
+<li><p>组合问题往往有对称性，如：n皇后问题中第个皇后只需要 考虑前一半位置</p></li>
+<li><p>把值预先分配给解的分量</p></li>
+<li><p>预排序</p></li>
+</ul></li>
+</ul>
+<h2 id="分支界限法">分支界限法</h2>
+<p>分支界限法：类似于回溯法，但是用于求<em>optimal solution</em></p>
+<ul>
+<li><p>在回溯法的基础上，比较<strong>叶子节点边界值</strong>、目前最优解</p>
+<ul>
+<li><p>叶子边界值：节点对应部分解向量衍生的解集合在目标函数 值上的最优边界</p></li>
+<li><p>对最小化问题，边界值为下界；对最大化问题，边界值为 上界</p></li>
+</ul></li>
+<li><p>类似于在回溯法的约束条件中增加：节点最优边界必须超越当前 最优值</p>
+<ul>
+<li>随着深度增加，节点最优边界逐渐紧密，节点更容易被终止</li>
+</ul></li>
+<li><p>分支界限法适合问题、算法特点类似回溯法</p></li>
+</ul>
+<h3 id="状态空间树-1">状态空间树</h3>
+<p>分支界限空间树和节点生成顺序有关</p>
+<ul>
+<li><p><em>best-first branch-and-bound</em>：最佳优先分支边界策略， 在当前树未终止<strong>叶子</strong>中，选择拥有最佳边界的节点作为最有 希望节点，优先处理</p>
+<ul>
+<li>最优边界比较范围是<strong>全局比较</strong>，不仅仅局限于</li>
+<li>这种策略可能会得到较好的结果，消除更多分支，甚至有时 只需计算一个完整解元组就能消除其他所有分支</li>
+<li>当然，最优解最终可能属于其他分支，这种策略也不一定 能够加速算法</li>
+</ul></li>
+<li><p>顺序策略：类似于回溯法，优先处理最近、有希望节点</p></li>
+</ul>
+<h3 id="边界函数">边界函数</h3>
+<p>发现好的边界函数比较困难</p>
+<ul>
+<li>希望函数容易计算，否则得不偿失</li>
+<li>函数不能过于简单，否则无法得到紧密边界，尽可能削剪状态 空间树分支</li>
+<li>需要对具体问题各个实例进行大量实验，才能在两个矛盾的要求 之间达到平衡</li>
+</ul>
+<h2 id="迭代策略">迭代策略</h2>
+<p>迭代策略：从某些可行解出发，通过重复应用一些简单步骤不断改进</p>
+<ul>
+<li>这些步骤会通过一些小的、局部的改变生成新可行解</li>
+<li>并使得目标函数更加优化</li>
+<li>当目标函数无法再优化时，把最后可行解返回</li>
+</ul>
+<h3 id="问题">问题</h3>
+<ul>
+<li><p>需要一个初始可行解</p>
+<ul>
+<li>平凡解</li>
+<li>其他算法（贪婪算法）得到近似解</li>
+<li>有些问题得到初始可行解也不简单</li>
+</ul></li>
+<li><p>对可行解的改变需要考虑</p></li>
+<li><p>局部极值问题</p></li>
+</ul>
+<h2 id="np-hard近似算法">NP-Hard近似算法</h2>
+<p>NP-Hard组合优化问题即使是分支界限法也不能保证优良性能，考虑 使用近似算法快速求解</p>
+<ul>
+<li>近似算法往往是基于特定问题的启发式算法</li>
+<li>有些应用不要求最优解，较优解可能足够</li>
+<li>且实际应用中常常处理不精确的数据，这种情况近似解更合适</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Heuristic Algorithm</em>：启发式算法，来自于经验而不是数学 证明的<em>经验规则</em></li>
+</ul>
+</blockquote>
+<h3 id="perfermance-ratio">Perfermance Ratio</h3>
+<p>算法性能比：<span class="math inline">\(R_A = \min\{c|\{r(s_a) \leqslant c\}\)</span></p>
+<ul>
+<li><p><span class="math inline">\(r(s_a) = \frac {f(s_a} {f(s^{*})}\)</span>：优化函数<span class="math inline">\(f\)</span>在近似解 <span class="math inline">\(s_a\)</span>下的<em>accuracy ratio</em></p>
+<ul>
+<li>这里<span class="math inline">\(f\)</span>为最小化问题</li>
+<li>若<span class="math inline">\(f\)</span>为最大化问题，则取倒数使得精确率总大于1</li>
+<li>比值越接近1，近似解质量越高</li>
+</ul></li>
+<li><p><span class="math inline">\(R_A\)</span>即为：问题所有实例中，最差（大）精确率</p>
+<ul>
+<li>有些问题没有有限性能比的近似算法，如：旅行商问题 （除非<span class="math inline">\(P = NP\)</span>）</li>
+</ul></li>
+<li><p><span class="math inline">\(R_A\)</span>是衡量近似算质量的主要指标</p>
+<ul>
+<li>需要寻找的是<span class="math inline">\(R_A\)</span>接近1的算法</li>
+<li>某些简单算法性能比趋于<span class="math inline">\(\infty\)</span>，这些算法也可以使用， 只是需要注意其输出</li>
+<li>算法也被称为<span class="math inline">\(R_A\)</span>近似算法</li>
+</ul></li>
+</ul>
+<h4 id="旅行商问题无有限近似比算法">旅行商问题无有限近似比算法</h4>
+<ul>
+<li><p>若存在有限近似比算法，则 <span class="math inline">\(\exists c, f(s_a) \leqslant cf(s^{*})\)</span></p></li>
+<li><p>将哈密顿回路问题图G变换为旅行商图<span class="math inline">\(G^{&#39;}\)</span>，G中原有边距离 为1，不存在边距离为<span class="math inline">\(cn+1\)</span></p></li>
+<li><p>近似算法能在多项式时间内生成解 <span class="math inline">\(s_a, f(s_a) \leqslant cf(s^{*}) = cn\)</span>，</p>
+<ul>
+<li>若存在哈密顿回路，则旅行商问题中最优解<span class="math inline">\(s^{*} = n\)</span></li>
+<li>否则，旅行商问题最优解<span class="math inline">\(s^{*} &gt; cn+1\)</span></li>
+</ul></li>
+<li><p>则近似算法能在多项式时间解决哈密顿回路问题，而哈密顿回路 问题为NPC问题，除非<span class="math inline">\(P = NP\)</span></p></li>
+</ul>
+<h3 id="说明">说明</h3>
+<ul>
+<li><p>虽然大多数NP-Hard问题的精确求解算法，对于可在多项式时间 相互转换问题难度级别相同，但是近似算法不是，某些问题的 求良好近似解比其他问题简单的多</p>
+<ul>
+<li>因为近似算法是基于特定问题的，不具有普遍性</li>
+</ul></li>
+<li><p>某些组合优化难题具有特殊的实例类型，这些类型在实际应用 中比较重要，而且也容易求解</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_program/db_optimization/optimizer_physical/" rel="next" title="物理查询优化">
+                <i class="fa fa-chevron-left"></i> 物理查询优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_algorithm/data_structure/tree_heap/" rel="prev" title="Heap">
+                Heap <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#蛮力法"><span class="nav-number">1.</span> <span class="nav-text">蛮力法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例"><span class="nav-number">1.2.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#recursion"><span class="nav-number">2.</span> <span class="nav-text">Recursion</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#recursive-paradigm"><span class="nav-number">2.1.</span> <span class="nav-text">Recursive Paradigm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值问题"><span class="nav-number">2.2.</span> <span class="nav-text">返回值问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减治法"><span class="nav-number">3.</span> <span class="nav-text">减治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#decrease-by-constant"><span class="nav-number">3.1.</span> <span class="nav-text">Decrease-by-Constant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decrease-by-a-contant-factor"><span class="nav-number">3.2.</span> <span class="nav-text">Decrease-by-A-Contant-Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable-size-decrease"><span class="nav-number">3.3.</span> <span class="nav-text">Variable-Size-Decrease</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例-1"><span class="nav-number">3.4.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治法"><span class="nav-number">4.</span> <span class="nav-text">分治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#案例-2"><span class="nav-number">4.1.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变治法"><span class="nav-number">5.</span> <span class="nav-text">变治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#instance-simplification"><span class="nav-number">5.1.</span> <span class="nav-text">Instance Simplification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#representation-change"><span class="nav-number">5.2.</span> <span class="nav-text">Representation Change</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-reduction"><span class="nav-number">5.3.</span> <span class="nav-text">problem reduction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例"><span class="nav-number">5.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划"><span class="nav-number">6.</span> <span class="nav-text">动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#步骤"><span class="nav-number">6.1.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#递推关系"><span class="nav-number">6.1.1.</span> <span class="nav-text">递推关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#递推式"><span class="nav-number">6.1.2.</span> <span class="nav-text">递推式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#记录解"><span class="nav-number">6.1.3.</span> <span class="nav-text">记录解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原问题求解"><span class="nav-number">6.1.4.</span> <span class="nav-text">原问题求解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">6.2.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自底向上经典"><span class="nav-number">6.2.1.</span> <span class="nav-text">自底向上（经典）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自顶向下"><span class="nav-number">6.2.2.</span> <span class="nav-text">自顶向下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#principle-of-optimality"><span class="nav-number">6.3.</span> <span class="nav-text">Principle of Optimality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例-1"><span class="nav-number">6.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#贪婪技术"><span class="nav-number">7.</span> <span class="nav-text">贪婪技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">7.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正确性证明"><span class="nav-number">7.2.</span> <span class="nav-text">正确性证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拟阵"><span class="nav-number">7.3.</span> <span class="nav-text">拟阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例-2"><span class="nav-number">7.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回溯法"><span class="nav-number">8.</span> <span class="nav-text">回溯法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#适合问题"><span class="nav-number">8.1.</span> <span class="nav-text">适合问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态空间树"><span class="nav-number">8.2.</span> <span class="nav-text">状态空间树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">8.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#promising"><span class="nav-number">8.2.2.</span> <span class="nav-text">Promising</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#约束判断位置"><span class="nav-number">8.2.3.</span> <span class="nav-text">约束判断位置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法特点"><span class="nav-number">8.3.</span> <span class="nav-text">算法特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分支界限法"><span class="nav-number">9.</span> <span class="nav-text">分支界限法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#状态空间树-1"><span class="nav-number">9.1.</span> <span class="nav-text">状态空间树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#边界函数"><span class="nav-number">9.2.</span> <span class="nav-text">边界函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代策略"><span class="nav-number">10.</span> <span class="nav-text">迭代策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">10.1.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-hard近似算法"><span class="nav-number">11.</span> <span class="nav-text">NP-Hard近似算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#perfermance-ratio"><span class="nav-number">11.1.</span> <span class="nav-text">Perfermance Ratio</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#旅行商问题无有限近似比算法"><span class="nav-number">11.1.1.</span> <span class="nav-text">旅行商问题无有限近似比算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">11.2.</span> <span class="nav-text">说明</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

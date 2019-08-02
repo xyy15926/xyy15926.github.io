@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Long Short Term Memory">
+<meta name="keywords" content="模型,模型组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Long Short Term Memory">
+<meta property="og:url" content="https://xyy15926.github.io/ml_models/model_components/long_short_term_memory/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Long Short Term Memory">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_flow.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_flow_notations.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_cell_status.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_forget_gate.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_input_gate.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_output_gate.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_peephole_connection.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_cifg.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_gru.png">
+<meta property="og:updated_time" content="2019-07-29T13:16:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Long Short Term Memory">
+<meta name="twitter:description" content="Long Short Term Memory">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/rnn_lstm_flow.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_models/model_components/long_short_term_memory/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Long Short Term Memory | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_models/model_components/long_short_term_memory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Long Short Term Memory
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-29 21:16:01" itemprop="dateCreated datePublished" datetime="2019-07-29T21:16:01+08:00">2019-07-29</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/" itemprop="url" rel="index"><span itemprop="name">模型</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/模型组件/" itemprop="url" rel="index"><span itemprop="name">模型组件</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Long Short Term Memory</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="long-short-term-memory"><em>Long Short Term Memory</em></h2>
+<p><em>LSTM</em>：通过刻意设计、默认可以学习长期依赖信息的RNN网络</p>
+<p><img src="/imgs/rnn_lstm_flow.png" alt="rnn_lstm_flow"> <img src="/imgs/rnn_lstm_flow_notations.png" alt="rnn_lstm_flow_notions"></p>
+<ul>
+<li>LSTM中每个重复的模块（层）称为细胞</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>long term memory</em>：长期记忆，参数</li>
+<li><em>short term memory</em>：短期记忆，数据流</li>
+<li><em>long short term memory</em>：长[的]短期记忆，细胞状态</li>
+</ul>
+</blockquote>
+<h3 id="结构">结构</h3>
+<p>相较于标准RNN中简单的细胞结构，LSTM中细胞结构经过特殊设计</p>
+<h4 id="cell-state"><em>Cell State</em></h4>
+<p>细胞状态：LSTM中最重要的核心思想</p>
+<figure>
+<img src="/imgs/rnn_lstm_cell_status.png" alt="rnn_lstm_cell_status"><figcaption>rnn_lstm_cell_status</figcaption>
+</figure>
+<ul>
+<li>随着时间流动，承载之前所有状态信息，代表长期记忆</li>
+<li>类似于传送带，直接在整个链上运行，只有少量<strong>线性交互</strong></li>
+<li>信息其上流派很容易保持不变</li>
+<li>通过“三个门”保护、控制</li>
+</ul>
+<h4 id="gates">Gates</h4>
+<ul>
+<li><p>tanh处理<span class="math inline">\(h_{t-1}, x_t\)</span>、<span class="math inline">\(C_{t-1}\)</span>得到备选输入、输出流</p></li>
+<li><p>sigmoid处理<span class="math inline">\(h_{t-1}, x_t\)</span>，得到介于<span class="math inline">\(0-1\)</span>之间控制向量， 与输入、输出流做<em>point wise</em>点乘确定最终遗忘、输入、输出</p>
+<ul>
+<li><em>1</em>：完全保留</li>
+<li><em>0</em>：完全舍弃</li>
+</ul></li>
+<li><p>多个LSTM细胞可以组成<em>block</em>，其中细胞<strong>门权值共享</strong></p>
+<ul>
+<li>block中各个细胞状态还是不同的</li>
+<li>这个是真权值共享，类似CNN中的卷积核</li>
+<li>减少参数个数，效率更高</li>
+</ul></li>
+</ul>
+<h5 id="forget-gate"><em>Forget Gate</em></h5>
+<p>遗忘门：决定要从细胞状态中舍弃的信息</p>
+<figure>
+<img src="/imgs/rnn_lstm_forget_gate.png" alt="rnn_lstm_forget_gate"><figcaption>rnn_lstm_forget_gate</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li><span class="math inline">\(C_{t-1}\)</span>：第<span class="math inline">\(t\)</span>期更新前细胞状态</li>
+<li><span class="math inline">\(h_{t-1}\)</span>：第<span class="math inline">\(t-1\)</span>期细胞状态输出</li>
+<li><span class="math inline">\(x_t\)</span>：第<span class="math inline">\(t\)</span>期输入</li>
+<li><span class="math inline">\(f_t\)</span>：决定保留/遗忘的信息</li>
+</ul>
+</blockquote>
+<h5 id="input-gate"><em>Input Gate</em></h5>
+<p>输入门：决定向细胞状态中保留的信息</p>
+<figure>
+<img src="/imgs/rnn_lstm_input_gate.png" alt="rnn_lstm_input_gate"><figcaption>rnn_lstm_input_gate</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\tilde{C}_t\)</span>：第<span class="math inline">\(t\)</span>期更新备选内容</li>
+<li><span class="math inline">\(i_t\)</span>：决定需要更新的信息</li>
+<li><span class="math inline">\(C_t\)</span>：第<span class="math inline">\(t\)</span>期更新完成后细胞状态</li>
+</ul>
+</blockquote>
+<h5 id="ouput-gate"><em>Ouput Gate</em></h5>
+<p>输出门：决定从细胞状态中输出的信息</p>
+<figure>
+<img src="/imgs/rnn_lstm_output_gate.png" alt="rnn_lstm_output_gate"><figcaption>rnn_lstm_output_gate</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li><span class="math inline">\(o_t\)</span>：决定需要输出的信息</li>
+<li><span class="math inline">\(h_t\)</span>：第<span class="math inline">\(t\)</span>期输出信息</li>
+</ul>
+</blockquote>
+<h3 id="变体结构">变体结构</h3>
+<h4 id="vanilla-lstm"><em>Vanilla LSTM</em></h4>
+<figure>
+<img src="/imgs/rnn_lstm_peephole_connection.png" alt="rnn_lstm_peephole_connection"><figcaption>rnn_lstm_peephole_connection</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li><em>Peephole Connection</em>：细胞状态也作为3个门中sigmoid的 输入，影响控制向量的生成</li>
+</ul>
+</blockquote>
+<h4 id="coupled-input-and-forget-gate"><em>Coupled Input and Forget Gate</em></h4>
+<figure>
+<img src="/imgs/rnn_lstm_cifg.png" alt="rnn_lstm_cifg"><figcaption>rnn_lstm_cifg</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li><span class="math inline">\(1-f_i\)</span>代替<span class="math inline">\(i_t\)</span>，结合遗忘门、输入门</li>
+</ul>
+</blockquote>
+<h4 id="gated-recurrent-unit"><em>Gated Recurrent Unit</em></h4>
+<figure>
+<img src="/imgs/rnn_lstm_gru.png" alt="rnn_lstm_gru"><figcaption>rnn_lstm_gru</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li><span class="math inline">\(h_{t-1}\)</span>：原细胞状态、隐层状态合并</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(r_t\)</span>：<em>reset gate</em>输出，重置上期状态<span class="math inline">\(h_{t-1}\)</span>再作为更新 门输入</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\tilde{h}_t\)</span>：第<span class="math inline">\(t\)</span>期更新备选信息</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(z_t\)</span>：<em>update gate</em>输出，当期状态<span class="math inline">\(h_t\)</span>中<span class="math inline">\(h_{t-1}\)</span>、 <span class="math inline">\(\tilde{h}_t\)</span>占比（遗忘、更新的结合）</li>
+</ul>
+</blockquote>
+<h4 id="结构比较">结构比较</h4>
+<p>在Vanilla LSTM基础上的8个变体在TIMIT语音识别、手写字符识别、 复调音乐建模三个应用中比较</p>
+<blockquote>
+<ul>
+<li><em>No Input Gate</em>：NIG，没有输入门</li>
+<li><em>No Forget Gate</em>：NFG，没有遗忘门</li>
+<li><em>No Output Gate</em>：NOG，没有输出门</li>
+<li><em>No Input Acitivation Function</em>：NIAF，输入门没有tanh 激活</li>
+<li><em>No Output Activation Function</em>：NOAF，输出门没有tanh 激活</li>
+<li><em>No Peepholes</em>：NP，普通LSTM</li>
+<li><em>Coupled Input and Forget Gate</em>：CIFG，遗忘、输出门结合</li>
+<li><em>Full Gate Recurrence</em>：FGR，所有门之间有回路</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>Vanilla LSTM效果均良好，其他变体没有性能提升</p></li>
+<li><p>细胞结构</p>
+<ul>
+<li>遗忘门、输入门是最重要的部分
+<ul>
+<li>遗忘门对LSTM性能影响十分关键</li>
+<li>输出门对限制无约束细胞状态输出必要</li>
+</ul></li>
+<li>CIFG、NP简化结构，单对结果没有太大影响</li>
+</ul></li>
+<li><p>超参</p>
+<ul>
+<li>学习率、隐层数量是LSTM主要调节参数
+<ul>
+<li>两者之间没有相互影响，可以独立调参</li>
+<li>学习率可以可以使用小网络结构独立校准</li>
+</ul></li>
+<li>动量因子影响不大</li>
+<li>高斯噪声的引入有损性能、增加训练时间</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/模型/" rel="tag"># 模型</a>
+          
+            <a href="/tags/模型组件/" rel="tag"># 模型组件</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/math_algebra/linear_algebra/matrix/" rel="next" title="矩阵">
+                <i class="fa fa-chevron-left"></i> 矩阵
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_models/model_components/pooling/" rel="prev" title="Pooling Layers">
+                Pooling Layers <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#long-short-term-memory"><span class="nav-number">1.</span> <span class="nav-text">Long Short Term Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构"><span class="nav-number">1.1.</span> <span class="nav-text">结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cell-state"><span class="nav-number">1.1.1.</span> <span class="nav-text">Cell State</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gates"><span class="nav-number">1.1.2.</span> <span class="nav-text">Gates</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#forget-gate"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">Forget Gate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#input-gate"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">Input Gate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ouput-gate"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">Ouput Gate</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变体结构"><span class="nav-number">1.2.</span> <span class="nav-text">变体结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vanilla-lstm"><span class="nav-number">1.2.1.</span> <span class="nav-text">Vanilla LSTM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#coupled-input-and-forget-gate"><span class="nav-number">1.2.2.</span> <span class="nav-text">Coupled Input and Forget Gate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gated-recurrent-unit"><span class="nav-number">1.2.3.</span> <span class="nav-text">Gated Recurrent Unit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构比较"><span class="nav-number">1.2.4.</span> <span class="nav-text">结构比较</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

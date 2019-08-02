@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Data Science">
+<meta name="keywords" content="机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Data Science">
+<meta property="og:url" content="https://xyy15926.github.io/ml_techniques/theories/machine_learning/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Data Science">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/shallowing_learning_procedures.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/deep_learning_procedures.png">
+<meta property="og:updated_time" content="2019-07-14T12:01:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Data Science">
+<meta name="twitter:description" content="Data Science">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/shallowing_learning_procedures.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_techniques/theories/machine_learning/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Data Science | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_techniques/theories/machine_learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Data Science
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-14 20:02:42 / 修改时间：20:01:57" itemprop="dateCreated datePublished" datetime="2019-07-14T20:02:42+08:00">2019-07-14</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Data Science</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="statistic"><em>Statistic</em></h2>
+<p><em>frequentist and Bayesian</em>传统统计：数学分支，概率论和优化 的交集</p>
+<ul>
+<li><p>分析方法：验证式分析</p>
+<ul>
+<li><p>统计建模：基于数据构建统计模型，并验证假设</p></li>
+<li><p>并运用模型对数据进行预测、分析</p></li>
+</ul></li>
+<li><p>理论依据：模型驱动，严格的数理支撑</p>
+<ul>
+<li><p>理论体系：概率论、统计学、信息论、计算理论、最优化 理论、计算机学科等多个领域的交叉学科，并在发展中形成 独自的理论体系、方法论</p></li>
+<li><p>基本假设：同类数据具有一定的统计规律性，可以用概率 统计方法加以处理，推断总体特征，如：随机变量描述数据 特征、概率分布描述数据统计规律</p></li>
+</ul></li>
+<li><p>分析对象：样本为分析对象</p>
+<ul>
+<li><p>从数据出发，提取数据特征、抽象数据模型、发现数据知识 ，再回到对数据的分析与预测</p></li>
+<li><p>数据多种多样，包括数字、文字、图像、音视频及其组合</p></li>
+<li><p>假设数据独立同分布产生</p></li>
+<li><p>训练数据集往往是人工给出的</p></li>
+</ul></li>
+<li><p>是数据科学其他分支的理论基础</p></li>
+</ul>
+<h2 id="data-mining"><em>Data Mining</em></h2>
+<ul>
+<li><p>从现有的信息中提取数据的<em>pattern</em>、<em>model</em>，即精选最重要 、可理解的、有价值的信息</p>
+<ul>
+<li>核心目的在于找到<strong>数据变量之间的关系</strong></li>
+<li><strong>不是证明假说的方法，而是构建假说的方法</strong></li>
+<li><strong>大数据</strong>的发展，传统的数据分析方式无法处理大量 “不相关”数据</li>
+</ul></li>
+<li><p>常用技术</p>
+<ul>
+<li><em>cluster analysis</em>：聚类分析，揭示数据内在结构</li>
+<li><em>classification</em>：判别分析，数据预测</li>
+<li><em>regression/decision trees</em>：决策树，模型图形化展示</li>
+<li><em>neural networks</em>：神经网络</li>
+</ul></li>
+<li><p>联系</p>
+<ul>
+<li>本质上看起来像是ML、AI的基础</li>
+<li>会使用大量机器学习算法，但是特定的环境、目的和ML不同</li>
+</ul></li>
+<li>建模一般策略：类似机器学习
+<ul>
+<li>将数据视为高维空间中的点，在高维空间中找到分类面、 回归面</li>
+</ul></li>
+</ul>
+<h2 id="artificial-intelligence"><em>Artificial Intelligence</em></h2>
+<ul>
+<li><p>研究如何创造智能agent，并不一定涉及学习、归纳，既可以研究 让电脑像智能agent一样行为，也可以是设计更好的捕鼠夹</p></li>
+<li><p>但是大部分情况下，<strong>智能</strong>需要从过去的经验中进行归纳， 所以AI中很大一部分是ML</p></li>
+</ul>
+<h2 id="machine-learning"><em>Machine Learning</em></h2>
+<p>机器学习：从有限观测数据中学习一般性规律，并将规律应用到 未观测样本中进行预测 （最基本的就是在不确定中得出结论）</p>
+<ul>
+<li>分析方法：归纳式、探索式分析</li>
+<li>理论依据：数据驱动，从数据中中学习知识，</li>
+<li>分析对象：对样本要求低，样本往往不具有随机样本的特征</li>
+<li>机器学习建模：不假设，通过对高维空间的搜索，找到数据隐藏 规律的恰当概括</li>
+</ul>
+<h3 id="shallow-learning"><em>Shallow Learning</em></h3>
+<p>浅层学习：不涉及特征学习，特征抽取依靠人工经验、特征转换方法</p>
+<figure>
+<img src="/imgs/shallowing_learning_procedures.png" alt="shallowing_learning_procedures.png"><figcaption>shallowing_learning_procedures.png</figcaption>
+</figure>
+<ul>
+<li><p>传统机器学习可以视为浅层学习</p></li>
+<li>步骤
+<ul>
+<li>数据预处理</li>
+<li>特征提取</li>
+<li>特征转换</li>
+<li>预测</li>
+</ul></li>
+</ul>
+<h3 id="deep-learning"><em>Deep Learning</em></h3>
+<p>深度学习：将原始数据特征通过多步特征转换得到更高层次、抽象 的特征表示，进一步输入到预测函数得到最终结果</p>
+<figure>
+<img src="/imgs/deep_learning_procedures.png" alt="deep_learning_procedures"><figcaption>deep_learning_procedures</figcaption>
+</figure>
+<ul>
+<li>主要目的是从数据中自动学习到<strong>有效的特征表示</strong>
+<ul>
+<li>替代人工设计的特征，避免“特征”工程</li>
+<li>模型深度不断增加，特征表示能力越强，后续预测更容易</li>
+</ul></li>
+<li>相较于浅层学习：需要解决的关键问题是<strong>贡献度分配问题</strong>
+<ul>
+<li>从某种意义上说，深度学习也可以视为强化学习</li>
+<li>内部组件不能直接得到监督信息，需要通过整个模型的最终 监督信息得到，有延时</li>
+</ul></li>
+<li>目前深度学习模型主要是神经网络模型
+<ul>
+<li>神经网络可以使用反向传播算法，较好的解决贡献度分配 问题</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>credit assignment problem</em>：贡献度分配问题，系统中不同 组件、参数对最终系统输出结果的贡献、影响</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>深度：原始数据进行<strong>非线性特征转换的次数</strong>，将深度学习 系统看作有向图结构，深度可以看作是从输入节点到输出节点 经过最长路径长度</li>
+</ul>
+</blockquote>
+<h3 id="representing-learning"><em>Representing Learning</em></h3>
+<p>表示学习：自动学习有效特征、提高最终机器学习模型性能的学习</p>
+<ul>
+<li><p>好的学习标准</p>
+<ul>
+<li>较强的表示能力：同样大小向量可以表示更多信息</li>
+<li>简化后续学习任务：需要包含更高层次语义信息</li>
+<li>具有一般性，是任务、领域独立的：期望学到的表示可以 容易迁移到其他任务</li>
+</ul></li>
+<li><p>要学习好的高层语义（分布式表示），需要从底层特征开始， 经过多步非线程转换得到</p>
+<ul>
+<li>深层结构的优点式可以增加特征重用性，指数级增加表示 能力</li>
+<li>所以表示学习的关键是构建具有一定深度、多层次特征表示</li>
+</ul></li>
+<li><p>传统机器学习中也有关于特征学习的算法，如：主成分分析、 线性判别分析、独立成分分析</p>
+<ul>
+<li>通过认为设计准则，用于选取有效特征</li>
+<li>特征学习、最终预测模型的学习是分开进行的，学习到的 特征不一定可以用于提升最终模型分类性能</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Semantic Gap</em>：语义鸿沟，输入数据底层特征和高层语义信息 之间不一致性、差异性</li>
+</ul>
+</blockquote>
+<h4 id="表示">表示</h4>
+<ul>
+<li><em>Local Representation</em>：局部表示，离散表示/符号表示
+<ul>
+<li>通常可以表示为<em>one-hot</em>向量形式
+<ul>
+<li>每个特征作为高维局部表示空间中轴上点</li>
+</ul></li>
+<li>不足
+<ul>
+<li><em>one-hot</em>维数很高、不方便扩展</li>
+<li>不同特征取值相似度无法衡量</li>
+</ul></li>
+</ul></li>
+<li><em>Distributed Representation</em>：分布式表示
+<ul>
+<li>通常可以表示为<strong>低维、稠密</strong>向量
+<ul>
+<li>分散在整个低维嵌入空间中中</li>
+</ul></li>
+<li>表示能力强于局部表示
+<ul>
+<li>维数低</li>
+<li>容易计算相似度</li>
+</ul></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>神经网络可以用于将高维局部空间<span class="math inline">\(R^{|V|}\)</span>映射到非常低维 分布式表示空间<span class="math inline">\(R^d\)</span></li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>embedding</em>：嵌入，将一个度量空间中对象映射到另一个低维 度量空间，并尽可能<strong>保持不同对象之间拓扑关系</strong>，如NLP中 词嵌入</li>
+</ul>
+</blockquote>
+<h3 id="end-to-end-learning"><em>End-to-End Learning</em></h3>
+<p>端到端学习/训练：学习过程中不进行分模块、分阶段训练，直接 优化任务的总体目标</p>
+<ul>
+<li>不需要给出不同模块、阶段功能，中间过程不需要认为干预</li>
+<li>训练数据为“输入-输出”对形式，无需提供其他额外信息</li>
+<li>和深度学习一样，都是要解决“贡献度分配”问题
+<ul>
+<li>大部分神经网络模型的深度学习可以看作是端到端学习</li>
+</ul></li>
+</ul>
+<h2 id="learning-components"><em>Learning Components</em></h2>
+<h3 id="modelhypothesisopimizeelearnerlearning-algorithm"><em>Model</em>/<em>Hypothesis</em>/<em>Opimizee</em>/<em>Learner</em>/<em>Learning Algorithm</em></h3>
+<p>模型/假说/优化对象/学习器/学习算法：模型就是要学习的条件概率 分布<span class="math inline">\(P(Y|X)\)</span>、决策函数<span class="math inline">\(Y=f(X)\)</span></p>
+<ul>
+<li>概率模型：用条件概率分布<span class="math inline">\(P(Y|X)\)</span>表示的模型</li>
+<li>非概率模型：用决策函数<span class="math inline">\(Y=f(x)\)</span>表示的模型</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>learner</em>：某类模型的总称</li>
+<li><em>hypothesis</em>：训练好的模型实例，有时也被强调作为学习器 应用在某个样本集（如训练集）上得到的结果</li>
+<li><em>learning algorithm</em>：模型、策略、算法三者的模型总体</li>
+</ul>
+</blockquote>
+<h4 id="hypothesis-space"><em>Hypothesis Space</em></h4>
+<p>假设空间：特征空间（输入空间）到输出空间的映射集合</p>
+<ul>
+<li><p>假设空间可以定义为决策函数/条件概率的集合，通常是由参数 向量<span class="math inline">\(\theta\)</span>决定的函数/条件分布族</p>
+<ul>
+<li>假设空间包含所有可能的条件概率分布或决策函数</li>
+<li>假设空间的确定意味着学习范围的确定</li>
+</ul></li>
+<li><p>概率模型假设空间可表示为： <span class="math inline">\(F=\{P|P_{\theta}(Y|X), \theta \in R^n\}\)</span></p></li>
+<li><p>非概率模型假设空间可表示为： <span class="math inline">\(F=\{f|Y=f(x),\Theta \in R^n \}\)</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>以下大部分情况使用决策函数，同时也可以代表概率分布</li>
+</ul>
+</blockquote>
+<h3 id="strategygoal"><em>Strategy</em>/<em>Goal</em></h3>
+<p>策略/目标：从假设空间中，根据<em>evaluation criterion</em>选择最优 模型，使得其对已知训练数据、未知训练数据在给定评价准则下有 最优预测</p>
+<ul>
+<li><p>选择合适策略，监督学习问题变为经验风险、结构风险函数 <strong>最优化问题</strong></p></li>
+<li><p>在某些学习方法中，最优化问题目标函数也有可能不是风险函数 ，如：SVM，是和模型紧密相关的损失函数，但逻辑是一样的</p></li>
+</ul>
+<h4 id="empirical-risk-minimiation"><em>Empirical Risk Minimiation</em></h4>
+<p><em>ERM</em>：经验风险最小化策略认为，经验风险最小模型就是最优模型</p>
+<ul>
+<li><p>按经验风险最小化求最优模型，等价于求最优化问题</p>
+<p><span class="math display">\[
+\min_{f \in F} \frac 1 N \sum_{i=1}^N L(y_i, f(x_i))
+\]</span></p></li>
+<li><p>样本容量足够大时，经验风险最小化能保证有较好的学习效果， 现实中也被广泛采用</p></li>
+</ul>
+<h4 id="structural-risk-minimization"><em>Structural Risk Minimization</em></h4>
+<p><em>SRM</em>：结构风险最小化，为防止过拟合提出的策略</p>
+<ul>
+<li><p>结构化风险最小化策略认为结构风险最小的模型是最优模型， 则求解最优模型等价于求解最优化问题</p>
+<p><span class="math display">\[
+arg \min_{f \in F} \frac 1 N \sum_{i=1}^N L(y_i, f(x_i))
+    + \lambda J(f)
+\]</span></p></li>
+<li><p>结构风险小需要经验风险与模型复杂度同时小，此时模型往往 对训练数据、未知的测试数据都有较好的预测</p></li>
+<li><p>结构化风险最小策略符合<em>Occam's Razor</em>原理</p></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Occam's Razor</em>：奥卡姆剃刀原理，在所有可能选择的模型中 ，能够很好的解释已知数据并且十分简单才是最好的模型</li>
+</ul>
+</blockquote>
+<h3 id="algorithmoptimizer"><em>Algorithm</em>/<em>Optimizer</em></h3>
+<p>算法/优化器：学习模型（选择、求解最优模型）的具体计算方法 （求解最优化问题）</p>
+<ul>
+<li><p>如果最优化问题有显式解析解，比较简单</p></li>
+<li>但通常解析解不存在，需要用数值计算方法求解
+<ul>
+<li>保证找到全局最优解</li>
+<li>高效求解</li>
+</ul></li>
+</ul>
+<h2 id="supervised-learning"><em>Supervised Learning</em></h2>
+<p>监督学习：学习一个模型，使得模型能够对任意给定输入、输出， 做出好的预测</p>
+<ul>
+<li>从给定的、有限的、用于学习的<em>train data</em> <span class="math inline">\(T=\{(x_1,y_1), (x_2,y_2), \cdots, (x_N, y_N)\}\)</span>中学习</li>
+<li>预测“未知”<em>test data</em> <span class="math inline">\(T=\{(x_1,y_1), (x_2,y_2), \cdots, (x_N^{&#39;}, y_N^{&#39;})\}\)</span></li>
+</ul>
+<h3 id="数据">数据</h3>
+<blockquote>
+<ul>
+<li><em>input space</em>：输入空间<span class="math inline">\(\chi\)</span>，所有输入<span class="math inline">\(X\)</span>可能取值的集合</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>output space</em>：输出空间<span class="math inline">\(\gamma\)</span>，所有输出<span class="math inline">\(Y\)</span>可能取值 集合</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>feature space</em>：特征空间，表示输入实例<em>feature vector</em> 存在的空间</li>
+</ul>
+</blockquote>
+<blockquote>
+<blockquote>
+<ul>
+<li>特征空间每维对应一个特征</li>
+<li>模型实际上是定义在特征空间上的</li>
+<li>有时特征空间等于输入空间，有时特征空间时输入空间的 象集</li>
+</ul>
+</blockquote>
+</blockquote>
+<h3 id="学习方法分类">学习方法分类</h3>
+<h4 id="generative-approach"><em>Generative Approach</em></h4>
+<p>生成方法：由数据学习联合概率分布<span class="math inline">\(P(X, Y)\)</span>，然后求出条件概率 分布<span class="math inline">\(P(Y|X)\)</span>作为<em>generative model</em></p>
+<ul>
+<li><p>方法学习给定输入X产生输出Y的生成关系（联合概率分布）</p></li>
+<li><p><em>generative model</em>：生成模型，由生成方法学习到的模型 <span class="math inline">\(P(Y|X) = \frac {P(X, Y)} {P(X}\)</span></p>
+<ul>
+<li>朴素贝叶斯法</li>
+<li>隐马尔可夫模型</li>
+</ul></li>
+<li><p>特点</p>
+<ul>
+<li><p>可以还原联合概率分布<span class="math inline">\(P(X, Y)\)</span></p></li>
+<li><p>生成方法学习收敛速度快，样本容量增加时，学习到的模型 可以快速收敛到真实模型</p></li>
+<li><p>存在隐变量时，仍可以使用生成方法学习</p></li>
+</ul></li>
+</ul>
+<h4 id="discriminative-approach"><em>Discriminative Approach</em></h4>
+<p>判别方法：由数据直接学习决策函数<span class="math inline">\(f(x)\)</span>、条件概率分布<span class="math inline">\(P(Y|X)\)</span> 作为<em>discriminative model</em></p>
+<ul>
+<li><p>判别方法关心的是对给定输入X，预测输出Y</p></li>
+<li><p><em>discriminative model</em>：判别模型</p>
+<ul>
+<li>k近邻</li>
+<li>感知机</li>
+<li>决策树</li>
+<li>逻辑回归</li>
+<li>最大熵模型</li>
+<li>支持向量机</li>
+<li>提升方法</li>
+<li>条件随机场</li>
+</ul></li>
+<li><p>特点</p>
+<ul>
+<li>直接学习条件概率、决策函数</li>
+<li>直面预测，学习准确率更高</li>
+<li>可以对数据进行各种程度抽象、定义特征、使用特征，简化 学习问题</li>
+</ul></li>
+</ul>
+<h3 id="问题分类">问题分类</h3>
+<ul>
+<li><p><em>well-posed problem</em>：好解问题，指问题解应该满足以下条件</p>
+<ul>
+<li>解存在</li>
+<li>解唯一</li>
+<li>解行为随着初值<strong>连续变化</strong></li>
+</ul></li>
+<li><p><em>ill-posed problem</em>：病态问题，解不满足以上三个条件</p></li>
+</ul>
+<h4 id="classification"><em>Classification</em></h4>
+<p>分类问题：输出变量<span class="math inline">\(Y\)</span>为有限个离散变量</p>
+<ul>
+<li><p>学习过程：根据已知训练数据集，利用有效学习方法学习分类器 <span class="math inline">\(P(Y|X))\)</span>、<span class="math inline">\(Y=F(X)\)</span></p></li>
+<li><p>分类过程：利用学习的分类器对新输入实例进行分类</p></li>
+<li><p>可用学习方法</p>
+<ul>
+<li>k近邻</li>
+<li>感知机</li>
+<li>朴素贝叶斯</li>
+<li>决策树</li>
+<li>决策列表</li>
+<li>逻辑回归</li>
+<li>支持向量机</li>
+<li>提升方法</li>
+<li>贝叶斯网络</li>
+<li>神经网络</li>
+<li>winnow</li>
+</ul></li>
+<li><p>不存在分类能力弱于随机预测的分类器（结论取反）</p></li>
+</ul>
+<h4 id="tagging"><em>Tagging</em></h4>
+<p>标注问题：输入、输出<strong>均为变量序列</strong></p>
+<ul>
+<li><p>可认为是分类问题的一个推广、更复杂<em>structure prediction</em> 简单形式</p></li>
+<li><p>学习过程：利用已知训练数据集构建条件概率分布模型 <span class="math inline">\(P(Y^{(1)}, Y^{(2)}, \cdots, Y^{(n)}|X^{(1)}, X^{(2)}, \cdots, X^{(n)})\)</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(X^{(1)}, X^{(2)}, \cdots, X^{(n)}\)</span>：每个输入序列</li>
+<li><span class="math inline">\(Y^{(1)}, Y^{(2)}, \cdots, Y^{(n)}\)</span>：所有可能标记</li>
+</ul>
+</blockquote></li>
+<li><p>标注过程：按照学习到的条件概率分布，标记新的输入观测序列</p></li>
+<li><p>可用模型</p>
+<ul>
+<li>隐马尔可夫模型</li>
+<li>条件随机场</li>
+</ul></li>
+</ul>
+<h4 id="regression"><em>Regression</em></h4>
+<p>回归问题：输入（自变量）、输出（因变量）均为连续变量</p>
+<ul>
+<li><p>回归模型的拟合等价于函数拟合：选择函数曲线很好的拟合已知 数据，且很好的预测未知数据</p></li>
+<li><p>学习过程：基于训练数据构架模型（函数）<span class="math inline">\(Y=f(X)\)</span></p>
+<ul>
+<li>最常用损失函数是平方损失函数，此时可以使用最小二乘 求解</li>
+</ul></li>
+<li><p>预测过程：根据学习到函数模型确定相应输出</p></li>
+</ul>
+<h2 id="unsupervised-learning"><em>Unsupervised Learning</em></h2>
+<p>无监督学习：没有给定实现标记过的训练示例，自动对输入的数据 进行分类</p>
+<ul>
+<li><p>主要目标：预训练一般模型（称识别、编码）网络，供其他任务 使用</p></li>
+<li><p>目前为止，监督模型总是比无监督的预训练模型表现得好，主要 原因是监督模型对数据的<strong>特性编码</strong>更好</p></li>
+</ul>
+<h3 id="问题分类-1">问题分类</h3>
+<h4 id="clustering"><em>Clustering</em></h4>
+<p>聚类</p>
+<ul>
+<li><em>Hierarchy Clustering</em></li>
+<li><em>K-means</em></li>
+<li><em>Mixture Models</em></li>
+<li><em>DBSCAN</em></li>
+<li><em>OPTICS Algorithm</em></li>
+</ul>
+<h4 id="anomaly-detection"><em>Anomaly Detection</em></h4>
+<p>异常检测</p>
+<ul>
+<li><em>Local Outlier Factor</em></li>
+</ul>
+<h4 id="neural-networks"><em>Neural Networks</em></h4>
+<p>神经网络</p>
+<ul>
+<li><em>Auto-encoders</em></li>
+<li><em>Deep Belief Nets</em></li>
+<li><em>Hebbian Learning</em></li>
+<li><em>Generative Adversarial Networks</em></li>
+<li><em>Self-organizing Map</em></li>
+</ul>
+<h4 id="隐变量学习">隐变量学习</h4>
+<ul>
+<li><em>Expectation-maximization Algorithm</em></li>
+<li><em>Methods of Moments</em></li>
+<li><em>bind signal separation techniques</em>
+<ul>
+<li><em>Principal Component analysis</em></li>
+<li><em>Independent Component analysis</em></li>
+<li><em>Non-negative matrix factorization</em></li>
+<li><em>Singular Value Decomposition</em></li>
+</ul></li>
+</ul>
+<h2 id="semi-supervised-learning"><em>Semi-Supervised Learning</em></h2>
+<p>半监督学习：利用少量标注数据和大量无标注数据进行学习的方式</p>
+<ul>
+<li>可以利用大量无标注数据提高监督学习的效果</li>
+</ul>
+<h2 id="reinforcement-learning"><em>Reinforcement Learning</em></h2>
+<p>强化学习：从与环境交互中不断学习的问题、以及解决这类问题的 方法</p>
+<ul>
+<li><p>强化学习问题可以描述为：智能体从与环境的交互中不断学习以 完成特定目标</p></li>
+<li>强化学习的关键问题：<strong>贡献度分配问题</strong>
+<ul>
+<li>每个动作不能直接得到监督信息，需要通过整个模型的最终 监督信息得到，且具有时延性</li>
+<li>给出的监督信息也非“正确”策略，而是策略的延迟回报， 并通过调整策略以取得最大化期望回报</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_techniques/optimization/param_estimations/" rel="next" title="参数估计方法">
+                <i class="fa fa-chevron-left"></i> 参数估计方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_techniques/theories/statistics/" rel="prev" title="常用统计量">
+                常用统计量 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#statistic"><span class="nav-number">1.</span> <span class="nav-text">Statistic</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data-mining"><span class="nav-number">2.</span> <span class="nav-text">Data Mining</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#artificial-intelligence"><span class="nav-number">3.</span> <span class="nav-text">Artificial Intelligence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#machine-learning"><span class="nav-number">4.</span> <span class="nav-text">Machine Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shallow-learning"><span class="nav-number">4.1.</span> <span class="nav-text">Shallow Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deep-learning"><span class="nav-number">4.2.</span> <span class="nav-text">Deep Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#representing-learning"><span class="nav-number">4.3.</span> <span class="nav-text">Representing Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表示"><span class="nav-number">4.3.1.</span> <span class="nav-text">表示</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#end-to-end-learning"><span class="nav-number">4.4.</span> <span class="nav-text">End-to-End Learning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#learning-components"><span class="nav-number">5.</span> <span class="nav-text">Learning Components</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#modelhypothesisopimizeelearnerlearning-algorithm"><span class="nav-number">5.1.</span> <span class="nav-text">Model/Hypothesis/Opimizee/Learner/Learning Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#hypothesis-space"><span class="nav-number">5.1.1.</span> <span class="nav-text">Hypothesis Space</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strategygoal"><span class="nav-number">5.2.</span> <span class="nav-text">Strategy/Goal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#empirical-risk-minimiation"><span class="nav-number">5.2.1.</span> <span class="nav-text">Empirical Risk Minimiation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#structural-risk-minimization"><span class="nav-number">5.2.2.</span> <span class="nav-text">Structural Risk Minimization</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#algorithmoptimizer"><span class="nav-number">5.3.</span> <span class="nav-text">Algorithm/Optimizer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#supervised-learning"><span class="nav-number">6.</span> <span class="nav-text">Supervised Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据"><span class="nav-number">6.1.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#学习方法分类"><span class="nav-number">6.2.</span> <span class="nav-text">学习方法分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#generative-approach"><span class="nav-number">6.2.1.</span> <span class="nav-text">Generative Approach</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#discriminative-approach"><span class="nav-number">6.2.2.</span> <span class="nav-text">Discriminative Approach</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题分类"><span class="nav-number">6.3.</span> <span class="nav-text">问题分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#classification"><span class="nav-number">6.3.1.</span> <span class="nav-text">Classification</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tagging"><span class="nav-number">6.3.2.</span> <span class="nav-text">Tagging</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#regression"><span class="nav-number">6.3.3.</span> <span class="nav-text">Regression</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#unsupervised-learning"><span class="nav-number">7.</span> <span class="nav-text">Unsupervised Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题分类-1"><span class="nav-number">7.1.</span> <span class="nav-text">问题分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clustering"><span class="nav-number">7.1.1.</span> <span class="nav-text">Clustering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#anomaly-detection"><span class="nav-number">7.1.2.</span> <span class="nav-text">Anomaly Detection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#neural-networks"><span class="nav-number">7.1.3.</span> <span class="nav-text">Neural Networks</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隐变量学习"><span class="nav-number">7.1.4.</span> <span class="nav-text">隐变量学习</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#semi-supervised-learning"><span class="nav-number">8.</span> <span class="nav-text">Semi-Supervised Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reinforcement-learning"><span class="nav-number">9.</span> <span class="nav-text">Reinforcement Learning</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

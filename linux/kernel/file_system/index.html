@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Linux文件系统设计">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux文件系统设计">
+<meta property="og:url" content="https://xyy15926.github.io/linux/kernel/file_system/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Linux文件系统设计">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-19T09:19:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux文件系统设计">
+<meta name="twitter:description" content="Linux文件系统设计">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/linux/kernel/file_system/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Linux文件系统设计 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/linux/kernel/file_system/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Linux文件系统设计
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-31 21:10:51" itemprop="dateCreated datePublished" datetime="2019-07-31T21:10:51+08:00">2019-07-31</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-19 17:19:50" itemprop="dateModified" datetime="2019-02-19T17:19:50+08:00">2019-02-19</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Linux文件系统设计</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="文件文件系统">文件、文件系统</h2>
+<h3 id="文件">文件</h3>
+<ul>
+<li>文件：被命名的存储在某种介质上的一组信息的集合
+<ul>
+<li>用于存储信息的基本结构</li>
+<li>技术上，文件时一指向相应<em>inode</em>（索引节点）</li>
+</ul></li>
+<li>目录（文件）：用于管理、组织大量文件</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>inode</em>：索引节点，包含文件真正的信息，可用<code>$ ls -i</code>查看</li>
+<li>文件类型表示见<em>config_file</em></li>
+</ul>
+</blockquote>
+<h3 id="文件系统">文件系统</h3>
+<p>包含在存储设备（分区）的目录结构、文件组织方法</p>
+<ul>
+<li>基于被划分的存储设备上的逻辑单位，一种定义文件命名、存储 、组织、取出的方法</li>
+<li>涉及：目录树、分区上文件的排列</li>
+<li>存储设备：磁盘、光盘、网络存储、虚拟数据</li>
+<li>存储设备可以包含多个文件系统</li>
+<li>进入文件系统首先需要挂载文件系统</li>
+</ul>
+<h3 id="文件系统分类">文件系统分类</h3>
+<table>
+<thead>
+<tr class="header">
+<th>FileSystem</th>
+<th>File Size Limit</th>
+<th>Filesystem Size Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ext2/ext3 with 1KB blocksize</td>
+<td>16448MB</td>
+<td>2048GB</td>
+</tr>
+<tr class="even">
+<td>ext2/ext3 with 2KB blocksize</td>
+<td>256GB</td>
+<td>8192GB</td>
+</tr>
+<tr class="odd">
+<td>ext2/ext3 with 4KB blocksize</td>
+<td>2048GB</td>
+<td>8192GB</td>
+</tr>
+<tr class="even">
+<td>ext2/ext3 with 8KB blocksize</td>
+<td>65568GB</td>
+<td>32TB</td>
+</tr>
+<tr class="odd">
+<td>ReiserFS3.5</td>
+<td>2GB</td>
+<td>16TB</td>
+</tr>
+<tr class="even">
+<td>ReiserFS3.6</td>
+<td>1EB</td>
+<td>16TB</td>
+</tr>
+<tr class="odd">
+<td>XFS</td>
+<td>8EB</td>
+<td>8EB</td>
+</tr>
+<tr class="even">
+<td>JFS with 512B blocksize</td>
+<td>8EB</td>
+<td>512TB</td>
+</tr>
+<tr class="odd">
+<td>JFS with 4KB blocksize</td>
+<td>8EB</td>
+<td>4PB</td>
+</tr>
+<tr class="even">
+<td>NFSv2(client side)</td>
+<td>2GB</td>
+<td>8EB</td>
+</tr>
+<tr class="odd">
+<td>NFSv3(client side)</td>
+<td>8EB</td>
+<td>8EB</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ext2">EXT2</h4>
+<ul>
+<li>Linux的正宗文件系统，早期常用</li>
+<li>支持<em>undelete</em>，误删文件可恢复，但是操作比较麻烦</li>
+</ul>
+<h4 id="ext3">EXT3</h4>
+<ul>
+<li>由EXT2发展而来</li>
+<li>支持大文件</li>
+<li>不支持反删除，Redhat、Fedora推荐</li>
+</ul>
+<h4 id="reiserfs">ReiserFS</h4>
+<ul>
+<li>支持大文件</li>
+<li>支持反删除，操作简单</li>
+</ul>
+<h2 id="权限设计">权限设计</h2>
+<ul>
+<li><code>r</code>：读文件</li>
+<li><code>w</code>：修改、删除文件</li>
+<li><code>x</code>：可以执行文件</li>
+<li><code>s</code>：强制位权限（固化用户/组权限）
+<ul>
+<li><code>set-user-id</code>：user执行权限位出现</li>
+<li><code>set-group-id</code>：group执行权限位出现</li>
+</ul></li>
+<li><code>t</code>：粘滞位权限（在swap中停留）</li>
+</ul>
+<h3 id="权限判断规则">权限判断规则</h3>
+<ul>
+<li><p>linux中权限是根据<code>user-id</code>、<code>group-id</code>判断用户和资源 关系，然后选择相应的类型用户（user、group、other）权限组 判断是否有相应权限</p></li>
+<li><p>需要注意的是，访问资源实际上不是用户，而是用户开启的 <strong>进程</strong>，所以这里涉及了4中不同的<strong>用户标识</strong></p>
+<ul>
+<li><p><code>real-user-id</code>：UID，用户id</p></li>
+<li><p><code>real-group-id</code>：GID，用户默认组id</p></li>
+<li><p><code>effective-user-id</code>：是针对进程（可执行文件）而言， 指内核真正用于判断进程权限的<strong>user-id</strong></p></li>
+<li><p><code>effective-group-id</code>：同<code>effective-user-id</code>，内核 判断真正判断进程权限的<strong>group-id</strong></p></li>
+</ul></li>
+<li><p>一般情况下<code>effective-user-id</code>就是<code>read-user-id</code>，即启动 进程用户的UID，所以一般来说用户创建的进程的对资源访问 权限就是就是自身权限</p></li>
+</ul>
+<h3 id="可执行文件权限">可执行文件权限</h3>
+<ul>
+<li><code>r</code>：读文件</li>
+<li><code>w</code>：写文件</li>
+<li><code>x</code>：执行文件</li>
+</ul>
+<h4 id="s权限"><code>s</code>权限</h4>
+<p>当可执行文件具有<code>set-user-id</code>权限时</p>
+<ul>
+<li><p>其他用户执行该文件启动的进程的<code>effective-user-id</code>不再是 <code>real-user-id</code>，即和执行用户的UID不再一致，而是用户属主 的UID</p></li>
+<li><p>内核根据进程<code>effective-user-id</code>判断进程权限，进程的权限 实际上同属主的权限，而不是执行用户权限</p></li>
+<li><p>这样用户就在执行这种可执行文件，暂时拥有该可执行文件属主 执行该可执行文件权限，否则可能由于进程访问其他资源原因 无法正常执行</p></li>
+<li><p>可看作是将属主的部分权限（在该文件上涉及到的权限） <strong>固化</strong>在文件上</p></li>
+</ul>
+<p><code>set-group-id</code>类似的可以看作是将属主默认组权限固化在文件上</p>
+<h4 id="t权限"><code>t</code>权限</h4>
+<ul>
+<li><p>文件被执行时，文本段会被加载到swap中，程序结束后仍然 保留在swap中</p></li>
+<li><p>下次执行文件时，文本段直接从swap中加载，因为swap为连续 block，加载速度会提高</p></li>
+</ul>
+<h3 id="目录权限说明">目录权限说明</h3>
+<p>linux中目录是一种特殊的文件，其包含目录下所有文件（包括 子目录）的文件名、i-node号</p>
+<ul>
+<li><p><code>r</code>：列出目录下所有文件</p></li>
+<li><p><code>w</code>：增加、删除、重命名目录下的文件</p></li>
+<li><p><code>x</code>：可以是（搜索）路径的一部分</p>
+<ul>
+<li>即必须对要访问的文件中路径中所有目录都有执行权限</li>
+<li>可以将目录执行权限看作是<strong>过境证明</strong></li>
+</ul></li>
+<li><p><code>s</code>：好像没啥用</p></li>
+<li><p><code>t</code>：用户只能增加、删除、重命名目录下<strong>属于</strong>自己文件</p>
+<ul>
+<li>对<code>w</code>权限补充，否则用户拥有目录<code>w</code>权限则可以操作目录 下所有文件</li>
+<li><code>/home</code>目录权限就是1777，设置有粘滞位权限</li>
+</ul></li>
+</ul>
+<h3 id="权限掩码">权限掩码</h3>
+<p>文件/目录默认权限 = 现有权限（<code>0777</code>）<strong>减去</strong>权限掩码</p>
+<blockquote>
+<ul>
+<li>权限掩码设置参见<em>linux/shell/cmd_fs</em>、 <em>linux/shell/config_file</em>、</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/linux/kernel/proc_thrd/" rel="next" title="进程、线程、作业">
+                <i class="fa fa-chevron-left"></i> 进程、线程、作业
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/linux/inst_set/os_to_do/" rel="prev" title="Linux安装后常用配置">
+                Linux安装后常用配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件文件系统"><span class="nav-number">1.</span> <span class="nav-text">文件、文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件"><span class="nav-number">1.1.</span> <span class="nav-text">文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件系统"><span class="nav-number">1.2.</span> <span class="nav-text">文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件系统分类"><span class="nav-number">1.3.</span> <span class="nav-text">文件系统分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ext2"><span class="nav-number">1.3.1.</span> <span class="nav-text">EXT2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ext3"><span class="nav-number">1.3.2.</span> <span class="nav-text">EXT3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reiserfs"><span class="nav-number">1.3.3.</span> <span class="nav-text">ReiserFS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限设计"><span class="nav-number">2.</span> <span class="nav-text">权限设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#权限判断规则"><span class="nav-number">2.1.</span> <span class="nav-text">权限判断规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可执行文件权限"><span class="nav-number">2.2.</span> <span class="nav-text">可执行文件权限</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#s权限"><span class="nav-number">2.2.1.</span> <span class="nav-text">s权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#t权限"><span class="nav-number">2.2.2.</span> <span class="nav-text">t权限</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目录权限说明"><span class="nav-number">2.3.</span> <span class="nav-text">目录权限说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权限掩码"><span class="nav-number">2.4.</span> <span class="nav-text">权限掩码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

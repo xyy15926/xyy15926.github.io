@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="查找/搜索树">
+<meta name="keywords" content="算法,数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="查找&#x2F;搜索树">
+<meta property="og:url" content="https://xyy15926.github.io/cs_algorithm/data_structure/tree_search/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="查找/搜索树">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/avl_ll_rotation.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/avl_rr_rotation.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/avl_lr_rotation.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/avl_rl_rotation.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/2_3_tree.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/2_3_2node_insert.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/2_3_2node_insert.png">
+<meta property="og:updated_time" content="2019-06-04T15:11:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="查找&#x2F;搜索树">
+<meta name="twitter:description" content="查找/搜索树">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/avl_ll_rotation.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_algorithm/data_structure/tree_search/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>查找/搜索树 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_algorithm/data_structure/tree_search/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">查找/搜索树
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-04 23:11:44" itemprop="dateCreated datePublished" datetime="2019-06-04T23:11:44+08:00">2019-06-04</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">查找/搜索树</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="总述">总述</h2>
+<blockquote>
+<ul>
+<li>二叉查找树：最基础的查找树，但是不平衡时效率很差</li>
+<li>自平衡查找树：使用旋转技术得到平衡二叉树</li>
+<li>多路查找树：使用多叉树达到平衡</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>树高度一般即决定其查找、插入、删除效率</strong></li>
+<li>以代码复杂性、插入节点时间代价，换取查询时<span class="math inline">\(logN\)</span>性能</li>
+</ul>
+<h3 id="self-balancing-binary-tree"><em>Self-Balancing Binary Tree</em></h3>
+<p>自平衡查找树：如果节点插入、删除产生了一棵违背平衡要求的树， 就从称为<strong>旋转</strong>的一系列特定变换中选择一种，重新构造树使得 树满足平衡要求</p>
+<ul>
+<li>不同的对<strong>平衡</strong>的定义产生了不同的实现</li>
+<li>这种方案属于<strong>变治法</strong>中<strong>实例化简</strong></li>
+</ul>
+<h4 id="balance-factor"><em>Balance Factor</em></h4>
+<p>平衡因子：节点左、右子树高度差（一般右树-左数）</p>
+<ul>
+<li><p>AVL树中平衡情况下节点平衡因子只能为-1、+1、0</p></li>
+<li><p>更新节点后可能存在不平衡节点，其平衡因子可能变为-2、+2</p></li>
+<li><p>平衡因子也可以被定义为左右子树叶子数</p></li>
+</ul>
+<h4 id="rotation"><em>Rotation</em></h4>
+<p>旋转需要使得二叉树平衡时，保证二叉树依然<strong>有序</strong></p>
+<ul>
+<li>左旋：节点平衡因子<strong>符号为正</strong>，即右子树高于左子树
+<ul>
+<li>节点T<strong>下沉</strong>为其<strong>右</strong>儿子R的<strong>左</strong>儿子</li>
+<li>如果右儿子R本身有<strong>左子树RL</strong>，则左子树RL成为节点T 新右子树</li>
+</ul></li>
+<li>右旋：节点平衡因子<strong>符号为负</strong>，即左子树高于右子树，
+<ul>
+<li>节点T<strong>下沉</strong>为其<strong>左</strong>儿子L的<strong>右</strong>儿子</li>
+<li>如果左儿子L本身有<strong>右子树LR</strong>，则右子树LR成为节点T 新左子树</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>旋转只涉参与选择的至多3个节点指针变化，其余节点状态保持</li>
+<li>“旋转”行为确实类似：节点绕其子节点旋转，子节点旋转后上浮 成为父节点</li>
+<li>参与旋转的两个节点也称为轴</li>
+</ul>
+</blockquote>
+<h4 id="分类">分类</h4>
+<ul>
+<li>AVL树</li>
+<li>红黑树</li>
+<li>分裂树</li>
+</ul>
+<h3 id="multiway-search-tree">Multiway Search Tree</h3>
+<p>多路查找树：允许查找树中单个节点中不止包含一个元素</p>
+<ul>
+<li>二叉查找树的推广，用于磁盘超大数据集的高效存取</li>
+<li>此方案属于<strong>变治法</strong>中<strong>改变表现</strong></li>
+</ul>
+<h4 id="分类-1">分类</h4>
+<ul>
+<li>2-3树</li>
+<li>2-4树</li>
+<li>B树</li>
+<li>B+树</li>
+</ul>
+<h2 id="binary-search-tree">Binary Search Tree</h2>
+<p>二叉查找树：分配给每个父母顶点的数字都比其左子树中数字大， 比右子树数字小</p>
+<ul>
+<li>二叉树有序，保证二叉树能够快速找到<strong>中间元素</strong>，从而支持 <strong>二分查找</strong></li>
+</ul>
+<h3 id="特点">特点</h3>
+<ul>
+<li><p>对于n个顶点的二叉树，满足 $  h n-1 $</p></li>
+<li><p>二叉查找树的查找算法效率取决于二叉树的<strong>高度</strong></p>
+<ul>
+<li><p>平均情况下，查找、插入、删除时间<span class="math inline">\(\in Theta(logn)\)</span></p></li>
+<li><p>最差情况下（严重不平衡的树，接近链表结构），树高度 h接近节点数n，查找、插入、删除时间<span class="math inline">\(\in Theta(n)\)</span></p></li>
+</ul></li>
+<li><p>包含n个键的二叉查找树总数量 <span class="math inline">\(c(n) = \frac 1 {n+1} C_{2n}^n, c(0)=1\)</span></p></li>
+</ul>
+<h3 id="应用">应用</h3>
+<ul>
+<li>查找</li>
+</ul>
+<h3 id="操作">操作</h3>
+<h4 id="查找">查找</h4>
+<p>在给定二叉查找树中查找给定键值K</p>
+<ul>
+<li><p>如果树为空，查找失败</p></li>
+<li><p>若树不为空，将查找键K和树根节点K(r)比较</p>
+<ul>
+<li>相等则查找停止</li>
+<li><span class="math inline">\(K &lt; K(r)\)</span>：在左子树中继续查找</li>
+<li><span class="math inline">\(K &gt; K(r)\)</span>：在右子树中继续查找</li>
+</ul></li>
+</ul>
+<h5 id="特点-1">特点</h5>
+<ul>
+<li>算法时间效率
+<ul>
+<li>最差情况下，二叉树完全偏斜，需要进行n次比较</li>
+<li>随机情况下，查找n个随机键构造的二叉树比较次数<span class="math inline">\(2logn\)</span></li>
+</ul></li>
+</ul>
+<h4 id="插入">插入</h4>
+<p>除非是空树，否则总是把新键K插入叶子节点中</p>
+<ul>
+<li>通过查找K确定合适插入位置（叶子节点）</li>
+<li>若K大于叶子节点键值，则作为右子女，否则作为左子女</li>
+</ul>
+<h3 id="最优二叉查找树">最优二叉查找树</h3>
+<p>对集合中元素确定的查找概率，成功查找的平均比较次数最小的 二叉查找树（可以扩展到包含不成功查找）</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(a_i, i=1,2,\cdots,n\)</span>：从小到大互不相等的键</li>
+<li><span class="math inline">\(p_i, i=1,2,\cdots,n\)</span>：键查找概率</li>
+<li><span class="math inline">\(T_i^j\)</span>：由键<span class="math inline">\(a_i, \cdots, a_j\)</span>构成的二叉树</li>
+<li><span class="math inline">\(C(i, j)\)</span>：成功查找的最小平均查找次数</li>
+</ul>
+</blockquote>
+<h4 id="动态规划构造">动态规划构造</h4>
+<ul>
+<li><p>根据最优化法则，最优二叉查找树左右子树均是最优排列的</p></li>
+<li><p>二叉树<span class="math inline">\(T_i^j\)</span>有序，设树根为<span class="math inline">\(a_1\)</span>，<span class="math inline">\(a_2,..,a_{k-1}\)</span>构成 的左子树、<span class="math inline">\(a_{k+1},..,a_j\)</span>构成右子树均是最优排列的</p></li>
+</ul>
+<p>递推式如下</p>
+<ul>
+<li><p><span class="math inline">\(1 \leqslant i \leqslant j \leqslant n\)</span></p>
+<p><span class="math display">\[\begin{align}
+C(i, j) &amp; = \min_{i \leqslant k \leqslant j} \{p_k + 
+        \sum_{s=i}^{k-1} p_s * (a_s在T_i^{k-1}中层数 + 1) +
+        \sum_{s=k+1}^j p_s * (a_s在T_{k+1}^j中层数 + 1) \}\\
+    &amp; = \min_{i \leqslant k \leqslant j} \{
+        \sum_{s=i}^{k-1} p_s * a_s在T_i^{k-1}中层数 +
+        \sum_{s=k+1}^j p_s * a_s在T_{k+1}^j中层数 +
+        \sum_{s=i}^j p_s \} \\
+    &amp; = \min_{i \leqslant k \leqslant j}
+        \{C(i, k-1) + C(k+1, j)\} + \sum_{s=i}^j p_s
+\end{align}\]</span></p></li>
+<li><p><span class="math inline">\(1 \leqslant i \leqslant n+1, C(i, i-1)=0\)</span>：空树</p></li>
+<li><p><span class="math inline">\(1 \leqslant i \leqslant n, C(i, i)=p_i\)</span>：单节点</p></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">OptimalBST(P[<span class="number">1.</span>.n])</span><br><span class="line">	<span class="comment">// 动态规划法构建最优二叉查找树</span></span><br><span class="line">	<span class="comment">// 输入：P[1..n]n个键查找概率</span></span><br><span class="line">	<span class="comment">// 输出：在最优BST中查找成功的平均比较次数，最优BST子树根表</span></span><br><span class="line">	<span class="keyword">for</span> i = <span class="number">1</span> to n <span class="keyword">do</span></span><br><span class="line">		C[i, i<span class="number">-1</span>] = <span class="number">0</span></span><br><span class="line">		C[i, i] = P[i]</span><br><span class="line">		R[i, i] = i</span><br><span class="line">	C[n+<span class="number">1</span>, n] = <span class="number">0</span></span><br><span class="line">		<span class="comment">// 初始化平均查找次数表、子树根表</span></span><br><span class="line">	<span class="keyword">for</span> d = <span class="number">1</span> to n<span class="number">-1</span> <span class="keyword">do</span></span><br><span class="line">		<span class="comment">// d为二叉树节点数</span></span><br><span class="line">		<span class="keyword">for</span> i = <span class="number">1</span> to n-d <span class="keyword">do</span></span><br><span class="line">			<span class="comment">// n-d是为了控制j的取值</span></span><br><span class="line">			j = i + d</span><br><span class="line">			minval = \infty</span><br><span class="line">			<span class="keyword">for</span> k = i to j <span class="keyword">do</span></span><br><span class="line">				<span class="comment">// 遍历设置二叉树根节点</span></span><br><span class="line">				<span class="keyword">if</span> C[i, k<span class="number">-1</span>] + C[k+<span class="number">1</span>, j] &lt; minval</span><br><span class="line">					minval = C[i, k<span class="number">-1</span>] + C[k+<span class="number">1</span>, j]</span><br><span class="line">					kmin = k</span><br><span class="line">			R[i, j] = kmin</span><br><span class="line">			sum = P[i]</span><br><span class="line">			<span class="keyword">for</span> s=i+<span class="number">1</span> to j <span class="keyword">do</span></span><br><span class="line">				sum += P[s]</span><br><span class="line">			C[i, j] = minval + sum</span><br><span class="line">	<span class="keyword">return</span> C[<span class="number">1</span>, n], R</span><br></pre></td></tr></table></figure>
+<h4 id="算法特点">算法特点</h4>
+<ul>
+<li>算法效率
+<ul>
+<li>算法时间效率为立方级</li>
+<li>算法空间效率为平方级</li>
+</ul></li>
+</ul>
+<h2 id="avl-tree">AVL Tree</h2>
+<p>AVL树：要求其节点在左右子树高度差不能超过1的平衡二叉树</p>
+<ul>
+<li><p>基本思想：总能通过一次简单的节点重排使树达到平衡</p>
+<ul>
+<li>如果树插入操作使得一棵AVL树失去平衡，利用旋转对树作 变换</li>
+<li>若有多个这样的节点，找出最靠近新插入的叶子节点不平衡 结点，然后旋转以该节点为根的子树</li>
+</ul></li>
+<li><p>AVL树高度h即为其查找、插入效率</p>
+<ul>
+<li><p>包含n个节点AVL树高度h满足 <span class="math inline">\(\lfloor log_2 n \rfloor \leq h &lt; 1.4405log_2(n+2) - 1.3277\)</span></p></li>
+<li><p>最差情况下，操作效率<span class="math inline">\(\in \Theta(logn)\)</span></p></li>
+<li><p>平均而言，在n不是太小时，高度h平均为 <span class="math inline">\(1.01log_2 n + 0.1\)</span>（几乎同折半查找有序数组）</p></li>
+</ul></li>
+<li>AVL树缺点（平衡代价），阻碍AVL树成为实现字典的标准结构
+<ul>
+<li>需要频繁旋转</li>
+<li>维护树的节点平衡</li>
+<li>总体比较复杂</li>
+</ul></li>
+</ul>
+<h3 id="旋转">旋转</h3>
+<p>按照<strong>节点平衡符号</strong>进行旋转：<code>+</code>左旋、<code>-</code>右旋</p>
+<ul>
+<li>单旋：<strong>不平衡节点</strong>、<strong>不平衡子节点</strong>不平衡因子符号相同
+<ul>
+<li>全为<code>+</code>：<strong>不平衡节点</strong>左旋</li>
+<li>全为<code>-</code>：<strong>不平衡节点</strong>右旋</li>
+</ul></li>
+<li>双旋：<strong>不平衡节点</strong>、<strong>不平衡子节点</strong>不平衡因子符号不同
+<ul>
+<li>先旋转<strong>不平衡子节点</strong></li>
+<li>再旋转<strong>不平衡节点</strong></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>优先考虑最底层、不平衡节点</li>
+</ul>
+</blockquote>
+<h3 id="插入节点">插入节点</h3>
+<p>AVL树插入关键：查找不平衡节点</p>
+<ul>
+<li>节点中应有存储其平衡因子的实例变量</li>
+<li>插入过程中<strong>经过每个节点</strong>返回当前节点子树深度是否变化</li>
+<li>比较节点平衡因子、子节点深度变化返回值判断是否平衡</li>
+</ul>
+<blockquote>
+<ul>
+<li>插入过程中查询的每个节点都有可能不平衡</li>
+<li>自下而上返回深度变化情况，优先旋转最底层不平衡节点</li>
+</ul>
+</blockquote>
+<h4 id="种插入情况">4种插入情况</h4>
+<p>根据插入情况的不同，对最靠近新插入叶子节点的不平衡点T</p>
+<h5 id="ll">LL</h5>
+<p>插入T<strong>左儿子L的左子树LL</strong>：平衡因子全<code>-</code></p>
+<ul>
+<li>即T到最底层叶节点（只可能有一个）的路径为LL（中间省略）</li>
+<li><em>R-rotation</em>：右单转，对T做一次右旋即可平衡</li>
+</ul>
+<figure>
+<img src="/imgs/avl_ll_rotation.png" alt="avl_ll_rotation"><figcaption>avl_ll_rotation</figcaption>
+</figure>
+<h5 id="rr">RR</h5>
+<p>插入T<strong>右儿子R的右子树R</strong>：平衡因子全<code>+</code></p>
+<ul>
+<li>即T到最底层叶节点（只可能有一个）的路径为RR（中间省略）</li>
+<li><em>L-rotation</em>：左单转，对T做一次左旋即可平衡</li>
+</ul>
+<figure>
+<img src="/imgs/avl_rr_rotation.png" alt="avl_ll_rotation"><figcaption>avl_ll_rotation</figcaption>
+</figure>
+<h5 id="lr">LR</h5>
+<p>插入T<strong>左儿子L的右子树R</strong>：平衡因子<code>-+</code></p>
+<ul>
+<li>即T到最底层叶节点（只可能有一个）的路径为LR（中间省略）</li>
+<li><em>LR-rotation</em>：左右双转
+<ul>
+<li>先对左儿子L做一次左旋，变成LL模式</li>
+<li>在LL模式下，再对T做一次右旋</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/imgs/avl_lr_rotation.png" alt="avl_lr_rotation"><figcaption>avl_lr_rotation</figcaption>
+</figure>
+<h5 id="rl">RL</h5>
+<p>插入T<strong>右儿子R的左子树L</strong>：平衡因子<code>+-</code></p>
+<ul>
+<li>即T到最底层叶节点（只可能有一个）的路径为RL（中间省略）</li>
+<li><em>RL-rotation</em>：右左双转
+<ul>
+<li>先对右儿子R做一次右旋，变成RR模式</li>
+<li>在RR模式下，再对T做一次左旋</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/imgs/avl_rl_rotation.png" alt="avl_rl_rotation"><figcaption>avl_rl_rotation</figcaption>
+</figure>
+<h4 id="实现">实现</h4>
+<h3 id="删除节点">删除节点</h3>
+<blockquote>
+<ul>
+<li>在AVL树中删除键相对而言比较困难，但也是对数级的</li>
+</ul>
+</blockquote>
+<h4 id="实现-1">实现</h4>
+<h2 id="red-black-tree">Red-Black Tree</h2>
+<p>红黑树：能够容忍同一节点的一棵子树高度是另一棵的2倍</p>
+<h2 id="splay-tree">Splay Tree</h2>
+<p>分裂树：</p>
+<h2 id="树">2-3树</h2>
+<p>2-3树：可以包含两种类型的节点2节点、3节点，树的所有叶子节点 必须位于同一层</p>
+<figure>
+<img src="/imgs/2_3_tree.png" alt="2_3_tree"><figcaption>2_3_tree</figcaption>
+</figure>
+<ul>
+<li>2-3树的高度即决定其查找、插入、删除效率
+<ul>
+<li>节点数为n的2-3数高度h满足 <span class="math inline">\(log_3(n+1)-1 \leq h \leq log_2(n+1) - 1\)</span></li>
+<li>最差、平均情况下，操作效率<span class="math inline">\(\in \Theta(logn)\)</span></li>
+</ul></li>
+<li>2-3树总是高度平衡
+<ul>
+<li>所有叶子节点位于同一层，即树根到其路径长度相同</li>
+<li>2-3树平衡代价
+<ul>
+<li>树中节点可以有1或2个键，需要处理2种节点类型</li>
+<li>拆分3节点的情况有很多种</li>
+</ul></li>
+</ul></li>
+<li>节点类型
+<ul>
+<li>2节点：只包含1个键K、2个子女
+<ul>
+<li>左子女：作为所有键都小于K的子树的根</li>
+<li>右子女：作为所有键都大于K的子树的根</li>
+</ul></li>
+<li>3节点：两个有序键<span class="math inline">\(K_1 &lt; K_2\)</span>、3个子女
+<ul>
+<li>最左边子女：作为键值小于<span class="math inline">\(K_1\)</span>的子树的根</li>
+<li>中间子女：作为键值位于<span class="math inline">\([K_1, K_2]\)</span>之间子树的根</li>
+<li>最右边子女：作为键值大于<span class="math inline">\(K_2\)</span>的子树的根</li>
+</ul></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>类似的还有2-4树</li>
+</ul>
+</blockquote>
+<h3 id="查找-1">查找</h3>
+<ul>
+<li>如果根是2节点，当作二叉树查找
+<ul>
+<li>若K等于根键值，停止</li>
+<li>若K小、大于根键值，在左、右子树中查找</li>
+</ul></li>
+<li>若根是3节点
+<ul>
+<li>和两个键值比较，有相等，停止</li>
+<li>否则能确定应该在3棵子树中哪棵继续查找</li>
+</ul></li>
+</ul>
+<h3 id="插入节点-1">插入节点</h3>
+<p>除非是空树，否则总是把新键K插入叶子节点中</p>
+<ul>
+<li><p>查找K确定合适的插入位置（叶子节点）</p></li>
+<li><p>若叶子节点2节点，根据大小关系将K作为第一个键或第二个键 插入 <img src="/imgs/2_3_2node_insert.png" alt="2_3_2node_insert"></p></li>
+<li><p>若叶子节点3节点，把叶子分裂为两个节点：3个键中最小的放入 第一个叶子中，最大的放入第二个叶子中，中间的键提升到原 叶子节点父母中</p>
+<figure>
+<img src="/imgs/2_3_2node_insert.png" alt="2_3_3node_insert"><figcaption>2_3_3node_insert</figcaption>
+</figure>
+<ul>
+<li>若叶子就是根，则需要创建新根容纳中间键</li>
+<li>中间键的提升可能会导致父母节点分裂，并引起祖先链条上 多个节点的分裂</li>
+</ul></li>
+</ul>
+<h3 id="删除节点-1">删除节点</h3>
+<h2 id="b树">B树</h2>
+<p>B树：允许节点可以有<span class="math inline">\(1~m-1\)</span>个键（<span class="math inline">\(2~m\)</span>个子女）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BTREE_M</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BTNode</span>&#123;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> degree;				<span class="comment">// 节点实际包含键数</span></span><br><span class="line">	KeyType key_slots[BTREE_M<span class="number">-1</span>];		<span class="comment">// 节点存储键数组</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">BTNode</span> <span class="title">ptr_slots</span>[<span class="title">BTREE_M</span>];</span>	<span class="comment">// 指向子女节点指针</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">BTNode</span> * <span class="title">ptr_parent</span>;</span>			<span class="comment">// 父节点指针</span></span><br><span class="line">&#125;BTNode, *BTNodePtr;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><span class="math inline">\(m\)</span>：B树阶数，节点允许最大子女数 &gt; - 节点最多允许有<span class="math inline">\(m-1\)</span>个条目 &gt; - <span class="math inline">\(m=2\)</span>即为二叉树、<span class="math inline">\(m=3\)</span>即为2-3树</li>
+<li>键：用于构建树的关键字，和具体条目类似于键值对</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>根节点具有<span class="math inline">\(2~m\)</span>个子女，除非为叶子节点</p></li>
+<li><p>非根、非叶节点具有<span class="math inline">\([\lceil m/2 \rceil, m]\)</span>个子女</p>
+<ul>
+<li><p>即具有<span class="math inline">\([\lceil m/2 \rceil - 1, m]\)</span>个<strong>有序</strong>键</p></li>
+<li><p>其中子树<span class="math inline">\(T_0\)</span>所有键小于<span class="math inline">\(K_1\)</span>，子树<span class="math inline">\(T_1\)</span>中所有键大于 等于<span class="math inline">\(K_1\)</span>小于 <span class="math inline">\(K_2\)</span>，以此类推</p></li>
+</ul></li>
+<li><p>B树是完美平衡的：所有叶子节点在同一层上</p></li>
+</ul>
+<h3 id="查找-2">查找</h3>
+<h4 id="算法">算法</h4>
+<blockquote>
+<ul>
+<li>输入：B树、目标查找键</li>
+<li>输出：查找键所属B树节点（若存在）</li>
+</ul>
+</blockquote>
+<ul>
+<li>从根节点开始，比较查找键k和节点中键序列大小
+<ul>
+<li>节点中键有序，若B树阶数足够大，可考虑<strong>折半查找</strong></li>
+</ul></li>
+<li><p>若在节点键序列中找到匹配键，则查找成功、返回</p></li>
+<li><p>否则根据比较结果选择合适分支，顺着指针链前进，在相应子女 节点中进行查找</p></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">BTreeSearch(T, k):</span><br><span class="line">	<span class="comment">// 在B树中搜索键</span></span><br><span class="line">	<span class="comment">// 输入：B树根节点T、目标查找键k</span></span><br><span class="line">	<span class="comment">// 输出：目标键所在节点、目标键在节点中序号</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	cur = T</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 遍历寻找目标键对应键、分支</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; cur.degree <span class="keyword">and</span> k &gt; cur.key_slots[i]:</span><br><span class="line">		i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> i &lt; cur.degree <span class="keyword">and</span> k == cur.key_slots[i]:</span><br><span class="line">		<span class="keyword">return</span> cur, i</span><br><span class="line">	elif cur.is_leaf():			<span class="comment">// 未找到目标键</span></span><br><span class="line">		<span class="keyword">return</span> cur, <span class="number">-1</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> BTreeSearch(cur.ptr_slots[i], k)</span><br></pre></td></tr></table></figure>
+<h3 id="分裂">分裂</h3>
+<h4 id="算法-1">算法</h4>
+<blockquote>
+<ul>
+<li>输入：待分裂节点父节点、待分裂节点序号</li>
+</ul>
+</blockquote>
+<ul>
+<li>计算待分裂节点分裂中心
+<ul>
+<li>将分裂中心右侧数据移动至新节点</li>
+</ul></li>
+<li>将节点分裂中心、新节点提升至父节点</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">BTreeNodeSplit(T, ptr_idx):</span><br><span class="line">	<span class="comment">// 分裂B树中节点</span></span><br><span class="line">	<span class="comment">// 输入：待分裂节点父节点`T`、待分裂节点序号`ptr_idx`</span></span><br><span class="line"></span><br><span class="line">	nnode = BTreeNode()</span><br><span class="line">	fnode = T.ptr_slots[ptr_idx]</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 分裂中心</span></span><br><span class="line">	mid = fnode.degree <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 复制右半部分键至新节点</span></span><br><span class="line">	nnode.key_slots[:fnode.degree - mid] = fnode.key_slots[mid:fnode.degree]</span><br><span class="line">	fnode.key_slots[mid:fnode.degree] = <span class="literal">NULL</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 若原节点非叶子节点，复制右半部分指针至新节点</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> fnode.is_leaf():</span><br><span class="line">		nnode.ptr_slots[:fnode.degree + <span class="number">1</span> - mid] = fnode.ptr_slots[mid: fnode.degree + <span class="number">1</span>]</span><br><span class="line">		fnode.ptr_slots[mid: fnode.degree+<span class="number">1</span>] = <span class="literal">NULL</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 修改两节点度</span></span><br><span class="line">	nnode.degree = fnode.degree - mid</span><br><span class="line">	fnode.degree = mid</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 将分裂中心提升至父节点</span></span><br><span class="line">	<span class="comment">// 修改父节点指向子女节点指针</span></span><br><span class="line">	T.key_slots.insert(fnode.key_slots[mid], ptr_idx)</span><br><span class="line">	T.ptr_slots.insert(nnode, ptr_idx+<span class="number">1</span>)	<span class="comment">// 原节点指针不变</span></span><br></pre></td></tr></table></figure>
+<h3 id="插入-1">插入</h3>
+<blockquote>
+<ul>
+<li>输入：B树根T、待插入键K</li>
+<li>假设B树中不存在键K，否则查找、更新对应值即可</li>
+</ul>
+</blockquote>
+<ul>
+<li>根据需要插入键K，查找需要插入的<strong>叶子节点</strong>L</li>
+<li>若叶子节点L键数小于m-1，直接插入结束</li>
+<li>否则以叶子节点键值中位数mid为中心分裂
+<ul>
+<li>将mid插入叶子节点L父节点P中</li>
+<li>将mid左子支指向分裂后左子树、右子支指向分裂后右子树</li>
+</ul></li>
+<li>对父节点尝试操作</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">BTreeInsert(T, k)</span><br><span class="line">	<span class="comment">// 向B树中插入不存在键K</span></span><br><span class="line">	<span class="comment">// 输入：B树根T、待插入键k</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 找到键`k`应该插入的叶子节点`L`</span></span><br><span class="line">	L, _ = BTreeSearch(T, k)</span><br><span class="line">	L.key_slots.insert_in_order(k)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 若节点已满、须分裂</span></span><br><span class="line">	<span class="keyword">while</span> L.is_full():</span><br><span class="line">		BTreeNodeSplit(L.parent_ptr, L.get_index())</span><br><span class="line">		L = L.parent_ptr</span><br></pre></td></tr></table></figure>
+<ul>
+<li>此实现是考虑<strong>节点都有空位容纳新键</strong>，节点插入新键后再 判断是否需要分裂</li>
+</ul>
+<h3 id="删除todo">删除#todo</h3>
+<h3 id="应用-1">应用</h3>
+<ul>
+<li>类似一般查找树，把数据记录插入初始为空的树中构造B树</li>
+</ul>
+<h2 id="b树-1">B+树</h2>
+<p>B+树：B树的一种变形树</p>
+<ul>
+<li>其中非叶节点只有<strong>索引</strong>作用，跟记录相关信息均存放在 叶结点中</li>
+<li>B+树中所有叶结点构成<strong>有序链表</strong>，可以按照键次序遍历</li>
+</ul>
+<h3 id="查找-3">查找</h3>
+<h4 id="算法-2">算法</h4>
+<ul>
+<li><p>从根开始，比较查找键K和节点中键大小，选择合适指针，顺着 指针链前进</p></li>
+<li>指针链指向可能包含查找键的叶子节点，在其中查找K
+<ul>
+<li>父母节点、叶子节点都是有序的，如果B树次数足够 大，可以考虑使用<strong>折半查找</strong></li>
+</ul></li>
+</ul>
+<h4 id="算法效率">算法效率</h4>
+<p>以B树作索引存储大型数据文件为例</p>
+<ul>
+<li><p>查找指定查找键访问B树节点数量为B树高度<span class="math inline">\(h+1\)</span> （即磁盘访问次数）</p></li>
+<li><p>次数为m、高度为h的B树能够包含最少节点数为 <span class="math inline">\(n \geqslant 4 \lceiling m/2 \rceiling ^ {h-1} -1\)</span>， 即<span class="math inline">\(h \leqslant \lfloor log_{[m/2]} \frac {n+1} 4 \rfloor + 1\)</span></p></li>
+<li>所以在B树中查找，访问磁盘次数<span class="math inline">\(\in O(logn)\)</span>
+<ul>
+<li>实际应用中，磁盘访问次数很少超过3，因为B树的根、甚至 是第一层节点会存储在内存中减少磁盘访问次数</li>
+</ul></li>
+</ul>
+<h3 id="插入-2">插入</h3>
+<h4 id="算法-3">算法</h4>
+<ul>
+<li><p>查找新记录键K对应的叶子节点</p></li>
+<li><p>若叶子节点中还有空间存放此记录，在保持键有序的情况下插入</p></li>
+<li>若节点中没有空间
+<ul>
+<li>将节点分裂，后半部分记录放在新节点中</li>
+<li>新节点中最小键<span class="math inline">\(K^{&#39;}\)</span>、指向其的指针插入原叶子节点 父母节点中（原叶子节点键、指针之后）</li>
+<li>插入过程可以一直回溯到树根，甚至直到树根分裂</li>
+</ul></li>
+</ul>
+<p>其他考虑</p>
+<ul>
+<li>查找新记录对应叶子节点时就分裂满节点，可以避免递归分裂</li>
+<li>将满叶子节点中部分键移动给兄弟节点，同时替换父母节点中的 键值（保证B树特点），增加少许复杂度以节约空间</li>
+</ul>
+<h4 id="算法特点-1">算法特点</h4>
+<ul>
+<li>算法效率
+<ul>
+<li>算法时间效率<span class="math inline">\(\in O(logn)\)</span></li>
+</ul></li>
+</ul>
+<h3 id="应用-2">应用</h3>
+<ul>
+<li>B+树是存储结构化记录数据集合最重要的索引结构
+<ul>
+<li>所有数据记录（键）按照升序存储在叶子节点中，其父母 节点作为索引</li>
+<li>B+树中节点常常对应磁盘中页</li>
+<li>考虑到访问磁盘页面是比较内存中键值比较时间多好几个 数量级，磁盘访问次数是衡量B树效率的主要指标</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_algorithm/specification/searching_high_dimensional/" rel="next" title="高维数据检索方法">
+                <i class="fa fa-chevron-left"></i> 高维数据检索方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/py3ref/dm_basics/" rel="prev" title="数据模型--基本数据类型">
+                数据模型--基本数据类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总述"><span class="nav-number">1.</span> <span class="nav-text">总述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#self-balancing-binary-tree"><span class="nav-number">1.1.</span> <span class="nav-text">Self-Balancing Binary Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#balance-factor"><span class="nav-number">1.1.1.</span> <span class="nav-text">Balance Factor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rotation"><span class="nav-number">1.1.2.</span> <span class="nav-text">Rotation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类"><span class="nav-number">1.1.3.</span> <span class="nav-text">分类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multiway-search-tree"><span class="nav-number">1.2.</span> <span class="nav-text">Multiway Search Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分类-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">分类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binary-search-tree"><span class="nav-number">2.</span> <span class="nav-text">Binary Search Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">2.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用"><span class="nav-number">2.2.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作"><span class="nav-number">2.3.</span> <span class="nav-text">操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查找"><span class="nav-number">2.3.1.</span> <span class="nav-text">查找</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#特点-1"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#插入"><span class="nav-number">2.3.2.</span> <span class="nav-text">插入</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最优二叉查找树"><span class="nav-number">2.4.</span> <span class="nav-text">最优二叉查找树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动态规划构造"><span class="nav-number">2.4.1.</span> <span class="nav-text">动态规划构造</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法特点"><span class="nav-number">2.4.2.</span> <span class="nav-text">算法特点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#avl-tree"><span class="nav-number">3.</span> <span class="nav-text">AVL Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转"><span class="nav-number">3.1.</span> <span class="nav-text">旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入节点"><span class="nav-number">3.2.</span> <span class="nav-text">插入节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#种插入情况"><span class="nav-number">3.2.1.</span> <span class="nav-text">4种插入情况</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ll"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">LL</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rr"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">RR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#lr"><span class="nav-number">3.2.1.3.</span> <span class="nav-text">LR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#rl"><span class="nav-number">3.2.1.4.</span> <span class="nav-text">RL</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现"><span class="nav-number">3.2.2.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除节点"><span class="nav-number">3.3.</span> <span class="nav-text">删除节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#red-black-tree"><span class="nav-number">4.</span> <span class="nav-text">Red-Black Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#splay-tree"><span class="nav-number">5.</span> <span class="nav-text">Splay Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#树"><span class="nav-number">6.</span> <span class="nav-text">2-3树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查找-1"><span class="nav-number">6.1.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入节点-1"><span class="nav-number">6.2.</span> <span class="nav-text">插入节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除节点-1"><span class="nav-number">6.3.</span> <span class="nav-text">删除节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b树"><span class="nav-number">7.</span> <span class="nav-text">B树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查找-2"><span class="nav-number">7.1.</span> <span class="nav-text">查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">7.1.1.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分裂"><span class="nav-number">7.2.</span> <span class="nav-text">分裂</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-1"><span class="nav-number">7.2.1.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入-1"><span class="nav-number">7.3.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除todo"><span class="nav-number">7.4.</span> <span class="nav-text">删除#todo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用-1"><span class="nav-number">7.5.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b树-1"><span class="nav-number">8.</span> <span class="nav-text">B+树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查找-3"><span class="nav-number">8.1.</span> <span class="nav-text">查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-2"><span class="nav-number">8.1.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法效率"><span class="nav-number">8.1.2.</span> <span class="nav-text">算法效率</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入-2"><span class="nav-number">8.2.</span> <span class="nav-text">插入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-3"><span class="nav-number">8.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法特点-1"><span class="nav-number">8.2.2.</span> <span class="nav-text">算法特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用-2"><span class="nav-number">8.3.</span> <span class="nav-text">应用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Conjugate Gradient Method">
+<meta name="keywords" content="最优化,无约束优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Conjugate Gradient Method">
+<meta property="og:url" content="https://xyy15926.github.io/math_mixin/unconstrained_optimization/conjugate_gradient/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Conjugate Gradient Method">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-17T03:35:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Conjugate Gradient Method">
+<meta name="twitter:description" content="Conjugate Gradient Method">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/math_mixin/unconstrained_optimization/conjugate_gradient/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Conjugate Gradient Method | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/math_mixin/unconstrained_optimization/conjugate_gradient/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Conjugate Gradient Method
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-17 11:35:09" itemprop="dateModified" datetime="2019-03-17T11:35:09+08:00">2019-03-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/" itemprop="url" rel="index"><span itemprop="name">最优化</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/无约束优化/" itemprop="url" rel="index"><span itemprop="name">无约束优化</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Conjugate Gradient Method</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="共轭方向">共轭方向</h2>
+<blockquote>
+<ul>
+<li>设G为<span class="math inline">\(n * n\)</span>阶正定对称矩阵，若<span class="math inline">\(d^{(1)}, d^{(2)}\)</span>满足 <span class="math display">\[(d^{(1)})^T G d^{(2)} = 0\]</span> 则称<span class="math inline">\(d^{(1)}, d^{(2)}\)</span>关于G共轭</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>类似正交方向，若<span class="math inline">\(d^{(1)},\cdots,d^{(k)}(k \leq n)\)</span>关于 G两两共轭，则称其为G的k个共轭方向</li>
+</ul>
+</blockquote>
+<ul>
+<li>特别的，<span class="math inline">\(G=I\)</span>时，共轭方向就是正交方向</li>
+</ul>
+<h3 id="定理1">定理1</h3>
+<blockquote>
+<ul>
+<li>设目标函数为 <span class="math display">\[
+f(w) = \frac 1 2 w^T w + r^T w + \sigma
+\]</span> <span class="math inline">\(q^{(1)}, \cdots, q^{(k)}\)</span>是<span class="math inline">\(k, k \leq n\)</span>个非零正交方向 ，从任意初始点<span class="math inline">\(w^{(1)}\)</span>出发，依次沿着以上正交方向做 <strong>精确一维搜索</strong>，得到<span class="math inline">\(w^{(1)}, \cdots, w^{(k+1)}\)</span>， 则<span class="math inline">\(w^{(k+1)}\)</span>是<span class="math inline">\(f(w)\)</span>在线性流形 <span class="math display">\[
+\bar W_k = \{w = w^{(1)} + \sum_{i=1}^k \alpha_i q^{(i)}
+| -\infty &lt; \alpha_i &lt; +\infty \}
+\]</span> 上的唯一极小点，特别的k=n时，<span class="math inline">\(w^{(n+1)}\)</span>是<span class="math inline">\(f(w)\)</span>在整个 空间上的唯一极小点</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><span class="math inline">\(\bar W_k\)</span>上的存在唯一极小点<span class="math inline">\(\hat w^{(k)}\)</span>，在所有方向 都是极小点，所以有</p>
+<p><span class="math display">\[
+&lt;\triangledown f(\hat w^{(k)}), q^{(i)}&gt; = 0, i=1,2,..
+\]</span></p></li>
+<li><p>将<span class="math inline">\(\hat w^{(k)}\)</span>由正交方向表示带入梯度，求出系数表达式</p></li>
+<li><p>解精确搜索步长，得到<span class="math inline">\(w^{(k+1)}\)</span>系数表达式</p></li>
+</ul>
+<h3 id="扩展子空间定理">扩展子空间定理</h3>
+<blockquote>
+<ul>
+<li>设目标函数为 <span class="math display">\[
+f(w) = \frac 1 2 x^T G x + r^T x + \sigma
+\]</span> <span class="math inline">\(d^{(1)}, \cdots, d^{(k)}\)</span>是<span class="math inline">\(k, k \leq n\)</span>个非零正交方向 ，从任意初始点<span class="math inline">\(x^{(1)}\)</span>出发，依次沿着以上正交方向做 <strong>精确一维搜索</strong>，得到<span class="math inline">\(x^{(1)}, \cdots, x^{(k+1)}\)</span>， 则<span class="math inline">\(x^{(k+1)}\)</span>是<span class="math inline">\(f(x)\)</span>在线性流形 <span class="math display">\[
+\bar x_k = \{x = x^{(1)} + \sum_{i=1}^k \alpha_i d^{(i)}
+| -\infty &lt; \alpha_i &lt; +\infty \}
+\]</span> 上的唯一极小点，特别的k=n时，<span class="math inline">\(x^{(n+1)}\)</span>是<span class="math inline">\(f(x)\)</span>在整个 空间上的唯一极小点</li>
+</ul>
+</blockquote>
+<ul>
+<li>引进变换<span class="math inline">\(w = \sqrt G x\)</span>即可证</li>
+</ul>
+<blockquote>
+<ul>
+<li>在以上假设下，有 <span class="math display">\[
+&lt;\triangledown f(x^{(k+1)}), d^{(i)}&gt; = 0, i=1,2...
+\]</span></li>
+</ul>
+</blockquote>
+<h2 id="conjugate-gradient-method"><em>Conjugate Gradient Method</em></h2>
+<p>共轭梯度法</p>
+<h3 id="对正定二次函数函数">对正定二次函数函数</h3>
+<p><span class="math display">\[
+f(x) = \frac 1 2 x^T G x + r^T x + \sigma
+\]</span></p>
+<ul>
+<li><p>任取初始点<span class="math inline">\(x^{(1)}\)</span>，若<span class="math inline">\(\triangledown f(x^{(1)}) = 0\)</span>， 停止计算，得到极小点<span class="math inline">\(x^{(1)}\)</span>，否则取</p>
+<p><span class="math display">\[
+d^{(1)} = -\triangledown f(x^{(1)})
+\]</span></p></li>
+<li><p>沿着<span class="math inline">\(d^{(1)}\)</span>方向进行精确一维搜索得到<span class="math inline">\(x^{(2)}\)</span>，若 <span class="math inline">\(\triangledown f(x^{(2)}) \neq 0\)</span>，令</p>
+<p><span class="math display">\[
+d^{(2)} = -\triangledown f(x^{(2)}) + \beta_1^{(2)}
+    d^{(1)}
+\]</span></p>
+<p>且满足<span class="math inline">\((d^{(1)})^T G d^{(2)} = 0\)</span>，即二者共轭，可得</p>
+<p><span class="math display">\[
+\beta_1^{(2)} = \frac {(d^{(1)})^T G \triangledown
+    f(x^{(2)})} {((d^{(1)})^T G d^{(1)})}
+\]</span></p>
+<ul>
+<li>这里<span class="math inline">\(d^{(2)}\)</span>方向的构造方式是为类似构造后面<span class="math inline">\(d^{(k)}\)</span> ，得到能方便表示的系数</li>
+<li>类似于将向量组<span class="math inline">\(\triangledown f(x^{(i)})\)</span>正交化</li>
+</ul></li>
+<li><p>如此重复搜索，若<span class="math inline">\(\triangledown f^(x^{i)}) \neq 0\)</span>，构造 <span class="math inline">\(x^{(k)}\)</span>处搜索方向<span class="math inline">\(d^{(k)}\)</span>如下</p>
+<p><span class="math display">\[\begin{align*}
+0 &amp; = (d^{(i)})^T G d^{(k)} \\
+&amp; = -(d^{(i)})T G \triangledown f(x^{(k)}) +
+    \sum_{j=1}^{k-1} \beta_j^{(k)} (d^{(i)})^T G d^{(j)} \\
+&amp; = -(d^{(i)})^T G \triangledown f(x^{(k)}) +
+    \beta_i^{(k)} (d^{(i)})^T G d^{(i)}
+\end{align*}\]</span></p>
+<p>可得</p>
+<p><span class="math display">\[
+\beta_i^{(k)} = \frac {(d^{(i)})^T G \triangledown
+    f(x^{(k)})} {(d^{(i)})^T G d^{(i)}}
+\]</span></p>
+<p>此时<span class="math inline">\(d^{(k)}\)</span>与前k-1个方向均关于G共轭，此k个方向是G的k个 共轭方向，由扩展空间子定理，<span class="math inline">\(x^{(k+1)}\)</span>是整个空间上极小</p></li>
+</ul>
+<h4 id="计算公式简化">计算公式简化</h4>
+<p>期望简化<span class="math inline">\(d^{(k)}\)</span>的计算公式</p>
+<ul>
+<li><p>由扩展子空间定理推论有 <span class="math inline">\(\triangledown f(x^{(k)})^T d^{(i)} = 0, i=1,2...,k-1\)</span> 结合以上<span class="math inline">\(d^{(k)}\)</span>的构造公式，有</p>
+<p><span class="math display">\[\begin{align*}
+&amp; \triangledown f(x^{(k)})^T \triangledown f(x^{(i)}) \\
+= &amp; \triangledown f(x^{(k)})^T ( -d^{(i)} +
+    \beta_1^{(i)} d^{(1)} + \cdots +
+    \beta_{i-1}^{(i)} d^{(i-1)} ) \\
+= &amp; 0, i=1,2,...,k-1
+\end{align*}\]</span></p></li>
+<li><p>则有</p>
+<p><span class="math display">\[\begin{align*}
+(d^{(i)})^T G \triangledown f(x^{(k)}) &amp; =
+    \triangledown f(x^{(k)})^T G d^{(i)} \\
+&amp; = \frac 1 {\alpha_i} \triangledown f(x^{(k)})^T
+    G (x^{(i+1)} - x^{(i)}) \\
+&amp; = \frac 1 {\alpha_i} \triangledown f(x^{(k)})^T
+    (\triangledown f(x^{(i+1)}) -
+    \triangledown f(x^{(i)})) \\
+&amp; = 0, i=1,2,\cdots,k-2
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(d^{(k)} = \frac 1 {\alpha_i} x^{(i+1)} - x^{(i)}\)</span></li>
+</ul>
+</blockquote></li>
+<li><p>所以上述<span class="math inline">\(d^{(k)}\)</span>构造公式可以简化为</p>
+<p><span class="math display">\[
+d^{(k)} = -\triangledown f(x^{(k)}) + \beta_{k-1}
+    d^{(k-1)}
+\]</span></p></li>
+<li><p>类似以上推导有</p>
+<p><span class="math display">\[\begin{align*}
+(d^{(k-1)})^T G \triangledown f(x^{(k)}) &amp; =
+    \frac 1 {\alpha_i} \triangledown f(x^{(k)})^T
+    (\triangledown f(x^{(k)}) -
+    \triangledown f(x^{(k-1)})) \\
+&amp; = \frac 1 {\alpha_i} \triangledown f(x^{(k)})^T
+    \triangledown f(x^{(k)}) \\
+\end{align*}\]</span></p>
+<p><span class="math display">\[\begin{align*}
+(d^{(k-1)})^T G d^{(k-1)} &amp; = \frac 1 {\alpha_i}
+    (d^{(k-1)})^T (\triangledown f(x^{(k)}) -
+    \triangledown f(x^{(k-1)})) \\
+&amp; = -\frac 1 {\alpha_i} (d^{(k-1)})^T
+    \triangledown f(x^{(x-1)}) \\
+&amp; = -\frac 1 {\alpha_i} (\triangledown f(x^{(k-1)}) -
+    \beta_{k-2}d^{(k-2)})^T \triangledown f(x^{(x-1)}) \\
+&amp; = -\frac 1 {\alpha_i} \triangledown f(x^{(k-1)})^T
+    \triangledown f(x^{(k-1)})
+\end{align*}\]</span></p>
+<p>最终的得到简化后系数<span class="math inline">\(\beta_{k-1}, k&gt;1\)</span>的PRP公式</p>
+<p><span class="math display">\[
+\beta_{k-1} = \frac {\triangledown f(x^{(k)})^T
+    (\triangledown f(x^{(k)}) -
+    \triangledown f(x^{(k-1)}))}
+    {\triangledown f(x^{(k-1)})^T
+        \triangledown f(x^{(k-1)})}
+\]</span></p>
+<p>或FR公式</p>
+<p><span class="math display">\[
+\beta_{k-1} = \frac {\|\triangledown f(x^{(k)})\|^2}
+    {\|\triangledown f(x^{(k-1)}) \|^2}
+\]</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>以上推导虽然是根据正定二次函数得出的推导，但是仍适用于 一般可微函数</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\beta _ {k-1}\)</span>给出两种计算方式，应该是考虑到目标函数 可能不是标准正定二次函数、一维搜索数值计算不精确性</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>将<span class="math inline">\(\beta _ {k-1}\)</span>分子、分母推导到不同程度可以得到其他 公式</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>Growder-Wolfe公式</p>
+<p><span class="math display">\[
+\beta_{k-1} = \frac {\triangledown f(x^{(k)})^T
+    (\triangledown f(x^{(k)}) -
+    \triangledown f(x^{(k-1)}))}
+    {(d^{(k-1)})^T (\triangledown f(x^{(k)}) -
+    \triangledown f(x^{(k-1)}))}
+\]</span></p></li>
+<li><p>Dixon公式</p>
+<p><span class="math display">\[
+\beta_{k-1} = \frac {\triangledown f(x^{(k)})^T
+    \triangledown f(x^{(k)})}
+    {(d^{(k-1)})^T \triangledown f(x^{(k-1)})}
+\]</span></p></li>
+</ul>
+<h3 id="frprp算法">FR/PRP算法</h3>
+<ol type="1">
+<li><p>初始点<span class="math inline">\(x^{(1)}\)</span>、精度要求<span class="math inline">\(\epsilon\)</span>，置k=1</p></li>
+<li><p>若<span class="math inline">\(\|\triangledown f(x^{(k)}) \| \leq \epsilon\)</span>，停止 计算，得到解<span class="math inline">\(x^{(k)}\)</span>，否则置</p>
+<p><span class="math display">\[
+d^{(k)} = -\triangledown f(x^{(k)}) + \beta_{k-1}d^{(k-1)}
+\]</span></p>
+<p>其中<span class="math inline">\(\beta_{k-1}=0, k=1\)</span>，或由上述公式计算</p></li>
+<li><p>一维搜索，求解一维问题</p>
+<p><span class="math display">\[
+\arg\min_{\alpha} \phi(\alpha) = f(x^{(k)} -
+    \alpha d^{(k)})
+\]</span></p>
+<p>得<span class="math inline">\(\alpha_k\)</span>，置<span class="math inline">\(x^{(k+1)} = x^{(k)} + \alpha_k d^{(k)}\)</span></p></li>
+<li><p>置k=k+1，转2</p></li>
+</ol>
+<blockquote>
+<ul>
+<li>实际计算中，n步重新开始的FR算法优于原始FR算法</li>
+<li>PRP算法中 <span class="math inline">\(\triangledown f(x^{(k)}) \approx \triangledown f(x^{(k-1)})\)</span> 时，有<span class="math inline">\(\beta_{k-1} \approx 0\)</span>，即 <span class="math inline">\(d^{(k)} \approx -\triangledown f(x^{(k)})\)</span>，自动重新开始</li>
+<li>试验表明，对大型问题，PRP算法优于FR算法</li>
+</ul>
+</blockquote>
+<h3 id="共轭方向下降性">共轭方向下降性</h3>
+<blockquote>
+<ul>
+<li>设<span class="math inline">\(f(x)\)</span>具有连续一阶偏导，假设一维搜索是精确的，使用共轭 梯度法求解无约束问题，若<span class="math inline">\(\triangledown f(x^{(k)}) \neq 0\)</span> 则搜索方向<span class="math inline">\(d^{(k)}\)</span>是<span class="math inline">\(x^{(k)}\)</span>处的下降方向</li>
+</ul>
+</blockquote>
+<ul>
+<li>将<span class="math inline">\(d^{(k)}\)</span>导入即可</li>
+</ul>
+<h3 id="算法二次终止性">算法二次终止性</h3>
+<blockquote>
+<ul>
+<li>若一维搜索是精确的，则共轭梯度法具有二次终止性</li>
+</ul>
+</blockquote>
+<ul>
+<li>对正定二次函数，共轭梯度法至多n步终止，否则
+<ul>
+<li>目标函数不是正定二次函数</li>
+<li>或目标函数没有进入正定二次函数区域，</li>
+</ul></li>
+<li><p>此时共轭没有意义，搜索方向应该重新开始，即令</p>
+<p><span class="math display">\[
+d^{(k)} = -\triangledown f(x^{(k)})
+\]</span></p>
+<p>即算法每n次重新开始一次，称为n步重新开始策略</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/最优化/" rel="tag"># 最优化</a>
+          
+            <a href="/tags/无约束优化/" rel="tag"># 无约束优化</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_cppc/cppstd/local/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_program/mark_lang/markdown_notes/" rel="prev" title="MarkDown Basics">
+                MarkDown Basics <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#共轭方向"><span class="nav-number">1.</span> <span class="nav-text">共轭方向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定理1"><span class="nav-number">1.1.</span> <span class="nav-text">定理1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展子空间定理"><span class="nav-number">1.2.</span> <span class="nav-text">扩展子空间定理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conjugate-gradient-method"><span class="nav-number">2.</span> <span class="nav-text">Conjugate Gradient Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对正定二次函数函数"><span class="nav-number">2.1.</span> <span class="nav-text">对正定二次函数函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#计算公式简化"><span class="nav-number">2.1.1.</span> <span class="nav-text">计算公式简化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#frprp算法"><span class="nav-number">2.2.</span> <span class="nav-text">FR/PRP算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#共轭方向下降性"><span class="nav-number">2.3.</span> <span class="nav-text">共轭方向下降性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法二次终止性"><span class="nav-number">2.4.</span> <span class="nav-text">算法二次终止性</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

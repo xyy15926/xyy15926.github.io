@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Linux特殊文件">
+<meta name="keywords" content="Linux,Shell命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux特殊文件">
+<meta property="og:url" content="https://xyy15926.github.io/linux/shell/config_files/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Linux特殊文件">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/ls_results.png">
+<meta property="og:updated_time" content="2019-06-25T17:40:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux特殊文件">
+<meta name="twitter:description" content="Linux特殊文件">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/ls_results.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/linux/shell/config_files/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Linux特殊文件 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/linux/shell/config_files/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Linux特殊文件
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-31 21:10:52" itemprop="dateCreated datePublished" datetime="2019-07-31T21:10:52+08:00">2019-07-31</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-26 01:40:44" itemprop="dateModified" datetime="2019-06-26T01:40:44+08:00">2019-06-26</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/Shell命令/" itemprop="url" rel="index"><span itemprop="name">Shell命令</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Linux特殊文件</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="用户组">用户、组</h2>
+<h3 id="用户信息">用户信息</h3>
+<h4 id="etcpasswd"><code>/etc/passwd</code></h4>
+<p>用户属性</p>
+<ul>
+<li>用户名</li>
+<li>口令：在<code>/etc/passwd</code>文件中以<code>x</code>显示</li>
+<li>user-id：UID，用户标识
+<ul>
+<li>linux事实上不直接处理用户名，只识别UID</li>
+<li>UID对用户是唯一的</li>
+</ul></li>
+<li>group-id：GID，用户的默认组标识
+<ul>
+<li>用户可以隶属多个不同的组，但是只有一个默认组，即用户 创建文件默认隶属的组</li>
+</ul></li>
+<li>描述：用户描述</li>
+<li>用户主目录：用户登陆目录</li>
+<li>登陆shell：用户登陆系统使用的shell
+<ul>
+<li>缺省为空，可能是<code>/bin/sh</code></li>
+</ul></li>
+</ul>
+<h4 id="etcshadow"><code>/etc/shadow</code></h4>
+<p>用户口令属性</p>
+<ul>
+<li>用户名</li>
+<li>加密的密码</li>
+<li>自1/1/1970起，密码被修改的天数</li>
+<li>密码将被允许修改之前的天数（<code>0</code>为在任何时候可修改）</li>
+<li>系统强制用户修改为新密码之前的天数（<code>1</code>永远不能修改）</li>
+<li>提前警告用户密码过期前天数（<code>-1</code>无警告）</li>
+<li>禁用用户账户在密码过期后天数（<code>-1</code>永不禁用）</li>
+<li>用户被禁用天数（<code>-1</code>被启用）</li>
+</ul>
+<h4 id="etcgroup"><code>/etc/group</code></h4>
+<p>群组账号信息文件</p>
+<ul>
+<li>群组名</li>
+<li>密码：以<code>x</code>显示</li>
+<li>群组ID（GID）
+<ul>
+<li>系统群组：安装Linux以及部分服务型程序时自动设置的 群组，GID&lt;500</li>
+<li>私人组群：由root新建的群组，默认GID&gt;500</li>
+</ul></li>
+<li>附加用户列表</li>
+</ul>
+<h4 id="etcgshadow"><code>/etc/gshadow</code></h4>
+<p>群组口令信息文件</p>
+<h4 id="etcsudoers"><code>/etc/sudoers</code></h4>
+<p><code>sudo</code>配置文件</p>
+<ul>
+<li>根据配置文件说明取消注释即可赋予用户、组<code>sudo</code>权限</li>
+</ul>
+<h3 id="用户配置文件">用户配置文件</h3>
+<ul>
+<li>login-shell：用户登陆（创建session）时的shell模式，该 模式下shell会自动执行<em>profile</em>文件</li>
+<li>subshell：用户登陆后载入的shell的模式，该模式下shell会 自动执行<em>rc</em>文件</li>
+</ul>
+<h4 id="profile"><em>profile</em></h4>
+<p>-一般在login-shell模式会执行一次，从名称看起来更像是 <strong>用户配置</strong></p>
+<ul>
+<li><p>全局、被所有用户默认执行的文件在<code>/etc</code>目录下，用户个人 <em>profile</em>在用户目录</p></li>
+<li><p><em>^profile$</em>是所有类型shell（bash、zsh、ash、csh）都会 执行</p></li>
+<li><p>不同类型的shell可能有其特定的<em>profile</em>文件，如： <code>/etc/bash_profile</code>、<code>~/.bash_profile</code>，不过不常见 （可以理解，毕竟是<strong>用户配置</strong>）</p></li>
+<li><p>有的发行版本（ubuntu）还有有<code>/etc/profile.d</code>文件夹，在 <code>/etc/profile</code>中会设置执行其中的配置文件</p></li>
+</ul>
+<h4 id="rc"><em>rc</em></h4>
+<p><em>rc</em>应该是<em>run command</em>的简称，在每次subshell模式会执行，从 名称看起来更像是<strong>shell配置</strong>（很多应用配置文件<em>rc</em>结尾）</p>
+<ul>
+<li><p>全局、被所有用户执行的文件在<code>/etc</code>目录下，用户个人<em>rc</em> 则在用户目录</p></li>
+<li><p>应该是因为<em>rc</em>本来就是对shell的配置文件，所以是不存在 通用的<em>^rc$</em>配置的，最常用的bash对应就是<code>~/.bashrc</code>、 <code>~/bash.bashrc</code></p></li>
+</ul>
+<h4 id="总结">总结</h4>
+<ul>
+<li>其实<em>rc</em>也会在用户登陆时执行
+<ul>
+<li>login-shell会立刻载入subshell？</li>
+<li><em>profile</em>里设置了立刻调用？</li>
+</ul></li>
+<li>应该写在<em>profile</em>里的配置
+<ul>
+<li>shell关系不大、更像是用户配置，如：特定应用环境变量</li>
+<li>不需要、不能重复执行，因为<em>rc</em>在用户登录时已经执行 过一次，launch subshell时会重复执行，如： <code>export PATH=$PATH:xxxx/bin/</code></li>
+</ul></li>
+<li>应该写在<em>rc</em>里的配置
+<ul>
+<li>和shell关系紧密的shell配值，如：alias</li>
+<li>在用户登陆后会该边，需要在每次launch subshell时执行 的配置</li>
+</ul></li>
+<li>配置文件执行顺序
+<ul>
+<li>没有一个确定顺序，不同的linux发行版本有不同的设置， 有的还会在脚本中显式写明相互调用，如：<code>/etc/profile</code> 中调用<code>/etc/bashrc</code>，<code>~/.bashrc</code>调用<code>/etc/bashrc</code></li>
+<li>但是可以确认的是<code>/etc/profile</code>一般是第一个被调用， <code>~/.xxxxrc</code>、<code>/etc/xxxxxrc</code>中的一个最后调用</li>
+</ul></li>
+<li>还有一些其他配置文件
+<ul>
+<li><code>~/.bash_logout</code>：退出bash shell时执行</li>
+</ul></li>
+<li>对于wsl，可能是因为将用户登陆windows视为create session， <code>~/.profile</code>好像是不会执行的</li>
+</ul>
+<h4 id="etcenvironment"><code>/etc/environment</code></h4>
+<p>系统在登陆时读取第一个文件</p>
+<ul>
+<li>用于所有为所有进程设置环境变量</li>
+<li>不是执行此文件中的命令，而是根据<code>KEY=VALUE</code>模式的 代码，如：<code>PATH=$PATH:/path/to/bin</code></li>
+</ul>
+<h2 id="任务作业">任务、作业</h2>
+<h3 id="crontab文件">Crontab文件</h3>
+<h4 id="varspoolcroncrontabsuser_name"><code>/var/spool/cron/crontabs/user_name</code></h4>
+<p>使用用户名标识的每个用户的定时任务计划文件，文件中每行为一个 cron调度内容（也可以使用<code>crontab -e</code>直接编辑）</p>
+<ul>
+<li>共6个字段，前5个字段为执行调度时间分配
+<ul>
+<li>分钟、小时（24）、日期（31）、月份（12）、星期</li>
+<li><code>*</code>表示每个当前时间</li>
+<li><code>-</code>时间区间</li>
+<li><code>,</code>时间分隔</li>
+<li><code>[range]/[n]</code>：范围内每隔多久执行一次，范围为<code>*</code>可省</li>
+</ul></li>
+<li><p>最后字段为调度内容</p></li>
+<li><p>例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">3,15 8-11 */2 * * command</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 每隔两天的8-11点第3、15分执行</span></span><br><span class="line">3,15 8-11 * * 1 command</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 每个星期一的上午8-11点的第3、15分钟执行</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="etccrontabs"><code>/etc/crontabs</code></h4>
+<p>系统级crontab文件，类似于用户crontab文件，只是多一个用户名 字段位于第6个</p>
+<h2 id="系统设置etcsysconfig">系统设置<code>/etc/sysconfig</code></h2>
+<h3 id="etcsysconfignetwork-scripts"><code>/etc/sysconfig/network[-scripts]</code></h3>
+<p>文件夹包含网卡配置文件</p>
+<h4 id="一般linux">一般linux</h4>
+<ul>
+<li><code>ifcfg-ethXX</code>：linux默认ethernet网卡配置文件名称</li>
+<li><code>ifcfg-wlanXX</code>：无线局域网网卡配置文件名称</li>
+</ul>
+<h4 id="centos7网卡名称">CentOS7网卡名称</h4>
+<ul>
+<li>前两个字符
+<ul>
+<li><code>en</code>：Enthernet以太网</li>
+<li><code>wl</code>：WLAN无线局域网</li>
+<li><code>ww</code>：WWAN无线广域网</li>
+</ul></li>
+<li>第3个字符
+<ul>
+<li><code>o&lt;index&gt;</code>：on-board device index number,</li>
+<li><code>s&lt;slot&gt;</code>：hotplug slot index number</li>
+<li><code>x&lt;MAC&gt;</code>：MAC address</li>
+<li><code>p&lt;bus&gt;s&lt;slot&gt;</code>：PCI geographical location/USB port number chain</li>
+</ul></li>
+<li>命名优先级
+<ul>
+<li>板载设备：固件、BIOS提供的索引号信息可读：<code>eno1</code></li>
+<li>固件、BIOS提供的PCI-E热拔插索引号可读：<code>ens33</code></li>
+<li>硬件接口物理位置：<code>enp2s0</code></li>
+<li>linux传统方案：<code>eth0</code></li>
+<li>接口MAC地址：<code>enxXXXXXXXXXXXXXXXXX</code>，默认不使用， 除非用户指定使用</li>
+</ul></li>
+<li>示例
+<ul>
+<li><code>enoXX</code>：主板bios内置网卡</li>
+<li><code>ensXX</code>：主板bios内置PCI-E网卡</li>
+<li><code>enpXXs0</code>：PCI-E独立网卡</li>
+</ul></li>
+</ul>
+<h5 id="恢复传统命名方式">恢复传统命名方式</h5>
+<p>编辑grub文件，然后使用<code>grub2-mkconfig</code>重新生成 <code>/boot/grub2/grub.cfg</code>，这样系统就会根据传统linux网卡文件 命名方式查找配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">	# `/etc/sysconfig/grub`</span><br><span class="line">GRUB_CMDLINE_LINUX=&quot;net.ifnames=0 biosdevname=0&quot;</span><br><span class="line">	# 为`GRUB_CMDLINE_LINUX`增加2个参数</span><br></pre></td></tr></table></figure>
+<h4 id="centos7配置格式">CentOS7配置格式</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">DEVICE=ens33				# 网络连接名称（实际显示的网络名称）</span><br><span class="line">NAME=ens33					# 网卡物理设备名称</span><br><span class="line">TYPE = Ethernet				# 网卡类型：以太网</span><br><span class="line">ONBOOT=yes					# 开机启动：是</span><br><span class="line">DEFROUTE=yes				# 是否设置此网卡为默认路由：是</span><br><span class="line">NM_CONTROLLED=yes			# 是否可由Network Manager托管：是</span><br><span class="line"></span><br><span class="line">BOOTPROTO=dhcp				# 网卡引导协议</span><br><span class="line">							# `none`：禁止DHCP</span><br><span class="line">							# `static`：启用静态IP地址</span><br><span class="line">							# `dhcp`：开启完整DHCP服务</span><br><span class="line">IPADDR=xxx.xxx.xxx.xxx		# IP地址</span><br><span class="line">IPV4_FAILURE_FATAL=no		# IPV4致命错误检测（失败禁用设备）：否</span><br><span class="line">IPV6INIT=yes				# IPV6自动初始化：是</span><br><span class="line">IPV6_AUTOCONF=yes			# IPV6自动配置：是</span><br><span class="line">IPV6_DEFROUTE=yes			# IPV6是否可为默认路由：是</span><br><span class="line">IPV6_FAILURE_FATAL=no		# IPV6致命错误检测（失败禁用设备）：否</span><br><span class="line">IPV6_ADDR_GEN_MODE=stable-privacy</span><br><span class="line">							# IPV6地地址生成模型：stable-privacy</span><br><span class="line"></span><br><span class="line">DNS1=xxx.xxx.xxx.xxx		# DNS服务器地址1</span><br><span class="line">DNS2=xxx.xxx.xxx.xxx		# DNS服务器地址2</span><br><span class="line">PEERDNS=no					# 是否允许DHCP获得DNS覆盖本地DNS：否</span><br><span class="line">GATEWAY=xxx.xxx.xxx.xxx		# 网关</span><br><span class="line">PREFIX=24					# 子网掩码使用24位</span><br><span class="line">NETMASK=255.255.255.0		# 子网掩码</span><br><span class="line">							# 两个参数应该只需要使用一个即可</span><br><span class="line">BROADCAST=	</span><br><span class="line"></span><br><span class="line">HWADDR=xxxxxxxxxx			# 接口MAC地址</span><br><span class="line">							# 配置文件都会被执行，`HWADDR`</span><br><span class="line">							# 能匹配上硬件，配置才会生效，</span><br><span class="line">							# 否则硬件使用默认配置</span><br><span class="line">							# 若多个配置文件配置相同`HWADDR`</span><br><span class="line">							# 则操作network服务时报错</span><br><span class="line">UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span><br><span class="line">							# 通用唯一识别码：不能相同（注意虚拟机）</span><br><span class="line"></span><br><span class="line">PROXY_METHOD=none			# 代理方式：无</span><br><span class="line">BROWSER_ONLY=no				# 仅浏览器：否</span><br><span class="line"></span><br><span class="line">USERCTL=no					# 是否允许非root用户控制此设备：否</span><br><span class="line">MASTER=						# 主设备名称？</span><br><span class="line">SLAVE=						# 从社会名称？</span><br><span class="line">NETWORK=					# 网络地址</span><br></pre></td></tr></table></figure>
+<h2 id="系统引导">系统引导</h2>
+<h3 id="grub">Grub</h3>
+<h4 id="etcsysconfiggrub"><code>/etc/sysconfig/grub</code></h4>
+<p>GRUB配置文件，实际上是<code>/etc/default/grub</code>的软连接</p>
+<h2 id="服务">服务</h2>
+<h3 id="系统服务">系统服务</h3>
+<ul>
+<li><p>服务<code>systemctl</code>脚本目录优先级从低到高</p>
+<ul>
+<li><p><code>[/usr]/lib/systemd/system</code>：系统、应用默认存放位置 ，随系统、应用更新会改变</p></li>
+<li><p><code>/etc/systemd/system</code>：<strong>推荐在此自定义配置</strong>，避免 被更新覆盖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.include /lib/systemd/system/&lt;service_name&gt;.service</span><br><span class="line"># customized changes</span><br></pre></td></tr></table></figure></li>
+<li><p><code>/run/systemd/system</code>：进程运行时创动态创建服务文件 目录，仅修改程序运行时参数才会修改</p></li>
+</ul></li>
+<li><p>自定义系统服务方法</p>
+<ul>
+<li>创建<code>&lt;service_name&gt;.service</code>文件，其中写入配置</li>
+<li>创建<code>&lt;service_name&gt;.service.d</code>目录，其中新建<code>.conf</code> 文件写入配置</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>系统服务控制命令<code>systemctl</code>参见<em>linux/shell/cmd_sysctl</em></li>
+</ul>
+</blockquote>
+<h4 id="service"><code>.service</code></h4>
+<p><code>&lt;some_name&gt;.service</code>：服务配置unit文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">[Unit]					# 包含对服务的说明</span><br><span class="line">Description=			# 服务简单描述</span><br><span class="line">Documentation=			# 服务文档</span><br><span class="line">Requires=				# 依赖unit，未启动则当前unit启动失败</span><br><span class="line">Wants=					# 配合unit，不影响当前unit启动</span><br><span class="line">BindsTo=				# 类似`Requires`，若其退出则当前unit</span><br><span class="line">							# 退出</span><br><span class="line">Before=					# 若该字段指定unit要启动，则必须在</span><br><span class="line">							# 当前unit之后启动</span><br><span class="line">After=					# 若该字段指定unit要启动，则必须在</span><br><span class="line">							# 当前unit之前启动</span><br><span class="line">Conflicts=				# 冲突unit</span><br><span class="line">Condition=				# 条件，否则无法启动</span><br><span class="line">Assert=					# 必须条件，否则启动失败</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[Service]				# 服务具体运行参数设置，仅</span><br><span class="line">							# *service unit*有该字段</span><br><span class="line">Type=					# 服务启动类型</span><br><span class="line">PIDFile=				# 存放PID文件路径</span><br><span class="line">RemainAfterExit=		# 进程退出后是否认为服务仍处于激活</span><br><span class="line"></span><br><span class="line">ExecStartPre=			# 服务启动前执行的命令</span><br><span class="line">ExecStartPost=			# 服务启动后执行的命令</span><br><span class="line">ExecStart=				# 服务具体执行、重启、停止命令</span><br><span class="line">ExecReload=</span><br><span class="line">ExecStop=</span><br><span class="line"></span><br><span class="line">Restart=				# 重启当前服务的情况</span><br><span class="line">RestartSec=				# 自动重启当前服务间隔秒数</span><br><span class="line">TimeoutSec=				# 停止当前服务之前等待秒数</span><br><span class="line"></span><br><span class="line">PrivateTmp=				# 是否给服务分配临时空间</span><br><span class="line">KillSignal=SIGTERM</span><br><span class="line">KillMode=mixed</span><br><span class="line"></span><br><span class="line">Environmen=				# 指定环境变量</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=				# unit所属的target，`enable`至相应</span><br><span class="line">							# target</span><br><span class="line">RequiredBy=				# unit被需求的target</span><br><span class="line">Alias=					# unit启动别名</span><br><span class="line">Also=					# `enable`当前unit时，同时被`enable`</span><br><span class="line">							# 的unit</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>Type</code>：服务启动类型</p>
+<ul>
+<li><code>simple</code>：默认，执行<code>ExecStart</code>启动主进程
+<ul>
+<li>Systemd认为服务立即启动</li>
+<li>适合服务在前台持续运行</li>
+<li>服务进程不会fork</li>
+<li>若服务要启动其他服务，不应应该使用此类型启动，</li>
+</ul></li>
+<li><code>forking</code>：以fork方式从父进程创建子进程，然后父进程 立刻退出
+<ul>
+<li>父进程退出后Systemd才认为服务启动成功</li>
+<li>适合常规守护进程（服务在后台运行）</li>
+<li>启动同时需要指定<code>PIDFile=</code>，以便systemd能跟踪 服务主进程</li>
+</ul></li>
+<li><code>oneshot</code>：一次性进程
+<ul>
+<li>Systemd等待当前服务退出才继续执行</li>
+<li>适合只执行一项任务、随后立即退出的服务</li>
+<li>可能需要同时设置<code>RemainAfterExit=yes</code>，使得 systemd在服务进程推出后仍然认为服务处于激活状态</li>
+</ul></li>
+<li><code>notify</code>：同<code>simple</code>
+<ul>
+<li>但服务就绪后向Systemd发送信号</li>
+</ul></li>
+<li><p><code>idle</code>：其他任务执行完毕才会开始服务</p></li>
+<li><code>dbus</code>：通过D-Bus启动服务
+<ul>
+<li>指定的<code>BusName</code>出现在DBus系统总线上时，Systemd 即认为服务就绪</li>
+</ul></li>
+</ul></li>
+<li><code>WantedBy</code>：服务安装的用户模式，即希望使用服务的用户
+<ul>
+<li><code>multi-user.target</code>：允许多用户使用服务</li>
+</ul></li>
+</ul>
+<h4 id="target"><code>.target</code></h4>
+<p><code>&lt;some_name&gt;.target</code>：可以理解为系统的“状态点”</p>
+<ul>
+<li>target通常包含多个unit
+<ul>
+<li>即包含需要启动的服务的组</li>
+<li>方便启动一组unit</li>
+</ul></li>
+<li><p>启动target即意味将系统置于某个状态点</p></li>
+<li>target可以和传统init启动模式中RunLevel相对应
+<ul>
+<li>但RunLevel互斥，不能同时启动</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>RunLevel</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td><code>runlevel0.target</code>或<code>poweroff.target</code></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td><code>runlevel1.target</code>或<code>rescue.target</code></td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td><code>runlevel2.target</code>或<code>multi-user.target</code></td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td><code>runlevel3.target</code>或<code>multi-user.target</code></td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td><code>runlevel4.target</code>或<code>multi-user.target</code></td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td><code>runlevel5.target</code>或<code>graphical.target</code></td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td><code>runlevel6.target</code>或<code>reboot.target</code></td>
+</tr>
+</tbody>
+</table></li>
+<li><p><code>enable</code>设置某个服务自启动，就是在服务配置<code>.service</code>中 <code>WantedBy</code>、<code>RequiredBy</code>指明的target注册</p>
+<ul>
+<li><code>WantedBy</code>向target对应目录中 <code>/etc/systemd/system/&lt;target_name&gt;.target.wants</code> 添加符号链接</li>
+<li><code>RequiredBy</code>向target对应目录中 <code>/etc/systemd/system/&lt;target_name&gt;.target.required</code> 添加符号链接</li>
+<li><code>systemctl disable &lt;unit&gt;</code>就是移除对应symlink</li>
+</ul></li>
+</ul>
+<h4 id="socket"><code>.socket</code></h4>
+<h3 id="日志">日志</h3>
+<h4 id="etcsystemdjournal.conf"><code>/etc/systemd/journal.conf</code></h4>
+<p>Systemd日志配置文件</p>
+<h2 id="网络">网络</h2>
+<h3 id="ssh">SSH</h3>
+<h4 id="etcsshsshd_config"><code>/etc/ssh/sshd_config</code></h4>
+<p>全局系统ssh配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">RSAAuthentication</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 去掉注释启用RSA认证</span></span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 启用公私钥配对认证方式</span></span><br><span class="line">AuthorizedKeyFile .ssh/authorized_keys</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 设置被认证的公钥存放文件</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 默认为`~/.ssh/authorized_keys`中</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 将其他主机公钥写入其中，即可从其使用密钥认证免密访问</span></span><br></pre></td></tr></table></figure>
+<h4 id="ssh-1"><code>~/.ssh</code></h4>
+<h5 id="authorized_keys"><code>authorized_keys</code></h5>
+<p>在<code>/etc/.ssh/sshd_config</code>中默认的存储其他主机公钥的文件，</p>
+<ul>
+<li>使用在其中的公钥可以使用公钥登陆，无需密码</li>
+<li>必须设置只有root用户有更改权限有效，否则报错</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">---pubkey---</span><br></pre></td></tr></table></figure>
+<h5 id="id_rsa.pub"><code>id_rsa.pub</code></h5>
+<p>生成公钥</p>
+<h5 id="config"><code>config</code></h5>
+<p>ssh访问远程主机配置</p>
+<ul>
+<li>每条配置对应一个ssh连接，配置后可以使用<code>link_name</code>直接 连接</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Host &lt;link_name&gt;</span><br><span class="line">	HostName &lt;host&gt;</span><br><span class="line">	User &lt;user_name&gt;</span><br><span class="line">	Port &lt;port&gt;</span><br><span class="line">	IdentityFile &lt;private_key&gt;</span><br><span class="line">	IdentitiesOnly yes</span><br><span class="line">	PreferredAuthentications publickey</span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认私钥文件为：<code>~/.ssh/id_rsa</code>，可以指定特定私钥</li>
+</ul>
+<blockquote>
+<ul>
+<li>此文件中配置是ssh协议参数封装，适合任何可以使用ssh协议 场合：<code>ssh</code>、<code>git</code>、<code>scp</code></li>
+</ul>
+</blockquote>
+<h3 id="host">HOST</h3>
+<h4 id="etchostname"><code>/etc/hostname</code></h4>
+<p>设置主机名称，直接填写字符串即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PC-NAME</span><br></pre></td></tr></table></figure>
+<h4 id="etchosts"><code>/etc/hosts</code></h4>
+<p>ipd地址-主机名称映射</p>
+<ul>
+<li>理论上说，这里主机名称应该是本机称呼，不要求其他主机 <code>/etc/hostname</code>与这里的主机名一致</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1 localhost</span><br><span class="line">xxx.xxx.xxx.xxx name</span><br><span class="line">xxx.xxx.xxx.xxx domain.name</span><br></pre></td></tr></table></figure>
+<h3 id="dns-resolver">DNS Resolver</h3>
+<h4 id="etcresolv.conf"><code>/etc/resolv.conf</code></h4>
+<p>域名解析器（resolver）（DNS客户机）配置文件</p>
+<ul>
+<li>设置DNS服务器IP地址、DNS域名</li>
+<li>包含主机域名搜索顺序</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nameserver		114.114.114.114		# DNS服务器IP地址</span><br><span class="line">domain			localhost			# 本地域名</span><br><span class="line">search			search_list			# 域名搜索列表</span><br><span class="line">sortlist							# 允许将得到域名结果进行排序</span><br></pre></td></tr></table></figure>
+<p>说明</p>
+<ul>
+<li><code>nameserver</code>：可以有多<strong>行</strong>，每行一个ip地址，查询时按照 顺序依次查找</li>
+<li><code>domain</code>：声明主机域名
+<ul>
+<li>查询无域名主机时需要使用</li>
+<li>邮件系统需要使用</li>
+<li>未配置则使用主机名</li>
+</ul></li>
+<li><code>search</code>：其参数指明域名查询顺序
+<ul>
+<li>查询无域名主机时，将在其参数声明域中分别查找</li>
+<li><code>domain</code>、<code>search</code>不共存，同时存在时，后者覆盖前者</li>
+</ul></li>
+<li><code>sortlist</code>：对得到的域名结果进行特定排序
+<ul>
+<li>参数未网络/掩码对时，允许任意排列顺序</li>
+</ul></li>
+</ul>
+<h2 id="硬件">硬件</h2>
+<h3 id="磁盘挂载">磁盘挂载</h3>
+<h4 id="etcfstab"><code>/etc/fstab</code></h4>
+<p>包含存储设备、文件系统信息，配置<strong>自动挂载</strong>各种文件系统格式 硬盘、分区、可移动设备、远程设备（即<code>mount</code>参数存盘）</p>
+<ul>
+<li><code>&lt;fs&gt;</code>：挂载设备/分区名
+<ul>
+<li><code>/dev/sda</code>：设备/分区名</li>
+<li><code>UUID=xxxxx</code>：使用设备UUID值表示设备</li>
+<li><code>tmpfs</code>：tmpfs分区，默认被设置为内存的一半（可在 <code>&lt;opts&gt;</code>中添加<code>size=2G</code>指定最大空间）</li>
+</ul>
+<blockquote>
+<ul>
+<li>所有设备/分区都有唯一UUID，由文件系统生成工具<code>mkfs.</code> 创建文件系统时生成</li>
+</ul>
+</blockquote></li>
+<li><code>&lt;mountpoint&gt;</code>：挂载点，路径名（文件夹）
+<ul>
+<li><code>/</code></li>
+<li><code>/boot</code></li>
+</ul>
+<blockquote>
+<ul>
+<li>路径名中包含可以空格使用<code>\040</code>（8进制）表示</li>
+</ul>
+</blockquote></li>
+<li><code>&lt;type&gt;</code>：文件系统类型
+<ul>
+<li><code>ext2</code></li>
+<li><code>ext3</code></li>
+<li><code>reiserfs</code></li>
+<li><code>xfs</code></li>
+<li><code>jfs</code></li>
+<li><code>iso9660</code></li>
+<li><code>vfat</code></li>
+<li><code>ntfs</code></li>
+<li><code>swap</code></li>
+<li><code>tmpfs</code>：临时文件系统，驻留在交换分区、内存中
+<ul>
+<li>提高文件访问速度，保证重启时自动清除这些文件</li>
+<li>常用tmpfs的目录：<code>/tmp</code>、<code>/var/lock</code>、<code>/var/run</code></li>
+</ul></li>
+<li><code>auto</code>：由<code>mount</code>自动判断</li>
+</ul></li>
+<li><p><code>&lt;opts&gt;</code>：文件系统参数</p>
+<ul>
+<li><code>noatime</code>：关闭atime特性
+<ul>
+<li>不更新文件系统上inode访问记录，提高性能，否则 即使从缓冲读取也会产生磁盘写操作</li>
+<li>老特性可以放心关闭，能减少<em>loadcycle</em></li>
+<li>包含<code>nodiratime</code></li>
+</ul></li>
+<li><p><code>nodiratime</code>：不更新文件系统上目录inode访问记录</p></li>
+<li><code>relatime</code>：实时更新inode访问记录，只有记录中访问 时间早于当前访问才会被更新
+<ul>
+<li>类似<code>noatime</code>，但不会打断其他程序探测，文件在 上次访问后是否需被修改（的进程）</li>
+</ul></li>
+<li><code>auto</code>：在启动、终端中输入<code>$ mount -a</code>时自动挂载</li>
+<li><p><code>noauto</code>：手动挂载</p></li>
+<li><code>ro</code>：挂载为自读权限</li>
+<li><p><code>rw</code>：挂载为读写权限</p></li>
+<li><code>exec</code>：设备/分区中文件<strong>可执行</strong></li>
+<li><p><code>noexec</code>：文件不可以执行</p></li>
+<li><code>sync</code>：所有I/O将以同步方式进行</li>
+<li><p><code>async</code>：所有I/O将以异步方式进行</p></li>
+<li><code>user</code>：允许任何用户挂载设备，默认包含 <code>noexec,nosuid,nodev</code>（可被覆盖）</li>
+<li><p><code>nouser</code>：只允许root用户挂载</p></li>
+<li><code>suid</code>：允许<em>set-user/group-id</em>（固化权限）执行 &gt; - <code>set-user/group-id</code>参见<code>linux/shell/config_files</code></li>
+<li><p><code>nosuid</code>：不允许<em>set-user/group-id</em>权限位</p></li>
+<li><code>dev</code>：解释文件系统上的块特殊设备</li>
+<li><p><code>nodev</code>：不解析文件系统上块特殊设备</p></li>
+<li><code>umask</code>：设备/分区中<strong>文件/目录</strong>默认权限掩码 &gt; - 权限掩码参见<code>linux/kernel/file_system.md</code></li>
+<li><code>dmask</code>：设备/分区中<strong>目录</strong>默认权限掩码</li>
+<li><p><code>fmask</code>：设备/分区中<strong>普通文件</strong>默认权限掩码</p></li>
+<li><code>nofail</code>：设备不存在则直接忽略不报错
+<ul>
+<li>常用于配置外部设备</li>
+</ul></li>
+<li><p><code>defaults</code>：默认配置，等价于 <code>rw,suid,exec,auto,nouser,async</code></p></li>
+</ul></li>
+<li><code>&lt;dump&gt;</code>：决定是否dump备份
+<ul>
+<li><code>1</code>：dump对此文件系统做备份</li>
+<li><code>0</code>：dump忽略此文件系统</li>
+</ul>
+<blockquote>
+<ul>
+<li>大部分用户没有安装dump，应该置0</li>
+</ul>
+</blockquote></li>
+<li><code>&lt;pass&gt;</code>：是否以fsck检查扇区，按数字递增依次检查（相同 则同时检查）
+<ul>
+<li><code>0</code>：不检验（如：swap分区、<code>/proc</code>文件系统）</li>
+<li><code>1</code>：最先检验（一般根目录分区配置为<code>1</code>）</li>
+<li><code>2</code>：在1之后检验（其他分区配置为<code>2</code>）</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><code>/etc/fstab</code>是启动时配置文件，实际文件系统挂载是记录到 <code>/etc/mtab</code>、<code>/proc/mounts</code>两个文件中</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>根目录<code>/</code>必须挂载，必须先于其他的挂载点挂载</li>
+</ul>
+</blockquote>
+<h2 id="系统日志">系统日志</h2>
+<h3 id="varlog"><code>/var/log</code></h3>
+<ul>
+<li><code>bootstrap.log</code>：系统引导相关信息</li>
+<li><code>cron</code>：系统调度执行信息</li>
+<li><code>dmesg</code>：内核启动时信息，包括硬件、文件系统</li>
+<li><code>maillog</code>：邮件服务器信息</li>
+<li><code>message</code>：系统运行过程相关信息，包括IO、网络</li>
+<li><code>secure</code>：系统安全信息</li>
+</ul>
+<h2 id="标准输出">标准输出</h2>
+<h3 id="文件状态">文件状态</h3>
+<figure>
+<img src="/imgs/ls_results.png" alt="ls_results.png"><figcaption>ls_results.png</figcaption>
+</figure>
+<ul>
+<li><p>文件权限：包括10个字符</p>
+<ul>
+<li>第1字符：文件类型
+<ul>
+<li><code>-</code>；普通文件</li>
+<li><code>d</code>：目录</li>
+<li><code>l</code>：link，符号链接</li>
+<li><code>s</code>：socket</li>
+<li><code>b</code>：block，块设备</li>
+<li><code>c</code>：charactor，字符设备（流）</li>
+<li><code>p</code>：FIFO Pipe</li>
+</ul></li>
+<li>第2-4字符：owner，文件属主权限</li>
+<li>第5-7字符：group，同组用户权限</li>
+<li>第8-10字符：other，其他用户权限
+<ul>
+<li>权限分别为<code>r</code>读、<code>w</code>写、<code>x</code>执行</li>
+<li>相应位置为<code>-</code>表示没有此权限</li>
+</ul></li>
+<li>执行位还可能是其他特殊字符
+<ul>
+<li>user<code>s</code>：文件set-user-id、执行权限同时被置位</li>
+<li>group<code>s</code>：文件set-group-id、执行权限同时被置位</li>
+<li>user<code>S</code>：文件set-user-id被置位，执行权限未置位</li>
+<li>group<code>S</code>：文件set-group-id被置位，执行权限未置位</li>
+<li>other<code>t</code>：文件sticky bit、执行权限均被置位</li>
+<li>other<code>T</code>：文件sticky bit被置位、执行权限未置位</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>关于权限具体含义，参见<code>linux/kernel/file_system</code></li>
+<li>权限设置，参见<code>linux/shell/cmd_fds</code></li>
+</ul>
+</blockquote></li>
+<li><p>文件数量</p>
+<ul>
+<li>一般文件：硬链接数目</li>
+<li>目录：目录中第一级子目录个数</li>
+</ul></li>
+<li><p>文件属主名</p></li>
+<li><p>文件属主默认用户组名</p></li>
+<li><p>文件大小（Byte）</p></li>
+<li><p>最后修改时间</p></li>
+<li><p>文件名</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Shell命令/" rel="tag"># Shell命令</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/linux/shell/commands/" rel="next" title="Shell命令">
+                <i class="fa fa-chevron-left"></i> Shell命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/linux/shell/cmd_fds/" rel="prev" title="文件、目录">
+                文件、目录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户组"><span class="nav-number">1.</span> <span class="nav-text">用户、组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户信息"><span class="nav-number">1.1.</span> <span class="nav-text">用户信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#etcpasswd"><span class="nav-number">1.1.1.</span> <span class="nav-text">/etc/passwd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etcshadow"><span class="nav-number">1.1.2.</span> <span class="nav-text">/etc/shadow</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etcgroup"><span class="nav-number">1.1.3.</span> <span class="nav-text">/etc/group</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etcgshadow"><span class="nav-number">1.1.4.</span> <span class="nav-text">/etc/gshadow</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etcsudoers"><span class="nav-number">1.1.5.</span> <span class="nav-text">/etc/sudoers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户配置文件"><span class="nav-number">1.2.</span> <span class="nav-text">用户配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#profile"><span class="nav-number">1.2.1.</span> <span class="nav-text">profile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rc"><span class="nav-number">1.2.2.</span> <span class="nav-text">rc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.2.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etcenvironment"><span class="nav-number">1.2.4.</span> <span class="nav-text">/etc/environment</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务作业"><span class="nav-number">2.</span> <span class="nav-text">任务、作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab文件"><span class="nav-number">2.1.</span> <span class="nav-text">Crontab文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#varspoolcroncrontabsuser_name"><span class="nav-number">2.1.1.</span> <span class="nav-text">/var/spool/cron/crontabs/user_name</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etccrontabs"><span class="nav-number">2.1.2.</span> <span class="nav-text">/etc/crontabs</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统设置etcsysconfig"><span class="nav-number">3.</span> <span class="nav-text">系统设置/etc/sysconfig</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#etcsysconfignetwork-scripts"><span class="nav-number">3.1.</span> <span class="nav-text">/etc/sysconfig/network[-scripts]</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一般linux"><span class="nav-number">3.1.1.</span> <span class="nav-text">一般linux</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#centos7网卡名称"><span class="nav-number">3.1.2.</span> <span class="nav-text">CentOS7网卡名称</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#恢复传统命名方式"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">恢复传统命名方式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#centos7配置格式"><span class="nav-number">3.1.3.</span> <span class="nav-text">CentOS7配置格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统引导"><span class="nav-number">4.</span> <span class="nav-text">系统引导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#grub"><span class="nav-number">4.1.</span> <span class="nav-text">Grub</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#etcsysconfiggrub"><span class="nav-number">4.1.1.</span> <span class="nav-text">/etc/sysconfig/grub</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务"><span class="nav-number">5.</span> <span class="nav-text">服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统服务"><span class="nav-number">5.1.</span> <span class="nav-text">系统服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#service"><span class="nav-number">5.1.1.</span> <span class="nav-text">.service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#target"><span class="nav-number">5.1.2.</span> <span class="nav-text">.target</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#socket"><span class="nav-number">5.1.3.</span> <span class="nav-text">.socket</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志"><span class="nav-number">5.2.</span> <span class="nav-text">日志</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#etcsystemdjournal.conf"><span class="nav-number">5.2.1.</span> <span class="nav-text">/etc/systemd/journal.conf</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">6.</span> <span class="nav-text">网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh"><span class="nav-number">6.1.</span> <span class="nav-text">SSH</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#etcsshsshd_config"><span class="nav-number">6.1.1.</span> <span class="nav-text">/etc/ssh/sshd_config</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ssh-1"><span class="nav-number">6.1.2.</span> <span class="nav-text">~/.ssh</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#authorized_keys"><span class="nav-number">6.1.2.1.</span> <span class="nav-text">authorized_keys</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#id_rsa.pub"><span class="nav-number">6.1.2.2.</span> <span class="nav-text">id_rsa.pub</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#config"><span class="nav-number">6.1.2.3.</span> <span class="nav-text">config</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#host"><span class="nav-number">6.2.</span> <span class="nav-text">HOST</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#etchostname"><span class="nav-number">6.2.1.</span> <span class="nav-text">/etc/hostname</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etchosts"><span class="nav-number">6.2.2.</span> <span class="nav-text">/etc/hosts</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-resolver"><span class="nav-number">6.3.</span> <span class="nav-text">DNS Resolver</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#etcresolv.conf"><span class="nav-number">6.3.1.</span> <span class="nav-text">/etc/resolv.conf</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件"><span class="nav-number">7.</span> <span class="nav-text">硬件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#磁盘挂载"><span class="nav-number">7.1.</span> <span class="nav-text">磁盘挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#etcfstab"><span class="nav-number">7.1.1.</span> <span class="nav-text">/etc/fstab</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统日志"><span class="nav-number">8.</span> <span class="nav-text">系统日志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#varlog"><span class="nav-number">8.1.</span> <span class="nav-text">/var/log</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标准输出"><span class="nav-number">9.</span> <span class="nav-text">标准输出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件状态"><span class="nav-number">9.1.</span> <span class="nav-text">文件状态</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

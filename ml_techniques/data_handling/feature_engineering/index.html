@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Feature Engineering">
+<meta name="keywords" content="机器学习,数据处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Feature Engineering">
+<meta property="og:url" content="https://xyy15926.github.io/ml_techniques/data_handling/feature_engineering/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Feature Engineering">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/feature_selection_procedure.png">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Feature Engineering">
+<meta name="twitter:description" content="Feature Engineering">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/feature_selection_procedure.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_techniques/data_handling/feature_engineering/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Feature Engineering | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_techniques/data_handling/feature_engineering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Feature Engineering
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/数据处理/" itemprop="url" rel="index"><span itemprop="name">数据处理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Feature Engineering</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="综述">综述</h2>
+<p>特征工程：对原始数据进行一系列工程处理，将其提炼为特征，作为 输入供算法、模型使用</p>
+<ul>
+<li><p>本质上：表示、展示数据的过程</p></li>
+<li>目的：去除原始数据中的杂质、冗余，设计更高效的特征以刻画 求解的问题、预测模型之间的关系
+<ul>
+<li>把原始数据转换为可以很好描述数据特征</li>
+<li>建立在其上的模型性能接近最优</li>
+</ul></li>
+<li><p>方式：<strong>利用数据领域相关知识</strong>、<strong>人为设计输入变量</strong></p></li>
+<li><p>特征工程重要性：特征越好</p>
+<ul>
+<li>模型选择灵活性越高：较好特征在简单模型上也能有较好 效果，允许选择简单模型</li>
+<li>模型构建越简单：较好特征即使在超参不是最优时效果也 不错，不需要花时间寻找最优参数</li>
+<li>模型性能越好
+<ul>
+<li>排除噪声特征</li>
+<li>避免过拟合</li>
+<li>模型训练、预测更快</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>数据、特征决定了机器学习的上限，模型、算法只是逼近 上限</li>
+</ul>
+</blockquote></li>
+</ul>
+<h2 id="feature-selection"><em>Feature Selection</em></h2>
+<h3 id="特征选择">特征选择</h3>
+<p>特征选择：从特征集合中选择<strong>最具统计意义</strong>的特征子集</p>
+<blockquote>
+<ul>
+<li><em>relevant feature</em>：相关特征，对当前学习任务有用的属性、 特征 &gt; - 特征选择最重要的是确保不丢失重要特征</li>
+<li><em>irrelevant feature</em>：无关特征，对当前学习任务无用的 属性、特征</li>
+<li><em>redundant feature</em>：冗余特征，包含的信息可以由其他特征 中推演出来 &gt; - 冗余特征通常不起作用，剔除可以减轻模型训练负担 &gt; - 若冗余特征恰好对应完成学习任务所需要的中间概念，则 是有益的，可以降低学习任务的难度</li>
+</ul>
+</blockquote>
+<ul>
+<li>特征选择会降低模型预测能力，因为被剔除特征中可能包含有效 信息
+<ul>
+<li>保留尽可能多特征，模型性能会提升，模型更复杂、计算 复杂度同样提升</li>
+<li>剔除尽可能多特征，模型性能会下降，模型更简单、降低 计算复杂度</li>
+</ul></li>
+<li>特征选择原因
+<ul>
+<li>维数灾难问题：仅需要选择一部分特征构建模型，可以减轻 维数灾难问题，从此意义上特征选择和降维技术有相似动机</li>
+<li>剔除无关特征可以降低学习任务难度，简化模型、降低计算 复杂度</li>
+</ul></li>
+<li>特征选择方法可以分解为
+<ul>
+<li>特征子集搜索</li>
+<li>特征子集评价：能判断划分之间差异的机制都能作为 特征子集的准则</li>
+</ul></li>
+</ul>
+<h4 id="特征选择过程">特征选择过程</h4>
+<figure>
+<img src="/imgs/feature_selection_procedure.png" alt="feature_selection_procedure"><figcaption>feature_selection_procedure</figcaption>
+</figure>
+<ul>
+<li><em>generation procedure</em>：产生过程，搜索特征子集</li>
+<li><em>evaluation function</em>：评价函数，评价特征子集优劣</li>
+<li><em>stopping criterion</em>：停止准则，与评价函数相关的阈值， 评价函数达到与阈值后可以停止搜索</li>
+<li><em>validation procedure</em>：验证过程，在验证数据集上验证选择 特征子集的有效性</li>
+</ul>
+<h4 id="特征子集搜索">特征子集搜索</h4>
+<ul>
+<li>遍历：从初始特征集合选择包含所有重要信息的特征子集
+<ul>
+<li>适合没有先验（问题相关领域）知识的情况</li>
+<li>特征数量稍多会出现组合爆炸</li>
+</ul></li>
+<li>迭代：产生候选子集、评价优劣，基于评价结果产生下个候选 子集
+<ul>
+<li>不断迭代，直至<strong>无法找到更好的后续子集</strong></li>
+<li>需要评价得子集数量较少</li>
+<li>可能无法找到最优子集</li>
+</ul></li>
+</ul>
+<h6 id="迭代搜索">迭代搜索</h6>
+<ul>
+<li><p>给定特征<span class="math inline">\(A=\{A_1, A_2, \cdots, A_d\}\)</span>，将每个特征视为 候选子集（每个子集只有一个元素），对d个候选子集进行评价</p></li>
+<li><p>在上轮选定子集中加入特征，选择包含两个特征的最优候选子集</p></li>
+<li><p>假定在<span class="math inline">\(k+1\)</span>轮时，最优特征子集不如上轮最优的特征子集，则 停止生成候选子集，将上轮选定特征子集作为特征选择结果</p></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Forward Feature Elimination</em>：前向特征选择，逐渐增加 相关特征</li>
+<li><em>Backward Feature Elimination</em>：后向特征选择，从完整特征 集合开始，每次尝试去掉无关特征，逐渐剔除特征</li>
+<li><em>Bidirectional Feature Elimination</em>：双向特征选择，结合 前向、后向搜索 &gt; - 每轮逐渐增加选定的相关特征，特征在后续迭代中确定不会被 去除，同时减少无关特征</li>
+</ul>
+</blockquote>
+<h4 id="特征子集评价">特征子集评价</h4>
+<p>特征子集评价：能判断划分之间差异的机制都能作为特征子集的选择 准则</p>
+<h6 id="数值特征">数值特征</h6>
+<ul>
+<li><p>方差：计算各特征方差，选择方差大于阈值的特征</p></li>
+<li><p>Pearson相关系数：计算各特征对目标值的Pearson相关系数、 相关系数P值，选择相关系数大于阈值者</p></li>
+<li><p>距离指标</p></li>
+</ul>
+<h6 id="分类特征">分类特征</h6>
+<ul>
+<li><p>卡方统计量：计算特征和目标之间卡方统计量，选择和目标变量 显著相关者</p></li>
+<li><p>Gini指数：计算特征Gini指数，选择Gini指数较大者</p></li>
+<li><p>IG信息增益/互信息：计算特征信息增益，选择信息增益较大者</p></li>
+<li><p>信息增益比</p></li>
+</ul>
+<h3 id="filter"><em>Filter</em></h3>
+<p>过滤式：对数据集进行的特征选择过程与后续学习器无关，即设计 统计量过滤特征，不考虑后续学习器问题</p>
+<ul>
+<li><p>通过分析特征子集内部特点衡量特征优劣，描述自变量、目标 变量的关联</p></li>
+<li>特点
+<ul>
+<li>时间效率高</li>
+<li>对过拟合问题较稳健</li>
+<li>倾向于选择<strong>单个</strong>、<strong>冗余</strong>特征，没有考虑特征之间 相关性</li>
+</ul></li>
+</ul>
+<h4 id="单特征过滤">单特征过滤</h4>
+<p>单特征过滤：直接选择合适特征子集评价标准处理各特征，选择满足 要求特征</p>
+<h4 id="relief-relavant-features"><em>Relief: Relavant Features</em></h4>
+<p>Relief方法：设置相关统计量度量特征重要性</p>
+<ul>
+<li><p>特征子集对应统计量中每个分量对应一个初始特征，特征子集 重要性由子集中每个特征对应的相关统计量分量之和决定</p></li>
+<li>特征选择方法
+<ul>
+<li>指定阈值k：选择比k大的相关统计量分量对应特征</li>
+<li>指定特征个数m：选择相关统计量分量最大的m个特征</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>只适合二分类问题，扩展变体<em>Relief-F</em>可以处理多分类问题</li>
+</ul>
+</blockquote>
+<h3 id="wrapper"><em>Wrapper</em></h3>
+<p>包裹式：把最终要使用的<strong>学习器性能作为特征子集评价标准</strong>， 为给定学习器选择最有利其性能、特化的特征子集</p>
+<ul>
+<li>优点
+<ul>
+<li>直接针对特定学习器进行优化</li>
+<li>考虑了特征之间的关联性，通常训练效果较过滤式好</li>
+</ul></li>
+<li>缺点
+<ul>
+<li>特征选择过程中需要多次训练学习器，计算效率较低</li>
+<li>观测数据较少时容易过拟合</li>
+</ul></li>
+</ul>
+<h4 id="las-vegas-wrapper"><em>Las Vegas Wrapper</em></h4>
+<p><em>LVW</em>：在<em>Las Vegas Method</em>框架下使用随机策略进行子集搜索， 以最终分类器误差作为特征子集评价标准</p>
+<ul>
+<li>包含停止条件控制参数T，避免每次子集评价训练特征子集开销 过大</li>
+<li>若初始特征数量很多、T设置较大、每轮训练时间较长，算法 执行很长时间都不会停止
+<ul>
+<li>LVM可能无法得到解（拉斯维加斯算法本身性质）</li>
+</ul></li>
+</ul>
+<h4 id="递归特征消除法">递归特征消除法</h4>
+<p>递归特征消除法：使用基模型进行多轮训练，每轮训练消除若干权值 系数的特征，再基于特征集进行下一轮训练</p>
+<h4 id="子集回归">子集回归</h4>
+<ul>
+<li>前向变量选择</li>
+<li>后向变量选择</li>
+<li>最优子集选择</li>
+</ul>
+<h3 id="embeded"><em>Embeded</em></h3>
+<p>嵌入式：将特征选择、学习器训练过程融合，在同一优化过程中同时 完成，即学习器训练过程中自动进行特征选择</p>
+<ul>
+<li>优点：兼具筛选器、封装器的优点</li>
+<li>缺点：需要明确<strong>好的选择</strong></li>
+</ul>
+<h4 id="正则化约束">正则化约束</h4>
+<p><span class="math inline">\(L_1\)</span>、<span class="math inline">\(L_2\)</span>范数：主要用于线性回归、逻辑回归、SVM等算法</p>
+<ul>
+<li>Ridge：<span class="math inline">\(L_2\)</span>范数</li>
+<li>Lasso：<span class="math inline">\(L_1\)</span>范数
+<ul>
+<li>除降低过拟合风险，还容易获得稀疏解</li>
+<li>参数<span class="math inline">\(\lambda\)</span>越大，稀疏性越大，被选择特征越少</li>
+</ul></li>
+<li>SVM、逻辑回归
+<ul>
+<li>参数<span class="math inline">\(c\)</span>越小，稀疏性越大，被选择特征越少</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>ml_techniques/#todo</em></li>
+</ul>
+</blockquote>
+<h4 id="决策树">决策树</h4>
+<p>决策树思想：决策树自上而下选择分裂特征就是特征选择</p>
+<ul>
+<li>所有树结点划分属性根据先后顺序组成的集合就是选择出来的 特征子集</li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>ml_models/unlinear_models/decision_tree</em></li>
+</ul>
+</blockquote>
+<h4 id="神经网络">神经网络</h4>
+<p>神经网络：训练时同时处理贡献度问题，不重要特征权重被剔除</p>
+<h2 id="feature-extractionfeature-construction"><em>Feature Extraction</em>/<em>Feature Construction</em></h2>
+<p>特征提取/构建：把原始数据中转换为具有物理、统计学意义特征， 构建新的人工特征</p>
+<ul>
+<li>主观要求高
+<ul>
+<li>对问题实际意义、相关领域有研究：思考问题形式、数据 结构</li>
+<li>对数据敏感：需要观察原始数据</li>
+<li>分析能力强</li>
+</ul></li>
+<li>目的：自动构建新特征
+<ul>
+<li>信号表示：抽取后特征尽可能丢失较少信息</li>
+<li>信号分类：抽取后特征尽可能提高分类准确率</li>
+</ul></li>
+<li>方法
+<ul>
+<li>组合属性：混合属性创建新特征</li>
+<li>切分属性：分解、切分原有特征创建新特征，如将时间戳 分割为日期、上下午</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>特征选择：表示出每个特征对于模型构建的重要性</li>
+<li>特征提取：有时能发现更有意义的特征属性</li>
+<li>有时从额外划分特征构建，其相较于特征提取，需要人为的手工 构建特征，偏经验、规则</li>
+</ul>
+</blockquote>
+<h3 id="通用特征提取">通用特征提取</h3>
+<blockquote>
+<ul>
+<li>部分详见<em>ml_techniques/data_handling/data_preprocessing</em></li>
+</ul>
+</blockquote>
+<h4 id="数值型">数值型</h4>
+<ul>
+<li>幅度调整：提高SGD收敛速度
+<ul>
+<li>归一化</li>
+<li>标准化</li>
+</ul></li>
+<li>log数据域变化</li>
+<li>统计值</li>
+<li>数据离散化：连续值分段
+<ul>
+<li>等距切分：各类分布不均</li>
+<li>分位数切分：各类分布均匀，但异质性不均</li>
+</ul></li>
+<li>平方、开根：增加非线性化</li>
+</ul>
+<h4 id="分类型">分类型</h4>
+<ul>
+<li><em>one-hot</em>编码：赋予各特征等权</li>
+<li>hash技巧：针对文本类别数据，统计文本词表、倾向</li>
+<li>多分类转二分类：输入变量类别合并，超类
+<ul>
+<li><em>twoing</em>策略：使两个超类差异足够大的合并点（分割点）</li>
+<li><em>ordering</em>策略：对有序类型，只有两个连续基类才能合并</li>
+</ul></li>
+</ul>
+<h4 id="时间戳">时间戳</h4>
+<ul>
+<li>视为连续型：持续时间、间隔时间</li>
+<li>视为离散值：一年中某些时间段</li>
+</ul>
+<h4 id="统计型">统计型</h4>
+<ul>
+<li>分位线</li>
+<li>比例</li>
+<li>次序</li>
+</ul>
+<h4 id="组合特征">组合特征</h4>
+<ul>
+<li>特征拼接：GBDT生成特征组合路径</li>
+</ul>
+<h3 id="降维">降维</h3>
+<h4 id="principal-component-analysis"><em>Principal Component Analysis</em></h4>
+<p><em>PCA</em>：主成分分析，找到数据中主成分，用主成分来表征原始数据 ，达到降维目的</p>
+<ul>
+<li>思想：通过<strong>坐标轴转换，寻找数据分布的最优子空间</strong>
+<ul>
+<li>特征向量可以理解为坐标转换中新坐标轴方向</li>
+<li>特征值表示对应特征向量方向上方差
+<ul>
+<li>特征值越大、方差越大、信息量越大</li>
+<li>抛弃较小方差特征</li>
+</ul></li>
+</ul></li>
+<li>PCA缺陷：线性降维方法
+<ul>
+<li><em>KPCA</em>：核主成分分析，核映射对PCA进行扩展</li>
+<li>流形映射降维方法：等距映射、局部线性嵌入、拉普拉斯 特征映射</li>
+</ul></li>
+</ul>
+<h5 id="步骤">步骤</h5>
+<ul>
+<li>对样本数据进行中心化处理（和统计中处理不同）</li>
+<li>求样本协方差矩阵</li>
+<li>对协方差矩阵进行特征值分解，将特征值从大至小排列</li>
+<li>取前p个最大特征值对应特征向量作为新特征，实现降维</li>
+</ul>
+<h4 id="linear-discriminant-analysis"><em>Linear Discriminant Analysis</em></h4>
+<p><em>LDA</em>：线性判别分析，寻找投影方向，使得投影后样本尽可能按照 原始类别分开，即寻找可以最大化类间距离、最小化类内距离的方向</p>
+<ul>
+<li><p>相较于PCA，LDA考虑数据的类别信息，不仅仅是降维，还希望 实现“分类”</p></li>
+<li>优点：相较于PCA
+<ul>
+<li>LDA更适合处理带有类别信息的数据</li>
+<li>模型对噪声的稳健性更好</li>
+</ul></li>
+<li>缺点
+<ul>
+<li>对数据分布有很强假设：各类服从正太分布、协方差相等， 实际数据可能不满足</li>
+<li>模型简单，表达能力有限，但可以通过核函数扩展LDA处理 分布比较复杂的数据</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>Fisher判别分析</li>
+</ul>
+</blockquote>
+<h4 id="independent-component-analysis"><em>Independent Component Analysis</em></h4>
+<p><em>ICA</em>：独立成分分析，寻找线性变换<span class="math inline">\(z=Wx\)</span>，使得<span class="math inline">\(z\)</span>各特征分量 之间独立性最大</p>
+<ul>
+<li>思想
+<ul>
+<li>假设随机信号<span class="math inline">\(x\)</span>服从模型 <span class="math display">\[x = As\]</span> &gt; - <span class="math inline">\(s\)</span>：未知源信号，分量相互独立 &gt; - <span class="math inline">\(A\)</span>：未知混合矩阵</li>
+<li>ICA通过观察<span class="math inline">\(x\)</span>估计混合矩阵<span class="math inline">\(A\)</span>、源信号<span class="math inline">\(s\)</span>，认为源信号 携带更多信息</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>若原信号非高斯，则分解唯一，否则可能有无穷多分解</li>
+<li>因子分析，也称<em>Blind Source Separation</em>（盲源分离）</li>
+</ul>
+</blockquote>
+<h5 id="算法">算法</h5>
+<ul>
+<li>大多数ICA算法需要进行数据预处理：先用PCA得到主成分<span class="math inline">\(Y\)</span>， 再把各个主成分各分量标准化得到<span class="math inline">\(Z\)</span>满足
+<ul>
+<li><span class="math inline">\(Z\)</span>各分量不相关</li>
+<li><span class="math inline">\(Z\)</span>各分量方差为1</li>
+</ul></li>
+<li><em>FastICA</em>算法：寻找方向<span class="math inline">\(w\)</span>使得随机变量<span class="math inline">\(w^T z\)</span>某种 “非高斯性”度量最大化
+<ul>
+<li>四阶矩</li>
+</ul></li>
+</ul>
+<h3 id="图像特征提取">图像特征提取</h3>
+<ul>
+<li>提取边缘、尺度不变特征变换特征</li>
+</ul>
+<blockquote>
+<ul>
+<li>以下是传统的图像特征提取方法，现在应该都是CNN进行特征 提取、分类</li>
+<li>详情参见<em>machine_learning/cv</em></li>
+</ul>
+</blockquote>
+<h4 id="lbp特征"><em>LBP</em>特征</h4>
+<ul>
+<li><em>Sobel Operator</em></li>
+<li><em>Laplace Operator</em></li>
+<li><em>Canny Edge Detector</em></li>
+</ul>
+<h4 id="基于角点">基于角点</h4>
+<ul>
+<li><em>Moravec</em></li>
+<li><em>Harris</em></li>
+<li><em>GoodFeaturesToTrack</em></li>
+<li><em>FAST</em></li>
+</ul>
+<h4 id="基于尺度空间">基于尺度空间</h4>
+<ul>
+<li><em>Scale-Invariant Feature Transform</em></li>
+<li><em>Speeded Up Robust Feature</em></li>
+<li><em>Brief</em></li>
+<li><em>Oriented Brief</em></li>
+</ul>
+<h4 id="hog特征"><em>HOG</em>特征</h4>
+<p>方向梯度直方图特征：通过计算、统计图像局部区域梯度方向直方图 实现特征描述</p>
+<h5 id="步骤-1">步骤</h5>
+<ul>
+<li>归一化处理：图像转换为灰度图像，再利用伽马校正实现
+<ul>
+<li>提高图像特征描述对光照、环境变量稳健性</li>
+<li>降低图像局部阴影、局部曝光、纹理失真</li>
+<li>尽可能抵制噪声干扰</li>
+</ul></li>
+<li>计算图像梯度</li>
+<li>统计梯度方向</li>
+<li>特征向量归一化（块内）
+<ul>
+<li>克服光照不均匀变化及前景、背景对比差异</li>
+</ul></li>
+<li>生成特征向量</li>
+</ul>
+<h3 id="文本特征提取">文本特征提取</h3>
+<blockquote>
+<ul>
+<li>具体参见<em>ml_specification/natural_language_processing/#todo</em></li>
+</ul>
+</blockquote>
+<h4 id="词袋模型">词袋模型</h4>
+<p>词袋模型：将文本以词为单位切分token化</p>
+<ul>
+<li>文章可以表示为稀疏长向量，向量每个维度代表一个单词
+<ul>
+<li>针对有序语句，将单词两两相连</li>
+<li>维度权重反映单词在原文章中重要程度
+<ul>
+<li>通常使用<em>TF-IDF</em>统计量表示词权重</li>
+</ul></li>
+</ul></li>
+<li><p><em>TF-IDF</em></p>
+<p><span class="math display">\[\begin{align*}
+TF-IDF(t, d) &amp; = TF(t, d) * IDF(t) \\
+IDF(t) &amp; = log \frac {文章总数}
+    {包含单词t的文章总数 + 1}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(TF(t, d)\)</span>：单词<span class="math inline">\(t\)</span>在文档<span class="math inline">\(d\)</span>中出现的频率</li>
+<li><span class="math inline">\(IDF(t)\)</span>：逆文档频率，衡量单词对表达语义的重要性 &gt; - 若单词在多篇文章中出现过，则可能是通用词汇，对区分 文章贡献较小，<span class="math inline">\(IDF(t)\)</span>较小、权重较小</li>
+</ul>
+</blockquote></li>
+</ul>
+<h4 id="n-gram模型"><em>N-gram</em>模型</h4>
+<p>N-gram模型：将连续出现的<span class="math inline">\(n, n \leq N\)</span>个词组成的词组N-gram 作为单独特征放到向量中</p>
+<ul>
+<li>相较于词袋模型，考虑单词组合意义</li>
+<li><em>word stemming</em>：将不同词性单词统一为同一词干形式
+<ul>
+<li>同一个词可能有多种词性变化，却拥有相同含义</li>
+</ul></li>
+</ul>
+<h4 id="word-embedding模型"><em>Word-Embedding</em>模型</h4>
+<p>词嵌入模型：将每个词都映射为低维空间上的稠密向量</p>
+<ul>
+<li><em>Word2Vec</em>：常用词嵌入模型，底层神经网络
+<ul>
+<li><em>Continuous Bag of Words</em>：根据上下文词语预测当前词 生成概率</li>
+<li><em>Skip-gram</em>：根据当前词预测上下文中各个词的生成概率</li>
+</ul></li>
+<li>实际上直接使用矩阵作为源文本特征作为输入进行训练，难以 得到好结果，往往需要提取、构造更高层特征</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/数据处理/" rel="tag"># 数据处理</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/math_mixin/problems/constrained_optimization/" rel="next" title="凸优化问题">
+                <i class="fa fa-chevron-left"></i> 凸优化问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_mixin/unconstrained_problems_thoeries/" rel="prev" title="无约束优化">
+                无约束优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#综述"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feature-selection"><span class="nav-number">2.</span> <span class="nav-text">Feature Selection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征选择"><span class="nav-number">2.1.</span> <span class="nav-text">特征选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#特征选择过程"><span class="nav-number">2.1.1.</span> <span class="nav-text">特征选择过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征子集搜索"><span class="nav-number">2.1.2.</span> <span class="nav-text">特征子集搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#迭代搜索"><span class="nav-number">2.1.2.0.1.</span> <span class="nav-text">迭代搜索</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征子集评价"><span class="nav-number">2.1.3.</span> <span class="nav-text">特征子集评价</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#数值特征"><span class="nav-number">2.1.3.0.1.</span> <span class="nav-text">数值特征</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#分类特征"><span class="nav-number">2.1.3.0.2.</span> <span class="nav-text">分类特征</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter"><span class="nav-number">2.2.</span> <span class="nav-text">Filter</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单特征过滤"><span class="nav-number">2.2.1.</span> <span class="nav-text">单特征过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#relief-relavant-features"><span class="nav-number">2.2.2.</span> <span class="nav-text">Relief: Relavant Features</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wrapper"><span class="nav-number">2.3.</span> <span class="nav-text">Wrapper</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#las-vegas-wrapper"><span class="nav-number">2.3.1.</span> <span class="nav-text">Las Vegas Wrapper</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#递归特征消除法"><span class="nav-number">2.3.2.</span> <span class="nav-text">递归特征消除法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#子集回归"><span class="nav-number">2.3.3.</span> <span class="nav-text">子集回归</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#embeded"><span class="nav-number">2.4.</span> <span class="nav-text">Embeded</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#正则化约束"><span class="nav-number">2.4.1.</span> <span class="nav-text">正则化约束</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#决策树"><span class="nav-number">2.4.2.</span> <span class="nav-text">决策树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#神经网络"><span class="nav-number">2.4.3.</span> <span class="nav-text">神经网络</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feature-extractionfeature-construction"><span class="nav-number">3.</span> <span class="nav-text">Feature Extraction/Feature Construction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通用特征提取"><span class="nav-number">3.1.</span> <span class="nav-text">通用特征提取</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数值型"><span class="nav-number">3.1.1.</span> <span class="nav-text">数值型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类型"><span class="nav-number">3.1.2.</span> <span class="nav-text">分类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#时间戳"><span class="nav-number">3.1.3.</span> <span class="nav-text">时间戳</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#统计型"><span class="nav-number">3.1.4.</span> <span class="nav-text">统计型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#组合特征"><span class="nav-number">3.1.5.</span> <span class="nav-text">组合特征</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#降维"><span class="nav-number">3.2.</span> <span class="nav-text">降维</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#principal-component-analysis"><span class="nav-number">3.2.1.</span> <span class="nav-text">Principal Component Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#步骤"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">步骤</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#linear-discriminant-analysis"><span class="nav-number">3.2.2.</span> <span class="nav-text">Linear Discriminant Analysis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#independent-component-analysis"><span class="nav-number">3.2.3.</span> <span class="nav-text">Independent Component Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#算法"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图像特征提取"><span class="nav-number">3.3.</span> <span class="nav-text">图像特征提取</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lbp特征"><span class="nav-number">3.3.1.</span> <span class="nav-text">LBP特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基于角点"><span class="nav-number">3.3.2.</span> <span class="nav-text">基于角点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基于尺度空间"><span class="nav-number">3.3.3.</span> <span class="nav-text">基于尺度空间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hog特征"><span class="nav-number">3.3.4.</span> <span class="nav-text">HOG特征</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#步骤-1"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">步骤</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本特征提取"><span class="nav-number">3.4.</span> <span class="nav-text">文本特征提取</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#词袋模型"><span class="nav-number">3.4.1.</span> <span class="nav-text">词袋模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#n-gram模型"><span class="nav-number">3.4.2.</span> <span class="nav-text">N-gram模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#word-embedding模型"><span class="nav-number">3.4.3.</span> <span class="nav-text">Word-Embedding模型</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Kernel Function">
+<meta name="keywords" content="机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kernel Function">
+<meta property="og:url" content="https://xyy15926.github.io/ml_techniques/functions/func_kernels/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Kernel Function">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-13T04:03:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kernel Function">
+<meta name="twitter:description" content="Kernel Function">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_techniques/functions/func_kernels/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Kernel Function | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_techniques/functions/func_kernels/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Kernel Function
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-13 23:45:15 / 修改时间：12:03:11" itemprop="dateCreated datePublished" datetime="2019-07-13T23:45:15+08:00">2019-07-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Kernel Function</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="kernel">Kernel</h2>
+<blockquote>
+<ul>
+<li>对输入空间<span class="math inline">\(\mathcal{X}\)</span>（欧式空间<span class="math inline">\(R^n\)</span>的子集或离散集合） 、特征空间<span class="math inline">\(\mathcal{H}\)</span>，若存在从映射 <span class="math display">\[
+\phi(x): \mathcal{X \rightarrow H}
+\]</span> 使得对所有<span class="math inline">\(x, z \in \mathcal{X}\)</span>，函数<span class="math inline">\(K(x,z)\)</span>满足 <span class="math display">\[
+K(x,z) = \phi(x) \phi(z)
+\]</span> 则称<span class="math inline">\(K(x,z)\)</span>为核函数、<span class="math inline">\(\phi(x)\)</span>为映射函数，其中 <span class="math inline">\(\phi(x) \phi(z)\)</span>为内积</li>
+</ul>
+</blockquote>
+<h3 id="特征空间">特征空间</h3>
+<ul>
+<li>特征空间<span class="math inline">\(\mathcal{H}\)</span>一般是无穷维的</li>
+</ul>
+<h3 id="映射函数">映射函数</h3>
+<p><span class="math inline">\(\phi\)</span>：输入空间<span class="math inline">\(R^n\)</span>到特征空间的映射<span class="math inline">\(\mathcal{H}\)</span>的映射</p>
+<ul>
+<li><p>对于给定的核<span class="math inline">\(K(x,z)\)</span>，映射函数取法不唯一，映射目标 的特征空间可以不同，同一特征空间也可以取不同映射</p>
+<ul>
+<li><p>对核函数<span class="math inline">\(K(x, y) = (x y)^2\)</span>，若输入空间为<span class="math inline">\(R^2\)</span>，有</p>
+<p><span class="math display">\[\begin{align*}
+(xy)^2 &amp; = (x_1y_1 + x_2y_2)^2 \\
+&amp; = (x_1y_1)^2 + 2x_1y_1x_2y_2 + (x_2y_2)^2
+\end{align*}\]</span></p></li>
+<li><p>可以取特征空间<span class="math inline">\(R^3\)</span>，取映射</p>
+<p><span class="math display">\[
+\phi(x) = (x_1^2, \sqrt 2 x_1x_2, x_2^2)^T
+\]</span></p>
+<p>或取映射</p>
+<p><span class="math display">\[
+\phi(x) = \frac 1 sqrt 2 (x_1^2 - x_2^2, 2x_1x_2,
+    x_1^2 + x_2^2)^T
+\]</span></p>
+<p>或特征空间<span class="math inline">\(R^4\)</span>，取映射</p>
+<p><span class="math display">\[
+\phi(x) = (x_1^2, x_1x_2, x_1x_2, x_2^2)^T
+\]</span></p></li>
+</ul></li>
+</ul>
+<h3 id="核函数">核函数</h3>
+<ul>
+<li>在学习预测时只定义核函数<span class="math inline">\(K(x,z)\)</span>，不显式定义映射函数 <span class="math inline">\(\phi\)</span>
+<ul>
+<li>通常直接计算<span class="math inline">\(K(x,z)\)</span>比较容易，而通过映射函数麻烦</li>
+</ul></li>
+</ul>
+<h4 id="核函数意义">核函数意义</h4>
+<p>核函数的意义在于：单个核函数可以对应多个映射、特征空间</p>
+<ul>
+<li>核函数要映射空间是希尔伯特空间（内积完备空间）</li>
+<li>可能因此核函数是泛用的，总能找到一个特征空间使得数据 线性可分 #todo</li>
+</ul>
+<h4 id="核函数适用">核函数适用</h4>
+<p>核函数的作用范围：梯度变化较大的区域 #todo</p>
+<ul>
+<li>梯度变化小的区域，核函数值变化不大，所以没有区分能力</li>
+</ul>
+<h2 id="正定核函数">正定核函数</h2>
+<blockquote>
+<ul>
+<li>设<span class="math inline">\(\mathcal {X} \subset R^n\)</span>，<span class="math inline">\(K(x,z)\)</span>是定义在 <span class="math inline">\(\mathcal{X * X}\)</span>的对称函数，若 <span class="math inline">\(\forall x_i \in \mathcal{X}, i=1,2,...,m\)</span>，<span class="math inline">\(K(x,z)\)</span>对应 的Gram矩阵 <span class="math display">\[
+K = [K(x_i, x_j)]_{m*m}
+\]</span> 是半正定矩阵，则称<span class="math inline">\(K(x,z)\)</span>为正定核</li>
+</ul>
+</blockquote>
+<ul>
+<li>构造核函数时有用</li>
+<li>检验具体函数是否为正定核函数不容易</li>
+<li>正定核具有一些优秀性质
+<ul>
+<li>SVM中正定核能保证优化问题为凸二次规划，即二次规划中 矩阵<span class="math inline">\(G\)</span>为正定矩阵</li>
+<li>也有非正定核</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>原始定义（充要条件）、证明参见<em>hilbert</em></li>
+</ul>
+</blockquote>
+<h2 id="欧式空间核函数">欧式空间核函数</h2>
+<h3 id="linear-kernel"><em>Linear Kernel</em></h3>
+<p>线性核：最简单的核函数</p>
+<p><span class="math display">\[
+k(x, y) = x^T y
+\]</span></p>
+<ul>
+<li>特点
+<ul>
+<li>适用线性核的核算法通常同普通算法结果相同
+<ul>
+<li>KPCA使用线性核等同于普通PCA</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="polynomial-kernel"><em>Polynomial Kernel</em></h3>
+<p>多项式核：<em>non-stational kernel</em></p>
+<p><span class="math display">\[
+K(x, y) = (\alpha x^T y + c)^p
+\]</span></p>
+<ul>
+<li>参数
+<ul>
+<li><span class="math inline">\(\alpha\)</span></li>
+<li><span class="math inline">\(c\)</span></li>
+<li><span class="math inline">\(p\)</span></li>
+</ul></li>
+<li>特点
+<ul>
+<li>适合正交归一化后的数据</li>
+<li>参数较多，稳定 #todo</li>
+</ul></li>
+<li>应用场合
+<ul>
+<li>SVM：p次多项式分类器 <span class="math display">\[
+f(x) = sgn(\sum_{i=1}^{N_s} \alpha_i^{*} y_i
+    (x_i x + 1)^p + b^{*})
+\]</span></li>
+</ul></li>
+</ul>
+<h3 id="gaussian-kernel"><em>Gaussian Kernel</em></h3>
+<p>高斯核：<em>radial basis kernel</em>，经典的稳健径向基核</p>
+<p><span class="math display">\[
+K(x, y) = exp(-\frac {\|x - y\|^2} {2\sigma^2})
+\]</span></p>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><span class="math inline">\(\sigma\)</span>：带通，取值关于核函数效果，影响高斯分布形状
+<ul>
+<li>高估：分布过于集中，靠近边缘非常平缓，指数将会 表现得像线性一样，高维投影得非线性能力失效</li>
+<li>低估：分布过于平缓，失去正则化能力，决策边界对 噪声高度敏感</li>
+</ul></li>
+</ul></li>
+<li>特点
+<ul>
+<li>对数据中噪声有较好的抗干扰能力</li>
+</ul></li>
+<li><p>对应映射：省略分母</p>
+<p><span class="math display">\[\begin{align*}
+K(x, y) &amp; = exp(-(x - y)^2)  \\
+&amp; = exp(-(x^2 - 2 x y - y^2)) \\
+&amp; = exp(-x^2) exp(-y^2) exp(2xy) \\
+&amp; = exp(-x^2) exp(-y^2) \sum_{i=0}^\infty \frac
+    {(2xy)^i} {i!}
+&amp; = \phi(x) \phi(y) \\
+\phi(x) &amp; = exp(-x^2)\sum_{i=0}^\infty \sqrt
+    {\frac {2^i} {i!}} x^i
+\end{align*}\]</span></p>
+<p>即高斯核能够把数据映射至无穷维</p></li>
+<li>应用场合
+<ul>
+<li>SVM：高斯<em>radial basis function</em>分类器 <span class="math display">\[
+f(x) = sgn(\sum_{i=1}^{N_s} \alpha_i^{*} y_i
+    exp(-\frac {\|x - y\|^2} {2\sigma^2}) + b^{*})
+\]</span></li>
+</ul></li>
+</ul>
+<h4 id="exponential-kernel"><em>Exponential Kernel</em></h4>
+<p>指数核：高斯核变种，仅去掉范数的平方，也是径向基核</p>
+<p><span class="math display">\[
+K(x, y) = exp(-\frac {\|x - y\|} {2\sigma^2})
+\]</span></p>
+<ul>
+<li>降低了对参数的依赖性</li>
+<li>适用范围相对狭窄</li>
+</ul>
+<h4 id="laplacian-kernel"><em>Laplacian Kernel</em></h4>
+<p>拉普拉斯核：完全等同于的指数核，只是对参数<span class="math inline">\(\sigma\)</span>改变敏感 性稍低，也是径向基核</p>
+<p><span class="math display">\[
+K(x, y) = exp(-\frac {\|x - y\|} {\sigma^2})
+\]</span></p>
+<h4 id="anova-kernel"><em>ANOVA Kernel</em></h4>
+<p>方差核：径向基核</p>
+<p><span class="math display">\[
+k(x,y) = \sum_{k=1}^n exp(-\sigma(x^k - y^k)^2)^d
+\]</span></p>
+<ul>
+<li>在多维回归问题中效果很好</li>
+</ul>
+<h4 id="hyperbolic-tangentsigmoidmultilayer-perceptron-kernel"><em>Hyperbolic Tangent/Sigmoid/Multilayer Perceptron Kernel</em></h4>
+<p>Sigmoid核：来自神经网络领域，被用作人工神经元的激活函数</p>
+<p><span class="math display">\[
+k(x, y) = tanh(\alpha x^T y + c)
+\]</span></p>
+<ul>
+<li><p>条件正定，但是实际应用中效果不错</p></li>
+<li>参数
+<ul>
+<li><span class="math inline">\(\alpha\)</span>：通常设置为<span class="math inline">\(1/N\)</span>，N是数据维度</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>使用Sigmoid核的SVM等同于两层感知机神经网络</li>
+</ul>
+</blockquote>
+<h4 id="ration-quadratic-kernel"><em>Ration Quadratic Kernel</em></h4>
+<p>二次有理核：替代高斯核，计算耗时较小</p>
+<p><span class="math display">\[
+k(x, y) = 1 - \frac {\|x - y\|^2} {\|x - y\|^2 + c}
+\]</span></p>
+<h4 id="multiquadric-kernel"><em>Multiquadric Kernel</em></h4>
+<p>多元二次核：适用范围同二次有理核，是非正定核</p>
+<p><span class="math display">\[
+k(x, y) = \sqrt {\|x - y\|^2 + c^2}
+\]</span></p>
+<h4 id="inverse-multiquadric-kernel"><em>Inverse Multiquadric Kernel</em></h4>
+<p>逆多元二次核：和高斯核一样，产生满秩核矩阵，产生无穷维的 特征空间</p>
+<p><span class="math display">\[
+k(x, y) = \frac 1 {\sqrt {\|x - y\|^2 + c^2}}
+\]</span></p>
+<h4 id="circular-kernel"><em>Circular Kernel</em></h4>
+<p>环形核：从统计角度考虑的核，各向同性稳定核，在<span class="math inline">\(R^2\)</span>上正定</p>
+<p><span class="math display">\[
+k(x, y) = \frac 2 \pi arccos(-\frac {\|x - y\|} \sigma) -
+    \frac 2 \pi \frac {\|x - y\|} \sigma
+    \sqrt{1- \frac {\|x - y\|^2} \sigma}
+\]</span></p>
+<h4 id="spherical-kernel"><em>Spherical Kernel</em></h4>
+<p>类似环形核，在<span class="math inline">\(R^3\)</span>上正定</p>
+<p><span class="math display">\[
+k(x, y) = 1 - \frac 3 2 \frac {\|x - y\|} \sigma +
+    \frac 1 2 (\frac {\|x - y\|} \sigma)^3
+\]</span></p>
+<h4 id="wave-kernel"><em>Wave Kernel</em></h4>
+<p>波动核</p>
+<p><span class="math display">\[
+k(x, y) = \frac \theta {\|x - y\|} sin(\frac {\|x - y\|}
+    \theta)
+\]</span></p>
+<ul>
+<li>适用于语音处理场景</li>
+</ul>
+<h4 id="triangularpower-kernel"><em>Triangular/Power Kernel</em></h4>
+<p>三角核/幂核：量纲不变核，条件正定</p>
+<p><span class="math display">\[
+k(x, y) = - \|x - y\|^d
+\]</span></p>
+<h4 id="log-kernel"><em>Log Kernel</em></h4>
+<p>对数核：在图像分隔上经常被使用，条件正定</p>
+<p><span class="math display">\[
+k(x, y) = -log(1 + \|x - y\|^d)
+\]</span></p>
+<h4 id="spline-kernel"><em>Spline Kernel</em></h4>
+<p>样条核：以分段三次多项式形式给出</p>
+<p><span class="math display">\[
+k(x, y) = 1 + x^t y + x^t y min(x, y) - \frac {x + y} 2
+    min(x, y)^2 + \frac 1 3 min(x, y)^2
+\]</span></p>
+<h4 id="b-spline-kernel"><em>B-Spline Kernel</em></h4>
+<p>B-样条核：径向基核，通过递归形式给出</p>
+<p><span class="math display">\[\begin{align*}
+k(x, y) &amp; = \prod_{p=1}^d B_{2n+1}(x_p - y_p) \\
+B_n(x) &amp; = B_{n-1} \otimes B_0 \\
+&amp; = \frac 1 {n!} \sum_{k=0}^{n+1} \binom {n+1} {r}
+    (-1)^k (x + \frac {n+1} 2 - k)_{+}^n
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(x_{+}^d\)</span>：截断幂函数 <span class="math display">\[x_{+}^d = \left \{ \begin{array}{l}
+x^d, &amp; if x &gt; 0 \\
+0, &amp; otherwise \\
+\end{array} \right.\]</span></li>
+</ul>
+</blockquote>
+<h4 id="bessel-kernel"><em>Bessel Kernel</em></h4>
+<p>Bessel核：在theory of function spaces of fractional smoothness 中非常有名</p>
+<p><span class="math display">\[
+k(x, y) = \frac {J_{v+1}(\sigma\|x - y\|)}
+    {\|x - y\|^{-n(v + 1)}}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(J\)</span>：第一类Bessel函数</li>
+</ul>
+<h4 id="cauchy-kernel"><em>Cauchy Kernel</em></h4>
+<p>柯西核：源自柯西分布，是长尾核，定义域广泛，可以用于原始维度 很高的数据</p>
+<p><span class="math display">\[
+k(x, y) = \frac 1 {1 + \frac {\|x - y\|^2} {\sigma}}
+\]</span></p>
+<h4 id="chi-square-kernel"><em>Chi-Square Kernel</em></h4>
+<p>卡方核：源自卡方分布</p>
+<p><span class="math display">\[\begin{align*}
+k(x, y) &amp; = 1 - \sum_{i=1}^d \frac {(x_i - y_i)^2}
+    {\frac 1 2 (x_i + y_i)} \\
+&amp; \frac {x^t y} {\|x + y\|}
+\end{align*}\]</span></p>
+<h4 id="histogram-intersectionmin-kernel"><em>Histogram Intersection/Min Kernel</em></h4>
+<p>直方图交叉核：在图像分类中经常用到，适用于图像的直方图特征</p>
+<p><span class="math display">\[
+k(x, y) = \sum_{i=1}^d min(x_i, y_i)
+\]</span></p>
+<h4 id="generalized-histogram-intersection"><em>Generalized Histogram Intersection</em></h4>
+<p>广义直方图交叉核：直方图交叉核的扩展，可以应用于更多领域</p>
+<p><span class="math display">\[
+k(x, y) = \sum_{i=1}^m min(|x_i|^\alpha, |y_i|^\beta)
+\]</span></p>
+<h4 id="bayesian-kernel"><em>Bayesian Kernel</em></h4>
+<p>贝叶斯核：取决于建模的问题</p>
+<p><span class="math display">\[\begin{align*}
+k(x, y) &amp; = \prod_{i=1}^d k_i (x_i, y_i) \\
+k_i(a, b) &amp; = \sum_{c \in \{0, 1\}} P(Y=c | X_i = a)
+    P(Y=c | x_k = b)
+\end{align*}\]</span></p>
+<h4 id="wavelet-kernel"><em>Wavelet Kernel</em></h4>
+<p>波核：源自波理论</p>
+<p><span class="math display">\[
+k(x, y) = \prod_{i=1}^d h(\frac {x_i - c} a)
+    h(\frac {y_i - c} a)
+\]</span></p>
+<ul>
+<li>参数
+<ul>
+<li><span class="math inline">\(c\)</span>：波的膨胀速率</li>
+<li><span class="math inline">\(a\)</span>：波的转化速率</li>
+<li><span class="math inline">\(h\)</span>：母波函数，可能的一个函数为 <span class="math display">\[
+h(x) = cos(1.75 x) exp(-\frac {x^2} 2)
+\]</span></li>
+</ul></li>
+<li>转化不变版本如下 <span class="math display">\[
+k(x, y) = \prod_{i=1}^d h(\frac {x_i - y_i} a)
+\]</span></li>
+</ul>
+<h2 id="离散数据核函数">离散数据核函数</h2>
+<h3 id="string-kernel"><em>String Kernel</em></h3>
+<p>字符串核函数：定义在字符串集合（离散数据集合）上的核函数</p>
+<p><span class="math display">\[\begin{align*}
+k_n(s, t) &amp; = \sum_{u \in \sum^n} [\phi_n(s)]_u
+    [\phi_n(t)]_u \\
+&amp; = \sum_{u \in \sum^n} \sum_{(i,j): s(i) = t(j) = u}
+    \lambda^{l(i)} \lambda^{l(j)}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\([\phi_n(s)]_n = \sum_{i:s(i)=u} \lambda^{l(i)}\)</span>：长度 大于等于n的字符串集合<span class="math inline">\(S\)</span>到特征空间 <span class="math inline">\(\mathcal{H} = R^{\sum^n}\)</span>的映射，目标特征空间每维对应 一个字符串<span class="math inline">\(u \in \sum^n\)</span></li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\sum\)</span>：有限字符表</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\sum^n\)</span>：<span class="math inline">\(\sum\)</span>中元素构成，长度为n的字符串集合</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(u = s(i) = s(i_1)s(i_2)\cdots s(i_{|u|})\)</span>：字符串s的 子串u（其自身也可以用此方式表示）</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(i =(i_1, i_2, \cdots, i_{|u|}), 1 \leq i_1 &lt; i_2 &lt; ... &lt; i_{|u|} \leq |s|\)</span>：序列指标</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(l(i) = i_{|u|} - i_1 + 1 \geq |u|\)</span>：字符串长度，仅在 序列指标<span class="math inline">\(i\)</span>连续时取等号（<span class="math inline">\(j\)</span>同）</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(0 &lt; \lambda \leq 1\)</span>：衰减参数</li>
+</ul>
+</blockquote>
+<ul>
+<li>两个字符串s、t上的字符串核函数，是基于映射<span class="math inline">\(\phi_n\)</span>的 特征空间中的内积
+<ul>
+<li>给出了字符串中长度为n的所有子串组成的特征向量的余弦 相似度</li>
+<li>直观上，两字符串相同子串越多，其越相似，核函数值越大</li>
+<li>核函数值可由动态规划快速计算（只需要计算两字符串公共 子序列即可）</li>
+</ul></li>
+<li>应用场合
+<ul>
+<li>文本分类</li>
+<li>信息检索</li>
+<li>信物信息学</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_techniques/functions/README/" rel="next" title="函数说明">
+                <i class="fa fa-chevron-left"></i> 函数说明
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_techniques/functions/func_cov_kernels/" rel="prev" title="图像卷积核">
+                图像卷积核 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kernel"><span class="nav-number">1.</span> <span class="nav-text">Kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征空间"><span class="nav-number">1.1.</span> <span class="nav-text">特征空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#映射函数"><span class="nav-number">1.2.</span> <span class="nav-text">映射函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核函数"><span class="nav-number">1.3.</span> <span class="nav-text">核函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#核函数意义"><span class="nav-number">1.3.1.</span> <span class="nav-text">核函数意义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#核函数适用"><span class="nav-number">1.3.2.</span> <span class="nav-text">核函数适用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正定核函数"><span class="nav-number">2.</span> <span class="nav-text">正定核函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#欧式空间核函数"><span class="nav-number">3.</span> <span class="nav-text">欧式空间核函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#linear-kernel"><span class="nav-number">3.1.</span> <span class="nav-text">Linear Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#polynomial-kernel"><span class="nav-number">3.2.</span> <span class="nav-text">Polynomial Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gaussian-kernel"><span class="nav-number">3.3.</span> <span class="nav-text">Gaussian Kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#exponential-kernel"><span class="nav-number">3.3.1.</span> <span class="nav-text">Exponential Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#laplacian-kernel"><span class="nav-number">3.3.2.</span> <span class="nav-text">Laplacian Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#anova-kernel"><span class="nav-number">3.3.3.</span> <span class="nav-text">ANOVA Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hyperbolic-tangentsigmoidmultilayer-perceptron-kernel"><span class="nav-number">3.3.4.</span> <span class="nav-text">Hyperbolic Tangent/Sigmoid/Multilayer Perceptron Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ration-quadratic-kernel"><span class="nav-number">3.3.5.</span> <span class="nav-text">Ration Quadratic Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#multiquadric-kernel"><span class="nav-number">3.3.6.</span> <span class="nav-text">Multiquadric Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#inverse-multiquadric-kernel"><span class="nav-number">3.3.7.</span> <span class="nav-text">Inverse Multiquadric Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#circular-kernel"><span class="nav-number">3.3.8.</span> <span class="nav-text">Circular Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spherical-kernel"><span class="nav-number">3.3.9.</span> <span class="nav-text">Spherical Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wave-kernel"><span class="nav-number">3.3.10.</span> <span class="nav-text">Wave Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#triangularpower-kernel"><span class="nav-number">3.3.11.</span> <span class="nav-text">Triangular/Power Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#log-kernel"><span class="nav-number">3.3.12.</span> <span class="nav-text">Log Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spline-kernel"><span class="nav-number">3.3.13.</span> <span class="nav-text">Spline Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-spline-kernel"><span class="nav-number">3.3.14.</span> <span class="nav-text">B-Spline Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bessel-kernel"><span class="nav-number">3.3.15.</span> <span class="nav-text">Bessel Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cauchy-kernel"><span class="nav-number">3.3.16.</span> <span class="nav-text">Cauchy Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#chi-square-kernel"><span class="nav-number">3.3.17.</span> <span class="nav-text">Chi-Square Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#histogram-intersectionmin-kernel"><span class="nav-number">3.3.18.</span> <span class="nav-text">Histogram Intersection/Min Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#generalized-histogram-intersection"><span class="nav-number">3.3.19.</span> <span class="nav-text">Generalized Histogram Intersection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bayesian-kernel"><span class="nav-number">3.3.20.</span> <span class="nav-text">Bayesian Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wavelet-kernel"><span class="nav-number">3.3.21.</span> <span class="nav-text">Wavelet Kernel</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#离散数据核函数"><span class="nav-number">4.</span> <span class="nav-text">离散数据核函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string-kernel"><span class="nav-number">4.1.</span> <span class="nav-text">String Kernel</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

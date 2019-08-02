@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Parallel">
+<meta name="keywords" content="程序,并行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Parallel">
+<meta property="og:url" content="https://xyy15926.github.io/cs_program/parallel/implementation/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Parallel">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-03T09:02:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Parallel">
+<meta name="twitter:description" content="Parallel">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_program/parallel/implementation/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Parallel | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_program/parallel/implementation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Parallel
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-03 17:02:43" itemprop="dateCreated datePublished" datetime="2019-06-03T17:02:43+08:00">2019-06-03</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/程序/" itemprop="url" rel="index"><span itemprop="name">程序</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/程序/并行/" itemprop="url" rel="index"><span itemprop="name">并行</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Parallel</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="执行实体">执行实体</h2>
+<blockquote>
+<ul>
+<li><em>Parallel</em>：并行，<strong>同时做</strong>多件事情，关于执行</li>
+<li><em>Concurrent</em>：并发，<strong>能够处理</strong>多件事情，关于结构</li>
+</ul>
+</blockquote>
+<ul>
+<li>并发问题可以使用并行方式解决，也可以串行解决
+<ul>
+<li>100个进程同时运行在4核CPU上，最多可能有4个进程并行 处理，其余只能是串行处理</li>
+</ul></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>进程</th>
+<th>线程</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>性能（上下文切换开销、速度）</td>
+<td>大、慢</td>
+<td>小、快</td>
+</tr>
+<tr class="even">
+<td>易用性</td>
+<td>需要考虑进程退出、僵尸进程</td>
+<td>只需要管理进程即可</td>
+</tr>
+<tr class="odd">
+<td>资源共享</td>
+<td>独立</td>
+<td>同一进程内线程共享资源</td>
+</tr>
+<tr class="even">
+<td>通信</td>
+<td>较复杂：环境变量、文件、系统端口</td>
+<td>较简单：共享内存</td>
+</tr>
+<tr class="odd">
+<td>移植性</td>
+<td>差</td>
+<td>好</td>
+</tr>
+<tr class="even">
+<td>健壮性</td>
+<td>好，进程死亡不影响其他进程</td>
+<td>差，线程死亡会导致进程（及线程）死亡</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<ul>
+<li>线程性能更好，能提升某些场景的并发性</li>
+<li>通信：参见<em>cs_program/parallel/#todo</em></li>
+<li>移植性：基于进程分支多进程和windows模型有很大冲突，往往 不能在windows平台上使用</li>
+</ul>
+</blockquote>
+<h3 id="process"><em>Process</em></h3>
+<p>进程：具有一定独立功能的程序关于某个数据集合上的一次运行活动</p>
+<ul>
+<li>系统进行<strong>资源分配、调度的独立单位</strong>
+<ul>
+<li>调度：分配CPU执行进程</li>
+<li>上下文切换：进程状态的记录、恢复、切换</li>
+</ul></li>
+<li><strong>独立内存空间</strong>
+<ul>
+<li>地址空间</li>
+<li>全局变量</li>
+<li>文件描述符</li>
+<li>硬件资源</li>
+</ul></li>
+<li>上下文进程间切换开销比较大，但相对比较稳定安全
+<ul>
+<li>栈</li>
+<li>寄存器</li>
+<li>虚拟内存</li>
+<li>文件句柄</li>
+</ul></li>
+</ul>
+<h3 id="thread"><em>Thread</em></h3>
+<p>线程：进程实体</p>
+<ul>
+<li><strong>CPU调度、分派的基本单位</strong>
+<ul>
+<li>比进程更小的、能独立运行的基本单位</li>
+<li>用于<strong>并行调用函数</strong>，有时被称为“轻量级进程”</li>
+</ul></li>
+<li>线程自身不拥有系统资源
+<ul>
+<li>只拥有运行中必须的资源
+<ul>
+<li>程序计数器</li>
+<li>一组寄存器</li>
+<li>栈</li>
+</ul></li>
+<li>多个线程可以在同一进程中运行，彼此共享进程所拥有的 全部资源</li>
+</ul></li>
+</ul>
+<h2 id="逻辑实体">逻辑实体</h2>
+<ul>
+<li>进程、线程：反映硬件技术的<strong>物理限制瓶颈</strong>
+<ul>
+<li>单计算核心能力不足，所以需要多核并行运算</li>
+</ul></li>
+<li>子程序、协程：体现程序<strong>逻辑重用需求</strong>
+<ul>
+<li>相较于进程、线程更基础</li>
+<li>可以作为语言内建机制</li>
+</ul></li>
+</ul>
+<h3 id="subroutineprocedurefunctionroutinemethod"><em>Subroutine</em>/<em>Procedure</em>/<em>Function</em>/<em>Routine</em>/<em>Method</em></h3>
+<p>子程序：打包为整体、用于执行特定任务的指令集序列</p>
+<ul>
+<li>函数是依赖可重入能力的弱化版本
+<ul>
+<li>一旦唤醒，于起始点开始执行</li>
+<li>一旦退出，子程序结束</li>
+<li>子程序实例只返回一次，两次激活间不保存状态</li>
+</ul></li>
+<li>函数中局部变量在每次<strong>调用/重入</strong>函数时都是相同的
+<ul>
+<li><strong>相同输入得到相同输出</strong></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>procedure</em>：过程，有时特指无返回值、仅有副作用</li>
+<li>函数可以看作时协程的特例：只有一个状态，每次进入时局部 状态重置</li>
+</ul>
+</blockquote>
+<h3 id="coroutine"><em>Coroutine</em></h3>
+<p>协程：为<strong>非抢占式</strong>多任务产生子程序的程序组件，允许执行过程 中挂起、恢复</p>
+<ul>
+<li><p>挂起、恢复：协程可以通过调用其他协程暂时退出，之后可在 退出位置恢复执行</p>
+<ul>
+<li>从协程角度看，这是调用其他协程而不是退出</li>
+<li>但实际是<strong>各协程之间是对称的</strong>，而不像子程序调用 中主调-被调关系</li>
+<li>这即暗含：允许在不同入口点暂停、开始执行程序</li>
+</ul></li>
+<li><p>局部状态维护：协程实例保持上次退出时状态</p>
+<ul>
+<li>则协程被唤醒时状态可能不同</li>
+<li>可能同时有多个给定协程实例</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>协程将原在子程序外、输入状态管理工作交由自身逻辑维护</li>
+<li>原生不支持协程的语言也可以使用循环等构建</li>
+<li>经典状态机、对象已经具有协程特性</li>
+</ul>
+</blockquote>
+<h4 id="用途">用途</h4>
+<ul>
+<li><p>协程可以简化异步代码的实现，使得需要使用异步+回调的代码 可以使用看似同步方式写出</p>
+<ul>
+<li>协程本身只涉及<strong>状态保存、过程重入</strong>，和并发/异步无关系</li>
+<li>但协程本身蕴含的状态保存使得状态切换几乎无成本，适合 高并发任务</li>
+</ul></li>
+<li>协程在线程中调度完全由用户控制，可以视为用户态轻量级线程
+<ul>
+<li>避免陷入<strong>无效内核级别上下文切换</strong>造成的性能损失</li>
+<li>较线程在IO密集任务上性能上更好</li>
+</ul></li>
+</ul>
+<h2 id="操作线程进程模型">操作线程、进程模型</h2>
+<h3 id="对1">1对1</h3>
+<h3 id="对n">1对N</h3>
+<h3 id="m对n">M对N</h3>
+<h2 id="同步问题">同步问题</h2>
+<h3 id="生产者-消费者问题缓存绑定问题">生产者-消费者问题/缓存绑定问题</h3>
+<blockquote>
+<ul>
+<li>生产者生成数据放入缓存，消费者从缓存获取、移除、消费数据 ，问题核心在于保证不让生产者在缓存已满时放入数据、不让 消费者在缓存为空时读取数据</li>
+</ul>
+</blockquote>
+<ul>
+<li>若缓存满：生产者者停止工作</li>
+<li>若缓存空：消费者停止消费</li>
+<li>消费者从缓存中取走数据，通知生产者工作</li>
+<li>生产者向缓存中放入数据，通知消费者消费</li>
+</ul>
+<blockquote>
+<ul>
+<li>不完善的解决方案会造成死锁：生产者、消费者均等待对方唤醒</li>
+</ul>
+</blockquote>
+<h4 id="信号量解决方案">信号量解决方案</h4>
+<blockquote>
+<ul>
+<li><code>mutex</code>信号量：互斥信号量，确保只有一个生产者、消费者 操作缓存区，单一消费者、生产者可省略此信号量</li>
+<li><code>fill_count</code>信号量：已使用缓存区数量</li>
+<li><code>empty_count</code>信号量：空闲缓存区数量</li>
+</ul>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">semaphore mutex = <span class="number">1</span></span><br><span class="line">semaphore fill_count = <span class="number">0</span></span><br><span class="line">semaphore empty_count = BUFFER_SIZE</span><br><span class="line"></span><br><span class="line">producer():</span><br><span class="line">	<span class="keyword">while</span> <span class="literal">true</span>:</span><br><span class="line">		item = produce_item()</span><br><span class="line">		down(empty_count)</span><br><span class="line">		down(mutex)</span><br><span class="line">		put_item_into_buffer(item)</span><br><span class="line">		up(mutex)</span><br><span class="line">		up(fillcount)</span><br><span class="line"></span><br><span class="line">consumer():</span><br><span class="line">	<span class="keyword">while</span> <span class="literal">true</span>:</span><br><span class="line">		down(fill_count)</span><br><span class="line">		down(mutex)</span><br><span class="line">		item = remove_item_from_buffer()</span><br><span class="line">		up(mutex)</span><br><span class="line">		up(empty_count)</span><br><span class="line">		consume_item(item)</span><br></pre></td></tr></table></figure>
+<h4 id="状态监控解决方案">状态监控解决方案</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">item_count = <span class="number">0</span></span><br><span class="line">condition full</span><br><span class="line">condition empty</span><br><span class="line"></span><br><span class="line">add(item):</span><br><span class="line">	<span class="keyword">while</span> item_count == BUFFER_SIZE:</span><br><span class="line">		wait(full)</span><br><span class="line"></span><br><span class="line">	item_count = item_count + <span class="number">1</span></span><br><span class="line">	put_item_into_buffer(item)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> item_count == <span class="number">1</span>:</span><br><span class="line">		notify(empty)</span><br><span class="line"></span><br><span class="line">remove():</span><br><span class="line">	<span class="keyword">while</span> item_count == <span class="number">0</span>:</span><br><span class="line">		wait(empty)</span><br><span class="line"></span><br><span class="line">	item_count = item_count - <span class="number">1</span></span><br><span class="line">	item = remove_item_from_buffer()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> item_count == BUFFER_SIZE - <span class="number">1</span>:</span><br><span class="line">		notify(full)</span><br><span class="line"></span><br><span class="line">produer():</span><br><span class="line">	<span class="keyword">while</span> <span class="literal">true</span>:</span><br><span class="line">		item = produce_item()</span><br><span class="line">		add(item)</span><br><span class="line"></span><br><span class="line">consumer():</span><br><span class="line">	<span class="keyword">while</span> <span class="literal">true</span>:</span><br><span class="line">		item = remove()</span><br><span class="line">		consume_item(item)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>互斥信号没有保护关键区，监控方法更好</li>
+</ul>
+<h4 id="其他">其他</h4>
+<ul>
+<li><p>协调生产者、消费者的关闭</p>
+<ul>
+<li>可在在队列中放置特殊的值，消费者读到时终止执行，结束 消费者线程</li>
+<li>有多个消费者时，消费者读取特殊值之后可将特殊值放回 队列中继续传递，直至关闭所有消费者</li>
+</ul></li>
+</ul>
+<h3 id="哲学家就餐问题">哲学家就餐问题</h3>
+<blockquote>
+<ul>
+<li>哲学家围坐在圆桌旁，只能吃饭<strong>或者</strong>思考，每两个哲学家 之间只有一根筷子，只有同时拿到左右两根筷子才能正常吃饭</li>
+</ul>
+</blockquote>
+<ul>
+<li>实际计算机问题中，筷子视为共享资源</li>
+</ul>
+<h4 id="服务生">服务生</h4>
+<blockquote>
+<ul>
+<li>引入服务生判断资源是否能被获取</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>引入服务生，哲学家必须经过其允许才能拿起筷子</p></li>
+<li><p>服务生知道有哪些筷子正在被使用，能够判断是否会死锁</p></li>
+</ul>
+<h4 id="资源分级">资源分级</h4>
+<blockquote>
+<ul>
+<li>为资源（筷子）分配偏序关系 &gt; - 约定所有资源都按此偏序获取、相反顺序释放 &gt; - 且保证不会有无关资源同时被同一工作获取</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>哲学家只能拿左右侧筷子：不会有无关资源被同一工作获取</p></li>
+<li>将筷子按顺序编号：资源分配偏序关系
+<ul>
+<li>哲学家只能先拿左右筷子中编号较小者</li>
+<li>哲学家需要先放下筷子中编号较大者</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>最实用的解法：为锁指定常量分级，强制获取顺序的顺序</li>
+<li>策略不总是实用的，尤其是所需资源列表事先不知道，可能需要 先释放已获取资源、获取低编号资源、重新获取资源，效率不高</li>
+</ul>
+</blockquote>
+<h4 id="chandymisra解法">Chandy/Misra解法</h4>
+<blockquote>
+<ul>
+<li>标记资源，保留未使用资源、交出已使用资源，初始所以资源 已使用</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>每根筷子分为干净、脏，最初所有筷子都脏</p></li>
+<li><p>对每对竞争同一筷子的哲学家，新拿筷子给编号较低者</p></li>
+<li>当哲学家需要某筷子时
+<ul>
+<li>向其竞争对手发送请求</li>
+<li>拥有筷子的哲学家收到请求
+<ul>
+<li>若筷子干净则保留</li>
+<li>否则擦干净交出</li>
+</ul></li>
+</ul></li>
+<li>哲学家吃完东西后，筷子变脏
+<ul>
+<li>若有哲学家之前请求过该筷子，擦干净交出</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>有很大并行性，适合任意大问题</li>
+</ul>
+</blockquote>
+<h3 id="读者-写者问题">读者-写者问题</h3>
+<blockquote>
+<ul>
+<li>多线程同时访问共享内存地址，线程写入时其他线程不能读取、 写入，多个线程可以同时读取</li>
+</ul>
+</blockquote>
+<ul>
+<li>一般使用<em>readers-writer lock</em>解决问题</li>
+</ul>
+<h4 id="读者优先">读者优先</h4>
+<ul>
+<li>若共享内存被读取，其他读者可以立即、同时读取</li>
+<li>若一直有读者开始读取，则写者会一直被插队、无法修改</li>
+</ul>
+<h4 id="写者优先">写者优先</h4>
+<ul>
+<li>如果写者在排队，应该尽快写入共享内存</li>
+<li>若一直有写者准备写入，则读者会一直被插队、无法读取</li>
+</ul>
+<h4 id="限定时间">限定时间</h4>
+<ul>
+<li>共享内存区的锁定权要在限定时间内结束</li>
+<li>能避免读者、写者一直排队</li>
+</ul>
+<h3 id="熟睡的理发师问题">熟睡的理发师问题</h3>
+<blockquote>
+<ul>
+<li>理发店只有一名理发师、一张理发时坐的椅子、若干普通椅子 供顾客等待 &gt; - 没有顾客时理发师在理发椅子上睡觉，顾客到达后离开、 或者叫醒理发师 &gt; - 有顾客时，理发师为别人立法，顾客达到后若有空闲普通 椅子则坐下休息、否则离开 &gt; - 理完发后，任选顾客开始理发</li>
+</ul>
+</blockquote>
+<ul>
+<li>理发师等待顾客、顾客等待理发师，造成死锁</li>
+<li>有顾客不按顺序等待，让某些顾客永远不能理发</li>
+</ul>
+<h4 id="信标解决">3信标解决</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">semaphore customer = <span class="number">0</span></span><br><span class="line">semaphore barber = <span class="number">0</span></span><br><span class="line">semaphore mutex = <span class="number">1</span></span><br><span class="line">empty_chairs = BUFFER_SIZE</span><br><span class="line"></span><br><span class="line">barber():</span><br><span class="line">	<span class="keyword">while</span> <span class="literal">true</span>:</span><br><span class="line">		<span class="keyword">if</span> empty_chairs == BUFFER_SIZE:</span><br><span class="line">			sleep()</span><br><span class="line"></span><br><span class="line">		down(mutex)</span><br><span class="line">		item = get_customer_from_chairs()</span><br><span class="line">		empty_chairs += <span class="number">1</span></span><br><span class="line">		up(mutex)</span><br><span class="line"></span><br><span class="line">		down(barber)</span><br><span class="line">		cut_hair(item)</span><br><span class="line">		up(barber)</span><br><span class="line"></span><br><span class="line">customer():</span><br><span class="line">	<span class="keyword">while</span> <span class="literal">true</span>:</span><br><span class="line">		down(mutex)</span><br><span class="line">		<span class="keyword">if</span> empty_chairs &gt; <span class="number">0</span>:</span><br><span class="line">			empty_chairs -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			wait() <span class="keyword">or</span> leave()</span><br><span class="line"></span><br><span class="line">		up(mutex)</span><br></pre></td></tr></table></figure>
+<h3 id="三个烟鬼问题">三个烟鬼问题</h3>
+<blockquote>
+<ul>
+<li>香烟需要：烟草、卷烟纸、火柴，三个烟鬼分别有无限各一种， 不吸烟协调人会随机安排两个烟鬼各拿出一份材料放在桌上， 另外一个烟鬼拿到材料卷烟、抽 &gt; - 桌上空了后，协调人就随机要求烟鬼拿出材料 &gt; - 烟鬼只会在抽完手中烟后才会卷另一只 &gt; - 若烟草、卷烟纸在桌上，有火柴的烟鬼在吸烟，直到该烟鬼 吸完烟拿走桌上材料才会继续</li>
+</ul>
+</blockquote>
+<ul>
+<li>问题模拟程序中4种角色，展示信标方法作用有限</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/程序/" rel="tag"># 程序</a>
+          
+            <a href="/tags/并行/" rel="tag"># 并行</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_algorithm/data_structure/tree_heap/" rel="next" title="Heap">
+                <i class="fa fa-chevron-left"></i> Heap
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/py3ref/cls_special_methods/" rel="prev" title="Special Methods">
+                Special Methods <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#执行实体"><span class="nav-number">1.</span> <span class="nav-text">执行实体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#process"><span class="nav-number">1.1.</span> <span class="nav-text">Process</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#thread"><span class="nav-number">1.2.</span> <span class="nav-text">Thread</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑实体"><span class="nav-number">2.</span> <span class="nav-text">逻辑实体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#subroutineprocedurefunctionroutinemethod"><span class="nav-number">2.1.</span> <span class="nav-text">Subroutine/Procedure/Function/Routine/Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#coroutine"><span class="nav-number">2.2.</span> <span class="nav-text">Coroutine</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用途"><span class="nav-number">2.2.1.</span> <span class="nav-text">用途</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作线程进程模型"><span class="nav-number">3.</span> <span class="nav-text">操作线程、进程模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对1"><span class="nav-number">3.1.</span> <span class="nav-text">1对1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对n"><span class="nav-number">3.2.</span> <span class="nav-text">1对N</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#m对n"><span class="nav-number">3.3.</span> <span class="nav-text">M对N</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步问题"><span class="nav-number">4.</span> <span class="nav-text">同步问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者-消费者问题缓存绑定问题"><span class="nav-number">4.1.</span> <span class="nav-text">生产者-消费者问题/缓存绑定问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#信号量解决方案"><span class="nav-number">4.1.1.</span> <span class="nav-text">信号量解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态监控解决方案"><span class="nav-number">4.1.2.</span> <span class="nav-text">状态监控解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他"><span class="nav-number">4.1.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哲学家就餐问题"><span class="nav-number">4.2.</span> <span class="nav-text">哲学家就餐问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务生"><span class="nav-number">4.2.1.</span> <span class="nav-text">服务生</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资源分级"><span class="nav-number">4.2.2.</span> <span class="nav-text">资源分级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#chandymisra解法"><span class="nav-number">4.2.3.</span> <span class="nav-text">Chandy/Misra解法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读者-写者问题"><span class="nav-number">4.3.</span> <span class="nav-text">读者-写者问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#读者优先"><span class="nav-number">4.3.1.</span> <span class="nav-text">读者优先</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写者优先"><span class="nav-number">4.3.2.</span> <span class="nav-text">写者优先</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#限定时间"><span class="nav-number">4.3.3.</span> <span class="nav-text">限定时间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#熟睡的理发师问题"><span class="nav-number">4.4.</span> <span class="nav-text">熟睡的理发师问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#信标解决"><span class="nav-number">4.4.1.</span> <span class="nav-text">3信标解决</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三个烟鬼问题"><span class="nav-number">4.5.</span> <span class="nav-text">三个烟鬼问题</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

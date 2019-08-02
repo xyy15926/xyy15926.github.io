@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Projected Gradient Descent">
+<meta name="keywords" content="最优化,约束优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Projected Gradient Descent">
+<meta property="og:url" content="https://xyy15926.github.io/math_mixin/constrained_optimization/projection_method/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Projected Gradient Descent">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Projected Gradient Descent">
+<meta name="twitter:description" content="Projected Gradient Descent">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/math_mixin/constrained_optimization/projection_method/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Projected Gradient Descent | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/math_mixin/constrained_optimization/projection_method/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Projected Gradient Descent
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/" itemprop="url" rel="index"><span itemprop="name">最优化</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/约束优化/" itemprop="url" rel="index"><span itemprop="name">约束优化</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Projected Gradient Descent</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="projected-gradient-descent">Projected Gradient Descent</h2>
+<h3 id="受限优化问题">受限优化问题</h3>
+<p><span class="math display">\[
+\min_{x \in C} f(x)
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(C \subseteq R^d\)</span>：受限凸集</li>
+</ul>
+</blockquote>
+<p>投影梯度下降：采用后处理的方式，将迭代位置拉回到约束条件内</p>
+<ul>
+<li><p>使用一般下降算法进行位置更新，新位置<span class="math inline">\(x_{t+1}^{&#39;}\)</span>可能 不再满足约束条件</p></li>
+<li><p>为使新位置<span class="math inline">\(x_{t+1}^{&#39;}\)</span>符合受限集合，可以选择在<span class="math inline">\(L_2\)</span>范数 下距离受限集合<span class="math inline">\(C\)</span>最近的的点 <span class="math inline">\(x_{t+1}=\arg\min_{x \in C} \|x - x_{t+1}^{&#39;}\|\)</span>作为下步 真正迭代位置</p></li>
+</ul>
+<h2 id="线性约束">线性约束</h2>
+<h3 id="projection-matrix"><em>Projection Matrix</em></h3>
+<blockquote>
+<ul>
+<li>投影矩阵：矩阵<span class="math inline">\(P \in R^{n*n}\)</span>，若满足<span class="math inline">\(P^T = P, P^2 = P\)</span></li>
+<li>若<span class="math inline">\(A \in R^{m*n}\)</span>为行满秩矩阵，则<span class="math inline">\(A\)</span>的零空间为 <span class="math inline">\(L_A = {x \in R^{n} | Ax = 0}\)</span>，对应正交空间为 <span class="math inline">\(L_A^{\perp} = {A^T y | y \in R^m}\)</span></li>
+</ul>
+</blockquote>
+<p>对<span class="math inline">\(\forall x \in R^n\)</span>进行正交分解</p>
+<p><span class="math display">\[\begin{align*}
+\forall x \in R^n, x &amp; = x_1 + x_2, x_1 \in L_A,
+    x_2 \in L_A^{\perp} \\
+x_1 &amp; = P_A x
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(P_A = I - A^T (A A^T)^{-1} A\)</span>：<span class="math inline">\(A\)</span>的投影矩阵</li>
+<li>投影矩阵<span class="math inline">\(P_A\)</span>可由点对线性约束的投影定义，利用拉格朗日 求解</li>
+</ul>
+</blockquote>
+<p>证明</p>
+<p><span class="math display">\[\begin{align*}
+x_1 &amp; = x - x_2 = x - A^T y \\
+A x_1 &amp; = A x - A A^T y \\
+\Rightarrow y &amp; = (A A^T)^{-1} A (x - x_1) \\
+\Rightarrow x_1 &amp; = x - A^T[(A A^T)^{-1} A (x - x_1)] \\
+&amp; = x - A^T (A A^T)^{-1} A x - A^T (A A^T)^{-1} A x_1 \\
+&amp; = (I - A^T (A A^T)^{-1} A) x = P_A x
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li>投影矩阵<span class="math inline">\(P\)</span>对值应用多次线性变换和只应用一次结果相同， 保持像不变</li>
+</ul>
+</blockquote>
+<h3 id="projection-operator"><em>Projection Operator</em></h3>
+<p><span class="math display">\[\begin{array}{l}
+\min &amp; f(x) \\
+s.t. &amp; A_1 x \leq b_1 \\
+&amp; A_2 x = b_2
+\end{array}\]</span></p>
+<ul>
+<li><p>设<span class="math inline">\(x^{k}\)</span>为当前迭代点，记<span class="math inline">\(A_{11}\)</span>、<span class="math inline">\(A_{12}\)</span>分别为紧、松 约束，即</p>
+<p><span class="math display">\[\begin{align*}
+A_1 &amp; = \begin{bmatrix} A_{1,1} \\ A_{1,2} \end{bmatrix},
+&amp; b_1 &amp; = \begin{bmatrix} b_{1,1} \\ b_{1,2} \end{bmatrix} \\
+A_{1,1} x^k &amp; = b_{1,1}, &amp; A_{1,2} x^k &amp; \leq b_{1,2}
+\end{align*}\]</span></p></li>
+<li><p>记<span class="math inline">\(M = [A_{1,1}^T, A_2^T]^T\)</span>，则<span class="math inline">\(s \in L_M\)</span>时是可行方向</p></li>
+<li><p>对负梯度<span class="math inline">\(\nabla f(x^k)\)</span>，通过<span class="math inline">\(M\)</span>的投影矩阵<span class="math inline">\(P_M\)</span>将其投影 至<span class="math inline">\(L_M\)</span>上即得可行下降方向<span class="math inline">\(s^k = -P_M \nabla f(x^k)\)</span></p>
+<ul>
+<li><span class="math inline">\(s^k \neq 0\)</span>：为<span class="math inline">\(x^k\)</span>处可行下降方向</li>
+<li><span class="math inline">\(s^k = 0\)</span>：作如下讨论</li>
+</ul></li>
+</ul>
+<h4 id="投影方向为0">投影方向为0</h4>
+<ul>
+<li><p>记<span class="math inline">\(w = [u, v]^T = -(M M^T)^{-1}M \nabla f(x^k)\)</span>，则有</p>
+<p><span class="math display">\[\begin{align*}
+0 &amp; = \nabla f(x^k) + M^T w \\
+&amp; = \nabla f(x^k) + [A_{1,1}^T, A_2^T]
+    \begin{bmatrix} u \\ v \end{bmatrix} \\
+&amp; = \nabla f(x^k) + A_{1,1}^T u + A_2^T v
+\end{align*}\]</span></p></li>
+<li><p>若<span class="math inline">\(u \geq 0\)</span>，则<span class="math inline">\(x^{k}\)</span>是KKT点</p>
+<p><span class="math display">\[
+\nabla f(x^k) + A_{1,1}^T u + A_{1,2}^T v = 0
+\Rightarrow x^k 为KKT点
+\]</span></p></li>
+<li><p>否则若<span class="math inline">\(u\)</span>中有负分量，可设<span class="math inline">\(u_0 &lt; 0\)</span>，记<span class="math inline">\(\bar M\)</span>为<span class="math inline">\(M\)</span>中 去除对应列矩阵，则<span class="math inline">\(\bar s^k = -P_{\bar M}\nabla f(x^k)\)</span> 为<span class="math inline">\(x^k\)</span>可行下降方向</p>
+<ul>
+<li><p>先反证法证明<span class="math inline">\(\bar s^k \neq 0\)</span>，若<span class="math inline">\(\bar s^k = 0\)</span></p>
+<p><span class="math display">\[\begin{align*}
+0 &amp; = \nabla f(x^k) - \bar M^T (\bar M \bar M^T)^{-1}
+    \bar M \nabla f(x^k) \\
+&amp; = \nabla f(x^k) + \bar M^T \beta \\
+\beta &amp; = -(\bar M \bar M^T)^{-1} \bar M
+    \nabla f(x^k)
+\end{align*}\]</span></p>
+<p>考虑到</p>
+<p><span class="math display">\[\begin{align*}
+0 &amp; = \nabla f(x^k) + M^T w \\
+&amp; = \nabla f(x^k) + u_0 \alpha_0 + \bar M^T \bar w
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\alpha_0\)</span>：<span class="math inline">\(M\)</span>中<span class="math inline">\(u_0\)</span>对应行</li>
+</ul>
+</blockquote>
+<p>则有</p>
+<p><span class="math display">\[
+u_0 \alpha_0 + \bar M^T (\bar w - \beta) = 0
+\]</span></p>
+<p>与<span class="math inline">\(M\)</span>行满秩条件矛盾，故<span class="math inline">\(\bar s^k \neq 0\)</span></p></li>
+<li><p>证明<span class="math inline">\(\bar s^k\)</span>为下降方向</p>
+<p><span class="math display">\[\begin{align*}
+\nabla f(x^k)^T \bar s^k &amp; = -\nabla f(x^k)
+    P_{\bar M} \nabla f(x^k) \\
+&amp; = -\nabla f(x^k) P_{\bar M}^T P_{\bar M}
+    \nabla f(x^k) \\
+&amp; = -\|P_{\bar M} \nabla f(x^k)\|_2^2 \leq 0
+\end{align*}\]</span></p></li>
+<li><p>证明<span class="math inline">\(\bar s^k\)</span>方向可行（满足约束）</p>
+<ul>
+<li><p>由<span class="math inline">\(P_{\bar M}\)</span>定义：<span class="math inline">\(\bar M P_{\bar M} = 0\)</span>，则</p>
+<p><span class="math display">\[\begin{align*}
+\bar M \bar s^k &amp; = -\bar M \bar P_{\bar M}
+    \nabla f(x^k) \\
+&amp; = \begin{bmatrix} \bar A_{1,1} \\ A_2
+    \end{bmatrix} \bar s^k = 0
+\end{align*}\]</span></p></li>
+<li><p>则只需证明<span class="math inline">\(\alpha_0^T \bar s^k &lt; 0\)</span></p>
+<p><span class="math display">\[\begin{align*}
+0 &amp; = \nabla f(x^k) + M^T w \\
+&amp; = \nabla f(x^k) + u_0 \alpha_0 + \bar M^T \bar w \\
+\Rightarrow &amp; = \nabla f(x^k)^T \bar s^k + u_0
+    \alpha_0^T \bar s^k + \bar w^T \bar M \bar s^k \\
+&amp; = \nabla f(x^k)^T \bar s^k + u_0 \alpha_0^T \bar s^k
+\end{align*}\]</span></p>
+<p>考虑到<span class="math inline">\(u_0 &lt; 0\)</span>，则<span class="math inline">\(\alpha_0^T \bar s^k &lt; 0\)</span></p></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>即此时有紧约束变为松约束</li>
+</ul>
+</blockquote></li>
+</ul>
+<h4 id="算法">算法</h4>
+<blockquote>
+<ul>
+<li>初始化：初始点<span class="math inline">\(x^0\)</span>、<span class="math inline">\(k=0\)</span>、精度参数<span class="math inline">\(\epsilon &gt; 0\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li>构造<span class="math inline">\(M = [A_{1,1}^T, A_2^T]^T\)</span>
+<ul>
+<li>若<span class="math inline">\(M=0\)</span>（在可行域内），令<span class="math inline">\(s^k = -\nabla f(x^k)\)</span>为 迭代方向</li>
+<li>否则令<span class="math inline">\(s^k = -P_M \nabla f(x^k)\)</span>为迭代方向</li>
+</ul></li>
+<li>若<span class="math inline">\(\|s^k\|_2^2 \geq \epsilon\)</span>
+<ul>
+<li>若<span class="math inline">\(M\)</span>为空（无可下降方向），停止</li>
+<li>若<span class="math inline">\(M\)</span>非空、<span class="math inline">\(u &gt; 0\)</span>，停止</li>
+<li>否则，构建<span class="math inline">\(M = \bar M\)</span>继续</li>
+</ul></li>
+<li><p>若<span class="math inline">\(\|s^k\|_2^2 &gt; \epsilon\)</span>，确定步长<span class="math inline">\(\lambda_k\)</span></p>
+<ul>
+<li><p>显然只需保证<span class="math inline">\(A_2 x_k + \lambda_k A_2 d_k \leq b_2\)</span> 即可</p></li>
+<li><p>若<span class="math inline">\(A_2 d_k &lt; 0\)</span>，则<span class="math inline">\(\lambda_k\)</span>无约束，否则</p>
+<p><span class="math display">\[
+\lambda_k = \max \{\frac {(b_2 - A_2 x_k)_i}
+    {(A_2 d_k)_i}\}
+\]</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>即单纯型法中确定步长方法</li>
+</ul>
+</blockquote></li>
+<li><p>得到新迭代点<span class="math inline">\(x^{k+1} = x^k + \lambda_k s^k\)</span>、<span class="math inline">\(k=k+1\)</span></p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/最优化/" rel="tag"># 最优化</a>
+          
+            <a href="/tags/约束优化/" rel="tag"># 约束优化</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_specifications/rec_system/recommendation_system/" rel="next" title="Recommendation System">
+                <i class="fa fa-chevron-left"></i> Recommendation System
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_algorithm/problems/searching/" rel="prev" title="查找">
+                查找 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#projected-gradient-descent"><span class="nav-number">1.</span> <span class="nav-text">Projected Gradient Descent</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#受限优化问题"><span class="nav-number">1.1.</span> <span class="nav-text">受限优化问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性约束"><span class="nav-number">2.</span> <span class="nav-text">线性约束</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#projection-matrix"><span class="nav-number">2.1.</span> <span class="nav-text">Projection Matrix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#projection-operator"><span class="nav-number">2.2.</span> <span class="nav-text">Projection Operator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#投影方向为0"><span class="nav-number">2.2.1.</span> <span class="nav-text">投影方向为0</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">2.2.2.</span> <span class="nav-text">算法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

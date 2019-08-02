@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Perceptron">
+<meta name="keywords" content="模型,线性模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Perceptron">
+<meta property="og:url" content="https://xyy15926.github.io/ml_models/linear_models/perceptron/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Perceptron">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-13T04:03:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Perceptron">
+<meta name="twitter:description" content="Perceptron">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_models/linear_models/perceptron/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Perceptron | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_models/linear_models/perceptron/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Perceptron
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-13 23:23:48 / 修改时间：12:03:11" itemprop="dateCreated datePublished" datetime="2019-07-13T23:23:48+08:00">2019-07-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/" itemprop="url" rel="index"><span itemprop="name">模型</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/线性模型/" itemprop="url" rel="index"><span itemprop="name">线性模型</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Perceptron</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>输入：实例的特征向量</li>
+<li>输出：实例类别+1、-1</li>
+</ul>
+<h2 id="感知机模型">感知机模型</h2>
+<p>感知机：线性二分类模型（判别模型）</p>
+<p><span class="math display">\[
+f(x) = sign(wx + b)
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(x \in \chi \subseteq R^n\)</span>：输入空间</li>
+<li><span class="math inline">\(y \in \gamma \subseteq R^n\)</span>：输出空间</li>
+<li><span class="math inline">\(w \in R^n, b \in R\)</span>：<em>weight vector</em>、<em>bias</em></li>
+<li>也常有<span class="math inline">\(\hat w = (w^T, b^T)^T, \hat x = (x^T + 1)^T\)</span>， 则有<span class="math inline">\(\hat w \hat x = wx + b\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>感知机模型的假设空间是定义在特征空间的所有 <em>linear classification model/linear classifier</em>，即函数 集合<span class="math inline">\(\{f|f(x)=wx+b\}\)</span></p></li>
+<li><p>线性方程<span class="math inline">\(wx+b=0\)</span>：对应特征空间<span class="math inline">\(R^n\)</span>中一个<em>hyperplane</em></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(w\)</span>：超平面法向量</li>
+<li><span class="math inline">\(b\)</span>：超平面截距</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>超平面将特征空间划分为两个部分，其中分别被分为正、负 两类</p></li>
+<li><p>也被称为<em>separating hyperplane</em></p></li>
+</ul></li>
+</ul>
+<h3 id="linearly-separable-data-set"><em>Linearly Separable Data Set</em></h3>
+<blockquote>
+<ul>
+<li>对数据集<span class="math inline">\(T=\{(x_1,y_1),\cdots,(x_N,y_N)\}\)</span>，若存在超平面 <span class="math inline">\(S: wx + b=0\)</span>能够将正、负实例点，完全正确划分到超平面 两侧，即 <span class="math display">\[\begin{align*}
+wx_i + b &gt; 0, &amp; \forall y_i &gt; 0 \\
+wx_i + b &lt; 0, &amp; \forall y_i &lt; 0
+\end{align*}\]</span> 则称数据集T为线性可分数据集</li>
+</ul>
+</blockquote>
+<h2 id="感知机学习策略">感知机学习策略</h2>
+<p>感知机学习策略：定义适当损失函数，并将经验风险极小化，确定 参数<span class="math inline">\(w, b\)</span></p>
+<h3 id="损失">0-1损失</h3>
+<p>经验风险：误分率（误分点总数）</p>
+<ul>
+<li>不是参数<span class="math inline">\(w, b\)</span>的连续可导函数，不易优化</li>
+</ul>
+<h3 id="绝对值损失">绝对值损失</h3>
+<p>经验风险：误分类点到超平面距离</p>
+<ul>
+<li><p>对误分类数据<span class="math inline">\((x_i, y_i)\)</span>，有<span class="math inline">\(-y_i(wx_i + b) &gt; 0\)</span></p></li>
+<li><p>则误分类点<span class="math inline">\((x_i, y_i)\)</span>到超平面S距离 <span class="math display">\[\begin{align*}
+d_i &amp; = \frac 1 {\|w\|} |wx_i + b| \\
+    &amp; =-\frac 1 {\|w\|} y_i(wx_i + b)
+\end{align*}\]</span></p></li>
+<li><p>则感知机损失函数可定义为 <span class="math inline">\(L(w,b) = -\sum_{x_i \in M} y_i(wx_i + b)\)</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(M\)</span>：误分类点集合</li>
+<li>损失函数是<span class="math inline">\(w, b\)</span>的连续可导函数：使用<span class="math inline">\(y_i\)</span>替代绝对值</li>
+</ul>
+</blockquote></li>
+<li><p>损失函数<span class="math inline">\(L(w,b)\)</span>梯度有</p>
+<p><span class="math display">\[\begin{align*}
+\bigtriangledown_wL(w, b) &amp; = -\sum_{x_i \in M} y_ix_i \\
+\bigtriangledown_bL(w, b) &amp; = -\sum_{x_i \in M} y_i
+\end{align*}\]</span></p></li>
+</ul>
+<h2 id="学习算法">学习算法</h2>
+<h3 id="stochastic-gredient-descent"><em>Stochastic Gredient Descent</em></h3>
+<p>随机梯度下降法</p>
+<blockquote>
+<ul>
+<li>输入：数据集<span class="math inline">\(T\)</span>、学习率<span class="math inline">\(\eta, 0 \leq \eta \leq 1\)</span></li>
+<li>输出：<span class="math inline">\(w,b\)</span>、感知模型<span class="math inline">\(f(x)=sgn(wx+b)\)</span></li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>选取初值<span class="math inline">\(w_0, b_0\)</span></p></li>
+<li><p>随机选取一个误分类点<span class="math inline">\((x_i, y_i)\)</span>，即<span class="math inline">\(y_i(wx_i+b) \leq 0\)</span> ，对<span class="math inline">\(w, b\)</span>进行更新</p>
+<p><span class="math display">\[\begin{align*}
+w^{(n+1)} &amp; \leftarrow w^{(n)} + \eta y_ix_i \\
+b^{(n+1)} &amp; \leftarrow b^{(n)} + \eta y_i
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(0 &lt; \eta \leq 1\)</span>：<em>learning rate</em>，学习率，步长</li>
+</ul>
+</blockquote></li>
+<li><p>转2，直至训练集中无误分类点</p></li>
+</ol>
+<blockquote>
+<ul>
+<li>不同初值、随机取点顺序可能得到不同的解</li>
+<li>训练数据线性可分时，算法迭代是收敛的</li>
+<li>训练数据不线性可分时，学习算法不收敛，迭代结果发生震荡</li>
+<li>直观解释：当实例点被误分类，应该调整<span class="math inline">\(w, b\)</span>值，使得分离 超平面向<strong>误分类点方向</strong>移动，减少误分类点与超平面距离， 直至被正确分类</li>
+</ul>
+</blockquote>
+<h3 id="学习算法对偶形式">学习算法对偶形式</h3>
+<p>#todo</p>
+<h3 id="算法收敛性">算法收敛性</h3>
+<p>为方便做如下记号</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\hat w = (w^T, b^T)^T, \hat w \in R^{n+1}\)</span></li>
+<li><span class="math inline">\(\hat x = (x^T, 1)^T, \hat x \in R^{n+1}\)</span></li>
+</ul>
+</blockquote>
+<p>此时，感知模型可以表示为</p>
+<p><span class="math display">\[
+xw + b = \hat w \hat x = 0
+\]</span></p>
+<blockquote>
+<ul>
+<li>数据集<span class="math inline">\(T={(x_1, y_1), (x_2, y_2),...}\)</span>线性可分，其中： <span class="math inline">\(x_i \in \mathcal{X = R^n}\)</span>， <span class="math inline">\(y_i \in \mathcal{Y = \{-1, +1\}}\)</span>，则</li>
+</ul>
+</blockquote>
+<blockquote>
+<blockquote>
+<ul>
+<li>存在满足条件<span class="math inline">\(\|\hat w_{opt}\|=1\)</span>超平面 <span class="math inline">\(\hat w_{opt} \hat x = 0\)</span>将训练数据完全正确分开，且 <span class="math inline">\(\exists \gamma &gt; 0, y_i(\hat w_{opt} x_i) \geq \gamma\)</span></li>
+</ul>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ul>
+<li>令<span class="math inline">\(R = \arg\max_{1\leq i \leq N} \|\hat x_i\|\)</span>，则 随机梯度感知机误分类次数<span class="math inline">\(k \leq (\frac R \gamma)^2\)</span></li>
+</ul>
+</blockquote>
+</blockquote>
+<h4 id="超平面存在性">超平面存在性</h4>
+<ul>
+<li><p>训练集线性可分，存在超平面将训练数据集完全正确分开，可以 取超平面为<span class="math inline">\(\hat w_{opt} \hat x = 0\)</span></p></li>
+<li><p>令<span class="math inline">\(\|\hat w_{opt}\| = 1\)</span>，有</p>
+<p><span class="math display">\[\forall i, y_i(\hat w_{opt} \hat x_i) &gt; 0\]</span></p>
+<p>可取</p>
+<p><span class="math display">\[\gamma = \min_i \{ y_i (\hat w_{opt} \hat x) \}\]</span></p>
+<p>满足条件</p></li>
+</ul>
+<h4 id="感知机算法收敛性">感知机算法收敛性</h4>
+<ul>
+<li><p>给定学习率<span class="math inline">\(\eta\)</span>，随机梯度下降法第k步更新为 <span class="math inline">\(\hat w_k = \hat w_{k-1} + \eta y_i \hat x_i\)</span></p></li>
+<li><p>可以证明</p>
+<ul>
+<li><p><span class="math inline">\(\hat w_k \hat w_{opt} \geq k\eta\gamma\)</span></p>
+<p><span class="math display">\[\begin{align*}
+\hat w_k \hat w_{opt} &amp; =
+    \hat w_{k-1} \hat w_{opt} +
+        \eta y_i \hat w_{opt} \hat x_i \\ 
+    &amp; \geq \hat w_{k-1} \hat w_{opt} +
+        \eta\gamma \\
+    &amp; \geq k\eta\gamma
+\end{align*}\]</span></p></li>
+<li><p><span class="math inline">\(\|\hat w_k\|^2 \leq k \eta^2 R^2\)</span></p>
+<p><span class="math display">\[\begin{align*}
+\|\hat w_k\|^2 &amp; = \|\hat w_{k-1} +
+    \eta y_i x_i \|^2 \\
+&amp; = \|\hat w_{k-1}\|^2 + 2\eta y_i \hat w_{k-1}
+    \hat x_i + \eta^2 \|\hat x_i\|^2 \\
+&amp; \leq \|w_{k-1}\|^2 + \eta^2 \|\hat x_i\|^2 \\
+&amp; \leq \|w_{k-1}\|^2 + \eta^2 R^2 \\
+&amp; \leq k\eta^2 R^2
+\end{align*}\]</span></p></li>
+</ul></li>
+<li><p>则有</p>
+<p><span class="math display">\[\begin{align*}
+k \eta \gamma &amp; \leq \hat w_k \hat w_{opt} \leq
+    \|\hat w\| \|\hat w_{opt}\| = \|\hat w\|
+    \leq \sqrt k \eta R \\
+k^2 \gamma^2 &amp; \leq k R^2
+\end{align*}\]</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>直观理解就是超平面<strong>最大移动次数</strong>不大于<strong>最大移动距离</strong> 除以<strong>最小移动步长</strong> &gt; - <span class="math inline">\(\eta \gamma^2\)</span>：超平面法向量最小增加量（移动步长） &gt; - <span class="math inline">\(\eta R^2\)</span>：超平面法向最大增加量（移动距离） &gt; - 但是超平面不可能将所有点都归为同一侧</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>误分类次数有上界，经过有限次搜索可以找到将训练数据完全 正确分开的分离超平面，即训练数据集线性可分时，算法的迭代 形式是收敛的</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/模型/" rel="tag"># 模型</a>
+          
+            <a href="/tags/线性模型/" rel="tag"># 线性模型</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_models/linear_models/support_vector_machine/" rel="next" title="Support Vector Machine">
+                <i class="fa fa-chevron-left"></i> Support Vector Machine
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_models/linear_models/linear_regression/" rel="prev" title="回归变量选择">
+                回归变量选择 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#感知机模型"><span class="nav-number">1.</span> <span class="nav-text">感知机模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#linearly-separable-data-set"><span class="nav-number">1.1.</span> <span class="nav-text">Linearly Separable Data Set</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感知机学习策略"><span class="nav-number">2.</span> <span class="nav-text">感知机学习策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#损失"><span class="nav-number">2.1.</span> <span class="nav-text">0-1损失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绝对值损失"><span class="nav-number">2.2.</span> <span class="nav-text">绝对值损失</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习算法"><span class="nav-number">3.</span> <span class="nav-text">学习算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stochastic-gredient-descent"><span class="nav-number">3.1.</span> <span class="nav-text">Stochastic Gredient Descent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#学习算法对偶形式"><span class="nav-number">3.2.</span> <span class="nav-text">学习算法对偶形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法收敛性"><span class="nav-number">3.3.</span> <span class="nav-text">算法收敛性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#超平面存在性"><span class="nav-number">3.3.1.</span> <span class="nav-text">超平面存在性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机算法收敛性"><span class="nav-number">3.3.2.</span> <span class="nav-text">感知机算法收敛性</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

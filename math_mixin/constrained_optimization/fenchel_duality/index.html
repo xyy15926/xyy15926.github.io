@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Fenchel-Legendre Duality">
+<meta name="keywords" content="最优化,约束优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fenchel-Legendre Duality">
+<meta property="og:url" content="https://xyy15926.github.io/math_mixin/constrained_optimization/fenchel_duality/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Fenchel-Legendre Duality">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/fenchel_conjugate_max_interception.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/fenchel_conjugate_max_vertical_distance.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/fenchel_conjugate_transformation_cycle.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/fenchel_conjugate_integration_for_fenchel_young_ineq.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/fenchel_conjugate_dual_gap.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/fenchel_conjugate_duality.png">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fenchel-Legendre Duality">
+<meta name="twitter:description" content="Fenchel-Legendre Duality">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/fenchel_conjugate_max_interception.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/math_mixin/constrained_optimization/fenchel_duality/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Fenchel-Legendre Duality | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/math_mixin/constrained_optimization/fenchel_duality/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Fenchel-Legendre Duality
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/" itemprop="url" rel="index"><span itemprop="name">最优化</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/约束优化/" itemprop="url" rel="index"><span itemprop="name">约束优化</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Fenchel-Legendre Duality</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="legendre-transformation"><em>Legendre Transformation</em></h2>
+<p>勒让德变换：用<span class="math inline">\(f^{*}(p)\)</span>表示凸、可导函数<span class="math inline">\(f(x)\)</span>的转换，其中 <span class="math inline">\(p\)</span>是<span class="math inline">\(f(x)\)</span>导数</p>
+<p><span class="math display">\[
+f^{*}(p) = p^T u - f(u)|_{\frac {d(p^T u - f(u))} {du} = 0}
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(u\)</span>：参数，满足<span class="math inline">\(\frac {d(p^T u - f(u))} {du} = 0\)</span></li>
+<li>可导：有导数，凸：导数唯一</li>
+</ul>
+</blockquote>
+<ul>
+<li>实变量的实值凸函数的对合变换
+<ul>
+<li>把定义在线性空间上的函数对应至其对偶空间的函数</li>
+<li>是点、（切）线之间对偶关系的应用</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>对合[函数]：反函数的等于自身的函数，即<span class="math inline">\(f(f(x))=x\)</span></li>
+<li>函数<span class="math inline">\(f(x)\)</span>表示的函数关系可使用<span class="math inline">\((x, y=f(x))\)</span>点集合表示， 也可以用<strong>切线集合</strong>表示 （严格凸函数下，切线、导数一一对应）</li>
+</ul>
+</blockquote>
+<h3 id="理解按fenchel共轭">理解（按Fenchel共轭）</h3>
+<ul>
+<li><p><span class="math inline">\(f^{*}(p)\)</span>：可理解为斜率为<span class="math inline">\(p\)</span>、同<span class="math inline">\(f(x)\)</span>有交点<span class="math inline">\(x_0\)</span>的直线 在零点处值（截距）和<span class="math inline">\(f(x_0)\)</span>的最大差</p>
+<figure>
+<img src="/imgs/fenchel_conjugate_max_interception.png" alt="fenchel_conjugate_max_interception"><figcaption>fenchel_conjugate_max_interception</figcaption>
+</figure></li>
+<li><p><span class="math inline">\(x\)</span>：可以理解为函数<span class="math inline">\(f(x)\)</span>上距离给定斜率为<span class="math inline">\(p\)</span>、过原点的 直线<span class="math inline">\(f(x)=px\)</span><strong>竖直</strong>距离最大的点</p>
+<figure>
+<img src="/imgs/fenchel_conjugate_max_vertical_distance.png" alt="fenchel_conjugate_max_vertical_distance"><figcaption>fenchel_conjugate_max_vertical_distance</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li>类似Bregman散度</li>
+</ul>
+</blockquote></li>
+<li><p>Legendre变换的变换得到原函数</p>
+<figure>
+<img src="/imgs/fenchel_conjugate_transformation_cycle.png" alt="fenchel_conjugate_transformation_cycle"><figcaption>fenchel_conjugate_transformation_cycle</figcaption>
+</figure>
+<p><span class="math display">\[\begin{align*}
+f^{**}(x) &amp; = \sup_{p \in dom(f^{*})} [x^T p - f^{*}(p)] \\
+&amp; = \sup_{u \in dom(f)}[x^T \nabla f(u) -
+    \nabla f(u)^T u + f(u)] \\
+&amp; = \sup_{u \in dom(f)}[f(u) + \nabla f(u)^T (x-u)]
+&amp; = f(x)
+\end{align*}\]</span></p></li>
+<li><p>凸函数<span class="math inline">\(f(x)\)</span>视为积分，则其共轭<span class="math inline">\(f^{*}(x)\)</span>为对另一轴积分， 即二者导函数互为反函数</p>
+<p><span class="math display">\[
+f(x) + f^{*}(p) = xp, p = \frac {df(x)} {dx}
+\]</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>以上性质均按Fenchel共轭，但要求<span class="math inline">\(f(x)\)</span>为凸、可导函数，故 等价于Legendre变换</li>
+</ul>
+</blockquote>
+<h3 id="最大值式定义">最大值式定义</h3>
+<p><span class="math display">\[\begin{align*}
+&amp; L(p, x) &amp; = px - f(x) \\
+&amp; \frac {\partial (px - f(x))} {\partial x} &amp; = p - 
+    \frac {df(x)} {dx} = 0 \\
+\Rightarrow &amp; p = \frac {df(x)} {dx}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li>考虑到<span class="math inline">\(f(x)\)</span>为凸函数，则<span class="math inline">\(p=\frac {df(x)} {dx}\)</span>是最大值</li>
+<li>则计算<span class="math inline">\(f(x)\)</span>的勒让德变换只需求<span class="math inline">\(f(x)\)</span>导函数的反函数带入 即可</li>
+</ul>
+</blockquote>
+<h3 id="数学性质">数学性质</h3>
+<ul>
+<li><p>标度性质</p>
+<p><span class="math display">\[\begin{align*}
+f(x) &amp; = a g(x) \rightarrow f^{*}(p) = a g^{*}(\frac p a) \\
+f(x) &amp; = g(ax) \rightarrow f^{*}(p) = g^{*}(\frac p a)
+\end{align*}\]</span></p>
+<p>由此，<span class="math inline">\(r\)</span>次齐次函数的勒让德变换是<span class="math inline">\(s\)</span>次齐次函数，满足</p>
+<p><span class="math display">\[
+\frac 1 r + \frac 1 s = s
+\]</span></p></li>
+<li><p>平移性质</p>
+<p><span class="math display">\[\begin{align*}
+f(x) &amp; = g(x) + b \rightarrow f^{*}(p) = g^{*}(p) - b
+f(x) &amp; = g(x+y) \rightarrow f*^{*}(p) = g^{*}(p) - py
+\end{align*}\]</span></p></li>
+<li><p>反演性质</p>
+<p><span class="math display">\[
+f(x) = g^{-1}(x) \rightarrow f^{*}(p) = -p g^{*}(\frac 1 p)
+\]</span></p></li>
+<li><p>线性变换性质</p>
+<p><span class="math display">\[
+(Af)^{*} = f^{*}A^{*}
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(f\)</span>：<span class="math inline">\(R^n\)</span>上的凸函数</li>
+<li><span class="math inline">\(A\)</span>：<span class="math inline">\(R^n \rightarrow R^m\)</span>的线性变换</li>
+<li><span class="math inline">\(A^{*}: &lt;Ax, y^{*}&gt; = &lt;x, A^{*}y^{*}&gt;\)</span>：<span class="math inline">\(A\)</span>伴随算子</li>
+</ul>
+</blockquote></li>
+</ul>
+<h2 id="fenchel-conjugate">Fenchel Conjugate</h2>
+<p>Fenchel共轭</p>
+<p><span class="math display">\[
+f^{*}(p) = \sup_{x \in R}{px - f(x)}
+\]</span></p>
+<ul>
+<li>Fenchel共轭是对Legendre变换的扩展，不再局限于凸、可导 函数
+<ul>
+<li>Fenchel共轭可类似Legendra理解，但是范围更广</li>
+<li>对凸函数Fenchel共轭的共轭即为原函数，对非凸函数 Fenchel共轭得到<strong>原函数凸包</strong></li>
+</ul></li>
+<li>Fenchel共轭
+<ul>
+<li>用罗尔中值定理描述极值、导数关系：兼容Legendre导数 支撑面</li>
+<li>用上确界保证函数唯一性</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>非凸函数线性外包络是凸函数</li>
+</ul>
+</blockquote>
+<h3 id="fenchel-young不等式"><em>Fenchel-Young</em>不等式</h3>
+<p><span class="math display">\[
+f(x) + f^{*}(p) \geq &lt;p, x&gt;
+\]</span></p>
+<ul>
+<li><p>证明</p>
+<p><span class="math display">\[\begin{align*}
+f(x) + f^{*}(p) &amp; = f(x) + \sup_{u \in dom(f)} {u^T p - f(u)} \\
+&amp; \geq f(x) + x^T p - f(x) = x^T p
+\end{align*}\]</span></p></li>
+<li><p>按积分理解，仅<span class="math inline">\(p\)</span>为<span class="math inline">\(x\)</span>共轭时取等号</p>
+<figure>
+<img src="/imgs/fenchel_conjugate_integration_for_fenchel_young_ineq.png" alt="fenchel_conjugate_integration_for_fenchel_young_ineq"><figcaption>fenchel_conjugate_integration_for_fenchel_young_ineq</figcaption>
+</figure></li>
+</ul>
+<h3 id="推导lagrange-duality">推导<em>Lagrange Duality</em></h3>
+<ul>
+<li><p>原问题Prime、等价形式如下</p>
+<p><span class="math display">\[\begin{array}{l}
+&amp;min f(x) \\
+s.t. &amp; g(x) \leq 0 \\
+p(0) &amp; = \inf_{x \in X, g(x) \leq 0} f(x)
+\end{array}\]</span></p></li>
+<li><p>函数化、Fenchel共轭</p>
+<p><span class="math display">\[\begin{align*}
+p(u) &amp; = \inf_{x \in X, g(x) \leq u} f(x) \\
+p^{*}(y) &amp; = \sup_{y \in R^r} \{u^T y - p(u)\}
+\end{align*}\]</span></p></li>
+<li><p>替换对偶中<span class="math inline">\(p(u)\)</span></p>
+<p><span class="math display">\[\begin{align*}
+-p^{*}(y) &amp; = \inf_{u \in R^r} \{p(u) - u^T y\} \\
+d(\lambda) &amp; = \inf_{u \in R^r} \{p(u) + u^T \lambda\} \\
+&amp; = \inf_{u \in R^r} \{\inf_{x \in X, g(x) \leq u} f(x)
+    + \lambda^T u\}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\lambda = -y\)</span></li>
+</ul>
+</blockquote></li>
+<li><p>考虑到约束<span class="math inline">\(g(x) \leq u\)</span>，则</p>
+<p><span class="math display">\[\begin{align*}
+\lambda \geq 0 &amp; \Rightarrow \lambda^T g(x) \leq \lambda u \\
+d(\lambda) &amp; = \left \{ \begin{array}{l}
+        \inf_{x \in X} \{f(x) + \lambda^T g(x)\},
+            &amp; \lambda \geq 0 \\
+        -\infty, &amp; otherwise
+    \end{array} \right.
+\end{align*}\]</span></p></li>
+<li><p>考虑Fenchel不等式</p>
+<p><span class="math display">\[\begin{align*}
+p(u) + p^{*}(-y) &amp; \geq u^T (-y) \\
+p(0) + p^{*}(-y) &amp; \geq 0 \\
+p(0) &amp; \geq -p^{*}(-y) \\
+p(0) &amp; \geq d(\lambda)
+\end{align*}\]</span></p></li>
+<li><p>则可得Lagrange对偶Prime、Dual最优关系</p>
+<p><span class="math display">\[
+L(x, \lambda) = f(x) + \lambda^T g(x), \lambda \geq 0 \\
+D^{*} := \max_{\lambda \geq 0} \min_x L(x, \lambda) \leq
+    \min_x \max_{\lambda \geq 0} L(x, \lambda) =: P^{*}
+\]</span></p>
+<figure>
+<img src="/imgs/fenchel_conjugate_dual_gap.png" alt="fenchel_conjugate_dual_gap"><figcaption>fenchel_conjugate_dual_gap</figcaption>
+</figure></li>
+</ul>
+<h3 id="lagrange-duality推导fenchel对偶">Lagrange Duality推导Fenchel对偶</h3>
+<blockquote>
+<ul>
+<li>Fenchel对偶可以视为Lagrange对偶的应用</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>原问题、等价问题</p>
+<p><span class="math display">\[\begin{align*}
+&amp; \min_x &amp; f(x) - g(x) \\
+\Leftrightarrow &amp; \min_{x,z} &amp; f(x) - g(z) \\
+&amp; s.t. &amp; x = z
+\end{align*}\]</span></p></li>
+<li><p>对上式取Lagrange对偶<span class="math inline">\(L(u)\)</span>、等价得到</p>
+<p><span class="math display">\[\begin{align*}
+L(u) = \min_{x,z} f(x) - g(z) + u^T(z-x) \\
+&amp; = -(f^{*}(u) - g^{(-u)})
+\begin{align*}\]</span></p></li>
+</ul>
+<figure>
+<img src="/imgs/fenchel_conjugate_duality.png" alt="fenchel_conjugate_duality"><figcaption>fenchel_conjugate_duality</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li>Fenchel对偶：寻找截距差值最大的平行切线</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/最优化/" rel="tag"># 最优化</a>
+          
+            <a href="/tags/约束优化/" rel="tag"># 约束优化</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_techniques/functions/func_distance/" rel="next" title="距离函数">
+                <i class="fa fa-chevron-left"></i> 距离函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_mixin/constrained_optimization/inner_pointer/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#legendre-transformation"><span class="nav-number">1.</span> <span class="nav-text">Legendre Transformation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#理解按fenchel共轭"><span class="nav-number">1.1.</span> <span class="nav-text">理解（按Fenchel共轭）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大值式定义"><span class="nav-number">1.2.</span> <span class="nav-text">最大值式定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数学性质"><span class="nav-number">1.3.</span> <span class="nav-text">数学性质</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fenchel-conjugate"><span class="nav-number">2.</span> <span class="nav-text">Fenchel Conjugate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fenchel-young不等式"><span class="nav-number">2.1.</span> <span class="nav-text">Fenchel-Young不等式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推导lagrange-duality"><span class="nav-number">2.2.</span> <span class="nav-text">推导Lagrange Duality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lagrange-duality推导fenchel对偶"><span class="nav-number">2.3.</span> <span class="nav-text">Lagrange Duality推导Fenchel对偶</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

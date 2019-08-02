@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Hive">
+<meta name="keywords" content="工具,Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive">
+<meta property="og:url" content="https://xyy15926.github.io/tools/hadoop/hive/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Hive">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/embeded_metastore_database.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/local_metastore_server.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/remote_metastore_server.png">
+<meta property="og:updated_time" content="2019-07-09T16:48:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hive">
+<meta name="twitter:description" content="Hive">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/embeded_metastore_database.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/hadoop/hive/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Hive | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/hadoop/hive/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Hive
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-10 00:48:32" itemprop="dateCreated datePublished" datetime="2019-07-10T00:48:32+08:00">2019-07-10</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Hive</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="hive简介">Hive简介</h2>
+<p>Hive是Hadoop平台上的数据仓库，面向结构化数据分析</p>
+<ul>
+<li><p>将<strong>结构化</strong>数据文件映射为一张<strong>数据库表</strong></p></li>
+<li>提供完整的SQL查询功能，所用语言称为HiveQL
+<ul>
+<li>Hive将HiveQL转换为MapReduce作业，在hadoop平台运行</li>
+<li>Hive相当于一个在hadoop平台上的SQL Shell</li>
+<li>方便用户使用HiveQL快速实现简单数据分析、统计，而不必 开发专用MapReduce程序，学习成本低</li>
+</ul></li>
+<li><p>相较于传统关系数据库，Hive具有如下特点 ||Hive|传统关系型数据库| |------|------|-------| |数据存储|HDFS分布式文件系统|服务器本地文件系统| |查询处理|MapReduce计算模型|自行设计的查询处理模型| |应用场景|海量数据分析处理|高性能查询，实时性好| |数据更新|不支持对具体数据行修改，只能覆盖、追加|支持| |事务处理|不支持|支持| |索引支持|不支持，一般需要对数据进行全部扫描|支持，多种索引| |扩展能力|基于Hadoop平台，存储、计算强大的扩展能力|扩展性较差| |数据加载|Writing Time Schema：数据加载时无需进行模式检查，在读取数据时对数据以一定模式进行解释|Reading Time Schema：要求数据必须符合数据库表结构|</p></li>
+</ul>
+<h3 id="hive服务端组件">Hive服务端组件</h3>
+<h4 id="driver">Driver</h4>
+<p>负责将用户的编写的HiveQL查询语句进行解析、编译、优化、生成 执行计划，然后调用底层MapReduce计算模型执行，包括</p>
+<ul>
+<li>Compiler：编译器</li>
+<li>Optimizer：优化器</li>
+<li>Executor：执行器</li>
+</ul>
+<h4 id="metastore">MetaStore</h4>
+<p>元信息管理器，对Hive正确运行举足轻重</p>
+<ul>
+<li>MetaStore实际上就是Thrift服务
+<ul>
+<li>MetaStore客户端（hive、spark shell等）和服务端通过 thrift协议进行通信</li>
+<li>客户端通过连接metastore服务，实现对元数据的存取</li>
+<li>通过Thrift获取元数据，屏蔽了访问MetaStore Database 所需的驱动、url、用户名、密码等细节</li>
+</ul></li>
+<li>负责存储元数据在关系型数据库（称为MetaStore Database）
+<ul>
+<li>元数据包括Hive创建的database、table等元信息</li>
+<li>支持的关系型数据库
+<ul>
+<li>Derby：Apache旗下Java数据库</li>
+<li>MySQL</li>
+</ul></li>
+</ul></li>
+<li>MetaStore服务可以独立运行，可以让多个客户端同时连接、 甚至安装到远程服务器集群，保持Hive运行的健壮性</li>
+</ul>
+<h5 id="embedded-metastore-serverdatabase-derby">Embedded Metastore Server(Database Derby)</h5>
+<p>内嵌模式：使用内嵌的Derby数据库存储元数据</p>
+<ul>
+<li>不需要额外起Metastore服务</li>
+<li>一次只能一个客户端连接，使用做实验，不适合生产环境</li>
+<li>Derby默认会在调用hive命令所在目录的<code>metastore_db</code>文件中 持久化元数据</li>
+</ul>
+<figure>
+<img src="/imgs/embeded_metastore_database.png" alt="embeded_metastore_database"><figcaption>embeded_metastore_database</figcaption>
+</figure>
+<h5 id="local-metastore-server">Local Metastore Server</h5>
+<p>本地元存储</p>
+<ul>
+<li>采用外部数据库，支持
+<ul>
+<li>MySQL</li>
+<li>Postgres</li>
+<li>Orcale</li>
+<li>MSSQL</li>
+</ul></li>
+<li><p>数据库独立于hive部署，hive服务使用JDBC访问元数据，多个 服务可以同时进行</p></li>
+<li><p>本地元存储不需要单独起metastore服务，用的是跟hive在同一 进程metastore服务</p></li>
+</ul>
+<figure>
+<img src="/imgs/local_metastore_server.png" alt="local_metastore_server"><figcaption>local_metastore_server</figcaption>
+</figure>
+<h5 id="remote-metastore-server">Remote Metastore Server</h5>
+<p>远程元存储</p>
+<ul>
+<li><p>类似于本地元存储，只是需要单独启动metastore服务，和hive 运行在不同的进程（甚至主机）中</p></li>
+<li>需要在每个客户端配置文件配置连接到该metastore服务
+<ul>
+<li>hive通过thrift访问metastore</li>
+</ul></li>
+<li><p>此模式可以控制到数据库的连接</p></li>
+</ul>
+<figure>
+<img src="/imgs/remote_metastore_server.png" alt="remote_metastore_server"><figcaption>remote_metastore_server</figcaption>
+</figure>
+<h4 id="hiveserver2">hiveserver2</h4>
+<p>基于的Thrift RPC实现</p>
+<ul>
+<li>远程客户端可以通过hiveserver2执行对hive的查询并返回结果
+<ul>
+<li>支持多客户端并发、身份验证</li>
+</ul></li>
+<li><p>可以使用JDBC、ODBC、Thrift连接hiveserver2（Thrift Server 特性）</p></li>
+<li><p>hiveserver2也能访问元数据，不依赖于metastore服务</p></li>
+</ul>
+<h3 id="hive客户端组件">Hive客户端组件</h3>
+<h4 id="cli">CLI</h4>
+<p>Command Line Interface</p>
+<ul>
+<li>允许用户交互式的使用Hive</li>
+</ul>
+<h4 id="thrift-clientbeeline">THrift Client/beeline</h4>
+<p>基于Thrift的JDBC Client</p>
+<ul>
+<li>包括JDBC/ODBC驱动程序</li>
+</ul>
+<h4 id="web-gui">WEB GUI</h4>
+<p>允许用户通过WEB GUI图形界面访问Hive</p>
+<ul>
+<li>需要首先启动Hive Web Interface服务</li>
+</ul>
+<h2 id="hive查询处理">Hive查询处理</h2>
+<h3 id="过程">过程</h3>
+<ol type="1">
+<li>用户提交HQL至Driver</li>
+<li>Driver把查询交给Compiler，Compiler使用MetaStore中元信息 检查、编译</li>
+<li>查询经过Optimizer优化交由Executor Engine执行，转换为 MapReduce作业后调用MapReduce执行</li>
+<li>MapReduce存取HDFS，对数据进行处理，查询结果返回Driver</li>
+</ol>
+<h3 id="数据类型">数据类型</h3>
+<ul>
+<li>基础数据类型
+<ul>
+<li>Integer</li>
+<li>Float</li>
+<li>Double</li>
+<li>String</li>
+</ul></li>
+<li>复杂数据类型：通过嵌套表达复杂类型
+<ul>
+<li>Map</li>
+<li>List</li>
+<li>Struct</li>
+</ul></li>
+<li>还允许用户自定以类型、函数扩展系统</li>
+</ul>
+<h3 id="数据存储模型">数据存储模型</h3>
+<p>使用传统数据库：Table、Row、Column、Partition等概念，易于 理解</p>
+<h4 id="database">Database</h4>
+<p>相当于关系型数据库中的Namespace</p>
+<ul>
+<li>将不同用户数据隔离到不同的数据库、模式中</li>
+</ul>
+<h4 id="table">Table</h4>
+<p>表格</p>
+<ul>
+<li>逻辑上由存储的数据、描述数据格式的相关元数据组成
+<ul>
+<li>表格数据存放在分布式文件系统（HDFS）中</li>
+<li>元数据存储在MetaStore服务指定关系型数据库中</li>
+</ul></li>
+<li>创建表格、加载数据之前，表格在HDFS中就是一个目录， 表格分为两种类型
+<ul>
+<li>托管表：数据文件存放在Hive数据仓库中，即HDFS中的一个 目录，是Hive数据文件默认存放路径</li>
+<li>外部表：数据文件<strong>可以</strong>存放在其他文件系统中</li>
+</ul></li>
+</ul>
+<h4 id="partition">Partition</h4>
+<p>根据“分区列”的值，对表格数据进行粗略划分的极值</p>
+<ul>
+<li><p>存储上：是Hive中表格主目录的子目录，名字即为定义的分区列 名字</p></li>
+<li>逻辑上：分区不是表中的实际字段，是虚拟列
+<ul>
+<li>根据虚拟列（可能包含多个实际字段）划分、存储表格数据</li>
+<li>同一虚拟列中字段通常应该经常一起被查询，这样在需要 存取部分数据字段时，可以只扫描部分表</li>
+</ul></li>
+</ul>
+<h4 id="bucket">Bucket</h4>
+<p>Table、Partition都是目录级别的数据拆分，指定Bucket的表格， 数据文件将按照规律拆分成多个文件</p>
+<ul>
+<li><p>每个桶就是table、partition目录中的文件</p></li>
+<li><p>一般使用Hash函数实现数据分桶，创建表时，需要指定桶数量、 分桶操作依据的列</p></li>
+<li><p>用户执行Sample查询时，Hive可以使用分桶信息，有效的Prune Data，如：对每个目录下单个桶文件进行查询</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_program/program_design/language_design/" rel="next" title="语言设计">
+                <i class="fa fa-chevron-left"></i> 语言设计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/sql_db/mysql/" rel="prev" title="Mysql/Mariadb安装配置">
+                Mysql/Mariadb安装配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hive简介"><span class="nav-number">1.</span> <span class="nav-text">Hive简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hive服务端组件"><span class="nav-number">1.1.</span> <span class="nav-text">Hive服务端组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#driver"><span class="nav-number">1.1.1.</span> <span class="nav-text">Driver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#metastore"><span class="nav-number">1.1.2.</span> <span class="nav-text">MetaStore</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#embedded-metastore-serverdatabase-derby"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">Embedded Metastore Server(Database Derby)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#local-metastore-server"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">Local Metastore Server</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#remote-metastore-server"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">Remote Metastore Server</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hiveserver2"><span class="nav-number">1.1.3.</span> <span class="nav-text">hiveserver2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hive客户端组件"><span class="nav-number">1.2.</span> <span class="nav-text">Hive客户端组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cli"><span class="nav-number">1.2.1.</span> <span class="nav-text">CLI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#thrift-clientbeeline"><span class="nav-number">1.2.2.</span> <span class="nav-text">THrift Client/beeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web-gui"><span class="nav-number">1.2.3.</span> <span class="nav-text">WEB GUI</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hive查询处理"><span class="nav-number">2.</span> <span class="nav-text">Hive查询处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#过程"><span class="nav-number">2.1.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据类型"><span class="nav-number">2.2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据存储模型"><span class="nav-number">2.3.</span> <span class="nav-text">数据存储模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#database"><span class="nav-number">2.3.1.</span> <span class="nav-text">Database</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#table"><span class="nav-number">2.3.2.</span> <span class="nav-text">Table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#partition"><span class="nav-number">2.3.3.</span> <span class="nav-text">Partition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bucket"><span class="nav-number">2.3.4.</span> <span class="nav-text">Bucket</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

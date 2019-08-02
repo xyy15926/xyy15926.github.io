@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Hashing">
+<meta name="keywords" content="算法,数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hashing">
+<meta property="og:url" content="https://xyy15926.github.io/cs_algorithm/data_structure/hash_table/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Hashing">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/hash_overflow_area.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/hash_perfect_structure.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/multi_hash_table_ori.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/multi_hash_table_splited.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/dynamic_scalable_hash_table_ori.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/dynamic_scalable_hash_table_splited.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/linear_hash_ori.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/linear_hash_splited_bucket.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/linear_hash_splited_level.png">
+<meta property="og:updated_time" content="2019-06-04T15:11:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hashing">
+<meta name="twitter:description" content="Hashing">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/hash_overflow_area.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_algorithm/data_structure/hash_table/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Hashing | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_algorithm/data_structure/hash_table/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Hashing
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-04 23:11:44" itemprop="dateCreated datePublished" datetime="2019-06-04T23:11:44+08:00">2019-06-04</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Hashing</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="hashing-table"><em>Hashing Table</em></h2>
+<blockquote>
+<ul>
+<li>哈希表/散列表：可根据哈希值<strong>直接访问</strong>的数据结构</li>
+</ul>
+</blockquote>
+<ul>
+<li>原理：以哈希值做为地址，缩小搜索空间、提高查找效率
+<ul>
+<li>使用哈希函数为每个键计算哈希值，得到位于 <span class="math inline">\(0, \cdots, m-1\)</span>之间整数</li>
+<li>按照哈希值把键分布在<span class="math inline">\(H[0, \cdots, m-1]\)</span>哈希表中</li>
+<li>查找匹配键时，以查找键<strong>哈希值作为起点</strong>在哈希表中 搜索</li>
+</ul></li>
+<li>应选择合适的哈希函数、哈希表长度，尽量把键尽量均分在 哈希表中
+<ul>
+<li>哈希函数<span class="math inline">\(hash\)</span>：参见<em>math_algebra/#todo</em>
+<ul>
+<li>对闭散列：减少冲突</li>
+<li>对开散列：避免数据集中</li>
+</ul></li>
+<li>散列表长度<span class="math inline">\(m\)</span>：常为质数（方便双散列）</li>
+</ul></li>
+</ul>
+<h3 id="load-factor"><em>Load Factor</em></h3>
+<p>负载因子：<span class="math inline">\(\alpha = \frac {noempty} {m}\)</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(m\)</span>：哈希表中slots数量（长度）（哈希桶数量）</li>
+<li><span class="math inline">\(noempty\)</span>：非空数量</li>
+</ul>
+</blockquote>
+<ul>
+<li>闭散列：负载因子反映哈希表冲突可能性、查找效率
+<ul>
+<li>负载因子过小：冲突可能性小，查找效率高，但浪费空间</li>
+<li>负载因子过大：冲突可能性大，查找效率低，空间利用率高</li>
+<li>负载因子取值最大为1</li>
+<li>应适当平衡负载因子，负载因子接近1时重散列，避免冲突 过多影响查找效率</li>
+</ul>
+<blockquote>
+<ul>
+<li>Java中<code>HashMap</code>初始负载值为0.75</li>
+</ul>
+</blockquote></li>
+<li>开散列：负载因子反映查找效率
+<ul>
+<li>但应该无法反映冲突可能性（也无必要）
+<ul>
+<li>开散列往往被用于应对大规模数据，冲突总是存在</li>
+<li>查找效率更多取决于数据（哈希值）偏倚程度</li>
+</ul></li>
+<li>负载因子可以大于1</li>
+</ul></li>
+</ul>
+<h3 id="应用">应用</h3>
+<ul>
+<li>字典/映射实现：<em>cs_algorithm/data_structure/set</em></li>
+</ul>
+<h2 id="open-addressing"><em>Open Addressing</em></h2>
+<p>闭散列/开放寻址：所有键存储在散列表本身中，不扩展存储空间</p>
+<ul>
+<li><p>哈希表<span class="math inline">\(m\)</span>至少要和哈希键数量<span class="math inline">\(n\)</span>一样大</p></li>
+<li><p>冲突问题解决：根据一定规则计算下个地址</p></li>
+<li><em>cluster</em>：聚合，散列表接近满时，一序列连续单元格被占据
+<ul>
+<li>线性探查性能恶化，操作效率降低</li>
+<li>聚合越来的越大时，新元素插入聚类可能性增加</li>
+<li>聚合可能被新插入元素连接，导致更大程度聚合</li>
+</ul></li>
+</ul>
+<h3 id="增量类型">增量类型</h3>
+<p>增量类型：碰撞发生后，根据一定规则对原哈希值修正</p>
+<p><span class="math display">\[
+H_i = (hash(key) + d_i) mod m, i=1,2,\cdots
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(d_i = i\)</span>：<em>linear probing</em>，线性探查</li>
+<li><span class="math inline">\(d_i = i^2, -i^2\)</span>：<em>quadratic probing</em>，二次探查</li>
+<li><span class="math inline">\(d_i = 伪随机数\)</span>：伪随机探查</li>
+<li><span class="math inline">\(d_i = i * hash_2(K), i=0,1,2,\cdots\)</span>：<em>double hashing</em> ，再散列法</li>
+</ul>
+</blockquote>
+<ul>
+<li>再散列法说明：为保证哈希表中每个位置被探查，增量<span class="math inline">\(s(K)\)</span> 必须互质
+<ul>
+<li><span class="math inline">\(m\)</span>为质数时自动满足</li>
+<li>文献推荐：<span class="math inline">\(s(K) = m - 2 - K mod (m-2)\)</span></li>
+<li>对较小散列：<span class="math inline">\(s(K) = 8 - (K mod 8)\)</span></li>
+<li>对较大散列：<span class="math inline">\(s(K) = K mod 97 + 1\)</span></li>
+</ul></li>
+</ul>
+<h4 id="操作">操作</h4>
+<ul>
+<li><p>插入：依次检查哈希值<span class="math inline">\(h(K)\)</span>、探查目标序列，直至找到空 单元格放置键</p></li>
+<li>查找：给定查找键K，计算哈希值<span class="math inline">\(h(K)\)</span>、探查目标序列，比较 K和单元格中键值
+<ul>
+<li>若查找到匹配键，查找成功</li>
+<li>遇到空单元格，查找失败</li>
+</ul></li>
+<li>删除：<strong>延迟删除</strong>，用特殊符号标记曾经被占用过、现被删除 的位置
+<ul>
+<li>不能直接删除，否则的中间出现空单元格，影响查找正确性</li>
+</ul></li>
+</ul>
+<h4 id="算法效率">算法效率</h4>
+<ul>
+<li><p>成功查找访问次数： <span class="math inline">\(S \approx \frac 1 2 (1+\frac 1 {(1-\alpha)})\)</span></p></li>
+<li><p>失败查找访问次数： <span class="math inline">\(U \approx \frac 1 2 [1+\frac 1 {(1-\alpha)^2}]\)</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>简化版本近似结论（散列规模越大，近似结论越正确）</li>
+<li>无法避免散列表趋满时性能恶化</li>
+<li>再哈希法数学分析困难，经验表明优秀的散列函数（两个）， 性能较线性探查好</li>
+</ul>
+</blockquote>
+<h3 id="multi-hashing"><em>Multi Hashing</em></h3>
+<p>多重哈希：使用一组哈希函数<span class="math inline">\(h_0,\cdots,h_n\)</span>依次计算哈希值， 确定插入、查找地址</p>
+<ul>
+<li>类似增量类型方法，仅各次地址独立使用哈希函数计算</li>
+</ul>
+<h3 id="增大空间">增大空间</h3>
+<h4 id="rehashing"><em>Rehashing</em></h4>
+<p>重散列：扫描当前表，将所有键重新放置在更大的表中</p>
+<ul>
+<li>散列表趋满时唯一解决办法</li>
+</ul>
+<h4 id="overflow-area"><em>Overflow Area</em></h4>
+<p>建立公共溢出区：将哈希表分为基本表、溢出表两部分</p>
+<ul>
+<li>将发生冲突的元素都放入溢出区</li>
+<li>基本表中可以考虑为为每个哈希值设置多个slots
+<ul>
+<li>即基本表直接存储哈希桶</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/imgs/hash_overflow_area.png" alt="hash_overflow_area"><figcaption>hash_overflow_area</figcaption>
+</figure>
+<h2 id="chaining"><em>Chaining</em></h2>
+<p>开散列/分离链：哈希表作为目录，使用额外数据空间组织哈希键</p>
+<h3 id="拉链法分桶法">拉链法/分桶法</h3>
+<p>拉链法/分桶法：哈希表作为目录项存储指向hash桶的指针，hash桶 中存储哈希键</p>
+<ul>
+<li>目录项表：顺序表，连续存储空间
+<ul>
+<li>可以通过hash值在常数时间内定位：一般其索引位置就是 hash值</li>
+<li>目录项越多，数据分布相对越稀疏、碰撞概率越小、效率 越高</li>
+</ul></li>
+<li>hash桶：存储具有相同哈希值元素的顺序表
+<ul>
+<li>目录项存储chain为顺序表：每个链即为hash桶</li>
+<li>目录项存储chain为顺序表链：链中每个顺序表为hash桶
+<ul>
+<li>即每个目录项对应多个hash值，链接多个hash桶</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="操作-1">操作</h4>
+<ul>
+<li>查找
+<ul>
+<li>对查找键K，使用同样散列函数计算键散的函数值<span class="math inline">\(h(K)\)</span></li>
+<li>遍历相应单元格附着链表，查找是否存在键K</li>
+</ul></li>
+<li>插入：计算键对应桶，在链表尾部添加键即可</li>
+<li>删除：查找需要删除的键，从链表中移除即可</li>
+</ul>
+<h4 id="算法效率-1">算法效率</h4>
+<ul>
+<li>效率取决于链表长度，而链表长度取决于字典、散列表长度 和散列函数质量
+<ul>
+<li>成功查找需要检查指针次数<span class="math inline">\(S = 1 + \alpha / 2\)</span></li>
+<li>不成功查找需要检查指针次数<span class="math inline">\(U = \alpha\)</span></li>
+<li>计算散列函数值是常数时间操作</li>
+<li>若n和m大致相等，平均情况下<span class="math inline">\(\in \Theta(1)\)</span></li>
+</ul></li>
+<li>算法查找的高效是以额外空间为代价的</li>
+</ul>
+<h3 id="perfect-hashing"><em>Perfect Hashing</em></h3>
+<p>完美哈希：采用两级全域哈希，目录项链接独立哈希表的拉链哈希表</p>
+<figure>
+<img src="/imgs/hash_perfect_structure.png" alt="hash_perfect_structure"><figcaption>hash_perfect_structure</figcaption>
+</figure>
+<ul>
+<li>二级哈希表开头部分存储哈希表元信息
+<ul>
+<li><span class="math inline">\(m = n^2\)</span>：哈希表槽数，<span class="math inline">\(n\)</span>为映射至该槽元素数量 （此时由全域哈希性质：冲突次数期望小于0.5）</li>
+<li><span class="math inline">\(a, b\)</span>：全域哈希参数</li>
+</ul></li>
+<li>复杂度
+<ul>
+<li>时间复杂度：最坏情况下查找为<span class="math inline">\(O(1)\)</span></li>
+<li>空间复杂度：期望空间为线性 <span class="math inline">\(E(\sum_{i=1}^{m-1} \theta(n_i^2) = \theta(n)\)</span></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>完美哈希没有冲突的概率至少为0.5</li>
+<li>全域哈希参见<em>math_algebra/hash_funcs</em></li>
+</ul>
+</blockquote>
+<h2 id="dynamic-hashing"><em>Dynamic Hashing</em></h2>
+<p>动态hash：在hash表中元素增加同时，动态调整hash桶数目</p>
+<ul>
+<li>在原hash表基础上进行动态桶扩展</li>
+<li>不需要遍历表元素重复执行插入操作</li>
+<li><strong>开散列法在大规模、在线数据的扩展</strong></li>
+</ul>
+<h3 id="多hash表">多hash表</h3>
+<p>多hash表：通过建立多个hash表的方式扩展原hash表</p>
+<ul>
+<li>思想、实现简单</li>
+<li>占用空间大，数据分布偏斜程度较大时，桶利用率不高</li>
+</ul>
+<h4 id="实现">实现</h4>
+<p>操作时需要考虑多个hash表</p>
+<ul>
+<li>插入
+<ul>
+<li>若存在hash相应桶中存在空闲区域，直接插入 <img src="/imgs/multi_hash_table_ori.png" alt="multi_hash_table_ori"></li>
+<li>否则分裂，新建hash表，插入元素至空闲区域 <img src="/imgs/multi_hash_table_splited.png" alt="multi_hash_table_splited"></li>
+</ul></li>
+<li>查找：需要查找所有hash表相应桶才能确定
+<ul>
+<li>当表中元素较多时，可以考虑并行执行查找操作</li>
+</ul></li>
+<li>删除操作：若删除元素导致某hash表空，可考虑删除该表</li>
+</ul>
+<h3 id="可扩展动态hash">可扩展动态hash</h3>
+<p>可扩展动态hash：只分裂将要溢出的桶，<strong>使用目录项作为索引</strong></p>
+<ul>
+<li>多个目录项可能指向同一个桶</li>
+<li>分裂时代价较小
+<ul>
+<li>翻倍目录项替代翻倍整个hash表</li>
+<li>每次只分裂将要溢出桶</li>
+<li>只需要进行局部重散列，重分布需要分裂的桶</li>
+</ul></li>
+<li>目录指数级增长
+<ul>
+<li>数据分布不均时，会使得目录项很大</li>
+</ul></li>
+</ul>
+<h4 id="插入">插入</h4>
+<blockquote>
+<ul>
+<li><code>D</code>：全局位深度，hash值截断长度，为局部桶深度最大值</li>
+<li><code>L_i</code>：桶局部深度，等于指向其目录项数目</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若对应桶存在空闲位，则直接插入</p>
+<figure>
+<img src="/imgs/dynamic_scalable_hash_table_ori.png" alt="dynamic_scalable_hash_table_ori"><figcaption>dynamic_scalable_hash_table_ori</figcaption>
+</figure></li>
+<li><p>否则分裂桶：分裂后两桶局部深度加1</p>
+<figure>
+<img src="/imgs/dynamic_scalable_hash_table_splited.png" alt="dynamic_scalable_hash_table_splited"><figcaption>dynamic_scalable_hash_table_splited</figcaption>
+</figure>
+<ul>
+<li>若分裂桶局部深度不大于全局位深度
+<ul>
+<li>创建新桶</li>
+<li>重散列原始桶中数据</li>
+<li>更新目录项中对应指针：分别指向分裂后桶</li>
+</ul></li>
+<li>若分类桶局部深度大于全局位深度
+<ul>
+<li>更新全局位深度</li>
+<li>目录项翻倍</li>
+<li>创建新桶</li>
+<li>重散列原始桶中数据</li>
+<li>更新目录项中对应指针
+<ul>
+<li>（新增）无关目录项仍然指向对应桶</li>
+<li>相关目录项指向分别指向分裂后桶</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="查找">查找</h4>
+<ul>
+<li>计算原始hash值</li>
+<li>按照全局位深度截断</li>
+<li>寻找相应目录项，找到对应桶，在桶中进行比较、查找</li>
+</ul>
+<h4 id="删除">删除</h4>
+<ul>
+<li>计算原始hash值</li>
+<li>按照全局位深度截断</li>
+<li>寻找相应目录项，找到对应桶，在桶中进行比较、删除
+<ul>
+<li>若删除后发现桶为空，考虑与其兄弟桶合并，并使局部深度 减1</li>
+</ul></li>
+</ul>
+<h3 id="线性散列">线性散列</h3>
+<p>线性散列：按次序分裂桶，<strong>保证整个建表过程类似完全二叉树</strong></p>
+<ul>
+<li>整个哈希表建表过程<strong>始终保持为完全二叉树</strong>
+<ul>
+<li>每次分裂的桶是完全二叉树编号最小的叶子节点</li>
+<li>分裂前后桶间均为有序</li>
+</ul></li>
+<li>相较于可扩展散列
+<ul>
+<li>无需存放数据桶指针的专门目录项，节省空间</li>
+<li>能更自然的处理数据桶满的情况</li>
+<li>允许更灵活的选择桶分裂时机</li>
+<li>但若数据散列后分布不均，则问题可能比可扩散散列严重</li>
+</ul></li>
+<li>实现相较而言更复杂</li>
+</ul>
+<h4 id="桶分裂">桶分裂</h4>
+<blockquote>
+<ul>
+<li><code>N</code>：hash表中初始桶数目，应为2的幂次</li>
+<li><code>d = log_2N</code>：表示桶数目需要位数</li>
+<li><code>level</code>：分裂轮数，初始值为0，则每轮初始桶数为 <span class="math inline">\(N * 2^{level}\)</span></li>
+<li><code>Next</code>：下次要发生分裂的桶编号</li>
+</ul>
+</blockquote>
+<figure>
+<img src="/imgs/linear_hash_ori.png" alt="linear_hash_ori"><figcaption>linear_hash_ori</figcaption>
+</figure>
+<ul>
+<li>每次同分裂条件可以灵活选择
+<ul>
+<li>设置桶填充因子，桶中记录数达到该值时进行分裂</li>
+<li>桶满时发生分裂</li>
+</ul></li>
+<li>每次发生的分裂的桶总是由<code>Next</code>决定 <img src="/imgs/linear_hash_splited_bucket.png" alt="linear_hash_splited_bucket">
+<ul>
+<li>与当前被插入的桶溢出无关，可引入溢出页处理桶溢出</li>
+<li>每次只分裂<code>Next</code>指向的桶，桶分裂后<code>Next += 1</code></li>
+<li>后续产生映像桶总是位于上次产生映像桶之后</li>
+</ul></li>
+<li>“轮转分裂进化”：各桶轮流进行分裂，一轮分裂完成后进入下轮 分裂 <img src="/imgs/linear_hash_splited_level.png" alt="linear_hash_splited_level"></li>
+</ul>
+<h4 id="查找-1">查找</h4>
+<ul>
+<li><p>根据<code>N</code>、<code>level</code>计算当前<code>d</code>值，截取原始hash值</p></li>
+<li><p>若hash值位于<code>Next</code>、<code>N</code>之间，说明该轮对应桶还未分裂， 直接在桶中查找</p></li>
+<li><p>若hash值小于<code>Next</code>，说明该轮对应桶已经分裂，hash值向前 多取一位，在对应桶中查找</p></li>
+</ul>
+<h4 id="删除-1">删除</h4>
+<blockquote>
+<ul>
+<li>删除操作是插入操作的逆操作</li>
+</ul>
+</blockquote>
+<ul>
+<li>若删除元素后溢出块为空，可直接释放</li>
+<li>若删除元素后某个桶元素为空，<code>Next -= 1</code>
+<ul>
+<li>当<code>Next</code>减少到0，且最后桶也是空时，<code>Next = N/2 - 1</code> ，同时<code>level -= 1</code></li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_algorithm/data_structure/tree_derived/" rel="next" title="二叉树衍生">
+                <i class="fa fa-chevron-left"></i> 二叉树衍生
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_algorithm/specification/searching_high_dimensional/" rel="prev" title="高维数据检索方法">
+                高维数据检索方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hashing-table"><span class="nav-number">1.</span> <span class="nav-text">Hashing Table</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#load-factor"><span class="nav-number">1.1.</span> <span class="nav-text">Load Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用"><span class="nav-number">1.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#open-addressing"><span class="nav-number">2.</span> <span class="nav-text">Open Addressing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增量类型"><span class="nav-number">2.1.</span> <span class="nav-text">增量类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#操作"><span class="nav-number">2.1.1.</span> <span class="nav-text">操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法效率"><span class="nav-number">2.1.2.</span> <span class="nav-text">算法效率</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-hashing"><span class="nav-number">2.2.</span> <span class="nav-text">Multi Hashing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增大空间"><span class="nav-number">2.3.</span> <span class="nav-text">增大空间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rehashing"><span class="nav-number">2.3.1.</span> <span class="nav-text">Rehashing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#overflow-area"><span class="nav-number">2.3.2.</span> <span class="nav-text">Overflow Area</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chaining"><span class="nav-number">3.</span> <span class="nav-text">Chaining</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拉链法分桶法"><span class="nav-number">3.1.</span> <span class="nav-text">拉链法/分桶法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#操作-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法效率-1"><span class="nav-number">3.1.2.</span> <span class="nav-text">算法效率</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#perfect-hashing"><span class="nav-number">3.2.</span> <span class="nav-text">Perfect Hashing</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dynamic-hashing"><span class="nav-number">4.</span> <span class="nav-text">Dynamic Hashing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多hash表"><span class="nav-number">4.1.</span> <span class="nav-text">多hash表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现"><span class="nav-number">4.1.1.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可扩展动态hash"><span class="nav-number">4.2.</span> <span class="nav-text">可扩展动态hash</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#插入"><span class="nav-number">4.2.1.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找"><span class="nav-number">4.2.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除"><span class="nav-number">4.2.3.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性散列"><span class="nav-number">4.3.</span> <span class="nav-text">线性散列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#桶分裂"><span class="nav-number">4.3.1.</span> <span class="nav-text">桶分裂</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找-1"><span class="nav-number">4.3.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除-1"><span class="nav-number">4.3.3.</span> <span class="nav-text">删除</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="网络设置">
+<meta name="keywords" content="工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络设置">
+<meta property="og:url" content="https://xyy15926.github.io/tools/wintools/vmware_network/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="网络设置">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/vmware_bridged.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/vmware_nat.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/vmware_host_only.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/host_only_network_sharing.png">
+<meta property="og:updated_time" content="2019-02-17T03:57:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络设置">
+<meta name="twitter:description" content="网络设置">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/vmware_bridged.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/wintools/vmware_network/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>网络设置 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/wintools/vmware_network/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">网络设置
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:07" itemprop="dateModified" datetime="2019-02-17T11:57:07+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">网络设置</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="vmware网络模式">VMware网络模式</h2>
+<h3 id="虚拟网络组件">虚拟网络组件</h3>
+<h4 id="虚拟交换机">虚拟交换机</h4>
+<p><em>Virtual Network Editor</em>中默认有三个<strong>虚拟交换机</strong></p>
+<ul>
+<li><em>VMnet0(Bridged)</em>：桥接模式下的虚拟交换机</li>
+<li><em>VMnet1(Host-only)</em>；仅主机模式下的虚拟交换机</li>
+<li><em>VMnet8(NAT)</em>：NAT模式下虚拟交换机</li>
+</ul>
+<h4 id="虚拟网卡">虚拟网卡</h4>
+<p>在宿主机上安装完成VMware后，在<em>网络适配器</em>中会安装有两块 虚拟网卡</p>
+<ul>
+<li><em>VMware Network Adapter VMnet1</em>：主机模式下虚拟网卡</li>
+<li><em>VMware Network Adapter VMnet8</em>：NAT模式下虚拟网卡</li>
+</ul>
+<p>卸载虚拟网卡后，可以<em>Virtual Network Editor-&gt;还原默认设置</em>， 还原虚拟网卡</p>
+<h3 id="bridged">Bridged</h3>
+<p>桥接模式：将主机网卡同虚拟机网卡利用<strong>虚拟网桥</strong>进行通信</p>
+<ul>
+<li><p>网络结构</p>
+<ul>
+<li>在桥接作用下，类似从物理主机虚拟出一个<strong>交换机</strong></li>
+<li>所有桥接设置的虚拟机都连接到这个交换机的接口上</li>
+<li>物理主机也同样连接在此交换机上</li>
+<li>虚拟机就像是外部局域网中的独立主机，同宿主机逻辑上 同等地位</li>
+</ul></li>
+<li><p>网络连通性</p>
+<ul>
+<li>所以桥接下的网卡与网卡的都是交换模式的， <strong>可以相互访问，不受干扰</strong></li>
+<li>虚拟机可以在外部网络上可见</li>
+</ul></li>
+<li><p>机器网络配置</p>
+<ul>
+<li>虚拟机IP地址需要和宿主机在同一网段（外网网段）</li>
+<li>需要手动配置虚拟机配置IP地址、子网掩码</li>
+<li>若需要联网，虚拟机Gateway、DNS需要和主机一致</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/imgs/vmware_bridged.png" alt="vmware_bridged"><figcaption>vmware_bridged</figcaption>
+</figure>
+<h4 id="适用场景">适用场景</h4>
+<ul>
+<li>利用VMware在局域网中新建虚拟服务器，位局域网提供网络服务</li>
+<li>网络环境ip资源充裕</li>
+</ul>
+<h4 id="网络设置">网络设置</h4>
+<ul>
+<li>宿主机网络连接
+<ul>
+<li>网络连接属性中<em>VMware Bridge Protocal</em>是否勾选 （安装VMware后一般会默认勾选）</li>
+<li>确认宿主机：IP、Gateway、DNS</li>
+</ul></li>
+<li>虚拟机网络设置
+<ul>
+<li><em>编辑虚拟机设置-&gt;网络适配器-&gt;Bridged/桥接模式</em></li>
+</ul></li>
+<li>虚拟机网卡配置：网卡配置文件方式参见<code>config_file</code>
+<ul>
+<li>IP地址要和宿主机IP在同一网段</li>
+<li>Gateway默认网关要和宿主机一致</li>
+</ul></li>
+</ul>
+<h3 id="nat">NAT</h3>
+<p>Network Address Translation：网络地址转换，借助 <strong>虚拟NAT设备</strong>、<strong>虚拟DHCP服务器</strong>，使得虚拟机能够联网</p>
+<ul>
+<li><p>网络结构</p>
+<ul>
+<li>主机网卡与虚拟NAT设备相连</li>
+<li>虚拟NAT设备、虚拟DHCP服务器、虚拟机共同连接在虚拟 交换机VMnet8上</li>
+<li>VMnet8通过虚拟网卡VMware Network Adapter VMnet8和 宿主机相连，宿主机成为双网卡主机，同时参与宿主网络 和虚拟网络</li>
+</ul></li>
+<li><p>网络连通性</p>
+<ul>
+<li>借助虚拟NAT设备连通宿主机<strong>网卡</strong>、虚拟机，实现了 虚拟机通过宿主机<strong>网卡</strong>联网，所以虚拟机在外部网络 不可见</li>
+<li>VNAV8连通宿主机、虚拟机，使得宿主机可以和虚拟机连通 ，要注意此时宿主机双网卡，连通虚拟局域网的网卡是虚拟 网卡</li>
+<li>虚拟网卡只是起连通虚拟机、宿主机的作用，卸载不影响 虚拟机连通外网</li>
+</ul></li>
+<li><p>机器网络配置</p>
+<ul>
+<li>由于虚拟DHCP服务器的存在，虚拟机无需特殊配置，只需要 启用虚拟机网卡DHCP服务即可</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/imgs/vmware_nat.png" alt="vmware_nat"><figcaption>vmware_nat</figcaption>
+</figure>
+<h4 id="适用场景-1">适用场景</h4>
+<ul>
+<li>虚拟系统介入互联网简单，不需要其他配置，只需要宿主机能 访问网络即可</li>
+<li>网络ip资源紧缺，且需要虚拟机能够联网</li>
+</ul>
+<h4 id="网络配置">网络配置</h4>
+<ul>
+<li>宿主机服务设置
+<ul>
+<li>检查宿主机<em>VMware DHCP Service</em>、<em>VMware NAT Service</em> 服务是否启动（VMware安装一般默认启动此服务）</li>
+</ul></li>
+<li>Virtual Network Eidtor配置
+<ul>
+<li><em>VMnet8</em>虚拟交换机默认为NAT模式</li>
+<li>配置<em>VMnet8-&gt;子网IP</em>、<em>VMnet8-&gt;子网掩码</em></li>
+<li>配置<em>VMnet8-&gt;NAT设置</em>、<em>VMnet8-&gt;DHCP</em>参数</li>
+</ul></li>
+<li>虚拟机网络配置
+<ul>
+<li><em>编辑虚拟机设置-&gt;网络适配器-&gt;NAT模式</em></li>
+</ul></li>
+<li>虚拟机网卡配置
+<ul>
+<li>NAT虚拟网络有DHCP服务，只需要修改<code>BOOTPRPOTO=dhcp</code>， 使用DHCP协议即可</li>
+<li>也可以设置静态ip，但是需要注意要在DHCP范围内</li>
+</ul></li>
+</ul>
+<h3 id="host-only">Host-Only</h3>
+<p>仅主机模式：将虚拟机与外网隔开，使得虚拟机成为独立系统，只和 主机相互通讯</p>
+<ul>
+<li><p>网络结构：类似于NAT模式</p>
+<ul>
+<li>NAT模式去除了<strong>虚拟NAT设备</strong></li>
+<li>使用VMware Network Adapter VMnet1虚拟网卡连接宿主机 、VMnet1交换机</li>
+<li>虚拟局域网可以认为是单独从属当前宿主机的私有网络</li>
+</ul></li>
+<li><p>连通性</p>
+<ul>
+<li>虚拟机网络、真实网络相互隔离，两者不相互连通</li>
+<li>宿主机、虚拟机相互通过虚拟网卡VNAV1相互连接</li>
+<li>事实上，可以在<strong>宿主机中</strong>设置，通过将主机网卡共享给 虚拟网卡VNAV1实现虚拟机联网</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/imgs/vmware_host_only.png" alt="vmware_host_only"><figcaption>vmware_host_only</figcaption>
+</figure>
+<h4 id="适用场景-2">适用场景</h4>
+<ul>
+<li>特殊的网络调试环境下，要求真实环境、虚拟环境隔离开</li>
+</ul>
+<h4 id="网络设置-1">网络设置</h4>
+<ul>
+<li>虚拟机网络设置
+<ul>
+<li><em>编辑虚拟机设置-&gt;网络适配器-&gt;Host-only/仅主机模式</em></li>
+</ul></li>
+<li><p>Virtual Network Eidtor配置：类似于NAT模式，只是<em>VMnet1</em> 虚拟交换机才默认为Host-only模式</p></li>
+<li><p>虚拟机网卡配置：类似NAT模式</p></li>
+</ul>
+<h4 id="共享宿主机网卡">共享宿主机网卡</h4>
+<p>Host-only模式下下，虚拟局域网默认无法联网，需要将宿主机网卡 共享给给虚拟网卡VNAV8才能实现联网</p>
+<ul>
+<li><p><em>网络连接-&gt;属性-&gt;共享-&gt;选择VMAV1</em></p></li>
+<li><p>共享宿主机网卡可能会要强制修改虚拟网卡VMAV1的ip地址， 需要根据提示在虚拟网络编辑其中修改虚拟网络的DHCP参数 <img src="/imgs/host_only_network_sharing.png" alt="host_only_network_sharing"></p></li>
+<li><p>然后修改虚拟网卡Gateway、DNS为VMAV1的ip地址</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/zzdaily/pc/os_installation/" rel="next" title="系统安装常识">
+                <i class="fa fa-chevron-left"></i> 系统安装常识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/wintools/vscode/" rel="prev" title="VSCode基础">
+                VSCode基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vmware网络模式"><span class="nav-number">1.</span> <span class="nav-text">VMware网络模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟网络组件"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟网络组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟交换机"><span class="nav-number">1.1.1.</span> <span class="nav-text">虚拟交换机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟网卡"><span class="nav-number">1.1.2.</span> <span class="nav-text">虚拟网卡</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bridged"><span class="nav-number">1.2.</span> <span class="nav-text">Bridged</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#适用场景"><span class="nav-number">1.2.1.</span> <span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络设置"><span class="nav-number">1.2.2.</span> <span class="nav-text">网络设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nat"><span class="nav-number">1.3.</span> <span class="nav-text">NAT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#适用场景-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络配置"><span class="nav-number">1.3.2.</span> <span class="nav-text">网络配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#host-only"><span class="nav-number">1.4.</span> <span class="nav-text">Host-Only</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#适用场景-2"><span class="nav-number">1.4.1.</span> <span class="nav-text">适用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络设置-1"><span class="nav-number">1.4.2.</span> <span class="nav-text">网络设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#共享宿主机网卡"><span class="nav-number">1.4.3.</span> <span class="nav-text">共享宿主机网卡</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

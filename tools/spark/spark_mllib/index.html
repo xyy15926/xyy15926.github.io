@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Spark MLLib">
+<meta name="keywords" content="工具,Spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark MLLib">
+<meta property="og:url" content="https://xyy15926.github.io/tools/spark/spark_mllib/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Spark MLLib">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-10T16:51:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark MLLib">
+<meta name="twitter:description" content="Spark MLLib">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/spark/spark_mllib/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Spark MLLib | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/spark/spark_mllib/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Spark MLLib
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-11 00:51:41" itemprop="dateCreated datePublished" datetime="2019-07-11T00:51:41+08:00">2019-07-11</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/Spark/" itemprop="url" rel="index"><span itemprop="name">Spark</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Spark MLLib</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="mllib">MLLib</h2>
+<p><em>Spark MLLib</em>：Spark平台的机器学习库</p>
+<ul>
+<li><p>能直接操作RDD数据集，可以和其他BDAS其他组件无缝集成， 使得在全量数据上进行学习成为可能</p></li>
+<li>实现包括以下算法
+<ul>
+<li>Classification</li>
+<li>Regression</li>
+<li>Clustering</li>
+<li>Collaborative Filtering</li>
+<li>Dimensionality Reduction</li>
+</ul></li>
+<li>MLLib是MLBase中的一部分
+<ul>
+<li>MLLib</li>
+<li>MLI</li>
+<li>MLOptimizer</li>
+<li>MLRuntime</li>
+</ul></li>
+<li>从Spark1.2起被分为两个模块
+<ul>
+<li><code>spark.mllib</code>：包含基于RDD的原始算法API</li>
+<li><code>spark.ml</code>：包含基于DataFrame的高层次API
+<ul>
+<li>可以用于构建机器学习PipLine</li>
+<li>ML PipLine API可以方便的进行数据处理、特征转换、 正则化、联合多个机器算法，构建单一完整的机器学习 流水线</li>
+</ul></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>MLLib算法代码可以在<code>examples</code>目录下找到，数据则在<code>data</code> 目录下</li>
+<li>机器学习算法往往需要多次迭代到收敛为止，Spark内存计算、 DAG执行引擎象相较MapReduce更理想</li>
+<li>由于Spark核心模块的高性能、通用性，Mahout已经放弃 MapReduce计算模型，选择Spark作为执行引擎</li>
+</ul>
+</blockquote>
+<h2 id="mllib.classification"><code>mllib.classification</code></h2>
+<h3 id="classification">Classification</h3>
+<h4 id="logistic-regression">Logistic Regression</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.mllib.classification <span class="keyword">import</span> \</span><br><span class="line">	LogisticRegressionWithLBFGS, LogisticRegressionModel</span><br><span class="line"><span class="keyword">from</span> pyspark.mllib.regression <span class="keyword">import</span> LabledPoint</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_point</span><span class="params">(line)</span>:</span></span><br><span class="line">	value = [float(i) <span class="keyword">for</span> i line.split(<span class="string">", \r\n\t"</span>)</span><br><span class="line"></span><br><span class="line">data = sc.textFile(<span class="string">"data/mllib/sample_svm_data.txt"</span>)</span><br><span class="line">parsed_data = data.map(parse_point)</span><br><span class="line">	<span class="comment"># map `parse_point` to all data</span></span><br><span class="line"></span><br><span class="line">model = LogisticRegressionWithLBFGS.train(parsed_data)</span><br><span class="line">labels_and_preds = parsed_data.map(<span class="keyword">lambda</span> p: (p.label, model.predict(p.features)))</span><br><span class="line">train_err = labels_and_preds \</span><br><span class="line">	.filter(<span class="keyword">lambda</span> lp: lp[<span class="number">0</span>] != lp[<span class="number">1</span>]) \</span><br><span class="line">	.count() / float(parsed_data.count())</span><br><span class="line"></span><br><span class="line">model.save(sc, <span class="string">"model_path"</span>)</span><br><span class="line">same_model = LogisticRegressionModel.load(sc, <span class="string">"model.path"</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Decision Tree</li>
+<li>Random Forest</li>
+<li>Gradient</li>
+<li>boosted tree</li>
+<li>Multilaye Perceptron</li>
+<li>Support Vector Machine</li>
+<li>One-vs-Rest Classifier</li>
+<li>Naive Bayes</li>
+</ul>
+<h3 id="clustering">Clustering</h3>
+<h4 id="k-means">K-means</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> pyspark.mllib.clustering <span class="keyword">import</span> KMeans, KMeansModel</span><br><span class="line"></span><br><span class="line">data = sc.textFile(<span class="string">"data/mllib/kmeans_data.txt"</span>)</span><br><span class="line">parsed_data = data.map(<span class="keyword">lambda</span> line: np.array([float(i) <span class="keyword">for</span> i <span class="keyword">in</span> line.split()]))</span><br><span class="line"></span><br><span class="line">cluster_model = KMeans.train(</span><br><span class="line">	parsed_data,</span><br><span class="line">	maxIteration=<span class="number">10</span>,</span><br><span class="line">	initializationMode=<span class="string">"random"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">error</span><span class="params">(point)</span>:</span></span><br><span class="line">	center = cluster_model.centers[cluster.predict(point)]</span><br><span class="line">	<span class="keyword">return</span> np.sqrt(sum([i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (point - center)]))</span><br><span class="line">WSSSE = parsed_data \</span><br><span class="line">	.map(<span class="keyword">lambda</span> point.error(point)) \</span><br><span class="line">	.reduce(lambd x, y: x + y)</span><br><span class="line"></span><br><span class="line">cluster_model.save(sc, <span class="string">"model_path"</span>)</span><br><span class="line">same_model = KMeansModel.load(sc, <span class="string">"model_path"</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="gaussian-mixture-modelgmm">Gaussian Mixture Model(GMM)</h4>
+<ul>
+<li>混合密度模型
+<ul>
+<li>有限混合模型：正态分布混合模型可以模拟所有分布</li>
+<li>迪利克莱混合模型：类似于泊松过程</li>
+</ul></li>
+<li>应用
+<ul>
+<li>聚类：检验聚类结果是否合适</li>
+<li>预测： # todo</li>
+</ul></li>
+</ul>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">from pyspark.mllib.clustering import GussianMixture, \</span><br><span class="line"><span class="code">	GussianMixtureModel</span></span><br><span class="line"></span><br><span class="line">data = sc.textFile("data/mllib/gmm_data.txt")</span><br><span class="line">parsed_data = data.map(lambda line: np.array[float(i) for i in line.strip()]))</span><br><span class="line"></span><br><span class="line">gmm = GaussianMixture.train(parsed_data, 2)</span><br><span class="line">for w, g in zip(gmm.weights, gmm.gaussians):</span><br><span class="line"><span class="code">	print("weight = ", w,</span></span><br><span class="line"><span class="code">		"mu = ", g.mu,</span></span><br><span class="line"><span class="code">		"sigma = ", g.sigma.toArray())</span></span><br><span class="line"></span><br><span class="line">gmm.save(sc, "model_path")</span><br><span class="line">same<span class="emphasis">_model = GussainMixtureModel.load(sc, "model_</span>path")</span><br></pre></td></tr></table></figure>
+<h4 id="latent-dirichlet-allocationlda">Latent Dirichlet Allocation(LDA)</h4>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">from pyspark.mllib.clustering import LDA, LDAModel</span><br><span class="line">from pyspark.mllib.linalg import Vectors</span><br><span class="line"></span><br><span class="line">data = sc.textFile("data/mllib/sample<span class="emphasis">_lda_</span>data.txt")</span><br><span class="line">parsed_data = data.map(lambda line: Vector.dense([float(i) for i in line.strip()]))</span><br><span class="line"></span><br><span class="line">corpus = parsed_data.zipWithIndex() \</span><br><span class="line"><span class="code">	.map(lambda x: [x[1], x[0]).cache()</span></span><br><span class="line">ldaModel = LDA.train(corpus, k=3)</span><br><span class="line"></span><br><span class="line">topics = ldaModel.topicsMatrix()</span><br><span class="line"></span><br><span class="line">for word in range(0, ldaModel.vocabSize()):</span><br><span class="line"><span class="code">	for topic in word:</span></span><br><span class="line"><span class="code">		print(topic)</span></span><br><span class="line"></span><br><span class="line">ldaModel.save(sc, "model_path")</span><br><span class="line">same<span class="emphasis">_model = LDAModel.load("model_</span>path")</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Disecting K-means</li>
+</ul>
+<h3 id="regression">Regression</h3>
+<h4 id="linear-regression">Linear Regression</h4>
+<ul>
+<li>耗时长、无法计算解析解（无意义）</li>
+<li>使用MSE作为极小化目标函数，使用SGD算法求解</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.mllib.regression <span class="keyword">import</span> LabledPoint, \</span><br><span class="line">	LinearRegressionWithSGD, LinearRegressionModel</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_point</span><span class="params">(line)</span>:</span></span><br><span class="line">	value = [float(i) <span class="keyword">for</span> i line.split(<span class="string">", \r\n\t"</span>)</span><br><span class="line"></span><br><span class="line">data = sc.textFile(<span class="string">"data/mllib/ridge-data/lpsa.data"</span>)</span><br><span class="line">parsed_data = data.map(parse_point)</span><br><span class="line">	<span class="comment"># map `parse_point` to all data</span></span><br><span class="line"></span><br><span class="line">model = LinearRegressionWithSGD.train(</span><br><span class="line">	parsed_data,</span><br><span class="line">	iteration=<span class="number">100</span>,</span><br><span class="line">	step=<span class="number">0.00000001</span></span><br><span class="line">)</span><br><span class="line">values_and_preds = parsed_data.map(<span class="keyword">lambda</span> p:(p.label, model.predict(p.features)))</span><br><span class="line">MSE = values_and_preds \</span><br><span class="line">	.map(<span class="keyword">lambda</span> vp: (vp[<span class="number">0</span>] - vp[<span class="number">1</span>]) ** <span class="number">2</span>) \</span><br><span class="line">	.reduce(<span class="keyword">lambda</span> x, y: x + y) / values_and_preds.count()</span><br><span class="line"></span><br><span class="line">model.save(sc, <span class="string">"model_path"</span>)</span><br><span class="line">	<span class="comment"># save model</span></span><br><span class="line">same_model = LinearRegressionModel.load(sc, <span class="string">"model_path"</span>)</span><br><span class="line">	<span class="comment"># load saved model</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Generalized Linear Regression</li>
+<li>Decision Tree Regression</li>
+<li>Random Forest Regression</li>
+<li>Gradient-boosted Tree Regression</li>
+<li>Survival Regression</li>
+<li>Isotonic Regression</li>
+</ul>
+<h3 id="collaborative-filtering">Collaborative Filtering</h3>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/Spark/" rel="tag"># Spark</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_program/mark_lang/config_formation/" rel="next" title="配置文件笔记">
+                <i class="fa fa-chevron-left"></i> 配置文件笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/spark/spark_graphx/" rel="prev" title="Spark GraphX">
+                Spark GraphX <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#mllib"><span class="nav-number">1.</span> <span class="nav-text">MLLib</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mllib.classification"><span class="nav-number">2.</span> <span class="nav-text">mllib.classification</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#classification"><span class="nav-number">2.1.</span> <span class="nav-text">Classification</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#logistic-regression"><span class="nav-number">2.1.1.</span> <span class="nav-text">Logistic Regression</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#clustering"><span class="nav-number">2.2.</span> <span class="nav-text">Clustering</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#k-means"><span class="nav-number">2.2.1.</span> <span class="nav-text">K-means</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gaussian-mixture-modelgmm"><span class="nav-number">2.2.2.</span> <span class="nav-text">Gaussian Mixture Model(GMM)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#latent-dirichlet-allocationlda"><span class="nav-number">2.2.3.</span> <span class="nav-text">Latent Dirichlet Allocation(LDA)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#regression"><span class="nav-number">2.3.</span> <span class="nav-text">Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#linear-regression"><span class="nav-number">2.3.1.</span> <span class="nav-text">Linear Regression</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#collaborative-filtering"><span class="nav-number">2.4.</span> <span class="nav-text">Collaborative Filtering</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

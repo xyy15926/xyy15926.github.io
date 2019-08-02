@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="距离函数">
+<meta name="keywords" content="机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="距离函数">
+<meta property="og:url" content="https://xyy15926.github.io/ml_techniques/functions/func_distance/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="距离函数">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="距离函数">
+<meta name="twitter:description" content="距离函数">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_techniques/functions/func_distance/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>距离函数 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_techniques/functions/func_distance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">距离函数
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">距离函数</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><span class="math inline">\(dist(x,y)\)</span>：不一定是空间距离，应该认为是两个对象x、y之间的 <strong>相似程度</strong></p>
+<ul>
+<li>距离和相似度是互补的</li>
+<li>可以根据处理问题的情况，自定义距离</li>
+</ul>
+<h2 id="单点距离">单点距离</h2>
+<h3 id="minkowski-distance"><em>Minkowski Distance</em></h3>
+<p>闵科夫斯基距离：向量空间<span class="math inline">\(\mathcal{L_p}\)</span>范数</p>
+<p><span class="math display">\[
+d_{12} = \sqrt [1/p] {\sum_{k=1}^n |x_{1,k} - x_{2,k}|^p}
+\]</span></p>
+<ul>
+<li><p>表示一组距离族</p>
+<ul>
+<li><span class="math inline">\(p=1\)</span>：<em>Manhattan Distance</em>，曼哈顿距离</li>
+<li><span class="math inline">\(p=2\)</span>：<em>Euclidean Distance</em>，欧式距离</li>
+<li><span class="math inline">\(p \rightarrow \infty\)</span>：<em>Chebychev Distance</em>， 切比雪夫距离</li>
+</ul></li>
+<li><p>闵氏距离缺陷</p>
+<ul>
+<li>将各个分量量纲视作相同</li>
+<li>未考虑各个分量的分布</li>
+</ul></li>
+</ul>
+<h3 id="mahalanobis-distance"><em>Mahalanobis Distance</em></h3>
+<p>马氏距离：表示数据的协方差距离</p>
+<p><span class="math display">\[
+d_{12} = \sqrt {({x_1-\mu}^T) \Sigma^{-1} (x_2-\mu)}
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\Sigma\)</span>：总体协方差矩阵</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>优点</p>
+<ul>
+<li>马氏距离和原始数据量纲无关</li>
+<li>考虑变量相关性</li>
+</ul></li>
+<li><p>缺点</p>
+<ul>
+<li>需要知道总体协方差矩阵，使用样本估计效果不好</li>
+</ul></li>
+</ul>
+<h3 id="lw-distance"><em>LW Distance</em></h3>
+<p>兰氏距离：<em>Lance and Williams Distance</em>，堪培拉距离</p>
+<p><span class="math display">\[
+d_{12} = \sum^{n}_{k=1} \frac {|x_{1,k} - x_{2,k}|}
+    {|x_{1,k} + x_{2,k}|}
+\]</span></p>
+<ul>
+<li>对接近0的值非常敏感</li>
+<li>对量纲不敏感</li>
+<li>未考虑变量直接相关性，认为变量之间相互独立</li>
+</ul>
+<h3 id="hamming-distance"><em>Hamming Distance</em></h3>
+<p>汉明距离：差别</p>
+<p><span class="math display">\[
+diff = \frac 1 p \sum_{i=1}^p  (v^{(1)}_i - v^{(2)}_i)^k 
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(v_i \in \{0, 1\}\)</span>：虚拟变量</li>
+<li><span class="math inline">\(p\)</span>：虚拟变量数量</li>
+</ul>
+</blockquote>
+<ul>
+<li>可以衡量定性变量之间的距离</li>
+</ul>
+<h4 id="embedding">Embedding</h4>
+<ul>
+<li>找到所有点、所有维度坐标值中最大值<span class="math inline">\(C\)</span></li>
+<li>对每个点<span class="math inline">\(P=(x_1, x_2, \cdots, x_d)\)</span>
+<ul>
+<li>将每维<span class="math inline">\(x_i\)</span>转换为长度为<span class="math inline">\(C\)</span>的0、1序列</li>
+<li>其中前<span class="math inline">\(x_i\)</span>个值为1，之后为0</li>
+</ul></li>
+<li>将<span class="math inline">\(d\)</span>个长度为<span class="math inline">\(C\)</span>的序列连接，形成长度为<span class="math inline">\(d * C\)</span>的序列</li>
+</ul>
+<blockquote>
+<ul>
+<li>以上明距离空间嵌入对曼哈顿距离是保距的</li>
+</ul>
+</blockquote>
+<h3 id="jaccard系数"><em>Jaccard</em>系数</h3>
+<p><em>Jaccard</em>系数：度量两个集合的相似度，值越大相似度越高</p>
+<p><span class="math display">\[
+sim = \frac {\|S_1 \hat S_2\|} {\|S_1 \cup S_2\|}
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(S_1, S_2\)</span>：待度量相似度的两个集合</li>
+</ul>
+</blockquote>
+<h3 id="adamic-aria"><em>Adamic-Aria</em></h3>
+<p><span class="math display">\[
+AA = \sum_{i \in \Dao(x) \cap \Dao (y)} log \frac 1 Degress(i)
+\]</span> #todo</p>
+<h3 id="consine-similarity"><em>Consine Similarity</em></h3>
+<p>余弦相似度</p>
+<p><span class="math display">\[
+simimarity = cos(\theta) = \frac {x_1 x_2} {\|x_1\|\|x_2\|}
+\]</span></p>
+<h3 id="levenshteinedit-distance"><em>Levenshtein/Edit Distance</em></h3>
+<p>（字符串）编辑距离：两个字符串转换需要进行插入、删除、替换 操作的次数</p>
+<p><span class="math display">\[
+lev_{A,B}(i, j) = \left \{ \begin{array}{l}
+    i, &amp; j = 0 \\
+    j, &amp; i = 0 \\
+    min \left \{ \begin{array}{l}
+        lev_{A,B}(i,j-1) + 1 \\
+        lev_{A,B}(i-1,j) + 1 \\
+        lev_{A,B}(i-1, j-1) + 1
+    \end{array} \right. &amp; A[i] != B[j] \\
+    min \left \{ \begin{array}{l}
+        lev_{A,B}(i,j-1) + 1 \\
+        lev_{A,B}(i-1,j) + 1 \\
+        lev_{A,B}(i-1, j-1)
+    \end{array} \right. &amp; A[i] = B[j] \\
+\end{array} \right.
+\]</span></p>
+<h2 id="组间距离">组间距离</h2>
+<h3 id="single-linkage"><em>Single Linkage</em></h3>
+<h3 id="average-linkage"><em>Average Linkage</em></h3>
+<h3 id="complete-linkage"><em>Complete Linkage</em></h3>
+<h2 id="符号距离">符号距离</h2>
+<blockquote>
+<ul>
+<li><span class="math inline">\(T=\{(x_1,y_1),(x_2,y_2),\cdots,(x_n,y_n)\}\)</span>：样本点集</li>
+<li><span class="math inline">\(wx + b = 0\)</span>：超平面</li>
+</ul>
+</blockquote>
+<h3 id="functional-margin"><em>Functional Margin</em></h3>
+<p>函数间隔</p>
+<p><span class="math display">\[
+\hat{\gamma_i} = y_i(wx_i + b)
+\]</span></p>
+<ul>
+<li><p>函数间隔可以表示分类的正确性、确信度</p>
+<ul>
+<li>正值表示正确</li>
+<li>间隔越大确信度越高</li>
+</ul></li>
+<li><p>点集与超平面的函数间隔取点间隔最小值 <span class="math inline">\(\hat{T} = \min_{i=1,2,\cdots,n} \hat{\gamma_i}\)</span></p></li>
+<li><p>超平面参数<span class="math inline">\(w, b\)</span>成比例改变时，平面未变化，但是函数间隔 成比例变化</p></li>
+</ul>
+<h3 id="geometric-margin"><em>Geometric Margin</em></h3>
+<p>几何间隔</p>
+<p><span class="math display">\[\begin{align*}
+\gamma_i &amp; = \frac {y_i} {\|w\|} (wx_i + b) \\
+    &amp; = \frac {\hat \gamma_i} {\|w\|}
+\end{align*}\]</span></p>
+<ul>
+<li><p>几何间隔一般是样本点到超平面的<em>signed distance</em></p>
+<ul>
+<li>点正确分类时，几何间隔就是点到直线的距离</li>
+</ul></li>
+<li><p>几何间隔相当于使用<span class="math inline">\(\|w\|\)</span>对函数间隔作规范化</p>
+<ul>
+<li><span class="math inline">\(\|w\|=1\)</span>时，两者相等</li>
+<li>几何间隔对确定超平面、样本点是确定的，不会因为超平面 表示形式改变而改变</li>
+</ul></li>
+<li><p>点集与超平面的几何间隔取点间隔最小值 <span class="math inline">\(\hat{T} = \min_{i=1,2,\cdots,n} \hat{\gamma_i}\)</span></p></li>
+</ul>
+<h2 id="bregman-divergence"><em>Bregman Divergence</em></h2>
+<p>布雷格曼散度：</p>
+<p><span class="math display">\[
+D(x, y) = \Phi(x) - \Phi(y) - &lt;\nabla \Phi(y), (x - y)&gt;
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(Phi(x)\)</span>：凸函数</li>
+<li><span class="math inline">\(&lt;&gt;\)</span>：点积，对欧式空间即为內积</li>
+</ul>
+</blockquote>
+<ul>
+<li>直观上：<span class="math inline">\(x\)</span>处函数、函数过<span class="math inline">\(y\)</span>点切线（线性近似）之差
+<ul>
+<li>可以视为是损失、失真函数：<span class="math inline">\(x\)</span>由<span class="math inline">\(y\)</span>失真、近似、添加 噪声得到</li>
+</ul></li>
+</ul>
+<h3 id="特点">特点</h3>
+<ul>
+<li><p>非对称：<span class="math inline">\(D(x, y) = D(y, x)\)</span></p></li>
+<li><p>不满足三角不等式：<span class="math inline">\(D(x, z) \leq D(x, y) + D(y, z)\)</span></p></li>
+<li>对凸集作Bregman Projection唯一
+<ul>
+<li>即寻找凸集中与给定点Bregman散度最小点</li>
+<li>一般的投影指欧式距离最小</li>
+</ul></li>
+</ul>
+<h3 id="穷尽距离">穷尽距离</h3>
+<blockquote>
+<ul>
+<li>布雷格曼散度穷尽所有关于“正常距离”的定义</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>“正常距离”：对满足任意概率分布的点，点平均值点（期望点） 应该是空间中距离所有点平均距离最小的点</p></li>
+<li><p>给定<span class="math inline">\(R^n * R^n \rightarrow R\)</span>上的距离定义<span class="math inline">\(D(x,y)\)</span>，若其 满足以上正常距离特性，则其一定是布雷格曼散度</p></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Domain</th>
+<th><span class="math inline">\(\Phi(x)\)</span></th>
+<th><span class="math inline">\(D_{\Phi}(x,y)\)</span></th>
+<th>Divergence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(R\)</span></td>
+<td><span class="math inline">\(x^2\)</span></td>
+<td><span class="math inline">\((x-y)^2\)</span></td>
+<td>Squared Loss</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(R_{+}\)</span></td>
+<td><span class="math inline">\(xlogx\)</span></td>
+<td><span class="math inline">\(xlog(\frac x y) - (x-y)\)</span></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\([0,1]\)</span></td>
+<td><span class="math inline">\(xlogx + (1-x)log(1-x)\)</span></td>
+<td><span class="math inline">\(xlog(\frac x y) + (1-x)log(\frac {1-x} {1-y})\)</span></td>
+<td>Logistic Loss</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(R_{++}\)</span></td>
+<td><span class="math inline">\(-logx\)</span></td>
+<td><span class="math inline">\(\frac x y - log(\frac x y) - 1\)</span></td>
+<td>Itakura-Saito Distance</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(R\)</span></td>
+<td><span class="math inline">\(e^x\)</span></td>
+<td><span class="math inline">\(e^x - e^y - (x-y)e^y\)</span></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(R^d\)</span></td>
+<td><span class="math inline">\(\|x\|\)</span></td>
+<td><span class="math inline">\(\|x-y\|\)</span></td>
+<td>Squared Euclidean Distance</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(R^d\)</span></td>
+<td><span class="math inline">\(x^TAx\)</span></td>
+<td><span class="math inline">\((x-y)^T A (x-y)\)</span></td>
+<td>Mahalanobis Distance</td>
+</tr>
+<tr class="even">
+<td>d-Simplex</td>
+<td><span class="math inline">\(\sum_{j=1}^d x_j log_2 x_j\)</span></td>
+<td><span class="math inline">\(\sum_{j=1}^d x_j log_2 log(\frac {x_j} {y_j})\)</span></td>
+<td>KL-divergence</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(R_{+}^d\)</span></td>
+<td><span class="math inline">\(\sum_{j=1}^d x_j log x_j\)</span></td>
+<td><span class="math inline">\(\sum_{j=1}^d x_j log(\frac {x_j} {y_j}) - \sum_{j=1}^d (x_j - y_j)\)</span></td>
+<td>Genelized I-divergence</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<ul>
+<li>布雷格曼散度对一般概率分布均成立，而其本身限定由凸函数 生成 &gt; - 和Jensen不等式有关？凸函数隐含部分对期望的度量</li>
+<li><a href="http://www.jmlr.org/papers/volume6/banerjee05b/banerjee05b.pdf" class="uri" target="_blank" rel="noopener">http://www.jmlr.org/papers/volume6/banerjee05b/banerjee05b.pdf</a></li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_techniques/data_handling/data_preprocessing/" rel="next" title="数据预处理">
+                <i class="fa fa-chevron-left"></i> 数据预处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_mixin/constrained_optimization/fenchel_duality/" rel="prev" title="Fenchel-Legendre Duality">
+                Fenchel-Legendre Duality <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单点距离"><span class="nav-number">1.</span> <span class="nav-text">单点距离</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#minkowski-distance"><span class="nav-number">1.1.</span> <span class="nav-text">Minkowski Distance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mahalanobis-distance"><span class="nav-number">1.2.</span> <span class="nav-text">Mahalanobis Distance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lw-distance"><span class="nav-number">1.3.</span> <span class="nav-text">LW Distance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hamming-distance"><span class="nav-number">1.4.</span> <span class="nav-text">Hamming Distance</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#embedding"><span class="nav-number">1.4.1.</span> <span class="nav-text">Embedding</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jaccard系数"><span class="nav-number">1.5.</span> <span class="nav-text">Jaccard系数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adamic-aria"><span class="nav-number">1.6.</span> <span class="nav-text">Adamic-Aria</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#consine-similarity"><span class="nav-number">1.7.</span> <span class="nav-text">Consine Similarity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#levenshteinedit-distance"><span class="nav-number">1.8.</span> <span class="nav-text">Levenshtein/Edit Distance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组间距离"><span class="nav-number">2.</span> <span class="nav-text">组间距离</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#single-linkage"><span class="nav-number">2.1.</span> <span class="nav-text">Single Linkage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#average-linkage"><span class="nav-number">2.2.</span> <span class="nav-text">Average Linkage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#complete-linkage"><span class="nav-number">2.3.</span> <span class="nav-text">Complete Linkage</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号距离"><span class="nav-number">3.</span> <span class="nav-text">符号距离</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#functional-margin"><span class="nav-number">3.1.</span> <span class="nav-text">Functional Margin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#geometric-margin"><span class="nav-number">3.2.</span> <span class="nav-text">Geometric Margin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bregman-divergence"><span class="nav-number">4.</span> <span class="nav-text">Bregman Divergence</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">4.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#穷尽距离"><span class="nav-number">4.2.</span> <span class="nav-text">穷尽距离</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

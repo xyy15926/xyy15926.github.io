@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Hashing">
+<meta name="keywords" content="代数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hashing">
+<meta property="og:url" content="https://xyy15926.github.io/math_algebra/specifications/hash_funcs/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Hashing">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/general_lsh_comparsion.png">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hashing">
+<meta name="twitter:description" content="Hashing">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/general_lsh_comparsion.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/math_algebra/specifications/hash_funcs/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Hashing | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/math_algebra/specifications/hash_funcs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Hashing
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/代数/" itemprop="url" rel="index"><span itemprop="name">代数</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Hashing</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="hash-function"><em>Hash Function</em></h2>
+<blockquote>
+<ul>
+<li><em>hash</em>：散列/哈希，将任意类型值转换为关键码值</li>
+<li><em>hash function</em>：哈希/散列函数，从任何数据中创建小的数字 “指纹”的方法</li>
+<li><em>hash value</em>：哈希值，哈希函数产生关键码值</li>
+<li><em>collision</em>：冲突，不同两个数据得到相同哈希值</li>
+</ul>
+</blockquote>
+<ul>
+<li>哈希函数应该尽可能使得哈希值均匀分布在目标空间中
+<ul>
+<li>降维：将高维数据映射到低维空间</li>
+<li>数据应该低维空间中尽量均匀分布</li>
+</ul></li>
+</ul>
+<h3 id="数据相关性">数据相关性</h3>
+<ul>
+<li><p><em>Data Independent Hashing</em>：数据无关哈希，无监督，哈希 函数基于某种概率理论</p>
+<ul>
+<li>对原始的特征空间作均匀划分</li>
+<li>对分布不均、有趋向性的数据集时，可能会导致高密度区域 hash桶臃肿，降低索引效率</li>
+</ul></li>
+<li><p><em>Data Dependent Hashing</em>：数据依赖哈希，有监督，通过学习 数据集的分布从而给出较好划分的hash函数</p>
+<ul>
+<li>得到针对数据密度动态划分的hash索引</li>
+<li>破坏了传统LSH的数据无关性，索引不具备普适性</li>
+</ul></li>
+</ul>
+<h3 id="应用">应用</h3>
+<ul>
+<li>查找数据结构：<em>cs_algorithm/data_structure/hash_table</em>
+<ul>
+<li>哈希表</li>
+</ul></li>
+<li>信息安全方向：<em>cs_algorithm/specification/info_security</em>
+<ul>
+<li>文件检验</li>
+<li>数字签名</li>
+<li>鉴权协议</li>
+</ul></li>
+</ul>
+<h2 id="基本哈希函数">基本哈希函数</h2>
+<ul>
+<li>以下简单哈希函数主要考虑运算的数学性质
+<ul>
+<li>计算简单</li>
+<li>适合简单应用：构建哈希表、查找</li>
+<li>考虑</li>
+</ul></li>
+<li><p>复杂哈希函数参见<em>cs_algorithm/specification/#todo</em></p>
+<ul>
+<li>查表哈希
+<ul>
+<li><em>CRC</em>系列算法：本身不是查表，但查表是其最快实现</li>
+<li><em>Zobrist Hashing</em></li>
+</ul></li>
+<li>混合哈希：利用以上各种方式
+<ul>
+<li><em>MD5</em></li>
+<li><em>Tiger</em></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="单输入哈希">单输入哈希</h3>
+<ul>
+<li><p>直接寻址法：取关键字、或其某个线性函数值 <span class="math inline">\(hash(key) = (a * key + b) mod prime\)</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(prime\)</span>：一般为质数，以使哈希值尽量均匀分布，常用 的如：<span class="math inline">\(2^32-5\)</span></li>
+</ul>
+</blockquote></li>
+<li>数字分析法：寻找、利用数据规律构造冲突几率较小者
+<ul>
+<li>如：生日信息前2、3位大体相同，冲突概率较大，优先舍去</li>
+</ul></li>
+<li><p>平方取中法：取关键字平方后中间几位</p></li>
+<li><p>折叠法：将关键字分割为位数相同部分，取其叠加和</p></li>
+<li>随机数法：以关键字作为随机数种子生成随机值
+<ul>
+<li>适合关键字长度不同场合</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>常用于之前hash结果再次映射为更小范围的最终hash值</li>
+</ul>
+</blockquote>
+<h3 id="序列输入">序列输入</h3>
+<h4 id="加法哈希">加法哈希</h4>
+<p>加法哈希：将输入元素相加得到哈希值</p>
+<ul>
+<li><p>标准加法hashing</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">AddingHash(input):</span><br><span class="line">	hash = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> ele <span class="keyword">in</span> input:</span><br><span class="line">		hash += ele</span><br><span class="line">	hash = hash  % prime</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>prime</code>：任意质数，常用<code>2^32 - 5</code></li>
+</ul>
+</blockquote>
+<ul>
+<li>最终哈希结果<code>\in [0, prime-1]</code></li>
+</ul></li>
+</ul>
+<h4 id="位运算哈希">位运算哈希</h4>
+<p>位运算哈希：利用位运算（移位、异或等）充分混合输入元素</p>
+<ul>
+<li><p>标准旋转hashing</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RotationHash(input):</span><br><span class="line">	hash = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> ele <span class="keyword">in</span> input:</span><br><span class="line">		hash = (hash &lt;&lt; <span class="number">4</span>) ^ (hash &gt;&gt; <span class="number">28</span>) ^ ele</span><br><span class="line">	<span class="keyword">return</span> hash % prime</span><br></pre></td></tr></table></figure></li>
+<li><p>变形1</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash = (hash&lt;&lt; <span class="number">5</span>) ^ (hash &gt;&gt; <span class="number">27</span>) ^ ele</span><br></pre></td></tr></table></figure></li>
+<li><p>变形2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hash += ele</span><br><span class="line">hash ^= (hash &lt;&lt; <span class="number">10</span>)</span><br><span class="line">hash ^= (hash &gt;&gt; <span class="number">6</span>)</span><br></pre></td></tr></table></figure></li>
+<li><p>变形3</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ele &amp; <span class="number">1</span>) == <span class="number">0</span>:</span><br><span class="line">	hash ^= (hash &lt;&lt; <span class="number">7</span>) ^ ele ^ (hash &gt;&gt; <span class="number">3</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	hash ^= ~((hash &lt;&lt; <span class="number">11</span>) ^ ele ^ (hash &gt;&gt; <span class="number">5</span>))</span><br></pre></td></tr></table></figure></li>
+<li><p>变形4</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash += (hash &lt;&lt; <span class="number">5</span>) + ele</span><br></pre></td></tr></table></figure></li>
+<li><p>变形5</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash = ele + (hash &lt;&lt; <span class="number">6</span>) + (hash &gt;&gt; <span class="number">16</span>) - hash</span><br></pre></td></tr></table></figure></li>
+<li><p>变形6</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash ^= (hash &lt;&lt; <span class="number">5</span>) + ele + (hash &gt;&gt; <span class="number">2</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="乘法哈希">乘法哈希</h4>
+<p>乘法哈希：利用乘法的不相关性</p>
+<ul>
+<li><p>平方取头尾随机数生成法：效果不好</p></li>
+<li><p>Bernstein算法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Bernstein(input):</span><br><span class="line">	hash = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> ele <span class="keyword">in</span> input:</span><br><span class="line">		hash = <span class="number">33</span> * hash + ele</span><br><span class="line">	<span class="keyword">return</span> hash</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>其他常用乘数：31、131、1313、13131、131313</li>
+</ul>
+</blockquote></li>
+<li><p>32位FNV算法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">M_SHIFT =</span><br><span class="line">M_MASK =</span><br><span class="line">FNVHash(input):</span><br><span class="line">	hash = <span class="number">2166136261</span>;</span><br><span class="line">	<span class="keyword">for</span> ele <span class="keyword">in</span> input:</span><br><span class="line">		hash = (hash * <span class="number">16777619</span>) ^ ele</span><br><span class="line">	<span class="keyword">return</span> (hash ^ (hash &gt;&gt; M_SHIFT)) &amp; M_MASK</span><br></pre></td></tr></table></figure></li>
+<li><p>改进的FNV算法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FNVHash_2(input):</span><br><span class="line">	hash = <span class="number">2166136261</span>;</span><br><span class="line">	<span class="keyword">for</span> ele <span class="keyword">in</span> input:</span><br><span class="line">		hash = (hash ^ ele) * <span class="number">16777619</span></span><br><span class="line">	hash += hash &lt;&lt; <span class="number">13</span></span><br><span class="line">	hash ^= hash &gt;&gt; <span class="number">7</span></span><br><span class="line">	hash += hash &lt;&lt; <span class="number">3</span></span><br><span class="line">	hash ^= hash &gt;&gt; <span class="number">17</span></span><br><span class="line">	hash += hash &lt;&lt; <span class="number">5</span></span><br><span class="line">	<span class="keyword">return</span> hash</span><br></pre></td></tr></table></figure></li>
+<li><p>乘数不固定</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RSHash(input):</span><br><span class="line">	hash = <span class="number">0</span></span><br><span class="line">	a, b = <span class="number">378551</span>, <span class="number">63689</span></span><br><span class="line">	<span class="keyword">for</span> ele <span class="keyword">in</span> input:</span><br><span class="line">		hash = hash * a + ele</span><br><span class="line">		a *= b</span><br><span class="line">	<span class="keyword">return</span> hash &amp; <span class="number">0x7FFFFFFF</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<blockquote>
+<ul>
+<li>除法也类似乘法具有不相关性，但太慢</li>
+</ul>
+</blockquote>
+<h3 id="定长序列">定长序列</h3>
+<ul>
+<li><p>两步随机数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">main_rand_seq = randint(k)</span><br><span class="line">TwoHashing(input[<span class="number">0</span>,...,k]):</span><br><span class="line">	hash = <span class="number">0</span></span><br><span class="line">	<span class="keyword">from</span> i=<span class="number">0</span> to k:</span><br><span class="line">		hash += input[i] * main_rand_seq[i]</span><br><span class="line">	hash = hash mod prime</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="universal-hashing"><em>Universal Hashing</em></h2>
+<blockquote>
+<ul>
+<li>全域哈希：键集合<span class="math inline">\(U\)</span>包含n个键、哈希函数集合<span class="math inline">\(H\)</span>包含K哈希 函数<span class="math inline">\(h_i: U \rightarrow 0..m\)</span>，若<span class="math inline">\(H\)</span>满足以下则为全域哈希 <span class="math display">\[
+\forall x, y \in U,
+|\{h|h \in H, h(x) = h(y) \}| = \frac K m
+\]</span></li>
+</ul>
+</blockquote>
+<ul>
+<li>独立与键值随机从中选择hash函数，避免发生最差情况</li>
+<li>利用全域哈希构建完美哈希，参见 <em>cs_algorithm/data_structure/hash_table</em></li>
+</ul>
+<h3 id="性质">性质</h3>
+<blockquote>
+<ul>
+<li>全域哈希<span class="math inline">\(H\)</span>中任选哈希函数，对任意键<span class="math inline">\(x, y \in U\)</span>冲突概率 小于<span class="math inline">\(\frac 1 m\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>全域哈希<span class="math inline">\(H\)</span>中任选哈希函数<span class="math inline">\(h_i\)</span>，对任意键<span class="math inline">\(x \in U\)</span>，与其 冲突键数目期望为<span class="math inline">\(\frac n m\)</span>，即 <span class="math inline">\(E_{[collision_x]}=\frac n m\)</span></p></li>
+<li><p><span class="math inline">\(m = n^2\)</span>时，冲突期望小于0.5</p>
+<ul>
+<li><span class="math inline">\(n\)</span>个键两两组合数目为<span class="math inline">\(C_n^2\)</span></li>
+<li>则<span class="math inline">\(E_{total} &lt; C_n^2 \frac 1 n &lt; 0.5\)</span></li>
+</ul></li>
+</ul>
+<h3 id="构造方法">构造方法</h3>
+<p>以下构造<span class="math inline">\([0,p-1] \rightarrow [0,m-1]\)</span>全域哈希</p>
+<ul>
+<li><span class="math inline">\(p\)</span>为足够大素数使得所有键值<span class="math inline">\(\in [0,p-1]\)</span>
+<ul>
+<li>记<span class="math inline">\(Z_p = \{ 0,1,\cdots,p-1 \}\)</span></li>
+<li>记<span class="math inline">\(Z_p^{*}=\{ 1,2,\cdots,p-1 \}\)</span></li>
+<li>且哈希函数映射上限（hash表长度）<span class="math inline">\(m &lt; max(U) &lt; p\)</span></li>
+</ul></li>
+<li><p>记哈希函数</p>
+<p><span class="math display">\[
+\forall a \in Z_p^{*}, b \in Z_p,
+h_{a, b}(k) = ((a k + b) mod p) mod m
+\]</span></p></li>
+<li><p>则以下哈希函数族即为全域哈希</p>
+<p><span class="math display">\[
+H_{p,m} = {h_{a,b}|a \in Z_p^{*}, b \in Z_p}
+\]</span></p></li>
+</ul>
+<h2 id="locality-sensitive-hashing"><em>Locality Sensitive Hashing</em></h2>
+<p><em>LSH</em>：局部敏感哈希</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\((r_1,r_2,P_1,P_2)-sensitive\)</span>hash函数族<span class="math inline">\(H\)</span>需满足如下条件 <span class="math display">\[\begin{align*}
+Pr_{H}[h(v) = h(q)] \geq P_1, &amp; \forall q \in
+B(v, r_1) \\
+Pr_{H}[h(v) = h(q)] \geq P_2, &amp; \forall q \notin
+B(v, r_2) \\
+\end{align*}\]</span> &gt; - <span class="math inline">\(h \in H\)</span> &gt; - <span class="math inline">\(r_1 &lt; r_2, P_1 &gt; P_2\)</span>：函数族有效的条件 &gt; - 强调比例时会表示为<span class="math inline">\(r_1 = R, r_2 = cR\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li>此时<strong>相似目标（距离小）有更大概率发生冲突</strong></li>
+</ul>
+<h3 id="lsh查找">LSH查找</h3>
+<h4 id="思想">思想</h4>
+<figure>
+<img src="/imgs/general_lsh_comparsion.png" alt="general_lsh_comparsion"><figcaption>general_lsh_comparsion</figcaption>
+</figure>
+<ul>
+<li>相似目标更有可能映射到相同hash桶中
+<ul>
+<li>则只需要在目标所属的hash桶中进行比较、查找即可</li>
+<li>无需和全集数据比较，大大缩小查找空间</li>
+</ul></li>
+<li>可视为降维方法
+<ul>
+<li>将高维空间数据映射到1维空间，寻找可能近邻的数据点</li>
+<li>缩小范围后再进行精确比较</li>
+</ul></li>
+</ul>
+<h4 id="概率放大">概率放大</h4>
+<p>期望放大局部敏感哈希函数族<span class="math inline">\(Pr_1, Pr_2\)</span>之间差距</p>
+<ul>
+<li>增加哈希值长度（级联哈希函数中基本哈希函数数量）<span class="math inline">\(k\)</span>
+<ul>
+<li>每个哈希函数独立选择，则对每个级联哈希函数<span class="math inline">\(g_i\)</span> <span class="math inline">\(Pr[g_i(v) = g_i(q)] \geq P_1^k\)</span></li>
+<li>虽然增加哈希键位长会减小目标和近邻碰撞的概率，但同时 也更大成都上减少了和非近邻碰撞的概率、减少搜索空间</li>
+</ul>
+<blockquote>
+<ul>
+<li>级联哈希函数返回向量，需要对其再做哈希映射为标量， 方便查找</li>
+</ul>
+</blockquote></li>
+<li>增加级联哈希函数数量（哈希表数量）<span class="math inline">\(L\)</span>
+<ul>
+<li><span class="math inline">\(L\)</span>个哈希表中候选项包含真实近邻概率<strong>至少</strong>为 <span class="math inline">\(1 - (1 - P_1^k)^L\)</span></li>
+<li>增加哈希表数量能有效增加候选集包含近邻可能性</li>
+<li>但同时也会增大搜索空间</li>
+</ul></li>
+</ul>
+<h4 id="搜索近似最近邻">搜索近似最近邻</h4>
+<ul>
+<li>使用<span class="math inline">\(L\)</span>个级联哈希函数分别处理待搜索目标</li>
+<li>在<span class="math inline">\(L\)</span>个哈希表分别寻找落入相同哈希桶个体作为候选项</li>
+<li>在所有候选项中线性搜索近邻</li>
+</ul>
+<h3 id="基于汉明距离">基于汉明距离</h3>
+<ul>
+<li>基于汉明距离空间
+<ul>
+<li>要求数据为二进制表示</li>
+<li>其他距离需要嵌入汉明距离空间才能使用</li>
+</ul></li>
+<li>欧几里得距离没有直接嵌入汉明空间的方法
+<ul>
+<li>一般假设欧几里得距离和曼哈顿距离差别不大</li>
+<li>直接使用对曼哈顿距离保距嵌入方式</li>
+</ul></li>
+</ul>
+<h4 id="哈希函数族">哈希函数族</h4>
+<p>考虑哈希函数族<span class="math inline">\(H\)</span></p>
+<ul>
+<li><p>其中函数为<span class="math inline">\(\{0, 1\}^d\)</span>到<span class="math inline">\(\{0, 1\}\)</span>的映射：随机返回 特定比特位上的值</p></li>
+<li><p>从<span class="math inline">\(H\)</span>中随机的选择哈希函数<span class="math inline">\(h_i\)</span></p></li>
+<li>则<span class="math inline">\(Pr[h(v) = h(q)]\)</span>等于<span class="math inline">\(v, q\)</span>相比特数比例，则
+<ul>
+<li><span class="math inline">\(Pr_1 = 1 - \frac R d\)</span></li>
+<li><span class="math inline">\(Pr_2 = 1 - \frac {cR} d\)</span></li>
+</ul></li>
+<li><p><span class="math inline">\(Pr_1 &gt; Pr_2\)</span>，即此哈希函数族是局部敏感的</p></li>
+</ul>
+<h3 id="基于jaccard系数">基于Jaccard系数</h3>
+<ul>
+<li>用Jaccard系数代表集合间相似距离</li>
+<li>要求各数据向量元素仅包含0、1，表示集合是否包含该元素</li>
+</ul>
+<h4 id="min-hashing函数族"><em>Min-hashing</em>函数族</h4>
+<ul>
+<li>考虑<span class="math inline">\(M * N\)</span>矩阵A，元素为0、1
+<ul>
+<li>M：全集元素数量</li>
+<li>N：需要比较的集合数量</li>
+</ul></li>
+<li><p>对矩阵A进行<strong>行随机重排</strong><span class="math inline">\(\pi\)</span>，定义<strong>最小hash函数族</strong></p>
+<p><span class="math display">\[h_{\pi}(C) = min \pi(C)\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(C\)</span>：列，表示带比较集合</li>
+<li><span class="math inline">\(min \pi(C)\)</span>：<span class="math inline">\(\pi\)</span>重排矩阵中列C首个1所在行数</li>
+</ul>
+</blockquote></li>
+</ul>
+<h4 id="碰撞概率">碰撞概率</h4>
+<p><span class="math display">\[\begin{align*}
+Pr(h_{\pi}(C_1)  = h_{\pi}(C_2)) &amp; = \frac a {a + b} \\
+&amp; = Jaccard_d(C_1, C_2)
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(a\)</span>：列<span class="math inline">\(C_1, C_2\)</span>取值均为1的行数</li>
+<li><span class="math inline">\(b\)</span>：列<span class="math inline">\(C_1, C_2\)</span>中仅有一者取值为1的行数</li>
+</ul>
+</blockquote>
+<ul>
+<li>即不同列（集合）<em>Minhashing</em>相等概率等于二者Jaccard系数</li>
+</ul>
+<h4 id="实现">实现</h4>
+<p>数据量过大时，对行随机重排仍然非常耗时，考虑使用hash函数模拟 行随机重排</p>
+<ul>
+<li>每个hash函数对应一次随机重排
+<ul>
+<li>常用hash函数为线性变换然后对总行数取模</li>
+<li>原行号经过hash函数映射即为新行号</li>
+</ul></li>
+<li><p>为减少遍历数据次数，考虑使用迭代方法求解</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i from <span class="number">0</span> to N<span class="number">-1</span>:</span><br><span class="line">	<span class="keyword">for</span> j from <span class="number">0</span> to M<span class="number">-1</span>:</span><br><span class="line">		<span class="keyword">if</span> D[i][j] == <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">for</span> k from <span class="number">1</span> to K:</span><br><span class="line">				DD[k][j] = max(h_i(i), DD[k][j])</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><span class="math inline">\(D\)</span>：原始数据特征矩阵</li>
+<li><span class="math inline">\(DD\)</span>：minHash签名矩阵</li>
+<li><span class="math inline">\(N\)</span>：特征数量，原始特征矩阵行数</li>
+<li><span class="math inline">\(M\)</span>：集合数量，原始特征矩阵列数</li>
+<li><span class="math inline">\(k\)</span>：模拟的随机重排次数，minHash签名矩阵行数</li>
+<li><span class="math inline">\(h_i,i=1,...,k\)</span>：K个模拟随机重排的hash函数，如 <span class="math inline">\(h(x) = (2x + 7) mod N\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li>初始化minHash签名矩阵所有值为<span class="math inline">\(\infty\)</span></li>
+<li>遍历<span class="math inline">\(N\)</span>个特征、<span class="math inline">\(M\)</span>个集合
+<ul>
+<li>查看每个对应元素是否为1</li>
+<li>若元素为1，则分别使用K个hash函数计算模拟重排后 对应的行数</li>
+<li>若计算出行数小于当前minHash签名矩阵相应hash函数 、集合对应行数，更新</li>
+</ul></li>
+<li>遍历一遍原始数据之后即得到所有模拟重排的签名矩阵</li>
+</ul></li>
+</ul>
+<h3 id="exact-euclidean-lsh"><em>Exact Euclidean LSH</em></h3>
+<p><em>E2LSH</em>：欧式局部LSH</p>
+<ul>
+<li><em>LSH Based-on P-stable Distribution</em>
+<ul>
+<li>使用内积将向量随机映射到hash值</li>
+<li><em>p-stable</em>分布性质将欧式距离同hash值相联系，实现 局部敏感</li>
+</ul></li>
+<li>特点
+<ul>
+<li>基于概率模型生成索引编码结果不稳定</li>
+<li>随编码位数<span class="math inline">\(k\)</span>增加的，准确率提升缓慢</li>
+<li>级联哈希函数数量<span class="math inline">\(L\)</span>较多时，需要大量存储空间，不适合 大规模数据索引</li>
+</ul></li>
+</ul>
+<h4 id="哈希函数族-1">哈希函数族</h4>
+<p>构造hash函数族</p>
+<p><span class="math display">\[
+h_{a, b}(v) = \lfloor \frac {av + b} r \rfloor
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(v\)</span>：n维特征向量</li>
+<li><span class="math inline">\(a = (X_1,X_2,\cdots,X_n)\)</span>：其中分量为独立同p-stable 分布的随机变量</li>
+<li><span class="math inline">\(b \in [0, r]\)</span>：均匀分布随机变量</li>
+</ul>
+</blockquote>
+<h4 id="碰撞概率-1">碰撞概率</h4>
+<p>考虑<span class="math inline">\(\|v_1 - v_2\|_p = c\)</span>的两个样本碰撞概率</p>
+<ul>
+<li><p>显然，仅在<span class="math inline">\(|av_1 - av_2| \leq r\)</span>时，才存在合适的<span class="math inline">\(b\)</span> 使得<span class="math inline">\(h_{a,b}(v_1) = h_{a,b}(v_2)\)</span>，即两个样本碰撞， 不失一般性可设<span class="math inline">\(av_1 \leq av_2\)</span></p>
+<ul>
+<li>此<span class="math inline">\(r\)</span>即代表局部敏感的<strong>局部范围</strong></li>
+</ul></li>
+<li><p>若<span class="math inline">\((k-1)r \leq av_1 \leq av_2 &lt; kr\)</span>，即两个样本与<span class="math inline">\(a\)</span>内积 在同一分段内</p>
+<ul>
+<li><p>易得满足条件的<span class="math inline">\(b \in [0,kr-av_2) \cup [kr-av_1, r]\)</span></p></li>
+<li><p>即随机变量<span class="math inline">\(b\)</span>取值合适的概率为 <span class="math inline">\(1 - \frac {av_2 - av_1} r\)</span></p></li>
+</ul></li>
+<li><p>若<span class="math inline">\((k-1)r \leq av_1 \leq kr \leq av_2\)</span>，即两个样本<span class="math inline">\(a\)</span>在 相邻分段内</p>
+<ul>
+<li><p>易得满足条件的<span class="math inline">\(b \in [kr-av_1, (k+1)r-av_2)\)</span></p></li>
+<li><p>即随机变量<span class="math inline">\(b\)</span>取值合适的概率同样为 <span class="math inline">\(1 - \frac {av_2 - av_1} r\)</span></p></li>
+</ul></li>
+<li><p>考虑<span class="math inline">\(av_2 - av_1\)</span>分布为<span class="math inline">\(cX\)</span>，则两样本碰撞概率为</p>
+<p><span class="math display">\[\begin{align*}
+p(c)  &amp; = Pr_{a,b}(h_{a,b}(v_1) = h_{a,b}(v_2)) \\
+&amp; = \int_0^r \frac 1 c f_p(\frac t c)(1 - \frac t r)dt
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(c = \|v_1 - v_2\|_p\)</span>：特征向量之间<span class="math inline">\(L_p\)</span>范数距离</li>
+<li><span class="math inline">\(t = a(v_1 - v_2)\)</span></li>
+<li><span class="math inline">\(f\)</span>：p稳定分布的概率密度函数</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><span class="math inline">\(p=1\)</span>柯西分布</p>
+<p><span class="math display">\[
+p(c) = 2 \frac {tan^{-1}(r/c)} \pi - \frac 1
+    {\pi(r/c)} ln(1 + (r/c)^2)
+\]</span></p></li>
+<li><p><span class="math inline">\(p=2\)</span>正太分布</p>
+<p><span class="math display">\[
+p(c) = 1 - 2norm(-r/c) - \frac 2 {\sqrt{2\pi} r/c}
+    (1 - e^{-(r^2/2c^2)})
+\]</span></p></li>
+</ul></li>
+</ul>
+<h4 id="性质实现">性质、实现</h4>
+<h5 id="限制近邻碰撞概率">限制近邻碰撞概率</h5>
+<ul>
+<li><span class="math inline">\(r\)</span>最优值取决于数据集、查询点
+<ul>
+<li>根据文献，建议<span class="math inline">\(r = 4\)</span></li>
+</ul></li>
+<li><p>若要求近邻<span class="math inline">\(v \in B(q,R)\)</span>以不小于<span class="math inline">\(1-\sigma\)</span>概率碰撞，则有</p>
+<p><span class="math display">\[\begin{align*}
+1 - (1 - p(R)^k)^L &amp; \geq 1 - \sigma \\
+\rrightarrow L &amp; \geq \frac {log \sigma}
+    {log(1 - p(R)^k)}
+\end{align*}\]</span></p>
+<p>则可取</p>
+<p><span class="math display">\[
+L = \lceil \frac {log \sigma} {log(1-p(R)^k)} \rceil
+\]</span></p></li>
+<li><span class="math inline">\(k\)</span>最优值是使得<span class="math inline">\(T_g + T_c\)</span>最小者
+<ul>
+<li><span class="math inline">\(T_g = O(dkL)\)</span>：建表时间复杂度</li>
+<li><span class="math inline">\(T_c = O(d |collisions|)\)</span>：精确搜索时间复杂度</li>
+<li><span class="math inline">\(T_g\)</span>、<span class="math inline">\(T_c\)</span>随着<span class="math inline">\(k\)</span>增大而增大、减小</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>具体实现参考<a href="https://www.mit.edu/~andoni/LSH/manual.pdf" class="uri" target="_blank" rel="noopener">https://www.mit.edu/~andoni/LSH/manual.pdf</a></li>
+</ul>
+</blockquote>
+<h5 id="限制搜索空间">限制搜索空间</h5>
+<ul>
+<li><p>哈希表数量<span class="math inline">\(L\)</span>较多时，所有碰撞样本数量可能非常大，考虑 只选择<span class="math inline">\(3L\)</span>个样本点</p></li>
+<li><p>此时每个哈希键位长<span class="math inline">\(k\)</span>、哈希表数量<span class="math inline">\(L\)</span>保证以下条件，则算法 正确</p>
+<ul>
+<li><p>若存在<span class="math inline">\(v^{ * }\)</span>距离待检索点<span class="math inline">\(q\)</span>距离小于<span class="math inline">\(r_1\)</span>，则存在 <span class="math inline">\(g_j(v^{ * }) = g_j(q)\)</span></p></li>
+<li><p>与<span class="math inline">\(q\)</span>距离大于<span class="math inline">\(r_2\)</span>、可能和<span class="math inline">\(q\)</span>碰撞的点的数量小于<span class="math inline">\(3L\)</span></p>
+<p><span class="math display">\[
+\sum_{j=1}^L |(P-B(q,r_2)) \cap g_j^{-1}(g_j(q))|
+    &lt; 3L
+\]</span></p></li>
+</ul></li>
+<li><p>可以证明，<span class="math inline">\(k, L\)</span>取以下值时，以上两个条件以常数概率成立 （此性质是局部敏感函数性质，不要求是E2LSH）</p>
+<p><span class="math display">\[\begin{align*}
+k &amp; = log_{1/p_2} n\\
+L &amp; = n^{\rho} \\
+\rho &amp; = \frac {ln 1/p_1} {ln 1/p_2}
+\end{align*}\]</span></p>
+<p><span class="math inline">\(\rho\)</span>对算法效率起决定性作用，且有以下定理</p>
+<blockquote>
+<ul>
+<li>距离尺度<span class="math inline">\(D\)</span>下，若<span class="math inline">\(H\)</span>为<span class="math inline">\((R,cR,p_1,p_2)\)</span>敏感哈希函数族 ，则存在适合<em>(R,c)-NN</em>的算法，其空间复杂度为 <span class="math inline">\(O(dn + n^{1+\rho})\)</span>、查询时间为<span class="math inline">\(O(n^{\rho})\)</span>倍距离 计算、哈希函数计算为<span class="math inline">\(O(n^{\rho} log_{1/p_2}n)\)</span>， 其中<span class="math inline">\(\rho = \frac {ln 1/p_1} {ln 1/p_2}\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><span class="math inline">\(r\)</span>足够大、充分远离0时，<span class="math inline">\(\rho\)</span>对其不是很敏感</li>
+<li><span class="math inline">\(p_1, p_2\)</span>随<span class="math inline">\(r\)</span>增大而增大，而<span class="math inline">\(k = log_{1/p_2} n\)</span>也 随之增大，所以<span class="math inline">\(r\)</span>不能取过大值</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>具体实现参见论文</li>
+</ul>
+</blockquote>
+<h4 id="scalable-lsh"><em>Scalable LSH</em></h4>
+<p><em>Scalable LSH</em>：可扩展的LSH</p>
+<ul>
+<li><p>对动态变化的数据集，固定hash编码方法的局部敏感hash方法 对数据<strong>动态支持性有限</strong>，无法很好的适应数据集动态变化</p>
+<ul>
+<li>受限于初始数据集分布特性，无法持续保证有效性</li>
+<li>虽然在原理上支持数据集动态变化，但若数据集大小发生 较大变化，则其相应hash参数（如hash编码长度）等需要 随之调整，需要从新索引整个数据库</li>
+</ul></li>
+<li><p>在<span class="math inline">\(E^2LSH\)</span>基础上通过<strong>动态增强哈希键长</strong>，增强哈希函数 区分能力，实现可扩展LSH</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/代数/" rel="tag"># 代数</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/math_mixin/problems/unconstrained_specials/" rel="next" title="无约束优化特殊问题">
+                <i class="fa fa-chevron-left"></i> 无约束优化特殊问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_models/model_enhancement/ensemble_boosting/" rel="prev" title="Boosting">
+                Boosting <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hash-function"><span class="nav-number">1.</span> <span class="nav-text">Hash Function</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据相关性"><span class="nav-number">1.1.</span> <span class="nav-text">数据相关性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用"><span class="nav-number">1.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本哈希函数"><span class="nav-number">2.</span> <span class="nav-text">基本哈希函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单输入哈希"><span class="nav-number">2.1.</span> <span class="nav-text">单输入哈希</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#序列输入"><span class="nav-number">2.2.</span> <span class="nav-text">序列输入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#加法哈希"><span class="nav-number">2.2.1.</span> <span class="nav-text">加法哈希</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#位运算哈希"><span class="nav-number">2.2.2.</span> <span class="nav-text">位运算哈希</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#乘法哈希"><span class="nav-number">2.2.3.</span> <span class="nav-text">乘法哈希</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定长序列"><span class="nav-number">2.3.</span> <span class="nav-text">定长序列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#universal-hashing"><span class="nav-number">3.</span> <span class="nav-text">Universal Hashing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#性质"><span class="nav-number">3.1.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-number">3.2.</span> <span class="nav-text">构造方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#locality-sensitive-hashing"><span class="nav-number">4.</span> <span class="nav-text">Locality Sensitive Hashing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lsh查找"><span class="nav-number">4.1.</span> <span class="nav-text">LSH查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#思想"><span class="nav-number">4.1.1.</span> <span class="nav-text">思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#概率放大"><span class="nav-number">4.1.2.</span> <span class="nav-text">概率放大</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#搜索近似最近邻"><span class="nav-number">4.1.3.</span> <span class="nav-text">搜索近似最近邻</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于汉明距离"><span class="nav-number">4.2.</span> <span class="nav-text">基于汉明距离</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#哈希函数族"><span class="nav-number">4.2.1.</span> <span class="nav-text">哈希函数族</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于jaccard系数"><span class="nav-number">4.3.</span> <span class="nav-text">基于Jaccard系数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#min-hashing函数族"><span class="nav-number">4.3.1.</span> <span class="nav-text">Min-hashing函数族</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#碰撞概率"><span class="nav-number">4.3.2.</span> <span class="nav-text">碰撞概率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现"><span class="nav-number">4.3.3.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exact-euclidean-lsh"><span class="nav-number">4.4.</span> <span class="nav-text">Exact Euclidean LSH</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#哈希函数族-1"><span class="nav-number">4.4.1.</span> <span class="nav-text">哈希函数族</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#碰撞概率-1"><span class="nav-number">4.4.2.</span> <span class="nav-text">碰撞概率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#性质实现"><span class="nav-number">4.4.3.</span> <span class="nav-text">性质、实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#限制近邻碰撞概率"><span class="nav-number">4.4.3.1.</span> <span class="nav-text">限制近邻碰撞概率</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#限制搜索空间"><span class="nav-number">4.4.3.2.</span> <span class="nav-text">限制搜索空间</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scalable-lsh"><span class="nav-number">4.4.4.</span> <span class="nav-text">Scalable LSH</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

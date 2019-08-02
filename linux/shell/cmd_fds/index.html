@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="文件、目录">
+<meta name="keywords" content="Linux,Shell命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件、目录">
+<meta property="og:url" content="https://xyy15926.github.io/linux/shell/cmd_fds/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="文件、目录">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-09T16:48:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="文件、目录">
+<meta name="twitter:description" content="文件、目录">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/linux/shell/cmd_fds/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>文件、目录 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/linux/shell/cmd_fds/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">文件、目录
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-31 21:10:52" itemprop="dateCreated datePublished" datetime="2019-07-31T21:10:52+08:00">2019-07-31</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-10 00:48:32" itemprop="dateModified" datetime="2019-07-10T00:48:32+08:00">2019-07-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/Shell命令/" itemprop="url" rel="index"><span itemprop="name">Shell命令</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">文件、目录</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="目录文件操作">目录、文件操作</h2>
+<h3 id="pwd"><code>pwd</code></h3>
+<p>显示当前工作目录绝对路径</p>
+<h3 id="cd"><code>cd</code></h3>
+<p>更改工作目录路径</p>
+<h3 id="ls"><code>ls</code></h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls [params] expr</span></span><br></pre></td></tr></table></figure>
+<p>列出当前工作目录目录、文件信息</p>
+<h4 id="参数">参数</h4>
+<ul>
+<li><code>-a</code>：列出所有文件，包括隐藏文件</li>
+<li><code>-l</code>：文件详细信息
+<ul>
+<li>详细信息格式、含义参见<code>config_file</code></li>
+</ul></li>
+<li><code>-t</code>：按最后修改时间排序</li>
+<li><code>-S</code>：按文件大小排序</li>
+<li><code>-r</code>：反向排序</li>
+<li><code>-h</code>：显示文件大小时增加可读性</li>
+<li><code>-F</code>：添加描述符到条目后
+<ul>
+<li><code>@</code>：符号链接</li>
+<li><code>*</code>：文件</li>
+<li><code>/</code>：目录</li>
+</ul></li>
+<li><code>-i</code>：显示索引节点</li>
+</ul>
+<h3 id="dirs"><code>dirs</code></h3>
+<p>显示目录列表</p>
+<h3 id="touch"><code>touch</code></h3>
+<p>创建空文件或更改文件时间</p>
+<h3 id="mkdir"><code>mkdir</code></h3>
+<p>创建目录</p>
+<h3 id="rmdir"><code>rmdir</code></h3>
+<p>删除空目录</p>
+<h3 id="cp"><code>cp</code></h3>
+<p>复制文件和目录</p>
+<h3 id="mv"><code>mv</code></h3>
+<p>移动、重命名文件、目录</p>
+<h3 id="rm"><code>rm</code></h3>
+<p>删除文件、目录</p>
+<blockquote>
+<ul>
+<li>删除目录link时，注意末尾不要带<code>/</code>，否则被认为是目录， 此时<code>rm -r &lt;target&gt;</code>会删除源目录中文件</li>
+</ul>
+</blockquote>
+<h3 id="file"><code>file</code></h3>
+<p>查询文件的文件类型</p>
+<h3 id="du"><code>du</code></h3>
+<p>显示目录、文件磁盘占用量（文件系统数据库情况）</p>
+<h4 id="参数-1">参数</h4>
+<ul>
+<li><code>-a</code>/<code>--all</code>：显示<strong>所有后代</strong>各文件、文件夹大小
+<ul>
+<li>否则默认为显示<strong>所有后代</strong>文件夹大小</li>
+</ul></li>
+<li><code>-c</code>/<code>--total</code>：额外显示总和</li>
+<li><code>-s</code>/<code>--summarize</code>：仅显示总和</li>
+<li><code>--max-depth=[num]</code>：显示文件夹的深度</li>
+<li><p><code>-S</code>/<code>--separate-dirs</code>：文件夹大小不包括子文件夹大小</p></li>
+<li><code>-b</code>/<code>--bytes</code>：以byte为单位</li>
+<li><code>-k</code>/<code>--kilobytes</code>：以KB为单位</li>
+<li><code>-m</code>/<code>--megabytes</code>：以MB为单位</li>
+<li><code>-h</code>：human-readable，提升可读性</li>
+<li><p><code>-H</code>/<code>--si</code>：同<code>-h</code>，但是单位换算以1000为进制</p></li>
+<li><code>-x</code>/<code>--one-file-system</code>：以最初处理的文件系统为准，忽略 其他遇到的文件系统</li>
+<li><code>-L=</code>/<code>--dereference=</code>：显示选项中指定的符号链接的源文件 大小</li>
+<li><code>-D</code>/<code>--dereference-args</code>：显示指定符号链接的源文件大小</li>
+<li><code>-X=</code>/<code>--exclude-from=[file]</code>：从文件中读取指定的目录、 文件</li>
+<li><code>--exclude=[dir/file]</code>：掠过指定目录、文件</li>
+<li><p><code>-l</code>/<code>--count-links</code>：重复计算hard-link</p></li>
+</ul>
+<h3 id="wc"><code>wc</code></h3>
+<p>统计文件行数、单词数、字节数、字符数</p>
+<pre><code>-   `-l, -w, -c`</code></pre>
+<h3 id="tree"><code>tree</code></h3>
+<p>树状图逐级列出目录内容</p>
+<h3 id="cksum"><code>cksum</code></h3>
+<p>显示文件CRC校验值、字节统计</p>
+<h3 id="mk5sum"><code>mk5sum</code></h3>
+<p>显示、检查MD5（128bit）校验和</p>
+<h3 id="sum"><code>sum</code></h3>
+<p>为文件输出校验和及块计数</p>
+<h3 id="dirname"><code>dirname</code></h3>
+<p>输出给出参数字符串中的目录名（不包括尾部<code>/</code>） ，如果参数中不带<code>/</code>输出<code>.</code>表示当前目录</p>
+<h3 id="basename"><code>basename</code></h3>
+<p>输出给出参数字符串中的文件、<strong>目录</strong>名</p>
+<h3 id="ln"><code>ln</code></h3>
+<p>创建链接文件</p>
+<h3 id="stat"><code>stat</code></h3>
+<p>显示文件、文件系统状态</p>
+<h2 id="文件目录权限属性">文件、目录权限、属性</h2>
+<h3 id="chown"><code>chown</code></h3>
+<p>更改文件、目录的用户所有者、组群所有者</p>
+<h3 id="chgrp"><code>chgrp</code></h3>
+<p>更改文件、目录所属组</p>
+<h3 id="umask"><code>umask</code></h3>
+<p>显示、设置文件、目录创建默认权限掩码</p>
+<h3 id="getfacl"><code>getfacl</code></h3>
+<p>显示文件、目录ACL</p>
+<h3 id="setfacl"><code>setfacl</code></h3>
+<p>设置文件、目录ACL</p>
+<h3 id="chacl"><code>chacl</code></h3>
+<p>更改文件、目录ACL</p>
+<h3 id="lsattr"><code>lsattr</code></h3>
+<p>查看文件、目录属性</p>
+<h3 id="chattr"><code>chattr</code></h3>
+<p>更改文件、目录属性</p>
+<h3 id="umask-1"><code>umask</code></h3>
+<p>查看/设置权限掩码，默认<code>0000</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">umask</span></span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 数字形式返回当前权限掩码</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">umask</span> -S</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 符号形式返回当前权限掩码</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">umask</span> 0003</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 设置权限掩码为`0003`</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>权限掩码参见<em>linux/kernel/permissions</em></li>
+</ul>
+</blockquote>
+<h3 id="chmod"><code>chmod</code></h3>
+<p>关于文件、目录权限参见<code>config_files###文件描述</code></p>
+<ul>
+<li>普通用户只能修改user权限位</li>
+<li>root用户可以修改任意用户、任意文件权限</li>
+</ul>
+<h4 id="参数-2">参数</h4>
+<ul>
+<li><code>-R</code>：对整个目录、子文件（目录）同时修改权限</li>
+</ul>
+<h4 id="操作">操作</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> chmod [ugoa][+-=][rwxst] file</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> chmod xxxx file</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>ugoa</code>：分别表示user、group、other、all权限位</li>
+<li><code>+-=</code>：表示增加、减少、设置权限</li>
+<li><code>rwxst</code>：表示5不同的权限
+<ul>
+<li><code>S</code>、<code>T</code>不是一种权限，只是一种特殊的状态</li>
+<li>设置状态时<code>s</code>时，是根据相应的<code>x</code>是否有确定<code>s</code>/<code>S</code></li>
+<li>设置状态<code>t</code>同理</li>
+</ul></li>
+<li><code>xxxx</code>：每个8进制数表示一组权限，对应二进制表示相应权限 是否置位
+<ul>
+<li>第1个数字：set-user-id、set-group-id、sticky bit</li>
+<li>后面3个数字分别表示user、group、other权限</li>
+<li>第1个数字位0时可以省略（常见）</li>
+</ul></li>
+</ul>
+<h4 id="示例">示例</h4>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod u+s file1</span><br><span class="line">$ chmod 7777 file1</span><br></pre></td></tr></table></figure>
+<h2 id="显示文本文件">显示文本文件</h2>
+<h3 id="cat"><code>cat</code></h3>
+<p>显示文本文件内容</p>
+<h3 id="more"><code>more</code></h3>
+<p>分页显示文本文件</p>
+<h3 id="less"><code>less</code></h3>
+<p>回卷显示文本文件内容</p>
+<h3 id="head"><code>head</code></h3>
+<p>显示文件指定前若干行</p>
+<h3 id="tail"><code>tail</code></h3>
+<p>实现文件指定后若干行</p>
+<h3 id="nl"><code>nl</code></h3>
+<p>显示文件行号、内容</p>
+<h2 id="文件处理">文件处理</h2>
+<h3 id="sort"><code>sort</code></h3>
+<p>对文件中数据排序</p>
+<h3 id="uniq"><code>uniq</code></h3>
+<p>删除文件中重复行</p>
+<h3 id="cut"><code>cut</code></h3>
+<p>从文件的每行中输出之一的字节、字符、字段</p>
+<h3 id="diff"><code>diff</code></h3>
+<p>逐行比较两个文本文件</p>
+<h3 id="diff3"><code>diff3</code></h3>
+<p>逐行比较三个文件</p>
+<h3 id="cmp"><code>cmp</code></h3>
+<p>按字节比较两个文件</p>
+<h3 id="tr"><code>tr</code></h3>
+<p>从标准输入中替换、缩减、删除字符</p>
+<h3 id="split"><code>split</code></h3>
+<p>将输入文件分割成固定大小的块</p>
+<h3 id="tee"><code>tee</code></h3>
+<p>将标准输入复制到指定温婉</p>
+<h3 id="expand"><code>expand</code></h3>
+<p>将文件中<code>tab</code>转换为空格输出到标准输出</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ expand -n <span class="number">4</span> file_name</span><br></pre></td></tr></table></figure>
+<h3 id="awk"><code>awk</code></h3>
+<p>模式扫描和处理语言</p>
+<pre><code>#todo</code></pre>
+<h3 id="sed"><code>sed</code></h3>
+<p>过滤、转换文本的流编辑器</p>
+<ul>
+<li>sed按行处理文本数据，每次处理一行在行尾添加换行符</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sed [-hnV] [-e&lt;script&gt;][-f&lt;script-file&gt;][infile]</span></span><br></pre></td></tr></table></figure>
+<h4 id="参数-3">参数</h4>
+<ul>
+<li><code>-e&lt;script&gt;/--expression=&lt;script&gt;</code>：以指定script 处理infile（默认参数）
+<ul>
+<li>默认不带参数即为<code>-e</code></li>
+</ul></li>
+<li><code>-f&lt;script-file&gt;/--file=&lt;script-file&gt;</code>：以指定的script 文件处理输入文本文件
+<ul>
+<li>文件内容为sed的动作</li>
+</ul></li>
+<li><p><code>-i</code>：直接修改原文件</p></li>
+<li><p><code>-n/--quiet</code>：仅显示script处理后结果</p></li>
+<li><p><code>-h/--help</code>：帮助</p></li>
+<li><p><code>-V/--version</code>：版本信息</p></li>
+</ul>
+<h4 id="动作">动作</h4>
+<ul>
+<li><code>[n]a\string</code>：行添加，在<code>n</code>行后添加新行<code>string</code></li>
+<li><code>[n]i\string</code>：行插入</li>
+<li><code>[n]c\string</code>：行替换</li>
+<li><code>[n,m]d</code>：删除，删除<code>n-m</code>行</li>
+<li><code>[start[,end]]p</code>：打印数据</li>
+<li><code>[start[,end]]s/expr/ctt[/g]</code>：正则替换</li>
+</ul>
+<h4 id="高级语法">高级语法</h4>
+<h4 id="示例-1">示例</h4>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ sed '2anewline' ka.file</span><br><span class="line">$ sed '2a newline' ka.file</span><br><span class="line">$ sed 2anewline ka.file</span><br><span class="line">$ sed 2a newline ka.file</span><br><span class="line"><span class="code">	# 在第2行添加新行`newline`</span></span><br><span class="line"></span><br><span class="line">$ sed 2,$d ka.file</span><br><span class="line"><span class="code">	# 删除2至最后行</span></span><br><span class="line"></span><br><span class="line">$ sed 2s/old/new ka.file</span><br><span class="line"><span class="code">	# 替换第2行的`old`为`new`</span></span><br><span class="line"></span><br><span class="line">$ nl ka.file | sed 7,9p</span><br><span class="line"><span class="code">	# 打印7-9行</span></span><br><span class="line"></span><br><span class="line">$ sed ":a;N;s/\n//g;ta" a.txt</span><br><span class="line"><span class="code">	# 替换换行符</span></span><br></pre></td></tr></table></figure>
+<h2 id="查找字符串文件">查找字符串、文件</h2>
+<h3 id="grep"><code>grep</code></h3>
+<p>查找符合条件的字符串</p>
+<h3 id="egrep"><code>egrep</code></h3>
+<p>在每个文件或标准输入中查找模式</p>
+<h3 id="find"><code>find</code></h3>
+<p>列出文件系统内符合条件的文件</p>
+<h3 id="whereis"><code>whereis</code></h3>
+<p>插卡指定文件、命令、手册页位置</p>
+<h3 id="whatis"><code>whatis</code></h3>
+<p>在whatis数据库中搜索特定命令</p>
+<h3 id="which"><code>which</code></h3>
+<p>显示可执行命令路径</p>
+<h3 id="type"><code>type</code></h3>
+<p>输出命令信息</p>
+<ul>
+<li>可以用于判断命令是否为内置命令</li>
+</ul>
+<h2 id="文本编辑器">文本编辑器</h2>
+<h3 id="vivim"><code>vi/vim</code></h3>
+<h3 id="nano"><code>nano</code></h3>
+<p>系统自带编辑器，有时只能编辑少部分配置文件</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Shell命令/" rel="tag"># Shell命令</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/linux/shell/config_files/" rel="next" title="Linux特殊文件">
+                <i class="fa fa-chevron-left"></i> Linux特殊文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/linux/shell/sed/" rel="prev" title="Linux文本工具">
+                Linux文本工具 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目录文件操作"><span class="nav-number">1.</span> <span class="nav-text">目录、文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pwd"><span class="nav-number">1.1.</span> <span class="nav-text">pwd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cd"><span class="nav-number">1.2.</span> <span class="nav-text">cd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ls"><span class="nav-number">1.3.</span> <span class="nav-text">ls</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数"><span class="nav-number">1.3.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dirs"><span class="nav-number">1.4.</span> <span class="nav-text">dirs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#touch"><span class="nav-number">1.5.</span> <span class="nav-text">touch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mkdir"><span class="nav-number">1.6.</span> <span class="nav-text">mkdir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rmdir"><span class="nav-number">1.7.</span> <span class="nav-text">rmdir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cp"><span class="nav-number">1.8.</span> <span class="nav-text">cp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mv"><span class="nav-number">1.9.</span> <span class="nav-text">mv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rm"><span class="nav-number">1.10.</span> <span class="nav-text">rm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#file"><span class="nav-number">1.11.</span> <span class="nav-text">file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#du"><span class="nav-number">1.12.</span> <span class="nav-text">du</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-1"><span class="nav-number">1.12.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wc"><span class="nav-number">1.13.</span> <span class="nav-text">wc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tree"><span class="nav-number">1.14.</span> <span class="nav-text">tree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cksum"><span class="nav-number">1.15.</span> <span class="nav-text">cksum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mk5sum"><span class="nav-number">1.16.</span> <span class="nav-text">mk5sum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sum"><span class="nav-number">1.17.</span> <span class="nav-text">sum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dirname"><span class="nav-number">1.18.</span> <span class="nav-text">dirname</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#basename"><span class="nav-number">1.19.</span> <span class="nav-text">basename</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ln"><span class="nav-number">1.20.</span> <span class="nav-text">ln</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stat"><span class="nav-number">1.21.</span> <span class="nav-text">stat</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件目录权限属性"><span class="nav-number">2.</span> <span class="nav-text">文件、目录权限、属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#chown"><span class="nav-number">2.1.</span> <span class="nav-text">chown</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chgrp"><span class="nav-number">2.2.</span> <span class="nav-text">chgrp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#umask"><span class="nav-number">2.3.</span> <span class="nav-text">umask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getfacl"><span class="nav-number">2.4.</span> <span class="nav-text">getfacl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#setfacl"><span class="nav-number">2.5.</span> <span class="nav-text">setfacl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chacl"><span class="nav-number">2.6.</span> <span class="nav-text">chacl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsattr"><span class="nav-number">2.7.</span> <span class="nav-text">lsattr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chattr"><span class="nav-number">2.8.</span> <span class="nav-text">chattr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#umask-1"><span class="nav-number">2.9.</span> <span class="nav-text">umask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chmod"><span class="nav-number">2.10.</span> <span class="nav-text">chmod</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-2"><span class="nav-number">2.10.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#操作"><span class="nav-number">2.10.2.</span> <span class="nav-text">操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#示例"><span class="nav-number">2.10.3.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示文本文件"><span class="nav-number">3.</span> <span class="nav-text">显示文本文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cat"><span class="nav-number">3.1.</span> <span class="nav-text">cat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#more"><span class="nav-number">3.2.</span> <span class="nav-text">more</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#less"><span class="nav-number">3.3.</span> <span class="nav-text">less</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#head"><span class="nav-number">3.4.</span> <span class="nav-text">head</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tail"><span class="nav-number">3.5.</span> <span class="nav-text">tail</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nl"><span class="nav-number">3.6.</span> <span class="nav-text">nl</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件处理"><span class="nav-number">4.</span> <span class="nav-text">文件处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sort"><span class="nav-number">4.1.</span> <span class="nav-text">sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uniq"><span class="nav-number">4.2.</span> <span class="nav-text">uniq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cut"><span class="nav-number">4.3.</span> <span class="nav-text">cut</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#diff"><span class="nav-number">4.4.</span> <span class="nav-text">diff</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#diff3"><span class="nav-number">4.5.</span> <span class="nav-text">diff3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cmp"><span class="nav-number">4.6.</span> <span class="nav-text">cmp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tr"><span class="nav-number">4.7.</span> <span class="nav-text">tr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#split"><span class="nav-number">4.8.</span> <span class="nav-text">split</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tee"><span class="nav-number">4.9.</span> <span class="nav-text">tee</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#expand"><span class="nav-number">4.10.</span> <span class="nav-text">expand</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk"><span class="nav-number">4.11.</span> <span class="nav-text">awk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sed"><span class="nav-number">4.12.</span> <span class="nav-text">sed</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-3"><span class="nav-number">4.12.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动作"><span class="nav-number">4.12.2.</span> <span class="nav-text">动作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级语法"><span class="nav-number">4.12.3.</span> <span class="nav-text">高级语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#示例-1"><span class="nav-number">4.12.4.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找字符串文件"><span class="nav-number">5.</span> <span class="nav-text">查找字符串、文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#grep"><span class="nav-number">5.1.</span> <span class="nav-text">grep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#egrep"><span class="nav-number">5.2.</span> <span class="nav-text">egrep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find"><span class="nav-number">5.3.</span> <span class="nav-text">find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#whereis"><span class="nav-number">5.4.</span> <span class="nav-text">whereis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#whatis"><span class="nav-number">5.5.</span> <span class="nav-text">whatis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#which"><span class="nav-number">5.6.</span> <span class="nav-text">which</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type"><span class="nav-number">5.7.</span> <span class="nav-text">type</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文本编辑器"><span class="nav-number">6.</span> <span class="nav-text">文本编辑器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vivim"><span class="nav-number">6.1.</span> <span class="nav-text">vi/vim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nano"><span class="nav-number">6.2.</span> <span class="nav-text">nano</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="数据预处理">
+<meta name="keywords" content="机器学习,数据处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据预处理">
+<meta property="og:url" content="https://xyy15926.github.io/ml_techniques/data_handling/data_preprocessing/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="数据预处理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据预处理">
+<meta name="twitter:description" content="数据预处理">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_techniques/data_handling/data_preprocessing/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据预处理 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_techniques/data_handling/data_preprocessing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">数据预处理
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/数据处理/" itemprop="url" rel="index"><span itemprop="name">数据处理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">数据预处理</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="数据说明">数据说明</h2>
+<h3 id="数据模式">数据模式</h3>
+<ul>
+<li>结构化数据：行数据，可用二维表逻辑表达数据逻辑、存储在 数据库中
+<ul>
+<li>可以看作是关系型数据库中一张表</li>
+<li>行：记录、元组，表示一个样本信息</li>
+<li>列：字段、属性，有清晰定义</li>
+</ul></li>
+<li>非结构化数据：相对于结构化数据而言，不方便用二维逻辑表达 的数据
+<ul>
+<li>包含信息无法用简单数值表示
+<ul>
+<li>没有清晰列表定义</li>
+<li>每个数据大小不相同</li>
+</ul></li>
+<li>研究方向
+<ul>
+<li>社交网络数据</li>
+<li>文本数据</li>
+<li>图像、音视频</li>
+<li>数据流</li>
+</ul></li>
+<li>针对不同类型数据、具体研究方面有不同的具体分析方法， 不存在普适、可以解决所有具体数据的方法</li>
+</ul></li>
+<li>半结构化数据：介于完全结构化数据、完全无结构数据之间的 数据
+<ul>
+<li>一般是自描述的，数据结构和内容混合、没有明显区分</li>
+<li>树、图（XML、HTML文档也可以归为半结构化数据）</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>结构化数据：先有结构、再有数据</li>
+<li>半结构化数据：先有数据、再有结构</li>
+</ul>
+</blockquote>
+<h2 id="数据问题">数据问题</h2>
+<h3 id="缺失值">缺失值</h3>
+<h4 id="产生原因">产生原因</h4>
+<ul>
+<li>信息暂时无法获取、成本高</li>
+<li>信息被遗漏</li>
+<li>属性不存在</li>
+</ul>
+<h4 id="缺失值影响">缺失值影响</h4>
+<ul>
+<li>建模将丢失大量有用信息</li>
+<li>模型不确定性更加显著、蕴含规则更难把握</li>
+<li>包含空值可能使得建模陷入混乱，导致不可靠输出</li>
+</ul>
+<h4 id="处理方法">处理方法</h4>
+<ul>
+<li>直接使用含有缺失值特征</li>
+<li>删除含有缺失值特征</li>
+<li>插值补全缺失值
+<ul>
+<li>均值、中位数、众数</li>
+<li>同类均值、中位数、众数</li>
+<li>固定值</li>
+<li>建模预测：回归、决策树模型预测
+<ul>
+<li>若其他特征和缺失特征无关，预测结果无意义</li>
+<li>若预测结果相当准确，缺失属性也没有必要纳入数据集</li>
+</ul></li>
+<li>高维映射：<em>one-hot</em>编码增加维度表示某特征缺失
+<ul>
+<li>保留所有信息、未人为增加额外信息</li>
+<li>可能会增加数据维度、增加计算量</li>
+<li>需要样本量较大时效果才较好</li>
+</ul></li>
+<li>多重插补：认为待插补值是随机的，通常估计处待插补值， 再加上<strong>不同噪声</strong>形成多组可选插补值，依据某准则， 选取最合适的插补值</li>
+<li>压缩感知：利用信号本身具有的<strong>稀疏性</strong>，从部分观测 样本中恢复原信号
+<ul>
+<li>感知测量阶段：对原始信号进行处理以获得稀疏样本 表示
+<ul>
+<li>傅里叶变换</li>
+<li>小波变换</li>
+<li>字典学习</li>
+<li>稀疏编码</li>
+</ul></li>
+<li>重构恢复阶段：基于稀疏性从少量观测中恢复信号</li>
+</ul></li>
+<li>矩阵补全</li>
+<li>手动补全：根据对所在领域理解，手动对缺失值进行插补
+<ul>
+<li>需要对问题领域有很高认识理解</li>
+<li>缺失较多时费时、费力</li>
+</ul></li>
+<li>最近邻补全：寻找与样本最接近样本相应特征补全</li>
+</ul></li>
+</ul>
+<h3 id="异常值">异常值</h3>
+<blockquote>
+<ul>
+<li>异常值/离群点：样本中数值明显偏离其余观测值的个别值</li>
+</ul>
+</blockquote>
+<p>异常值分析：检验数据是否有录入错误、含有不合常理的数据</p>
+<h4 id="异常值检测">异常值检测</h4>
+<ul>
+<li>简单统计：观察数据统计型描述、散点图</li>
+<li><span class="math inline">\(3\sigma\)</span>原则：取值超过均值3倍标准差，可以视为异常值
+<ul>
+<li>依据小概率事件发生可能性“不存在”</li>
+<li>数据最好近似正态分布</li>
+</ul></li>
+<li>箱线图：利用箱线图四分位距对异常值进行检测</li>
+<li>基于模型预测：构建概率分布模型，计算对象符合模型的概率， 将低概率对象视为异常点
+<ul>
+<li>分类模型：异常点为不属于任何类的对象</li>
+<li>回归模型：异常点为原理预测值对象</li>
+<li>特点
+<ul>
+<li>基于统计学理论基础，有充分数据和所用的检验类型 知识时，检验可能非常有效</li>
+<li>对多元数据，可用选择少，维度较高时，检测效果不好</li>
+</ul></li>
+</ul></li>
+<li>基于近邻度的离群点检测：对象离群点得分由其距离k-NN的距离 确定
+<ul>
+<li>k取值会影响离群点得分，取k-NN平均距离更稳健</li>
+<li>特点
+<ul>
+<li>简单，但时间复杂度高<span class="math inline">\(\in O(m^2)\)</span>，不适合大数据集</li>
+<li>方法对参数k取值敏感</li>
+<li>使用全局阈值，无法处理具有不同密度区域的数据集</li>
+</ul></li>
+</ul></li>
+<li>基于密度的离群点检测
+<ul>
+<li>定义密度方法
+<ul>
+<li>k-NN分类：k个最近邻的平均距离的倒数</li>
+<li>DSSCAN聚类中密度：对象指定距离d内对象个数</li>
+</ul></li>
+<li>特点
+<ul>
+<li>给出定量度量，即使数据具有不同区域也能很好处理</li>
+<li>时间复杂度<span class="math inline">\(\in O^(m^2)\)</span>，对低维数据使用特点数据 结构可以达到<span class="math inline">\(\in O(mlogm)\)</span></li>
+<li>参数难以确定，需要确定阈值</li>
+</ul></li>
+</ul></li>
+<li>基于聚类的离群点检测：不属于任何类别簇的对象为离群点
+<ul>
+<li>特点
+<ul>
+<li>（接近）线性的聚类技术检测离群点高度有效</li>
+<li>簇、离群点互为补集，可以同时探测</li>
+<li>聚类算法本身对离群点敏感，类结构不一定有效，可以 考虑：对象聚类、删除离群点再聚类</li>
+<li>检测出的离群点依赖类别数量、产生簇的质量</li>
+</ul></li>
+</ul></li>
+<li><em>one-class SVM</em></li>
+<li><em>isolation forest</em></li>
+</ul>
+<h4 id="异常值处理">异常值处理</h4>
+<ul>
+<li>直接删除
+<ul>
+<li>简单易行</li>
+<li>观测值很少时，可能导致样本量不足、改变分布</li>
+</ul></li>
+<li>视为缺失值处理
+<ul>
+<li>可以利用现有变量信息，对异常值进行填补</li>
+</ul></li>
+<li>平均值修正：使用前后两个观测值平均值进行修正</li>
+<li>不处理</li>
+</ul>
+<blockquote>
+<ul>
+<li>很多情况下，要先分析异常值出现的可能原因，判断异常值是 <strong>真异常值</strong></li>
+</ul>
+</blockquote>
+<h3 id="类别不平衡问题">类别不平衡问题</h3>
+<ul>
+<li>扩充数据集
+<ul>
+<li>可以使用欠采样方法放弃部分大类数据</li>
+</ul></li>
+<li>尝试其他评价指标：准确度在不平衡数据中不能反映实际情况
+<ul>
+<li>混淆矩阵</li>
+<li>精确度</li>
+<li>召回率</li>
+<li>F1得分</li>
+<li>ROC曲线</li>
+<li>Kappa</li>
+</ul></li>
+<li><p>对数据集重采样</p>
+<blockquote>
+<ul>
+<li><em>over-sampling</em>：过采样，小类数据样本增加样本数量</li>
+<li><em>under-sampling</em>：欠采样，大类数据样本减少样本数量</li>
+</ul>
+</blockquote>
+<ul>
+<li>尝试随机采样、非随机采样</li>
+<li>对各类别尝试不同采样比例，不必保持1:1违反现实情况</li>
+<li>同时使用过采样、欠采样</li>
+</ul></li>
+<li><p>人工生成数据样本</p>
+<ul>
+<li>属性值随机采样：从类中样本每个特征随机取值组成新样本</li>
+<li>基于经验对属性值随机采样</li>
+<li>类似朴素贝叶斯方法：假设各属性之间相互独立进行采样， 但是无法保证属性之前的线性关系</li>
+<li><em>synthetic minority over-sampling technique</em>：过采样 算法，构造不同于已有样本小类样本
+<ul>
+<li>基于距离度量选择小类别下相似样本</li>
+<li>选择其中一个样本、随机选择一定数据量邻居样本</li>
+<li>对选择样本某属性增加噪声，构造新数据</li>
+</ul></li>
+</ul></li>
+<li><p>尝试不同分类算法</p></li>
+<li><p>对模型进行惩罚</p>
+<ul>
+<li>类似AdaBoosting：对分类器小类样本数据增加权值</li>
+<li>类似Bayesian分类：增加小类样本错分代价，如： penalized_SVM、penalized-LDA</li>
+<li>需要根据具体任务尝试不同惩罚矩阵</li>
+</ul></li>
+<li><p>新角度理解问题</p>
+<ul>
+<li>将小类样本视为异常点：问题变为异常点检测、变化趋势 检测</li>
+</ul></li>
+<li><p>创新：对问题进行分析，将问题划分为多个小问题</p>
+<ul>
+<li>大类压缩为小类</li>
+<li>使用<em>one-class</em>分类器：小类作为异常点</li>
+<li>集成模型：训练多个分类器、组合</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>需要具体问题具体分析</li>
+</ul>
+</blockquote>
+<h3 id="图片数据扩充">图片数据扩充</h3>
+<p><em>Data Agumentation</em>：根据先验知识，在保留特点信息的前提下， 对原始数据进行适当变换以达到扩充数据集的效果</p>
+<ul>
+<li>对原始图片做变换处理
+<ul>
+<li>一定程度内随机旋转、平移、缩放、裁剪、填充、左右翻转 ，这些变换对应目标在不同角度观察效果</li>
+<li>对图像中元素添加噪声扰动：椒盐噪声、高斯白噪声</li>
+<li>颜色变换</li>
+<li>改变图像亮度、清晰度、对比度、锐度</li>
+</ul></li>
+<li>先对图像进行特征提取，在特征空间进行变换，利用通用数据 扩充、上采样方法
+<ul>
+<li><em>SMOTE</em></li>
+</ul></li>
+<li><em>finetuning</em>：微调，接用在大数据集上预训练好的模型，然后 在小数据集上进行微调
+<ul>
+<li>简单的迁移学习</li>
+<li>可以快速寻外效果不错针对目标类别的新模型</li>
+</ul></li>
+</ul>
+<h2 id="特征缩放">特征缩放</h2>
+<blockquote>
+<ul>
+<li>正则化是<strong>针对单个样本</strong>的，将每个样本缩放到单位范数</li>
+<li>归一化针对单个属性，需要用到所有样本在该属性上值</li>
+</ul>
+</blockquote>
+<h3 id="normalizaion"><em>Normalizaion</em></h3>
+<p>归一化/标准化：将特征/数据缩放到指定大致相同的数值区间</p>
+<ul>
+<li>某些算法要求数据、特征数值具有零均值、单位方差</li>
+<li>消除样本数据、特征之间的量纲/数量级影响
+<ul>
+<li>量级较大属性占主导地位</li>
+<li>降低迭代收敛速度：梯度下降时，梯度方向会偏离最小值， 学习率必须非常下，否则容易引起<strong>宽幅震荡</strong></li>
+<li>依赖样本距离的算法对数据量机敏感</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>决策树模型不需要归一化，归一化不会改变信息增益（比）， Gini指数变化</li>
+</ul>
+</blockquote>
+<h4 id="min-max-scaling"><em>Min-Max Scaling</em></h4>
+<p>线性函数归一化：对原始数据进行线性变换，映射到<span class="math inline">\([0, 1]\)</span>范围</p>
+<p><span class="math display">\[
+X_{norm} = \frac {X - X_{min}} {X_{max} - X_{min}}
+\]</span></p>
+<blockquote>
+<ul>
+<li>训练集、验证集、测试集都使用训练集归一化参数</li>
+</ul>
+</blockquote>
+<h4 id="z-score-scaling"><em>Z-Score Scaling</em></h4>
+<p>零均值归一化：将原始数据映射到均值为0，标准差为1的分布上</p>
+<p><span class="math display">\[
+Z = \frac {X - \mu} {\sigma}
+\]</span></p>
+<h3 id="regularization"><em>Regularization</em></h3>
+<p>正则化：将样本/特征<strong>某个范数</strong>缩放到单位1</p>
+<p><span class="math display">\[\begin{align*}
+\overrightarrow x_i &amp; = (
+    \frac {x_i^{(1)}} {L_p(\overrightarrow x_i)},
+    \frac {x_i^{(2)}} {L_p(\overrightarrow x_i)}, \cdots,
+    \frac {x_i^{(d)}} {L_p(\overrightarrow x_i)})^T \\
+L_p(\overrightarrow x_i) &amp; = (|x_i^{(1)}|^p + |x_i^{(2)}|^p + 
+    \cdots + |x_i^{(d)}|^p)^{1/p}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(L_p\)</span>：样本的<span class="math inline">\(L_p\)</span>范数</li>
+</ul>
+</blockquote>
+<ul>
+<li>使用内积、二次型、核方法计算洋房之间相似性时，正则化很 有用</li>
+</ul>
+<h2 id="特征编码">特征编码</h2>
+<h3 id="ordinal-encoding"><em>Ordinal Encoding</em></h3>
+<p>序号编码：使用一位序号编码类别</p>
+<ul>
+<li>一般用于处理类别间具有大小关系的数据
+<ul>
+<li>编码后依然保留了大小关系</li>
+</ul></li>
+</ul>
+<h3 id="one-hot-encoding"><em>One-hot Encoding</em></h3>
+<p>独热编码：采用N位状态位对N个可能取值进行编码</p>
+<ul>
+<li><p>一般用于处理类别间不具有大小关系的特征</p></li>
+<li>独热编码后<strong>特征表达能力变差</strong>，特征的预测能力被人为拆分 为多份
+<ul>
+<li>通常只有部分维度是对分类、预测有帮助，需要借助特征 选择降低维度</li>
+</ul></li>
+</ul>
+<h4 id="优点">优点</h4>
+<ul>
+<li>能处理非数值属性</li>
+<li>一定程度上扩充了特征</li>
+<li>编码后向量时稀疏向量：可以使用向量的稀疏存储节省空间</li>
+<li>能够处理缺失值：高维映射方法中增加维度表示缺失</li>
+</ul>
+<h4 id="缺点">缺点</h4>
+<ul>
+<li><p>k-NN算法：高维空间两点间距离难以有效衡量</p></li>
+<li><p>逻辑回归模型：参数数量随维度增加而增大，增加模型复杂度， 容易出现过拟合</p></li>
+<li>决策树模型
+<ul>
+<li>产生样本切分不平衡问题，切分增益非常小
+<ul>
+<li>每个特征只有少量样本是1，大量样本是0</li>
+<li>较小的拆分样本集占总体比例太小，增益乘以所占比例 之后几乎可以忽略</li>
+<li>较大拆分样本集的几乎就是原始样本集，增益几乎为0</li>
+</ul></li>
+<li>影响决策树的学习
+<ul>
+<li>决策树依赖数据统计信息，独热编码将数据切分到零散 小空间上，统计信息不准确、学习效果差</li>
+<li>独热编码后特征表达能力边人为拆分，与其他特征竞争 最优划分点失败，最终特征重要性会比实际值低</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="binary-encoding"><em>Binary Encoding</em></h3>
+<p>二进制编码：先用序号编码给每个类别赋予类型ID，然后将类别ID 对应二进制编码作为结果</p>
+<ul>
+<li>本质上利用二进制类别ID进行哈希映射，得到0/1特征向量</li>
+<li>特征维度小于独热编码，更节省存储空间</li>
+</ul>
+<h3 id="二元化">二元化</h3>
+<p>二元化：将数值型属性转换为布尔型属性</p>
+<ul>
+<li>通常用于假设属性取值分布为伯努利分布</li>
+<li>方法：对特征指定阈值，特征值大于等于阈值取1，否则取0
+<ul>
+<li>阈值是关键超参数，取值需要结合模型、具体任务选择</li>
+</ul></li>
+</ul>
+<h3 id="直方图化">直方图化</h3>
+<p>直方图化：将连续的数值属性转换为离散的数值点</p>
+<ul>
+<li>连续特征一般对预测结果影响不会突变，合理的离散化不会造成 他特征传递信息能力丢失
+<ul>
+<li>另外这也是线性模型的基本假设，若特征存在突变，线性 模型同样难以拟合</li>
+<li>此时应该离散化为多个分类特征，方便引入非线性</li>
+</ul></li>
+<li>一般<strong>等频分组</strong>而不是等距分组
+<ul>
+<li>避免离散化后特征仍然为长尾分布、大量特征集中在少量桶 中，对数据区分能力弱</li>
+<li>当然也可以根据经验划分区间、指定各组取值</li>
+</ul></li>
+</ul>
+<h4 id="优势">优势</h4>
+<ul>
+<li>模型更稳健
+<ul>
+<li>对异常值更稳健</li>
+</ul></li>
+<li>特征取值可以指定为整形
+<ul>
+<li>方便计算、存储</li>
+<li>尤其适合树类模型，方便节点划分</li>
+</ul></li>
+</ul>
+<h4 id="分桶">分桶</h4>
+<p>分桶：离散化/直方图化常用方法</p>
+<ul>
+<li>步骤
+<ul>
+<li>将样本在连续特征上取值从小到大排列</li>
+<li>从小到大依次选择分桶边界，其中分桶数量以及每个桶大小 都是超参数</li>
+<li>根据样本特征取值划分为相应桶内</li>
+</ul></li>
+<li>桶数量、边界超参需要人工指定
+<ul>
+<li>根据业务领域经验指定</li>
+<li>根据模型指定：根据具体任务训练分桶之后的数据集，通过 超参数搜索确定最优分桶数量、边界</li>
+</ul></li>
+<li>分桶经验、准则
+<ul>
+<li>桶小大必须足够小：桶内属性取值对样本标记影响在不大 范围内</li>
+<li>桶大小必须足够大：每个桶内有足够样本，否则随机性太大 ，不具有统计意义上说服力</li>
+<li><strong>等频分桶</strong>：桶内样本尽量分布均匀</li>
+</ul></li>
+</ul>
+<h3 id="离散化">离散化</h3>
+<p>离散化：将连续的数值属性转换为分类属性</p>
+<ul>
+<li>一般<strong>等频分组</strong>而不是等距分组
+<ul>
+<li>避免离散化后特征仍然为长尾分布、大量特征集中在少量桶 中，对数据区分能力弱</li>
+</ul></li>
+<li>模型使用离散特征、连续特征，是“海量离散特征+简单模型”、 “少量连续特征+复杂模型”的权衡
+<ul>
+<li><strong>海量离散特征+简单模型</strong>：难点在于特征工程，成功 经验可以推广，可以多人并行研究</li>
+<li><strong>少量连续特征+复杂模型</strong>：难点在于模型调优，不需要 复杂的特征工程</li>
+</ul></li>
+</ul>
+<h4 id="优势-1">优势</h4>
+<blockquote>
+<ul>
+<li>将连续特征分桶，每个桶对应不同0/1分类特征</li>
+</ul>
+</blockquote>
+<ul>
+<li>方便工业应用、实现
+<ul>
+<li>离散特征的增加、减少容易，方便模型迭代</li>
+<li>离散后特征为稀疏向量
+<ul>
+<li>內积速度快</li>
+<li>存储方便</li>
+<li>容易扩展</li>
+</ul></li>
+</ul></li>
+<li>模型更稳健
+<ul>
+<li>对异常数据鲁棒性更好、降低模型过拟合风险</li>
+<li>模型不再拟合特征具体值，而是拟合某个概念，能够对抗 数据扰动，更稳健</li>
+<li>需要拟合参数值更少，降低模型复杂度</li>
+</ul></li>
+<li>非线性提升模型表达能力
+<ul>
+<li>离散后得到多个特征、权重，相当于引入非线性，提升线性 模型表达能力</li>
+<li>方便引入交叉特征，提升模型表达能力</li>
+</ul></li>
+</ul>
+<h4 id="适合场景">适合场景</h4>
+<ul>
+<li>离散化特征更适合LR等线性模型
+<ul>
+<li>如下离散化优势：方便引入非线性等</li>
+<li>模型中所有特征都会被考虑，考虑细节、个体 （包括<span class="math inline">\(L_1\)</span>范数也是被考虑后剔除）</li>
+</ul></li>
+<li>GBDT等非线性模型则不适合
+<ul>
+<li>特征离散化后，由于抽样误差的存在，可能存在某些离散 特征对<strong>样本预测能力非常强</strong>，非线性模型容易给这些 特征更大权重，造成过拟合
+<ul>
+<li>如：刚好抽取的1000个样本中某离散特征取值为1者 全为正样本</li>
+</ul></li>
+<li>树模型每次使用一个特征划分节点，特征数量较多不利于 模型训练
+<ul>
+<li>若单个离散化特征预测能力不强，由于树深度限制， 只有少量特征被作为划分依据，模型可能不收敛、表达 能力更差</li>
+<li>若单个离散化特征预测能力强，连续特征也应该也有 较好效果</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="抽样技术">抽样技术</h2>
+<h3 id="hold-out"><em>Hold Out</em></h3>
+<p>旁置法：将样本集随机划分为训练集、测试集</p>
+<ul>
+<li>适合样本量较大的场合</li>
+</ul>
+<h3 id="n-fold-cross-validation"><em>N-fold Cross Validation</em></h3>
+<p>N折交叉验证：旁置法的扩展，将数据分成N份，每次将其中一份作为 测试样本集，其余N-1份作为训练样本集</p>
+<ul>
+<li>解决了留一法计算成本高的问题：重复次数少</li>
+<li>克服了旁置法中测试样本选取随机性的问题：每个样本都能作为 测试样本</li>
+<li>典型的“袋外验证”：袋内数据（训练样本）、袋外数据（测试 样本）分开</li>
+</ul>
+<h3 id="leave-one-out-cross-validation"><em>Leave-One-Out Cross Validation</em></h3>
+<p>留一法：对n个观测的样本集，每次选择一个观测作为测试样本集， 剩余n-1个观测值作为训练样本集，重复n次计算模型误差</p>
+<ul>
+<li>可以看作是N折交叉验证的特例</li>
+</ul>
+<h3 id="bootstrap">Bootstrap</h3>
+<p>重抽样自举：对样本量为n的样本集S，做k次有放回的重复抽样， 得到k个样本容量仍然未n的随机样本<span class="math inline">\(S_i(i=1,2,...,k)\)</span>，称为自举 样本（模拟多组独立样本）</p>
+<h3 id="样本评价">样本评价</h3>
+<p>抽样样本与整体的相似性</p>
+<p><span class="math display">\[\begin{align*}
+J(S, D) &amp; = \frac {1} {D} \sum_{k=1}^{r} J_{k}(S, D) \\
+J_{k}(S, D) &amp; = \sum_{j=1}^{N_k}(P_{Sj} - P_{Dj})
+    log \frac {P_{Sj}} {P_{Dj}} \\
+Q(s) &amp; = exp(-J)
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(D\)</span>：数据集，包含<span class="math inline">\(r\)</span>个属性</li>
+<li><span class="math inline">\(S\)</span>：抽样样本集</li>
+<li><span class="math inline">\(J_k=J(S, D)\)</span>：<em>Kullblack-Laible</em>信息量，数据集<span class="math inline">\(S\)</span>、<span class="math inline">\(D\)</span> 在属性<span class="math inline">\(k\)</span>上偏差程度，越小偏差越小</li>
+<li><span class="math inline">\(Q(S) \in [0, 1]\)</span>：抽样集<span class="math inline">\(S\)</span>在数据集<span class="math inline">\(D\)</span>中的质量，越大 样本集质量越高</li>
+</ul>
+</blockquote>
+<h3 id="说明">说明</h3>
+<ul>
+<li><p>若整体<span class="math inline">\(D\)</span>分布稀疏，容易得到<span class="math inline">\(S\)</span>在某些数据点观测值数为0， 得到<span class="math inline">\(I(S, D) \rightarrow infty\)</span></p>
+<ul>
+<li>可以把该点和附近的点频率进行合并，同时调整总体频率 分布</li>
+<li>过度合并会导致无法有效衡量数据集局部差异性</li>
+</ul></li>
+<li><p>对于连续型变量</p>
+<ul>
+<li>可以把变量进行适当分组：粗糙，不利于刻画数据集直接的 局部差异</li>
+<li>计算数据集各个取值点的非参估计，如核估计、最近邻估计 等，再在公式中用各自的非参估计代替相应频率，计算样本 质量</li>
+</ul></li>
+<li>数据包含多个指标时
+<ul>
+<li>可以用多个指标的平均样本质量衡量整体样本质量</li>
+<li>也可以根据指标重要程度，设置不同的权重</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/数据处理/" rel="tag"># 数据处理</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/math_algebra/abstract_algebra/operation/" rel="next" title="代数运算">
+                <i class="fa fa-chevron-left"></i> 代数运算
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_techniques/functions/func_distance/" rel="prev" title="距离函数">
+                距离函数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据说明"><span class="nav-number">1.</span> <span class="nav-text">数据说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据模式"><span class="nav-number">1.1.</span> <span class="nav-text">数据模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据问题"><span class="nav-number">2.</span> <span class="nav-text">数据问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缺失值"><span class="nav-number">2.1.</span> <span class="nav-text">缺失值</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#产生原因"><span class="nav-number">2.1.1.</span> <span class="nav-text">产生原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺失值影响"><span class="nav-number">2.1.2.</span> <span class="nav-text">缺失值影响</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#处理方法"><span class="nav-number">2.1.3.</span> <span class="nav-text">处理方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常值"><span class="nav-number">2.2.</span> <span class="nav-text">异常值</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#异常值检测"><span class="nav-number">2.2.1.</span> <span class="nav-text">异常值检测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异常值处理"><span class="nav-number">2.2.2.</span> <span class="nav-text">异常值处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类别不平衡问题"><span class="nav-number">2.3.</span> <span class="nav-text">类别不平衡问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图片数据扩充"><span class="nav-number">2.4.</span> <span class="nav-text">图片数据扩充</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征缩放"><span class="nav-number">3.</span> <span class="nav-text">特征缩放</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#normalizaion"><span class="nav-number">3.1.</span> <span class="nav-text">Normalizaion</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#min-max-scaling"><span class="nav-number">3.1.1.</span> <span class="nav-text">Min-Max Scaling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#z-score-scaling"><span class="nav-number">3.1.2.</span> <span class="nav-text">Z-Score Scaling</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#regularization"><span class="nav-number">3.2.</span> <span class="nav-text">Regularization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征编码"><span class="nav-number">4.</span> <span class="nav-text">特征编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ordinal-encoding"><span class="nav-number">4.1.</span> <span class="nav-text">Ordinal Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#one-hot-encoding"><span class="nav-number">4.2.</span> <span class="nav-text">One-hot Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优点"><span class="nav-number">4.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺点"><span class="nav-number">4.2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#binary-encoding"><span class="nav-number">4.3.</span> <span class="nav-text">Binary Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二元化"><span class="nav-number">4.4.</span> <span class="nav-text">二元化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直方图化"><span class="nav-number">4.5.</span> <span class="nav-text">直方图化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势"><span class="nav-number">4.5.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分桶"><span class="nav-number">4.5.2.</span> <span class="nav-text">分桶</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#离散化"><span class="nav-number">4.6.</span> <span class="nav-text">离散化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势-1"><span class="nav-number">4.6.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#适合场景"><span class="nav-number">4.6.2.</span> <span class="nav-text">适合场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抽样技术"><span class="nav-number">5.</span> <span class="nav-text">抽样技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hold-out"><span class="nav-number">5.1.</span> <span class="nav-text">Hold Out</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-fold-cross-validation"><span class="nav-number">5.2.</span> <span class="nav-text">N-fold Cross Validation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leave-one-out-cross-validation"><span class="nav-number">5.3.</span> <span class="nav-text">Leave-One-Out Cross Validation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bootstrap"><span class="nav-number">5.4.</span> <span class="nav-text">Bootstrap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#样本评价"><span class="nav-number">5.5.</span> <span class="nav-text">样本评价</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">5.6.</span> <span class="nav-text">说明</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

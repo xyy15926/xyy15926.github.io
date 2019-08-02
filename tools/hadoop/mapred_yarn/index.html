@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="MapReduce YARN">
+<meta name="keywords" content="工具,Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MapReduce YARN">
+<meta property="og:url" content="https://xyy15926.github.io/tools/hadoop/mapred_yarn/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="MapReduce YARN">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/yarn_procedure.png">
+<meta property="og:updated_time" content="2019-02-17T03:57:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MapReduce YARN">
+<meta name="twitter:description" content="MapReduce YARN">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/yarn_procedure.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/hadoop/mapred_yarn/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MapReduce YARN | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/hadoop/mapred_yarn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">MapReduce YARN
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:08" itemprop="dateModified" datetime="2019-02-17T11:57:08+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">MapReduce YARN</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="mapreduce1.0组件">MapReduce1.0组件</h2>
+<p>MapReduce1.0是指Hadoop1.0中组件，不是指MapReduce计算模型</p>
+<h3 id="优势">优势</h3>
+<ul>
+<li><p>方便扩展：能够运行在普通服务器构成的超大规模集群上</p></li>
+<li><p>IO瓶颈：通过将IO分散在大规模集群的各个节点上，可以提高 数据装载速度（大规模数据时只有部分数据可以状态在内存中）</p></li>
+</ul>
+<h3 id="局限">局限</h3>
+<ul>
+<li><p>MapReduce计算模型问题（参见<em>MapReduce计算模型</em>）</p></li>
+<li>数据处理延迟大
+<ul>
+<li>MapReduce作业在Map阶段、Reduce阶段执行过程中，需要 把中间结果存盘</li>
+<li>在MR作业间也需要通过磁盘实现作业间的数据交换</li>
+</ul></li>
+<li>资源利用率低
+<ul>
+<li>任务调度方法远未达到优化资源利用率的效果，给每个 TaskTracker分配任务的过程比较简单</li>
+</ul></li>
+</ul>
+<h3 id="资源分配">资源分配</h3>
+<ul>
+<li><p>每个TaskTracker拥有一定数量的slots，每个活动的Map、 Reduce任务占用一个slot</p></li>
+<li><p>JobTracker把任务分配给最靠近数据、有slot空闲TT</p></li>
+<li><p>不考虑Task运算量大小，所有Task视为相同，如果有某个TT 当前负载过高，会影响整体的执行</p></li>
+<li><p>也可以通过Speculative Execution模式，在多个slave上 启动同一个任务，只要其中有一个任务完成即可</p></li>
+</ul>
+<h3 id="执行引擎">执行引擎</h3>
+<p>MapReduce执行引擎运行在HDFS上</p>
+<ul>
+<li>JobTracker：运行在NameNode上
+<ul>
+<li>分解客户端提交的job为数据处理tasks，分发给集群里相关 节点上的TaskTacker运行</li>
+<li>发送任务原则：尽量把任务推送到离数据最近的节点上， 甚至推送到数据所在的节点上运行</li>
+</ul></li>
+<li>TaskTracker：运行在DataNode上
+<ul>
+<li>在节点上执行数据处理map、reduce tasks</li>
+<li>可能需要从其他DataNode中获取需要数据</li>
+</ul></li>
+</ul>
+<h2 id="mapredudce2.0">MapRedudce2.0</h2>
+<h3 id="shuffle">Shuffle</h3>
+<p>Shuffle：系统执行排序的过程</p>
+<ul>
+<li>为了确保MapReduce的输入是按键排序的</li>
+</ul>
+<h4 id="map端">Map端</h4>
+<p>每个Map Task都有一个内存缓冲区用于存储map输出结果，缓冲区 快满时需要将缓冲区数据以临时文件方式存放到磁盘中，整个Task 结束后再对此Map Task产生所有临时作合并，生成最终正式输出文件 ，等待Reduce Task拉数据</p>
+<h2 id="yarn">YARN</h2>
+<p>Yet Another Resource Negotiator，通用任务、集群资源分配框架 ，面向<em>Hadoop</em>的编程模型</p>
+<h3 id="yarn优势">YARN优势</h3>
+<h4 id="扩展性">扩展性</h4>
+<ul>
+<li><p>YARN将classic/MapReduce1中Jobtracker职能划分为多个独立 实体，改善了其面临的扩展瓶颈问题</p></li>
+<li><p>MapReduce现在只是批数据处理框架，是YARN支持的数据处理 框架的一种，独立于资源管理层，单独演化、改进</p></li>
+<li><p>YARN精妙的设计可以让不同的YARN应用在同一个集群上共存， 如一个MapReduce应用可以同时作为MPI应用运行，提高可管理性 、集群利用率</p></li>
+</ul>
+<h4 id="高效率">高效率</h4>
+<ul>
+<li><p>ResourceManager是单独的资源管理器</p></li>
+<li><p>Job Scheduler指负责作业调度</p></li>
+<li><p>根据资源预留要求、公平性、Service Level Agreement等标准 ，优化整个集群的资源利用</p></li>
+</ul>
+<h4 id="一般性">一般性</h4>
+<p>YARN是通用资源管理框架，在其上可以搭建多种数据处理框架</p>
+<ul>
+<li>批处理：MapReduce</li>
+<li>交互式处理：Tez</li>
+<li>迭代处理：Spark</li>
+<li>实时流处理：Storm</li>
+<li>图数据处理：GraphLab/Giraph</li>
+</ul>
+<h3 id="yarn中实体">YARN中实体</h3>
+<h4 id="resourcemanager">ResourceManager</h4>
+<p>RM物理上对应主节点，逻辑上管理集群上的资源使用，其功能由 Scheduler、ApplicationManager协调完成</p>
+<ul>
+<li><p>AppplicatonManager：接受、监控任务</p>
+<ul>
+<li><p>接受客户端提交的job</p></li>
+<li><p>判断启动该job的ApplicationMaster所需的资源</p></li>
+<li><p>监控ApplicationMaster的状态，并在失败时重启其</p></li>
+</ul></li>
+<li><p>Scheduler：分配资源、调度</p>
+<ul>
+<li><p>Schedular计算启动ApplicationManager提交的job的AM所需 资源，将资源封装成Container</p></li>
+<li><p>然后根据调度算法调度，在某个NM上启动job的AM</p></li>
+<li><p>不提供失败重启、监控功能</p></li>
+<li><p>Scheduler收到AM任务完成汇报之后，回收资源、向RM返回 执行结果</p></li>
+<li>调度算法可自定以，YARN根据不同场景提供
+<ul>
+<li>FIFO Scheduler</li>
+<li>Capacity Scheduler</li>
+<li>Fair Scheduler</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="nodemanager">NodeManager</h4>
+<p>NM物理上对应计算节点，逻辑上<strong>监控、管理</strong>当前节点资源</p>
+<ul>
+<li><p>仅仅抽象本节点资源（cpu、内存、磁盘、网络等），并且定时 像RM的Scheduler汇报</p></li>
+<li><p>接受并处理AM的tasks启动、停止等请求</p></li>
+</ul>
+<h4 id="applicationmaster">ApplicationMaster</h4>
+<p>AM管理集群上运行任务生命周期</p>
+<ul>
+<li><p>每个job都有一个专用的AM</p></li>
+<li><p>AM启动后会计算job所需资源，并向Scheduler申请资源</p></li>
+<li><p>AM运行在job运行期间，负责整个job执行过程的监控</p>
+<ul>
+<li>NM分配完任务container后，AM开始监控这些containers 、tasks状态</li>
+<li>任务失败则回收资源重新生成</li>
+<li>成功则释放资源</li>
+<li>任务执行完毕后回报Scheduler</li>
+</ul></li>
+</ul>
+<h4 id="containers">Containers</h4>
+<p>YARN为将来的资源隔离提出的框架，是一组资源的集合，每个task 对应一个container，只能在container中运行</p>
+<ul>
+<li><p>容器有特定的内存分配范围</p>
+<ul>
+<li><p>容器内存最小值即为内存分配单位，内存最大值也应该是 内存分配单位整数倍</p></li>
+<li><p>根据任务所需资源多少分配给容器整数倍内存单位，但是 如果任务所需内存大于容器内存最大值，运行时可能会报错</p></li>
+</ul></li>
+<li><p>由NM确保task使用的资源不会超过分配的资源</p></li>
+<li>注意
+<ul>
+<li>AM并不运行于container中，真正的task才运行在container</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/imgs/yarn_procedure.png" alt="yarn_procedure"><figcaption>yarn_procedure</figcaption>
+</figure>
+<h3 id="job运行过程">Job运行过程</h3>
+<h4 id="作业提交">作业提交</h4>
+<ul>
+<li>从RM获取新的作业ID</li>
+<li>作业客户端检查作业输出说明，计算输入分片（也可以配置 在集群中产生分片）</li>
+<li>将作业资源复制到HDFS</li>
+<li>调用RM上的<code>submitApplication</code>方法提交作业</li>
+</ul>
+<h4 id="作业初始化">作业初始化</h4>
+<ol type="1">
+<li>RM收到调用<code>submitApplication</code>消息后，将请求传递给 内部scheduler，scheduler分配一个container</li>
+<li>NM在RM的管理下在容器中启动应用程序的master进程AM， 其对作业进行初始化</li>
+<li>AM创建多个簿记对象用于接受任务进度、完成报告，保持 对作业进度的跟踪</li>
+<li>AM接受来自共享文件系统的在客户端计算的输入分片，对 每个分片创建一个map对象，及由<code>mapreduce.job.reduces</code> 属性确定的多个reduce任务对象</li>
+<li>AM根据任务大小决定如何运行job，如果在新容器中分配、 运行任务的开销大于并行运行时的开销，AM会在单个节点 上运行，这样的作业称为<em>uberized</em></li>
+<li>AM在任何tasks执行之前通过job的<code>setup</code>方法设置job的 <code>OutputCommiter</code>，建立作业输出目录</li>
+</ol>
+<h4 id="任务分配">任务分配</h4>
+<ol type="1">
+<li>若作业不适合作为<em>uber</em>任务运行，AM为该作业中所有map 、reduce任务向RM请求容器</li>
+<li>请求附着heart beat，包括每个map任务的数据本地化信息 ，特别是输入分片所在的主机、机架信息，scheduler据此 做调度决策
+<ul>
+<li>理想化情况下任务分配到数据本地化节点</li>
+<li>否则优先使用机架本地化</li>
+</ul></li>
+<li>请求同时指定了任务内存需求，YARN中的资源分为更细粒度 ，task可以请求最小到最大限制范围、任意最小值倍数的 内存容量</li>
+</ol>
+<h4 id="任务执行">任务执行</h4>
+<ol type="1">
+<li>当NM的scheduler为task分配了container，AM就可以通过 与NM通信启动容器</li>
+<li>任务由<code>YarnChild</code>执行，在执行任务之前，需要将任务 所需资源本地化，包括作业的配置、JAR文件、所有来自 分布式缓存的文件，然后运行map、reduce任务</li>
+<li>对于Streaming、Pipes程序，<code>YarnChild</code>启动Streaming、 Pipes进程，使用标准输入输出、socket与其通信（以 MapReduce1方式运行）</li>
+</ol>
+<h4 id="进度和状态更新">进度和状态更新</h4>
+<ol type="1">
+<li>task每3s通过<code>umbilical</code>接口向AM汇报进度、状态（包括 计数器），作为job的aggregate view</li>
+<li>客户端则默认没1s查询AM接受进度更新</li>
+</ol>
+<h4 id="作业完成">作业完成</h4>
+<ol type="1">
+<li>客户端每5s通过调用job的<code>waitForCompletion</code>检查作业 是否完成，也可以通过HTTP callback完成作业</li>
+<li>作业完成后AM和task容器清理工作状态，OutputCommiter 作业清理方法被调用</li>
+</ol>
+<p>#todo：这里逻辑有问题，要删</p>
+<h2 id="mapreduce计算模型">MapReduce计算模型</h2>
+<ul>
+<li>分布式系统，不像一般的数据库、文件系统，无法从上至下 、从头到尾进行求和等操作</li>
+<li>需要由分散的节点不断向一个点聚拢的计算过程，即分布式系统 上计算模型基本都是由map、reduce步骤组成</li>
+</ul>
+<h3 id="mapreduce">MapReduce</h3>
+<p>MapReduce每步数据处理流程包括两个阶段</p>
+<ul>
+<li><em>Map</em>：映射
+<ul>
+<li>map过程相互独立、各mapper见不通信，所以mapreduce 只适合处理<strong>独立计算</strong>的任务</li>
+</ul></li>
+<li><em>Reduce</em>：归一
+<ul>
+<li>reduce直接处理map的输出，reduce的<strong>键</strong>为map输出 <strong>值</strong></li>
+</ul></li>
+</ul>
+<h4 id="数据处理过程">数据处理过程</h4>
+<ul>
+<li><p>需要把任何计算任务转换为一系列MapReduce作业，然后依次 执行这些作业</p></li>
+<li><p>计算过程的各个步骤之间，各个作业输出的中间结果需要存盘， 然后才能被下个步骤使用（因为各个步骤之间没有明确流程）</p></li>
+<li><p>One Pass Computation：只需要一遍扫描处理的计算任务 MapReduce计算模型非常有效</p></li>
+<li><p>Multi Pass Computation：需要在数据上进行多遍扫描、处理 的计算任务，需要执行多个MapReduce作业计算任务，因为 多副本复制、磁盘存取，其效率不高</p></li>
+</ul>
+<h3 id="mapred-on-dag">Mapred on DAG</h3>
+<p>Directed Acyclic Graph；表示数据处理流程的有向无环图</p>
+<ul>
+<li>顶点：数据处理任务，反映一定的业务逻辑，即如何对数据进行 转换和分析</li>
+<li>边：数据在不同的顶点间的传递</li>
+</ul>
+<h3 id="比较">比较</h3>
+<table>
+<thead>
+<tr class="header">
+<th>比较方面</th>
+<th>MapReduce</th>
+<th>DAG</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>操作原语</td>
+<td>map、reduce</td>
+<td>较多</td>
+</tr>
+<tr class="even">
+<td>抽象层次</td>
+<td>低</td>
+<td>高</td>
+</tr>
+<tr class="odd">
+<td>表达能力</td>
+<td>差</td>
+<td>强</td>
+</tr>
+<tr class="even">
+<td>易用性</td>
+<td>要手动处理job之间依赖关系，易用性差</td>
+<td>DAG本身体现数据处理流程</td>
+</tr>
+<tr class="odd">
+<td>可读性</td>
+<td>处理逻辑隐藏在代码中，没有整体逻辑</td>
+<td>较好</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>正是MapReduce提供操作原语少、抽象层次低，所以其表达能力 差，同时需要用户处理更多的逻辑，易用性、可读性差</p>
+<ul>
+<li><p>复杂数据处理任务，如：机器学习算法、SQL连接查询很难 表示用MapReduce计算默认表达</p></li>
+<li><p>操作原语多并不是DAG本身的要求，DAG本身只是有向无环图， 只是使用DAG计算模型可以提供更多的操作原语</p></li>
+</ul></li>
+<li><p>由于DAG的表达能力强于MapReduce，对某些处理逻辑，DAG 所需作业数目小于MapReduce，消除不必要的任务</p>
+<ul>
+<li><p>DAG显著提高了数据处理效率，对小规模、低延迟和大规模、 高吞吐量的负载均有效</p></li>
+<li><p>MapReduce需要通过把中间结果存盘实现同步，而DAG整合 部分MapReduce作业，减少磁盘I/O</p></li>
+<li><p>reduce任务需要等待map任务全部完成才能继续，DAG优化 数据处理流程，减少同步Barrier</p></li>
+</ul></li>
+<li><p>DAG部分计算模型也由map、reduce任务构成，只是不像传统 MapReduce计算模型中map、reduce必须成对出现</p>
+<ul>
+<li><p>或者说DAG只有一次map任务（扫描数据时），其余都是 reduce任务？</p></li>
+<li><p>从MapReduce配置也可以看出，MapReduce可以选择基于 <code>yarn</code>或<code>yarn-tez</code></p></li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/tools/hadoop/hdp_tools/" rel="next" title="Zookeeper">
+                <i class="fa fa-chevron-left"></i> Zookeeper
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/hadoop/hdp_family/" rel="prev" title="Hadoop概述">
+                Hadoop概述 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#mapreduce1.0组件"><span class="nav-number">1.</span> <span class="nav-text">MapReduce1.0组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优势"><span class="nav-number">1.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局限"><span class="nav-number">1.2.</span> <span class="nav-text">局限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源分配"><span class="nav-number">1.3.</span> <span class="nav-text">资源分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行引擎"><span class="nav-number">1.4.</span> <span class="nav-text">执行引擎</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mapredudce2.0"><span class="nav-number">2.</span> <span class="nav-text">MapRedudce2.0</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shuffle"><span class="nav-number">2.1.</span> <span class="nav-text">Shuffle</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#map端"><span class="nav-number">2.1.1.</span> <span class="nav-text">Map端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yarn"><span class="nav-number">3.</span> <span class="nav-text">YARN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yarn优势"><span class="nav-number">3.1.</span> <span class="nav-text">YARN优势</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展性"><span class="nav-number">3.1.1.</span> <span class="nav-text">扩展性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高效率"><span class="nav-number">3.1.2.</span> <span class="nav-text">高效率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一般性"><span class="nav-number">3.1.3.</span> <span class="nav-text">一般性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yarn中实体"><span class="nav-number">3.2.</span> <span class="nav-text">YARN中实体</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#resourcemanager"><span class="nav-number">3.2.1.</span> <span class="nav-text">ResourceManager</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nodemanager"><span class="nav-number">3.2.2.</span> <span class="nav-text">NodeManager</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#applicationmaster"><span class="nav-number">3.2.3.</span> <span class="nav-text">ApplicationMaster</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#containers"><span class="nav-number">3.2.4.</span> <span class="nav-text">Containers</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#job运行过程"><span class="nav-number">3.3.</span> <span class="nav-text">Job运行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#作业提交"><span class="nav-number">3.3.1.</span> <span class="nav-text">作业提交</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#作业初始化"><span class="nav-number">3.3.2.</span> <span class="nav-text">作业初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务分配"><span class="nav-number">3.3.3.</span> <span class="nav-text">任务分配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务执行"><span class="nav-number">3.3.4.</span> <span class="nav-text">任务执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进度和状态更新"><span class="nav-number">3.3.5.</span> <span class="nav-text">进度和状态更新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#作业完成"><span class="nav-number">3.3.6.</span> <span class="nav-text">作业完成</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mapreduce计算模型"><span class="nav-number">4.</span> <span class="nav-text">MapReduce计算模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mapreduce"><span class="nav-number">4.1.</span> <span class="nav-text">MapReduce</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据处理过程"><span class="nav-number">4.1.1.</span> <span class="nav-text">数据处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mapred-on-dag"><span class="nav-number">4.2.</span> <span class="nav-text">Mapred on DAG</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比较"><span class="nav-number">4.3.</span> <span class="nav-text">比较</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

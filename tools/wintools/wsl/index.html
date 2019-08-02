@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Windows Linux Subsystem">
+<meta name="keywords" content="工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows Linux Subsystem">
+<meta property="og:url" content="https://xyy15926.github.io/tools/wintools/wsl/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Windows Linux Subsystem">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/wsl_architecture.png">
+<meta property="og:updated_time" content="2019-02-20T16:02:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows Linux Subsystem">
+<meta name="twitter:description" content="Windows Linux Subsystem">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/wsl_architecture.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/wintools/wsl/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Windows Linux Subsystem | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/wintools/wsl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Windows Linux Subsystem
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-21 00:02:42" itemprop="dateModified" datetime="2019-02-21T00:02:42+08:00">2019-02-21</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Windows Linux Subsystem</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="说明">说明</h2>
+<p>WSL是一个兼容层，类似反过来的Wine，但更底层</p>
+<ul>
+<li><p>Linux、Windows程序不兼容，是因为二者内核提供的接口不同</p>
+<ul>
+<li>如<code>ls/dir</code>命令
+<ul>
+<li>在Linux下调用<code>getdents</code>内核调用</li>
+<li>在Windows下调用<code>NtQueryDirectoryFile</code>内核调用</li>
+</ul></li>
+</ul></li>
+<li>WSL提供Linux内核接口，并转换为NT内核接口
+<ul>
+<li>在WSL中执行<code>ls</code>仍然调用<code>getdents</code></li>
+<li>WSL收到请求，将系统调用转换为NT内核接口 <code>NTQueryDirectoryFile</code></li>
+<li>NT内核收到WSL请求，返回执行结果</li>
+<li>WSL将结果包装后返回</li>
+</ul></li>
+<li><p>毕相较于真正Linux系统仍然有不足</p>
+<ul>
+<li><em>Docker</em>等涉及未实现的内核特性软件如法使用</li>
+<li><em>Raw socket</em>相关相关操作容易出错</li>
+<li><em>I/O</em>性能相对孱弱</li>
+</ul></li>
+</ul>
+<h3 id="cygwin对比">Cygwin对比</h3>
+<figure>
+<img src="/imgs/wsl_architecture.png" alt="wsl_architecture"><figcaption>wsl_architecture</figcaption>
+</figure>
+<ul>
+<li><p>Cygwin提供了完整的POSIX系统调用API（以运行库 <code>Cygwin*.dll</code>形式提供，但是仍然工作在<em>User Mode</em></p>
+<ul>
+<li><p>Cygwin将POSIX系统调用转换为Win32 API（因为其架设在 Win32子系统上），很多内核操作（如：<code>fork</code>）受限于 Win32实现</p></li>
+<li><p>Linux应用程序必须链接到<code>Cynwin*.dll</code>，需要修改源码 重新编译后才能执行，这样应用程序才不会直接请求内核， 而是调用Cygwin运行库，且编译出的可执行文件为 Win32 PE格式封装，只能在Windows下执行</p></li>
+</ul></li>
+<li><p>WSL中Linux应用程序进程被包裹在<em>Pico Process</em>中，其发出的 所有系统调用会被直接送往<em>Kernel Mode</em>中的 <code>lxcore.sys</code>、<code>lxss.sys</code></p>
+<ul>
+<li><p>WSL将POSIX系统调用转换为更底层的NP API调用（WSL和 Win32平行，直接架设在NT内核上）</p></li>
+<li><p>可以直接执行ELF格式封装的Linux可执行程序</p></li>
+</ul></li>
+</ul>
+<h3 id="启用">启用</h3>
+<ul>
+<li>控制面板 -&gt;</li>
+<li>程序和功能 -&gt;</li>
+<li>启用或关闭windows功能 -&gt;</li>
+<li>适用于Linux的Windows子系统</li>
+</ul>
+<h3 id="其他">其他</h3>
+<ul>
+<li><p>子系统可以替换为其他非官方支持发行版，如 <a href="https://wiki.archlinux.org/index.php/Install_on_WSL_(简体中文)" target="_blank" rel="noopener">archlinux</a></p></li>
+<li><p>WSL可以可以通过X Server执行GUI应用程序 <a href="https://news.ycombinator.com/item?id=13603451" class="uri" target="_blank" rel="noopener">https://news.ycombinator.com/item?id=13603451</a></p></li>
+<li>WSl官博
+<ul>
+<li><a href="https://blogs.msdn.microsoft.com/wsl/" class="uri" target="_blank" rel="noopener">https://blogs.msdn.microsoft.com/wsl/</a></li>
+<li><a href="https://blogs.msdn.microsoft.com/commandline/tag/wsl/" class="uri" target="_blank" rel="noopener">https://blogs.msdn.microsoft.com/commandline/tag/wsl/</a></li>
+</ul></li>
+</ul>
+<h2 id="使用">使用</h2>
+<h3 id="进入wsl">进入WSL</h3>
+<p>除在图形界面中点击图标，以默认参数启动，还可以在terminal （cmd/powershell等）自定义进入WSL参数</p>
+<ul>
+<li><code>wsl.exe</code>：打开<strong>默认</strong>发行版中默认shell</li>
+<li><code>distroname.exe</code>：打开<strong>指定</strong>发行版中默认shell</li>
+<li><code>bash.exe</code>：打开<strong>默认</strong>发行版中bash shell</li>
+</ul>
+<blockquote>
+<ul>
+<li>这些应用程序默认在<code>path</code>中，可以直接执行</li>
+</ul>
+</blockquote>
+<h3 id="版本管理">版本管理</h3>
+<p><code>wslconfig.exe</code>可以用于管理多个子系统的发行版</p>
+<h3 id="wslwindows互操作">WSL、Windows互操作</h3>
+<h4 id="文件">文件</h4>
+<ul>
+<li><p>Windows所有盘符挂载在WSL中<code>/mnt</code>目录下</p></li>
+<li><p>WSL中所有数据存放在<code>%HOME%/AppData/Local/Packages/{linux发行包名}/LocalState/rootfs</code>中</p>
+<ul>
+<li>不要在Windows下直接修改，造成权限错误</li>
+</ul></li>
+</ul>
+<h4 id="命令">命令</h4>
+<ul>
+<li><p>在cmd中直接调用WSL命令 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">PS&gt;</span><span class="bash"> wsl [-e] ls -al</span></span><br><span class="line">	// wsl带参数执行</span><br></pre></td></tr></table></figure></p></li>
+<li><p>在WSL中调用Windows命令行程序（在<code>$PATH</code>中） <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">which</span> ipconfig.exe</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ipconfig.exe</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>在WSL中启动Windows应用（在<code>$PATH</code>中） <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> notepad.exe</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>通过pipes通信 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat foo.txt | clip.exe</span></span><br><span class="line"><span class="meta">PS&gt;</span><span class="bash"> ipconfig | wsl grep IPv4</span></span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h4 id="端口环境变量">端口、环境变量</h4>
+<ul>
+<li>WSL与Windows共享端口（NT内核？）</li>
+<li>WSL继承Windows的部分环境变量，如：<code>PATH</code></li>
+</ul>
+<h3 id="terminal">Terminal</h3>
+<p>终端模拟器推荐</p>
+<ul>
+<li><p><a href="https://github.com/goreliu/wsl-terminal" target="_blank" rel="noopener">wsl-terminal</a>： 专为WSL开发的终端模拟器，基于<em>mintty</em>、<em>wslbridge</em>，稳定 易用</p></li>
+<li><p><a href="https://conemu.github.io/" target="_blank" rel="noopener">ConEmu</a>：老牌终端模拟器， 功能强大</p></li>
+<li><p><a href="https://hyper.is/" target="_blank" rel="noopener">Hyper</a>：基于Electron的跨平台 终端模拟器</p></li>
+</ul>
+<h2 id="其他问题">其他问题</h2>
+<h3 id="文件权限问题">文件权限问题</h3>
+<p>在WSL中，windows实现了两种文件系统用于支持不同使用场景</p>
+<h4 id="volfs">VolFs</h4>
+<p>着力于在windows文件系统上提供完整的linux文件系统特性，通过 各种手段实现了对<em>Inodes</em>、<em>Directory Entries</em>、 <em>File Objects</em>、<em>File Descriptors</em>、<em>Special File Types</em> 的支持</p>
+<ul>
+<li><p>为支持<em>Inodes</em>，VolFS会把文件权限等信息保存在 <em>NTFS Extended Attributes</em>中</p>
+<ul>
+<li>在Windows中新建的文件缺少此扩展参数，有些编辑器也会 在保存文件是去掉这些附加参数</li>
+<li>所以不要在Windows中修改WSL文件，否则VolFs无法正确 获得文件metadata</li>
+</ul></li>
+<li><p>WSL中<code>/</code>就是VolFs文件系统</p></li>
+</ul>
+<blockquote>
+<ul>
+<li><a href="https://blogs.msdn.microsoft.com/wsl/2016/06/15/wsl-file-system-support/" class="uri" target="_blank" rel="noopener">https://blogs.msdn.microsoft.com/wsl/2016/06/15/wsl-file-system-support/</a></li>
+<li><a href="https://blogs.msdn.microsoft.com/commandline/2018/01/12/chmod-chown-wsl-improvements/" class="uri" target="_blank" rel="noopener">https://blogs.msdn.microsoft.com/commandline/2018/01/12/chmod-chown-wsl-improvements/</a></li>
+</ul>
+</blockquote>
+<h4 id="drvfs">DrvFs</h4>
+<p>着力提供于Windows系统的互操作性，从Windows的文件权限（即 文件-&gt;属性-&gt;安全选项卡中的权限）推断出文件对应的Linux权限</p>
+<ul>
+<li><p>所有windows盘符挂在在WSL中<code>/mnt</code>是都使用DrsFs文件系统</p></li>
+<li><p>由于DrvFs文件权限继承机制很微妙，结果就是所有文件权限 都是<strong>0777</strong></p>
+<ul>
+<li>所以<code>ls</code>结果都是绿色的</li>
+<li>早期DrvFs不支持metadata，在<em>Build 17063</em>之后支持 文件写入metadata，但是需要重新挂载磁盘</li>
+</ul></li>
+</ul>
+<h5 id="metadata支持">Metadata支持</h5>
+<ul>
+<li><p>手动启用DrvFs metadata支持</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo umount /mnt/e</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t drvfs E: /mnt/e -o metadata</span></span><br><span class="line">	// 此时虽然支持文件权限修改，但默认权限仍然是*0777*</span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo mount -t drvfs E: /mnt/e -o metadata,uid=1000,gid=1000,<span class="built_in">umask</span>=22,fmask=111</span></span><br><span class="line">	// 此时磁盘中默认文件权限为*0644*</span><br></pre></td></tr></table></figure></li>
+<li><p>通过<a href="https://blogs.msdn.microsoft.com/commandline/2018/02/07/automatically-configuring-wsl/" target="_blank" rel="noopener">Automatically Configuring WSL</a> 实现自动挂载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># `/etc/wsl.conf`</span><br><span class="line">[automount]</span><br><span class="line">enable = true</span><br><span class="line">root = /mnt/</span><br><span class="line">options = &quot;metadata,umask=023,fmask=001&quot;</span><br><span class="line">mountFsTab = true</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果需要给不同盘符设置不同挂载参数，需要<strong>再</strong>修改 <code>/etc/fstab</code>（否则<em>0644</em>权限无法执行windows命令） <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">E: /mnt/e drvfs rw,relatime,uid=1000,gid=1000,metadata,umask=22,fmask=111 0 0</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>注意：文件夹<code>x</code>权限表示是否能经过，注意<code>umask/dmask</code>设置</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/tools/wintools/vscode/" rel="next" title="VSCode基础">
+                <i class="fa fa-chevron-left"></i> VSCode基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/vim/vimscripts/" rel="prev" title="vimscripts函数编程">
+                vimscripts函数编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cygwin对比"><span class="nav-number">1.1.</span> <span class="nav-text">Cygwin对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启用"><span class="nav-number">1.2.</span> <span class="nav-text">启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">1.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进入wsl"><span class="nav-number">2.1.</span> <span class="nav-text">进入WSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#版本管理"><span class="nav-number">2.2.</span> <span class="nav-text">版本管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wslwindows互操作"><span class="nav-number">2.3.</span> <span class="nav-text">WSL、Windows互操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件"><span class="nav-number">2.3.1.</span> <span class="nav-text">文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#命令"><span class="nav-number">2.3.2.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#端口环境变量"><span class="nav-number">2.3.3.</span> <span class="nav-text">端口、环境变量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#terminal"><span class="nav-number">2.4.</span> <span class="nav-text">Terminal</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他问题"><span class="nav-number">3.</span> <span class="nav-text">其他问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件权限问题"><span class="nav-number">3.1.</span> <span class="nav-text">文件权限问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volfs"><span class="nav-number">3.1.1.</span> <span class="nav-text">VolFs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#drvfs"><span class="nav-number">3.1.2.</span> <span class="nav-text">DrvFs</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#metadata支持"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">Metadata支持</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

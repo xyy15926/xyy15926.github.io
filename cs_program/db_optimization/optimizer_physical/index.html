@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="物理查询优化">
+<meta name="keywords" content="程序,数据库优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="物理查询优化">
+<meta property="og:url" content="https://xyy15926.github.io/cs_program/db_optimization/optimizer_physical/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="物理查询优化">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/db_hash_join.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/left_deep_tree_bushy_tree.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/left_deep_tree_bushy_tree.png">
+<meta property="og:updated_time" content="2019-05-25T11:55:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="物理查询优化">
+<meta name="twitter:description" content="物理查询优化">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/db_hash_join.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_program/db_optimization/optimizer_physical/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>物理查询优化 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_program/db_optimization/optimizer_physical/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">物理查询优化
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-25 19:55:48" itemprop="dateCreated datePublished" datetime="2019-05-25T19:55:48+08:00">2019-05-25</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/程序/" itemprop="url" rel="index"><span itemprop="name">程序</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/程序/数据库优化/" itemprop="url" rel="index"><span itemprop="name">数据库优化</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">物理查询优化</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="查询代价估算">查询代价估算</h2>
+<h3 id="代价模型">代价模型</h3>
+<p>代价估计模型：基于CPU代价、IO代价</p>
+<p><span class="math display">\[\begin{align*}
+总代价 &amp;= IO代价 + CPU代价 \\
+COST &amp;= P * CPUTimePerPage + W * T
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(P\)</span>：计划访问的页面数</li>
+<li><span class="math inline">\(CPUTimePerPage\)</span>：读取每个页面的时间花费</li>
+<li><span class="math inline">\(T\)</span>：访问的元组数，索引扫描应包括索引读取花费 &gt; - 反映CPU代价，因为访问页面上的元组需要解析元组结构， 消耗CPU</li>
+<li><span class="math inline">\(W\)</span>：<em>selectivity</em>，选择率/权重因子，表明IO、CPU的相关性</li>
+</ul>
+</blockquote>
+<h3 id="selectivity"><em>Selectivity</em></h3>
+<p>选择率：在关系R中，满足<strong>条件</strong><code>A &lt;cond_op&gt; a</code>的元组数R和 所有元组数N的比值</p>
+<ul>
+<li>在CBO中占有重要地位</li>
+<li>其精确程度直接影响最优计划的选择</li>
+</ul>
+<h4 id="估计方法">估计方法</h4>
+<ul>
+<li><p><em>Non-Parametric Method</em>：非参方法，使用ad-hoc数据结构、 直方图维护属性值分布</p></li>
+<li><p><em>Parametric Method</em>：参数方法，使用预先估计的分布函数 逼近真实分布</p></li>
+<li><p><em>Curve Fitting</em>：曲线拟合法，使用多项式函数、最小标准差 逼近属性值分布</p></li>
+<li><em>Sampling</em>：抽样法，从数据库中抽取部分元组，针对样本进行 查询，收集统计数据
+<ul>
+<li>需要足够多样本被测试才能达到足够精度</li>
+</ul></li>
+<li><p>综合法</p></li>
+</ul>
+<h2 id="单表扫描算法">单表扫描算法</h2>
+<h2 id="索引">索引</h2>
+<h2 id="两表联接算法">两表联接算法</h2>
+<p>#todo</p>
+<h3 id="nested-loop"><em>Nested Loop</em></h3>
+<p>嵌套循环联接算法：扫描外表，读取记录根据<code>join</code>字段上的 <strong>索引</strong>去内表中查询</p>
+<ul>
+<li>适合场景
+<ul>
+<li>外表记录较少（&lt;1w）</li>
+<li>内表已经创建索引、性能较好</li>
+<li>inner、left outer、left semi、left antisemi join</li>
+</ul></li>
+</ul>
+<h4 id="嵌套循环联接算法">嵌套循环联接算法</h4>
+<ul>
+<li>搜索时扫描整个表、索引</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> each row R1 in the outer table:</span><br><span class="line">	<span class="keyword">for</span> each row R2 in the inner table:</span><br><span class="line">		<span class="keyword">if</span> R1 join with R2:</span><br><span class="line">			<span class="keyword">return</span> (R1, R2)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>外部循环逐行消耗外部输入表，当其数据量很大时可以并行扫描 内表</li>
+<li>内表被外表驱动：内部循环为每个外部行执行，在内表中搜索 匹配行</li>
+</ul>
+</blockquote>
+<h4 id="基于块嵌套循环联接算法">基于块嵌套循环联接算法</h4>
+<ul>
+<li>每次IO申请以“块”为单位尽量读入多个页面</li>
+<li>改进获取元组的方式</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> each chunk c1 of t1</span><br><span class="line">	<span class="keyword">if</span> c1 <span class="keyword">not</span> in memory:</span><br><span class="line">		read chunk c1 to memory</span><br><span class="line">	<span class="keyword">for</span> each row r1 in chunk c1:</span><br><span class="line">		<span class="keyword">for</span> each chunk c2 of t2:</span><br><span class="line">			<span class="keyword">if</span> c2 <span class="keyword">not</span> in memory:</span><br><span class="line">				read chunk c2 into memory</span><br><span class="line">			<span class="keyword">for</span> each row r2 in c2:</span><br><span class="line">				<span class="keyword">if</span> r1 join with r2:</span><br><span class="line">					<span class="keyword">return</span>(R1, R2)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>内存循环最后一个块使用后作为下次循环循环使用的第一个块 可以节省一次IO</li>
+</ul>
+</blockquote>
+<h4 id="索引嵌套循环联接算法">索引嵌套循环联接算法</h4>
+<ul>
+<li>索引嵌套循环连结：在内表中搜索时使用索引，可以加快联接 速度</li>
+<li>临时索引嵌套循环连结：为查询临时生成索引作为查询计划的 一部分，查询完成后立刻将索引破坏</li>
+</ul>
+<h3 id="sortmerge-join"><em>(Sort)Merge Join</em></h3>
+<p>排序归并联接算法</p>
+<ul>
+<li>适合场景
+<ul>
+<li>联接字段已经排序，如B+树索引</li>
+<li>inner、left outer、left semi、left anti semi、 right outer、right semi、right anti semi join、union</li>
+<li>等值、非等值联接，除<code>!=/&lt;&gt;</code></li>
+</ul></li>
+</ul>
+<h4 id="算法">算法</h4>
+<ul>
+<li>确保两个关联表都是按照关联字段进行排序
+<ul>
+<li>若关联字段已经有排序一致的可用索引，可以利用索引直接 进行merge join操作</li>
+<li>否则先对关联字段进行排序，表过大无法一次载入内存时 需要分块载入</li>
+</ul></li>
+<li>从每个表分别取记录开始匹配（升序）
+<ul>
+<li>若符合关联条件，放入结果集</li>
+<li>否则丢关联字段较小记录，取对应表中下条记录继续 匹配，直到整个循环结束</li>
+<li>对于多对join，通常需要使用临时表进行操作 #todo</li>
+</ul></li>
+</ul>
+<h3 id="hash-join"><em>Hash Join</em></h3>
+<p>哈希联接：利用Hash Match联接</p>
+<ul>
+<li><p>HJ处理代价非常高，是服务器内存、CPU头号杀手，需要对数据 进行分区时，还会造成大量异步磁盘I/O，避免大数据的HJ， 尽量转化为高效的SMJ、NLJ</p>
+<ul>
+<li>表结构设计：冗余字段</li>
+<li>索引调整设计</li>
+<li>SQL优化</li>
+<li>冗余表：静态表存储统计结果</li>
+</ul></li>
+<li><p>类似任何hash算法，内存小、数据偏斜严重时，散列冲突会比较 严重，此时应该考虑使用NIJ</p></li>
+<li>适合场景
+<ul>
+<li>两表数据量相差非常大</li>
+<li>对CPU消耗明显，需要CPU资源充足</li>
+<li>只适合（不）等值查询</li>
+</ul></li>
+</ul>
+<h4 id="in-memory-hash-join"><em>In-Memory Hash Join</em></h4>
+<figure>
+<img src="/imgs/db_hash_join.png" alt="db_hash_join"><figcaption>db_hash_join</figcaption>
+</figure>
+<h5 id="build阶段"><em>build</em>阶段</h5>
+<p>以操作涉及字段为hash key构造hash表</p>
+<ul>
+<li><p>从构造输入表中取记录，使用hash函数生成hash值</p></li>
+<li><p>hash值对应hash表中的buckets，若一个hash值对应多个桶， 则使用链表将联接桶</p></li>
+<li><p>构造输入表处理完毕之后，其中记录都被桶关联</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>build表构建的hash表需要频繁访问，最好能全部加载在内存中 ，因此尽量选择小表，避免使用GHJ</li>
+</ul>
+</blockquote>
+<h5 id="probe阶段"><em>probe</em>阶段</h5>
+<ul>
+<li><p>从探测输入中取记录，使用同样hash函数生成hash值</p></li>
+<li><p>根据hash值，在构造阶段构造的hash表中搜索对应桶</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>为避免冲突，bucket可能会联接到其他bucket，探测操作 会搜索整个冲突链上的buckets查找匹配记录</li>
+</ul>
+</blockquote>
+<h5 id="具体操作">具体操作</h5>
+<p>以下操作内部实现其实都是hash join，只是对应算符不同而已</p>
+<ul>
+<li><p>join操作</p>
+<ul>
+<li>使用join字段计算hash值</li>
+<li>使用<strong>顶端输入</strong>构造hash表，<strong>底端输入</strong>进行探测</li>
+<li>按照联接类型规定的模式输出（不）匹配项</li>
+<li>若多个联接使用相同的联接列，这些操作将分组为一个 哈希组</li>
+</ul></li>
+<li><p>grouby操作、unique操作</p>
+<ul>
+<li>使用groupby字段、所有select字段计算hash值</li>
+<li>使用输入构造hash表，删除重复项、计算聚合表达式</li>
+<li>扫描hash表输出所有项</li>
+</ul></li>
+<li><p>union操作、需要去除重复记录操作</p>
+<ul>
+<li>所有select字段计算hash值</li>
+<li>第一个输入构建hash表，删除重复项</li>
+<li>第二个输入进行探测
+<ul>
+<li>若第二个输入没有重复项，直接返回没有匹配的项， 扫描hash表返回所有项</li>
+<li>若第二个输入有重复项，则应该需要继续构建hash表， 最后统一输出整个hash表</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="grace-hash-join"><em>Grace Hash Join</em></h4>
+<p><em>grace hash join</em>：磁盘分块HJ</p>
+<ul>
+<li>将两表按照相同hash函数分配至不同分片中
+<ul>
+<li>在磁盘上为各分片、表建立相应文件</li>
+<li>对表输入计算哈希值，根据哈希值写入分片、表对应文件</li>
+</ul></li>
+<li>再对不同分片进行普通<em>in-memory hash join</em>
+<ul>
+<li>若分片依然不能全部加载至内存，可以继续使用 <em>grace hash join</em></li>
+</ul></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">grace_hash_join(t1, t2):</span><br><span class="line">	<span class="comment">// Grace Hash Join实现</span></span><br><span class="line">	<span class="comment">// 输入：待join表t1、t2</span></span><br><span class="line">	<span class="keyword">for</span> row in t1:</span><br><span class="line">		hash_val = hash_func(row)</span><br><span class="line">		N = hash_val % PART_COUNT</span><br><span class="line">		write row to file t1_N</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> row in t2:</span><br><span class="line">		hash_val = hash_func(row)</span><br><span class="line">		N = hash_val % PART_COUNT</span><br><span class="line">		write row to file t2_N</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i in range(<span class="number">0</span>, PART_COUNT):</span><br><span class="line">		join(t1_i, t2_i)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>分片数量<code>PART_COUNT</code>决定磁盘IO效率
+<ul>
+<li>分片数量过小：无法起到分治效果，分片仍然需要进行 <em>grace hash join</em>，降低效率</li>
+<li>分片数量过大：磁盘是块设备，每次刷盘刷一定数量块才 高效，频繁刷盘不经济</li>
+<li>即分片数量在保证刷盘经济的情况下，越大越好，这需要 优化器根据表统计信息确定</li>
+</ul></li>
+<li>特点
+<ul>
+<li>有磁盘I/O代价，会降低效率</li>
+<li>适合参与join表非常大，无法同时载入内存中</li>
+</ul></li>
+</ul>
+<h4 id="hybrid-hash-join"><em>Hybrid Hash Join</em></h4>
+<p><em>hybrid hash join</em>：GHJ基础上结合IMHJ的改进</p>
+<ul>
+<li>对build表分片过程中，尽量多把完整分片保留在内存中</li>
+<li>对probe表分片时，对应分片可以直接进行probe操作</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>hybrid hash join</em>有时也被直接视为<em>grace hash join</em>， 不做区分</li>
+</ul>
+</blockquote>
+<h3 id="比较">比较</h3>
+<ul>
+<li><p>资源消耗</p>
+<ul>
+<li>HJ：CPU计算、内存（磁盘）中创建临时hash表</li>
+<li>SMJ：磁盘I/O（扫描表、索引）</li>
+<li>NLJ：磁盘I/O</li>
+</ul></li>
+<li><p>性能</p>
+<ul>
+<li><p>通常情况：HJ &gt; NPJ &lt;&gt; SMJ</p>
+<ul>
+<li>全表扫描比索引范围扫描再进行表访问更可取时，SMJ 优于NPJ？？？</li>
+<li>而表特别小、特别大时，全表扫描优于索引范围扫描</li>
+</ul></li>
+<li><p>但若关联字段已排序，SMJ性能最优</p></li>
+</ul></li>
+<li><p>首条搜索结果</p>
+<ul>
+<li>NPJ能快速返回首条搜索结果</li>
+<li>HJ、SMJ返回首条结果较慢</li>
+</ul></li>
+</ul>
+<h2 id="多表联接算法">多表联接算法</h2>
+<p>多表联接算法：找到最优连接顺序（执行路径）</p>
+<ul>
+<li><p>表联接顺序对于查询结果没有影响，但是对资源消耗、性能影响 巨大</p></li>
+<li><p>随着需要联接表数目增加，可能的联接排列非常多，基本不能 对所有可能穷举分析</p>
+<ul>
+<li><em>left-deep tree</em>/<em>linear (processing)tree</em>：<span class="math inline">\(n!\)</span></li>
+<li><em>bushy tree</em>：<span class="math inline">\(\frac {2(n-1)!} {(n-1)!}\)</span> （包括left-deep tree、right-deep tree）</li>
+</ul>
+<figure>
+<img src="/imgs/left_deep_tree_bushy_tree.png" alt="left_deep_tree_bushy_tree"><figcaption>left_deep_tree_bushy_tree</figcaption>
+</figure></li>
+<li><p>事实上查询优化器不会穷尽搜索所有可能联接排列，而是使用 启发式算法进行搜索</p></li>
+</ul>
+<h3 id="dynamic-programming"><em>Dynamic Programming</em></h3>
+<p>动态规划算法：依次求解各数量表最优联接顺序，直到求出最终结果</p>
+<ol type="1">
+<li><p>构造第一层关系：每个关系的最优路径就是关系的最优单表扫描 方式</p></li>
+<li><p>迭代依次构造之后n-1层关系联接最优解</p>
+<ul>
+<li>左深联接树方式：将第k-1层每个关系同第1层关系联接</li>
+<li>紧密树联接方式：将第m(m &gt; 2)层每个关系同第k-m层关系 联接</li>
+</ul>
+<figure>
+<img src="/imgs/left_deep_tree_bushy_tree.png" alt="left_deep_tree_bushy_tree"><figcaption>left_deep_tree_bushy_tree</figcaption>
+</figure></li>
+</ol>
+<h3 id="heuristic-algorithm"><em>Heuristic Algorithm</em></h3>
+<h3 id="greedy-algorithm"><em>Greedy Algorithm</em></h3>
+<p>贪心算法：认为每次连接表的连接方式都是最优的，即从未联接表中 选择使得下次联接代价最小者</p>
+<ul>
+<li>多表排序一般为
+<ul>
+<li>常量表最前</li>
+<li>其他表按可访问元组数量升序排序</li>
+</ul></li>
+<li>贪心算法得到的联接方式都是最优的
+<ul>
+<li>则每次联接主要求解要联接表对象的最佳访问方式</li>
+<li>即每次代价估计的重点在于单表扫描的代价</li>
+</ul></li>
+<li>求解结束后，局部最优查询计划生成
+<ul>
+<li>得到左深树</li>
+<li>最初始表位于最左下端叶子节点处</li>
+</ul></li>
+</ul>
+<h3 id="system-r"><em>System R</em></h3>
+<p><em>System R</em>：对动态规划算法的改进</p>
+<ul>
+<li>保留子树查询最优、次优查询计划，用于上层查询计划生成， 使得查询计划整体较优</li>
+</ul>
+<h3 id="genetic-algorithm"><em>Genetic Algorithm</em></h3>
+<p>遗传算法：模拟自然界生物进化过程，采用人工进化的方式对目标 空间进行搜索</p>
+<ul>
+<li>本质是高效、并行、全局搜索方法</li>
+<li>能在搜索过程中自动获取、积累有关搜索空间的知识，并自适应 的控制搜索过程以求的最佳解</li>
+</ul>
+<h4 id="思想">思想</h4>
+<ul>
+<li>将问题域中可能解看作是染色体，将其编码为符号串的形式</li>
+<li>对染色体群体反复进行基于遗传学的操作：选择、交叉、变异</li>
+<li>根据预定目标适应度函数对每个个体进行评价，不断得到更优 群体，从中全局并行搜索得到优化群体中最优个体</li>
+</ul>
+<h4 id="实体">实体</h4>
+<ul>
+<li><em>population</em>：群体，GA的遗传搜索空间</li>
+<li><em>individual</em>：个体，搜索空间中可能解</li>
+<li><em>chromosome</em>：染色体，个体特征代表
+<ul>
+<li>由若干段基因组成</li>
+<li>GA中基本操作对象</li>
+</ul></li>
+<li><em>gene</em>：基因
+<ul>
+<li>染色体片段</li>
+</ul></li>
+<li><em>fitness</em>：适应度，个体对环境的适应程度</li>
+</ul>
+<h4 id="基本操作">基本操作</h4>
+<ul>
+<li><em>selection</em>：选择，根据个体适应度在群体中按照一定概率 选择个体作为父本
+<ul>
+<li>适应度大个体被选择概率高</li>
+<li>体现了适者生存、优胜劣汰的进化规则</li>
+</ul></li>
+<li><p><em>crossover</em>：交叉，将父本个体按照一定概率随机交换基因 形成新个体</p></li>
+<li><p><em>mutate</em>：变异，按照一定概率随机改变某个体基因值</p></li>
+</ul>
+<h4 id="涉及问题">涉及问题</h4>
+<ul>
+<li>串编码方式
+<ul>
+<li>把问题的各种参数用二进串进行编码构成子串</li>
+<li>把子串拼接成染色体 &gt; - 串长度、编码方式对算法收敛影响极大</li>
+</ul></li>
+<li>适应度/对象函数确定
+<ul>
+<li>一般可以把问题模型函数作为对象函数</li>
+</ul></li>
+<li>GA超参设置
+<ul>
+<li>群体大小<span class="math inline">\(n\)</span>：过小难以求出最优解，过大难收敛，一般取 <span class="math inline">\(n = 30 ~ 160\)</span></li>
+<li>交叉概率<span class="math inline">\(P_c\)</span>：太小难以前向搜索，太大容易破坏高适应 值结构，一般取<span class="math inline">\(P_c = 0.25 ~ 0.75\)</span></li>
+<li>变异概率<span class="math inline">\(P_m\)</span>：太小难以产生新结构，太大则变为单纯 随机搜索，一般取<span class="math inline">\(P_m = 0.01 ~ 0.2\)</span></li>
+</ul></li>
+</ul>
+<h4 id="算法-1">算法</h4>
+<ol type="1">
+<li>随机初始化种群</li>
+<li>估初始种群：为种群每个个体计算适应值、排序</li>
+<li>若没有达到预定演化数，则继续，否则结束算法</li>
+<li>选择父体
+<ul>
+<li>杂交：得到新个体</li>
+<li>变异：对新个体变异</li>
+</ul></li>
+<li>计算新个体适应值，把适应值排名插入种群，淘汰最后个体</li>
+<li>重复3</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/程序/" rel="tag"># 程序</a>
+          
+            <a href="/tags/数据库优化/" rel="tag"># 数据库优化</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_algorithm/data_structure/set/" rel="next" title="Set">
+                <i class="fa fa-chevron-left"></i> Set
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_algorithm/basic_strategies/" rel="prev" title="算法设计策略">
+                算法设计策略 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#查询代价估算"><span class="nav-number">1.</span> <span class="nav-text">查询代价估算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代价模型"><span class="nav-number">1.1.</span> <span class="nav-text">代价模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#selectivity"><span class="nav-number">1.2.</span> <span class="nav-text">Selectivity</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#估计方法"><span class="nav-number">1.2.1.</span> <span class="nav-text">估计方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单表扫描算法"><span class="nav-number">2.</span> <span class="nav-text">单表扫描算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引"><span class="nav-number">3.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两表联接算法"><span class="nav-number">4.</span> <span class="nav-text">两表联接算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nested-loop"><span class="nav-number">4.1.</span> <span class="nav-text">Nested Loop</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#嵌套循环联接算法"><span class="nav-number">4.1.1.</span> <span class="nav-text">嵌套循环联接算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基于块嵌套循环联接算法"><span class="nav-number">4.1.2.</span> <span class="nav-text">基于块嵌套循环联接算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引嵌套循环联接算法"><span class="nav-number">4.1.3.</span> <span class="nav-text">索引嵌套循环联接算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sortmerge-join"><span class="nav-number">4.2.</span> <span class="nav-text">(Sort)Merge Join</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">4.2.1.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hash-join"><span class="nav-number">4.3.</span> <span class="nav-text">Hash Join</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#in-memory-hash-join"><span class="nav-number">4.3.1.</span> <span class="nav-text">In-Memory Hash Join</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#build阶段"><span class="nav-number">4.3.1.1.</span> <span class="nav-text">build阶段</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#probe阶段"><span class="nav-number">4.3.1.2.</span> <span class="nav-text">probe阶段</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#具体操作"><span class="nav-number">4.3.1.3.</span> <span class="nav-text">具体操作</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grace-hash-join"><span class="nav-number">4.3.2.</span> <span class="nav-text">Grace Hash Join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hybrid-hash-join"><span class="nav-number">4.3.3.</span> <span class="nav-text">Hybrid Hash Join</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比较"><span class="nav-number">4.4.</span> <span class="nav-text">比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多表联接算法"><span class="nav-number">5.</span> <span class="nav-text">多表联接算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dynamic-programming"><span class="nav-number">5.1.</span> <span class="nav-text">Dynamic Programming</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heuristic-algorithm"><span class="nav-number">5.2.</span> <span class="nav-text">Heuristic Algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#greedy-algorithm"><span class="nav-number">5.3.</span> <span class="nav-text">Greedy Algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#system-r"><span class="nav-number">5.4.</span> <span class="nav-text">System R</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#genetic-algorithm"><span class="nav-number">5.5.</span> <span class="nav-text">Genetic Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#思想"><span class="nav-number">5.5.1.</span> <span class="nav-text">思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实体"><span class="nav-number">5.5.2.</span> <span class="nav-text">实体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基本操作"><span class="nav-number">5.5.3.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#涉及问题"><span class="nav-number">5.5.4.</span> <span class="nav-text">涉及问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-1"><span class="nav-number">5.5.5.</span> <span class="nav-text">算法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

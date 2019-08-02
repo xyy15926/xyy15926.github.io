@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Python元编程">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python元编程">
+<meta property="og:url" content="https://xyy15926.github.io/cs_python/py3cook/decorator/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Python元编程">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-17T03:57:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python元编程">
+<meta name="twitter:description" content="Python元编程">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_python/py3cook/decorator/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Python元编程 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_python/py3cook/decorator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Python元编程
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-30 01:54:46" itemprop="dateCreated datePublished" datetime="2019-03-30T01:54:46+08:00">2019-03-30</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:07" itemprop="dateModified" datetime="2019-02-17T11:57:07+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Python元编程</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="decorator装饰器">Decorator装饰器</h2>
+<p>装饰器就是函数，接受函数作为<strong>参数</strong>并返回<strong>新的函数</strong></p>
+<ul>
+<li>装饰器不会修改原始函数签名、返回值，但是大部分返回的 新函数不是原始函数，看起来像是函数元信息发生改变</li>
+<li><strong>新函数</strong>也可能是单纯的修改原函数的元信息、然后返回</li>
+</ul>
+<h3 id="装饰器设计">装饰器设计</h3>
+<h4 id="保留函数元信息">保留函数元信息</h4>
+<p>装饰器作用在函数上时，<strong>原函数</strong>的重要元信息会丢失</p>
+<ul>
+<li>名字：<code>func.__name__</code></li>
+<li>文档字符串：<code>func.__doc__</code></li>
+<li>注解：</li>
+<li>参数签名：<code>func.__annotations__</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timethis</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">	@wraps(func)</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kargs)</span>:</span></span><br><span class="line">		start = time.time()</span><br><span class="line">		result = func(*args, **kwargs)</span><br><span class="line">		end = time.time()</span><br><span class="line">		print(func.__name__, end - start)</span><br><span class="line">		<span class="keyword">return</span> result</span><br><span class="line">	<span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@timethis</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countdown</span><span class="params">(n)</span>:</span></span><br><span class="line">	<span class="keyword">while</span> n &gt; <span class="number">0</span>:</span><br><span class="line">		n -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countdown</span><span class="params">(n)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line">countdown = timethis(countdown)</span><br><span class="line">	<span class="comment"># 这个和上面装饰器写法效果一致</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>@wraps</code>能够复制原始函数的元信息，并赋给装饰器返回的函数 ，即被<code>@wraps</code>装饰的函数</p></li>
+<li>装饰后函数拥有<code>__wrapped__</code>属性
+<ul>
+<li>直接用于访问被包装函数，即解除装饰器
+<ul>
+<li>有多个包装器<code>__wrapped__</code>的行为是不可预知的， 可能会因为python版本有差，应该避免</li>
+</ul></li>
+<li>让装饰器函数正确暴露底层参数签名信息</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">countdown.__wrapped__(<span class="number">10000</span>)</span><br><span class="line"><span class="keyword">from</span> inspect <span class="keyword">import</span> signature</span><br><span class="line">print(signature(countdown))</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="自定义属性">自定义属性</h4>
+<p>在装饰器中引入<strong>访问函数</strong>，访问函数中使用<code>nolocal</code>修改内部 变量t</p>
+<ul>
+<li>访问函数可在多层装饰器间传播，如果所有的装饰中的wrapper 都使用了<code>@functools.wraps</code>注解（装饰）</li>
+<li>可以使用<code>lambda</code>匿名函数，修改访问函数属性改变其行为</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logged</span><span class="params">(level, name=None, message=None)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">decorator</span><span class="params">(func)</span>:</span></span><br><span class="line">		logname = name <span class="keyword">if</span> name <span class="keyword">else</span> func.__module__</span><br><span class="line">		log = logging.getLogger(logname)</span><br><span class="line">		logmsg = message <span class="keyword">if</span> message <span class="keyword">else</span> func.__name__</span><br><span class="line"></span><br><span class="line"><span class="meta">		@wraps(func)</span></span><br><span class="line">		<span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">			log.log(level, logmsg)</span><br><span class="line">			<span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line"><span class="meta">		@attach_wrapper(wrapper)</span></span><br><span class="line">			<span class="comment"># attach setter function</span></span><br><span class="line">		<span class="function"><span class="keyword">def</span> <span class="title">set_level</span><span class="params">(newlevel)</span>:</span></span><br><span class="line">			<span class="keyword">nonlocal</span> level</span><br><span class="line">			level = newlevel</span><br><span class="line"></span><br><span class="line"><span class="meta">		@attach_wrapper(wrapper)</span></span><br><span class="line">		<span class="function"><span class="keyword">def</span> <span class="title">set_message</span><span class="params">(newmsg)</span>:</span></span><br><span class="line">			<span class="keyword">nonlocal</span> logmsg</span><br><span class="line">			logmsg = newmsg</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> wrapper</span><br><span class="line">	<span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged(logging.DEBUG)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged(logging.CRITICAL, "example")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spam</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">"Spam"</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@timethis</span></span><br><span class="line"><span class="meta">@logged(logging.DEBUG)</span></span><br><span class="line">	<span class="comment"># 使用多层装饰器，访问函数可以在多层装饰器间传播</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countdown</span><span class="params">(n)</span>:</span></span><br><span class="line">	<span class="keyword">while</span> n &gt; <span class="number">0</span>:</span><br><span class="line">		n -= <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="带参装饰器">带参装饰器</h3>
+<p>带参装饰器就是接受参数、处理，再返回一个<strong>第一个参数</strong>为函数 的函数（内部装饰器）</p>
+<h4 id="三层函数">三层函数</h4>
+<ul>
+<li><strong>最外层</strong>套一层<strong>接受</strong>参数的函数</li>
+<li>内部装饰器函数可以访问这些参数，并在“存储”在内部， 相当于一个闭包</li>
+<li>返回使用参数处理后的<strong>装饰器函数</strong>，再装饰函数</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logged</span><span class="params">(level, name=None, message=None)</span>:</span></span><br><span class="line"></span><br><span class="line">	<span class="string">r"""Decorator that allows logging</span></span><br><span class="line"><span class="string">	:param level: logging level</span></span><br><span class="line"><span class="string">	:param name: logger name, default function's module</span></span><br><span class="line"><span class="string">	:param message: log message, default function's name</span></span><br><span class="line"><span class="string">	:return :decorator</span></span><br><span class="line"><span class="string">	"""</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">decorator</span><span class="params">(func)</span>:</span></span><br><span class="line">		logname = name <span class="keyword">if</span> name <span class="keyword">else</span> func.__module__</span><br><span class="line">		log = logging.getLogger(logname)</span><br><span class="line">		logmsg = message <span class="keyword">if</span> message <span class="keyword">else</span> func.__name__</span><br><span class="line"></span><br><span class="line"><span class="meta">		@wraps(func)</span></span><br><span class="line">		<span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">			log.log(level, logmsg)</span><br><span class="line">			<span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">		<span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged(logging.DEBUG)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged(loggin.CRITICAL, "example")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spam</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">"spam"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spam</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line">spam = logged(logging.CRITICAL, <span class="string">"example"</span>)(spam)</span><br><span class="line">	<span class="comment"># 这样调用和之前的装饰器语句效果相同</span></span><br></pre></td></tr></table></figure>
+<h4 id="functools.partial"><code>functools.partial</code></h4>
+<p><code>partial</code>接受一个函数作参数，并返回设置了部分参数默认值的 函数，而最外层函数就只是用于“获取”参数，因此可以使用此技巧 减少一层函数嵌套</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">attach_wrapper</span><span class="params">(obj, func=None)</span>:</span></span><br><span class="line"></span><br><span class="line">	<span class="string">r"""Decorator to attach function to obj as an attr</span></span><br><span class="line"><span class="string">	:param obj: wapper to be attached to</span></span><br><span class="line"><span class="string">	:param func: function to be attached as attr</span></span><br><span class="line"><span class="string">	:return: wrapper</span></span><br><span class="line"><span class="string">	"""</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> func <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">		<span class="keyword">return</span> partial(attach_wrapper, obj)</span><br><span class="line">	setattr(obj, func.__name__, func)</span><br><span class="line">	<span class="keyword">return</span> func</span><br></pre></td></tr></table></figure>
+<h4 id="参数可选">参数可选</h4>
+<h5 id="三层函数-1">三层函数</h5>
+<p>这种形式的带可选参数的装饰器，即使不传递参数，也必须使用 调用形式装饰</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logged</span><span class="params">(level=logging.DEBUG, name=None, message=None)</span>:</span></span><br><span class="line"></span><br><span class="line">	<span class="string">r"""Decorator that allows logging</span></span><br><span class="line"><span class="string">	:param level: logging level</span></span><br><span class="line"><span class="string">	:param name: logger name, default function's module</span></span><br><span class="line"><span class="string">	:param message: log message, default function's name</span></span><br><span class="line"><span class="string">	:return :decorator</span></span><br><span class="line"><span class="string">	"""</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">decorator</span><span class="params">(func)</span>:</span></span><br><span class="line">		logname = name <span class="keyword">if</span> name <span class="keyword">else</span> func.__module__</span><br><span class="line">		log = logging.getLogger(logname)</span><br><span class="line">		logmsg = message <span class="keyword">if</span> message <span class="keyword">else</span> func.__name__</span><br><span class="line"></span><br><span class="line"><span class="meta">		@wraps(func)</span></span><br><span class="line">		<span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">			log.log(level, logmsg)</span><br><span class="line">			<span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">		<span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged()</span></span><br><span class="line">	<span class="comment"># 这种方式实现的默认参数装饰器必须使用`@logged()`调用的</span></span><br><span class="line">	<span class="comment"># 形式，从装饰器形式就可以看出，必须调用一次才能返回内部</span></span><br><span class="line">	<span class="comment"># 装饰器</span></span><br><span class="line">	<span class="comment"># 这种形式的装饰器不符合用户习惯，不用传参也必须使用的</span></span><br><span class="line">	<span class="comment"># 调用形式</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged(level=logging.CRITICAL, name="example")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> x + y</span><br></pre></td></tr></table></figure>
+<h5 id="partial"><code>partial</code></h5>
+<p>这种形式的装饰器，不传参时可以像无参数装饰器一样使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps, partial</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logged</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	func=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	*,</span></span></span><br><span class="line"><span class="function"><span class="params">	level=logging.DEBUG,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	message=None)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> func <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">		<span class="keyword">return</span> partial(logged, level=level, name=name, message=message)</span><br><span class="line">	logname = name <span class="keyword">if</span> name <span class="keyword">else</span> func.__module__</span><br><span class="line">	log = logging.getLogger(logname)</span><br><span class="line">	logmsg = message <span class="keyword">if</span> message <span class="keyword">else</span> func.__name__</span><br><span class="line"></span><br><span class="line"><span class="meta">	@wraps(func)</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">		log.log(level, logmsg)</span><br><span class="line">		<span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged</span></span><br><span class="line">	<span class="comment"># 使用`partial`函数形式的带默认参数的装饰器，可以不用</span></span><br><span class="line">	<span class="comment"># 调用形式</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="meta">@logged(level=logging.CRITICAL, name="example")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spam</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">"spam"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="用途示例">用途示例</h3>
+<h4 id="强制检查参数类型">强制检查参数类型</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">typeasssert</span><span class="params">(*ty_args, **ty_kwargs)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="string">r"""Decorator that assert the parameters type</span></span><br><span class="line"><span class="string">    :param *ty_args: parameters type indicated with position</span></span><br><span class="line"><span class="string">    :param **ty_kwargs: parameters type indicated with keywords</span></span><br><span class="line"><span class="string">    :return: wrapper</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span><span class="params">(func)</span>:</span></span><br><span class="line">        <span class="comment"># if in optimized mode, disable type checking</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> __debug__:</span><br><span class="line">            <span class="keyword">return</span> func</span><br><span class="line"></span><br><span class="line">        sig = signature(func)</span><br><span class="line">        <span class="comment"># map function argument names to asserted types</span></span><br><span class="line">        bound_types = sig.bind_partial(*ty_args, **ty_kwargs).arguments</span><br><span class="line"></span><br><span class="line"><span class="meta">        @wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            <span class="comment"># map function argument names to paraments</span></span><br><span class="line">            bound_values = sig.bind(*args, **kwargs).argument</span><br><span class="line">            <span class="keyword">for</span> name, val <span class="keyword">in</span> bound_values.items():</span><br><span class="line">                <span class="keyword">if</span> name <span class="keyword">in</span> bound_types:</span><br><span class="line">                    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(value, bound_types[name]):</span><br><span class="line">                        <span class="keyword">raise</span> TypeError(</span><br><span class="line">                            <span class="string">"Argument &#123;&#125; must be &#123;&#125;."</span>.format(name, bound_types[name])</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">    <span class="keyword">return</span> decorator</span><br></pre></td></tr></table></figure>
+<h4 id="装饰器类">装饰器类</h4>
+<p>为了定义类装饰器，类需要实现<code>__call__</code>、<code>__get__</code>方法，然后 就可以当作普通的的装饰器函数使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> types</span><br><span class="line"><span class="keyword">from</span> functools improt wraps</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Profiled</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, func)</span>:</span></span><br><span class="line">		wraps(func)(self)</span><br><span class="line">			<span class="comment"># 获取`func`的元信息赋给实例</span></span><br><span class="line">		self.ncalls = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">		self.nacalls += <span class="number">1</span></span><br><span class="line">		<span class="keyword">return</span> self.__wrapped__(*args, **kwargs)</span><br><span class="line">			<span class="comment"># 解除装饰器</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__get__</span><span class="params">(self, instance, cls)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> intance <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">			<span class="keyword">return</span> self</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">return</span> types.MethodType(self, instance)</span><br></pre></td></tr></table></figure>
+<h4 id="装饰器方法">装饰器方法</h4>
+<p>在类中定义装饰器方法，可以将多个装饰器关联于同一个类的实例， 方便在装饰器中记录、绑定、共享信息</p>
+<ul>
+<li><code>@property</code>装饰器类：可以将类方法<code>method_atrr</code>“转变”为 属性
+<ul>
+<li>设置完成之后，会创建2个以方法名开头的装饰器 <code>method_attr.setter</code>、<code>method_attr.deleter</code>用于装饰 <strong>同名</strong>的方法</li>
+<li>分别对应其中包含<code>setter</code>、<code>deleter</code>、<code>getter</code> （<code>@property</code>自身）三个方法</li>
+</ul>
+<blockquote>
+<p>详情查看<code>clsobj</code></p>
+</blockquote></li>
+</ul>
+<h4 id="装饰类静态方法">装饰类、静态方法</h4>
+<p>装饰器必须放在<code>@staticmethod</code>、<code>@classmethod</code>装饰器之前 （内层），因为这两个装饰器实际上并不创建callable对象，而是 创建特殊的描述器对象</p>
+<h4 id="添加参数">添加参数</h4>
+<p>为原函数“添加”KEYWORD_ONLY参数，这种做法不常见，有时能避免 重复代码</p>
+<ul>
+<li>KEYWORD_ONLY参数容易被添加进<code>*args</code>、<code>**kwargs</code>中</li>
+<li>KEYWORD_ONLY会被作为特殊情况挑选出来，并且不会用于调用 原函数</li>
+<li>但是需要注意，被添加的函数名称不能与原函数冲突</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"><span class="keyword">import</span> inspect</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">optional_debug</span><span class="params">(func)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="string">"debug"</span> <span class="keyword">in</span> inspect.getargspect(func).args:</span><br><span class="line">		<span class="keyword">raise</span> TypeError(<span class="string">"Debug argument already defined"</span>)</span><br><span class="line">		<span class="comment"># 防止原函数参数中参数与新增`debug`冲突</span></span><br><span class="line"></span><br><span class="line"><span class="meta">	@wraps(func)</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, debug=False, **kwargs)</span>:</span></span><br><span class="line">		<span class="comment"># 给原函数“增加”了参数</span></span><br><span class="line">		<span class="keyword">if</span> debug:</span><br><span class="line">			print(<span class="string">"calling"</span>, func.__name__)</span><br><span class="line">		<span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">	<span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure>
+<h4 id="装饰器扩充类功能">装饰器扩充类功能</h4>
+<p>可以通过装饰器修改类某个方法、属性，修改其行为</p>
+<ul>
+<li>可以作为其他高级技术：mixin、metaclass的简洁替代方案</li>
+<li>更加直观</li>
+<li>不会引入新的继承体系</li>
+<li>不依赖<code>super</code>函数，速度更快</li>
+</ul>
+<p>注意：和装饰函数不同，装饰类不会返回新的类，而是修改原类， 因此装饰器的顺序尤为重要</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">log_getattribute</span><span class="params">(cls)</span>:</span></span><br><span class="line">	orig_getattribute = cls.__getattribute__</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">new_getattribute</span><span class="params">(self, name)</span>:</span></span><br><span class="line">		print(<span class="string">"getting:"</span>, name)</span><br><span class="line">		<span class="keyword">return</span> orig_getattribute(self, name)</span><br><span class="line"></span><br><span class="line">	cls.__getattribute = new_getattribute</span><br><span class="line">	<span class="keyword">return</span> cls</span><br><span class="line"></span><br><span class="line"><span class="meta">@log_getattribute</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x)</span>:</span></span><br><span class="line">		self.x = x</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">spam</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h2 id="metaclass元类">Metaclass元类</h2>
+<h3 id="用途示例-1">用途示例</h3>
+<h4 id="单例模式">单例模式</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span><span class="params">(type)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">		self.__intance = <span class="literal">None</span></span><br><span class="line">		super().__init__(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> self.__instance <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">			self.__instance = super().__call__(*args, **kwargs)</span><br><span class="line">			<span class="keyword">return</span> self.__instance</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">return</span> self.__instance</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Spam</span><span class="params">(metaclass=Singleton)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">		print(<span class="string">"Creating Spam"</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="缓存实例">缓存实例</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> weakref</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cached</span><span class="params">(type)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">		super().__init__(*args, **kwargs)</span><br><span class="line">		self.__cache = weakref.WeakValueDictionar()</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> args <span class="keyword">in</span> self.__cache:</span><br><span class="line">			<span class="keyword">return</span> self.__cache[args]</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			obj = super().__call__(*args)</span><br><span class="line">			self.__cache[args] = obj</span><br><span class="line">			<span class="keyword">return</span> obj</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Spam</span><span class="params">(metaclass=Cached)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name)</span>:</span></span><br><span class="line">		print(<span class="string">"creating spam(&#123;!r&#125;)"</span>.format(name))</span><br><span class="line">		self.name = name</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/README/" rel="next" title="Python笔记约定">
+                <i class="fa fa-chevron-left"></i> Python笔记约定
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/py3cook/str_text/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#decorator装饰器"><span class="nav-number">1.</span> <span class="nav-text">Decorator装饰器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#装饰器设计"><span class="nav-number">1.1.</span> <span class="nav-text">装饰器设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#保留函数元信息"><span class="nav-number">1.1.1.</span> <span class="nav-text">保留函数元信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义属性"><span class="nav-number">1.1.2.</span> <span class="nav-text">自定义属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#带参装饰器"><span class="nav-number">1.2.</span> <span class="nav-text">带参装饰器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三层函数"><span class="nav-number">1.2.1.</span> <span class="nav-text">三层函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#functools.partial"><span class="nav-number">1.2.2.</span> <span class="nav-text">functools.partial</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参数可选"><span class="nav-number">1.2.3.</span> <span class="nav-text">参数可选</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#三层函数-1"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">三层函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#partial"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">partial</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用途示例"><span class="nav-number">1.3.</span> <span class="nav-text">用途示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#强制检查参数类型"><span class="nav-number">1.3.1.</span> <span class="nav-text">强制检查参数类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰器类"><span class="nav-number">1.3.2.</span> <span class="nav-text">装饰器类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰器方法"><span class="nav-number">1.3.3.</span> <span class="nav-text">装饰器方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰类静态方法"><span class="nav-number">1.3.4.</span> <span class="nav-text">装饰类、静态方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加参数"><span class="nav-number">1.3.5.</span> <span class="nav-text">添加参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#装饰器扩充类功能"><span class="nav-number">1.3.6.</span> <span class="nav-text">装饰器扩充类功能</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metaclass元类"><span class="nav-number">2.</span> <span class="nav-text">Metaclass元类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用途示例-1"><span class="nav-number">2.1.</span> <span class="nav-text">用途示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单例模式"><span class="nav-number">2.1.1.</span> <span class="nav-text">单例模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缓存实例"><span class="nav-number">2.1.2.</span> <span class="nav-text">缓存实例</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Matrix Decomposition">
+<meta name="keywords" content="代数,线性代数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matrix Decomposition">
+<meta property="og:url" content="https://xyy15926.github.io/math_algebra/linear_algebra/matrix_decomposition/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Matrix Decomposition">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/matrix_decomposition_jacobi.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/matrix_decomposition_gauss_seidel.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/matrix_decomposition_sor.png">
+<meta property="og:updated_time" content="2019-07-29T13:16:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Matrix Decomposition">
+<meta name="twitter:description" content="Matrix Decomposition">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/matrix_decomposition_jacobi.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/math_algebra/linear_algebra/matrix_decomposition/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Matrix Decomposition | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/math_algebra/linear_algebra/matrix_decomposition/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Matrix Decomposition
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-29 21:16:01" itemprop="dateCreated datePublished" datetime="2019-07-29T21:16:01+08:00">2019-07-29</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/代数/" itemprop="url" rel="index"><span itemprop="name">代数</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/代数/线性代数/" itemprop="url" rel="index"><span itemprop="name">线性代数</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Matrix Decomposition</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="矩阵分解">矩阵分解</h2>
+<ul>
+<li>矩阵加法分解：将矩阵分解为三角阵、对角阵之和
+<ul>
+<li>常用于迭代求解线性方程组</li>
+</ul></li>
+<li>矩阵乘法分解：将矩阵分解为三角镇、对角阵、正交阵之积</li>
+</ul>
+<blockquote>
+<ul>
+<li>以下分解均在实数域上，扩展至复数域需同样将相应因子矩阵 扩充至复数域上定义</li>
+</ul>
+</blockquote>
+<h2 id="矩阵加法分解">矩阵加法分解</h2>
+<h3 id="jacobi分解">Jacobi分解</h3>
+<p>Jacobi分解：将矩阵分解为对角阵、非对角阵</p>
+<figure>
+<img src="/imgs/matrix_decomposition_jacobi.png" alt="matrix_decomposition_jacobi"><figcaption>matrix_decomposition_jacobi</figcaption>
+</figure>
+<h3 id="gauss-seidel分解">Gauss-Seidel分解</h3>
+<p>Gauss-Seidel分解：将矩阵分解为上、下三角矩阵</p>
+<figure>
+<img src="/imgs/matrix_decomposition_gauss_seidel.png" alt="matrix_decomposition_gauss_seidel"><figcaption>matrix_decomposition_gauss_seidel</figcaption>
+</figure>
+<h3 id="successive-over-relaxation">Successive Over Relaxation</h3>
+<p>SOR：逐次超松弛迭代法，分解为对角、上三角、上三角矩阵，同时 增加权重<span class="math inline">\(w\)</span>调整分解后比例</p>
+<figure>
+<img src="/imgs/matrix_decomposition_sor.png" alt="matrix_decomposition_sor"><figcaption>matrix_decomposition_sor</figcaption>
+</figure>
+<ul>
+<li>利用内在等式应用的平衡性、不动点收敛理论可以快速迭代
+<ul>
+<li><span class="math inline">\(x\)</span>拆分到等式左右两侧，可以视为<span class="math inline">\(y=x\)</span>和另外函数交点</li>
+<li>根据不动点收敛理论可以进行迭代求解</li>
+</ul></li>
+</ul>
+<h2 id="lu系列分解">LU系列分解</h2>
+<h3 id="lu-decomposition">LU Decomposition</h3>
+<p>LU分解：将方阵分解为<em>lower triangualr matrix</em>、 <em>upper triangluar matrix</em></p>
+<p>$$<span class="math display">\[\begin{align*}
+A &amp; = L U \\
+
+\begin{bmatrix}
+a_{1,1} &amp; a_{1,2} &amp; \cdots &amp; a_{1,m} \\
+a_{2,1} &amp; a_{2,2} &amp; \cdots &amp; a_{2,m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{m,1} &amp; a_{m,2} &amp; \cdots &amp; a_{m,m}
+\end{bmatrix} &amp; = 
+
+\begin{bmatrix}
+l_{1,1} &amp; 0 &amp; \cdots &amp; 0 \\
+l_{2,1} &amp; l_{2,2} &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+l_{m,1} &amp; l_{m,2} &amp; \cdots &amp; l_{m,m}
+\end{bmatrix}
+
+\begin{bmatrix}
+u_{1,1} &amp; u_{1,2} &amp; \cdots &amp; u_{1,m} \\
+0 &amp; u_{2,2} &amp; \cdots &amp; u_{2,m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; u_{m,m}
+\end{bmatrix}
+
+\end{align*}\]</span>$$</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(L\)</span>：下三角矩阵</li>
+<li><span class="math inline">\(U\)</span>：上三角矩阵</li>
+</ul>
+</blockquote>
+<ul>
+<li>特别的可以要求某个矩阵对角线元素为1</li>
+<li>几何意义：由单位阵出发，经过竖直、水平切变</li>
+</ul>
+<h4 id="特点">特点</h4>
+<ul>
+<li><p>LU分解实际上不需要额外存储空间，矩阵L、U可以合并存储</p></li>
+<li><p>LU分解可以快速求解线性方程组，可以视为高斯消元法的矩阵 形式</p>
+<ul>
+<li>得到矩阵LU分解后，对任意向量b，可使用<strong>已有</strong>LU分解 求解
+<ul>
+<li>L为消元过程中的行系数和对角线全为1的下三角矩阵 （负系数在矩阵中为正值）</li>
+<li>U为消元结果上三角矩阵</li>
+</ul></li>
+<li>则解方程组<span class="math inline">\(Ax=b\)</span>等价于<span class="math inline">\(LUx=b\)</span>
+<ul>
+<li>先求解<span class="math inline">\(Ly=b\)</span></li>
+<li>再求解<span class="math inline">\(Ux=x\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="ldu-decomposition">LDU Decomposition</h3>
+<p>LDU分解：将矩阵分解为下三角、上三角、对角矩阵</p>
+<p>$$<span class="math display">\[\begin{align*}
+A &amp; = L D U \\
+
+\begin{bmatrix}
+a_{1,1} &amp; a_{1,2} &amp; \cdots &amp; a_{1,m} \\
+a_{2,1} &amp; a_{2,2} &amp; \cdots &amp; a_{2,m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{m,1} &amp; a_{m,2} &amp; \cdots &amp; a_{m,m}
+\end{bmatrix} &amp; = 
+
+\begin{bmatrix}
+1 &amp; 0 &amp; \cdots &amp; 0 \\
+l_{2,1} &amp; 1 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+l_{m,1} &amp; l_{m,2} &amp; \cdots &amp; 1
+\end{bmatrix}
+
+\begin{bmatrix}
+u_{1,1} &amp; 0 &amp; \cdots &amp; 0\\
+0 &amp; 0 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; u_{m,m}
+\end{bmatrix}
+
+\begin{bmatrix}
+1 &amp; u_{1,2}/u_{1,1} &amp; \cdots &amp; u_{1,m}/u_{1,1} \\
+0 &amp; 1 &amp; \cdots &amp; u_{2,m}/u_{2,2} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; 1
+\end{bmatrix}
+
+\end{align*}\]</span>$$</p>
+<ul>
+<li>LU分解可以方便的得到LDU分解：提取对角阵、然后对应矩阵 元素等比缩放</li>
+</ul>
+<h3 id="pluq-decomposition">PLU[Q] Decomposition</h3>
+<blockquote>
+<ul>
+<li>PLU分解：将方阵分解为置换矩阵、下三角、上三角矩阵</li>
+<li>PLUQ分解：将方阵分解为置换矩阵、下三角、上三角、置换矩阵</li>
+</ul>
+</blockquote>
+<ul>
+<li>考虑<span class="math inline">\(P^{-1}A=LU\)</span>，交换<span class="math inline">\(A\)</span>行即可作普通LU分解，PLUQ分解 类似</li>
+<li>PLU分解数值稳定性好、实用工具</li>
+</ul>
+<h3 id="llcholesky-decomposition">LL/Cholesky Decomposition</h3>
+<p>LL分解：将对称阵分解为下三角、转置</p>
+<p>$$<span class="math display">\[\begin{align*}
+A &amp; = L L^T \\
+
+\begin{bmatrix}
+a_{1,1} &amp; a_{1,2} &amp; \cdots &amp; a_{1,m} \\
+a_{2,1} &amp; a_{2,2} &amp; \cdots &amp; a_{2,m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{m,1} &amp; a_{m,2} &amp; \cdots &amp; a_{m,m}
+\end{bmatrix} &amp; = 
+
+\begin{bmatrix}
+l_{1,1} &amp; 0 &amp; \cdots &amp; 0 \\
+l_{2,1} &amp; l_{2,2} &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+l_{m,1} &amp; l_{m,2} &amp; \cdots &amp; l_{m,m}
+\end{bmatrix}
+
+\begin{bmatrix}
+l_{1,1} &amp; l_{2,1} &amp; \cdots &amp; l_{m,1} \\
+0 &amp; l_{2,2} &amp; \cdots &amp; l_{m,2} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; l_{m,m}
+\end{bmatrix}
+
+\end{align*}\]</span>$$</p>
+<ul>
+<li>Cholesky分解常用于分解<span class="math inline">\(A^TA\)</span>
+<ul>
+<li>常用于相关分析，分解相关系数阵、协方差阵</li>
+</ul></li>
+<li>相较于一般LU分解，Cholesky分解速度更快、数值稳定性更好</li>
+</ul>
+<blockquote>
+<ul>
+<li>类似的有LDL分解，同时提取对角线元素即可</li>
+</ul>
+</blockquote>
+<h2 id="singular-value-decomposition">Singular Value Decomposition</h2>
+<p><em>SVD</em>奇异值分解：将矩阵分解为正交矩阵、对角矩阵、正交矩阵</p>
+<p><span class="math display">\[
+M_{m*n} = U_{m*r} \Sigma_{r*r} V_{n*r}^T
+\]</span></p>
+<ul>
+<li><strong>特征值分解</strong>在任意矩阵上推广：相应的特征值、特征向量 被称为奇异值、奇异向量</li>
+<li>几何意义：由单位阵出发，经旋转、缩放、再旋转</li>
+</ul>
+<h3 id="特点-1">特点</h3>
+<ul>
+<li><span class="math inline">\(\Sigma\)</span>对角线元素为<span class="math inline">\(M^T M\)</span>、<span class="math inline">\(M M^T\)</span>的奇异值
+<ul>
+<li>可视为在输入输出间进行标量的放缩控制</li>
+<li>同<span class="math inline">\(U\)</span>、<span class="math inline">\(V\)</span>的列向量相对应</li>
+</ul></li>
+<li><span class="math inline">\(U\)</span>的列向量称为左奇异向量
+<ul>
+<li><span class="math inline">\(M M^T\)</span>的特征向量</li>
+<li>与<span class="math inline">\(M\)</span>正交的“输入”或“分析”基向量</li>
+</ul></li>
+<li><span class="math inline">\(V\)</span>的列向量成为右奇异向量
+<ul>
+<li><span class="math inline">\(M^T M\)</span>的特征向量</li>
+<li>与<span class="math inline">\(M\)</span>正交的“输出”基向量</li>
+</ul></li>
+</ul>
+<h3 id="低阶近似">低阶近似</h3>
+<ul>
+<li>对<span class="math inline">\(m * n\)</span>阶原始矩阵<span class="math inline">\(M\)</span>
+<ul>
+<li>设其秩为<span class="math inline">\(K \leq min(m, n)\)</span>，奇异值为 <span class="math inline">\(d_1 \geq d_2 \geq \cdots \geq d_K &gt; 0\)</span></li>
+<li>不失一般性可以设其均值为0</li>
+</ul></li>
+<li><p>根据<em>Eckart and Young</em>的结果</p>
+<p><span class="math display">\[
+\forall r \leq K, \sum_{k=1}^r d_k u_k v_k^T =
+    \arg\min_{\bar M \in M(r)} \| M - \bar M \|_F^2
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(u_k, v_k\)</span>：<span class="math inline">\(U, V\)</span>的第<span class="math inline">\(k\)</span>列向量</li>
+<li><span class="math inline">\(\|M\|_F\)</span>：矩阵的Frobenius范数</li>
+</ul>
+</blockquote></li>
+</ul>
+<h2 id="qr-decomposition">QR Decomposition</h2>
+<p>QR分解：将矩阵分解为正交矩阵、上三角矩阵</p>
+<p><span class="math display">\[\begin{align*}
+A = Q R
+\end{align*}\]</span></p>
+<ul>
+<li>几何意义：由单位阵出发，经旋转、切变</li>
+</ul>
+<h3 id="特点-2">特点</h3>
+<ul>
+<li>正交矩阵逆为其转置，同样可以方便求解线性方程组</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/代数/" rel="tag"># 代数</a>
+          
+            <a href="/tags/线性代数/" rel="tag"># 线性代数</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_models/model_components/attention/" rel="next" title="Attention Machanism">
+                <i class="fa fa-chevron-left"></i> Attention Machanism
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_models/model_components/convolutional/" rel="prev" title="Convolutional">
+                Convolutional <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵分解"><span class="nav-number">1.</span> <span class="nav-text">矩阵分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵加法分解"><span class="nav-number">2.</span> <span class="nav-text">矩阵加法分解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jacobi分解"><span class="nav-number">2.1.</span> <span class="nav-text">Jacobi分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gauss-seidel分解"><span class="nav-number">2.2.</span> <span class="nav-text">Gauss-Seidel分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#successive-over-relaxation"><span class="nav-number">2.3.</span> <span class="nav-text">Successive Over Relaxation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lu系列分解"><span class="nav-number">3.</span> <span class="nav-text">LU系列分解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lu-decomposition"><span class="nav-number">3.1.</span> <span class="nav-text">LU Decomposition</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#特点"><span class="nav-number">3.1.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ldu-decomposition"><span class="nav-number">3.2.</span> <span class="nav-text">LDU Decomposition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pluq-decomposition"><span class="nav-number">3.3.</span> <span class="nav-text">PLU[Q] Decomposition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#llcholesky-decomposition"><span class="nav-number">3.4.</span> <span class="nav-text">LL/Cholesky Decomposition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singular-value-decomposition"><span class="nav-number">4.</span> <span class="nav-text">Singular Value Decomposition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">4.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#低阶近似"><span class="nav-number">4.2.</span> <span class="nav-text">低阶近似</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#qr-decomposition"><span class="nav-number">5.</span> <span class="nav-text">QR Decomposition</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-2"><span class="nav-number">5.1.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

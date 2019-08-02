@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Thrift简介">
+<meta name="keywords" content="Web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Thrift简介">
+<meta property="og:url" content="https://xyy15926.github.io/cs_web/thrift/thrift_intro/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Thrift简介">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/thrift_structure">
+<meta property="og:updated_time" content="2019-02-17T03:57:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Thrift简介">
+<meta name="twitter:description" content="Thrift简介">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/thrift_structure">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_web/thrift/thrift_intro/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Thrift简介 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_web/thrift/thrift_intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Thrift简介
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:08" itemprop="dateModified" datetime="2019-02-17T11:57:08+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Web/" itemprop="url" rel="index"><span itemprop="name">Web</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Thrift简介</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="thrift架构">Thrift架构</h2>
+<ul>
+<li><p>Thrift是跨语言、C/S模式、服务器部署框架</p></li>
+<li><p>使用Interface Definition Language（IDL）定义RPC接口 、数据类型</p></li>
+<li><p>然后通过Thrift编译器生成不同语言的<strong>代码</strong>，并由生成 代码负责RPC<strong>协议层</strong>、<strong>传输层</strong>实现</p>
+<ul>
+<li>支持服务器端和客户端编译生成代码为不同语言</li>
+<li>客户端、服务端代码调用生成代码搭建C/S</li>
+</ul></li>
+<li><p>Thrift支持动态（执行）、静态（编译）</p></li>
+</ul>
+<h3 id="thrift网络栈">Thrift网络栈</h3>
+<figure>
+<img src="/imgs/thrift_structure" alt="thrift_structure"><figcaption>thrift_structure</figcaption>
+</figure>
+<h4 id="ttransport">TTransport</h4>
+<p>传输层，定义数据传输方式</p>
+<ul>
+<li><p>可以是TPC/IP、共享内存、共享文件等，作为运行时库</p></li>
+<li><p>提供了一个简单的网络读写抽象层，使Thrift底层TTransport 从系统其他部分（如：序列化、反序列化）解耦</p></li>
+<li>接口方法包括
+<ul>
+<li><code>open</code></li>
+<li><code>close</code></li>
+<li><code>read</code></li>
+<li><code>write</code></li>
+<li><code>listen</code></li>
+<li><code>accept</code></li>
+<li><code>flush</code></li>
+</ul></li>
+</ul>
+<h5 id="传输协议">传输协议</h5>
+<ul>
+<li>TSocket：阻塞式socket</li>
+<li>TFramedTransport：frame为单位进行传输，非阻塞式</li>
+<li>TFileTransport：文件形式传输</li>
+<li>TMemoryTransport：直接对内存进行I/O
+<ul>
+<li>Java实现时使用了简单的ByteArrayOutputStream</li>
+</ul></li>
+<li>TZlibTransport：使用zlib进行压缩，同其他方式联合使用
+<ul>
+<li>目前无java实现</li>
+</ul></li>
+</ul>
+<h4 id="tprotocol">TProtocol</h4>
+<p>协议层，定义数据传输格式</p>
+<ul>
+<li><p>定义了一种将内存的数据结构映射成可传输格式的机制，即定义 数据类型在TTransport和自身间进行解、编码</p></li>
+<li><p>需要实现编码机制，负责对数据进行序列化、反序列化</p></li>
+</ul>
+<h5 id="数据格式">数据格式</h5>
+<ul>
+<li>TBinaryProtocal：二进制格式</li>
+<li>TCompactProtocal：压缩格式</li>
+<li>TJSONProtocol：JSON格式</li>
+<li>TSimpleJSONProtocal：提供JSON只写协议，生成文件容易 通过脚本语言解析</li>
+<li>TDebugProtocol：简单易懂的可读文本格式，便于debug</li>
+</ul>
+<h4 id="tprocessor">TProcessor</h4>
+<p>封装了从输入数据流中读取、向输出数据流中写的操作</p>
+<ul>
+<li>读写数据流用TProtocol对象表示</li>
+<li>和服务相关的TProcessor由Thrift编译器产生</li>
+<li>工作流程
+<ul>
+<li>使用输入TProtocol从连接中读取数据</li>
+<li>将处理授权给用户实现的handler</li>
+<li>使用输出TProtocol向连接中写入数据</li>
+</ul></li>
+</ul>
+<h3 id="服务模型">服务模型</h3>
+<ul>
+<li>创建TTransport对象</li>
+<li>为TTransport对象创建输入、输出TProtocol对象</li>
+<li>基于输入、输出TProtocol对象创建TProcessor对象</li>
+<li>等待连接请求，交由TProcessor处理</li>
+</ul>
+<h4 id="支持的服务模型">支持的服务模型</h4>
+<ul>
+<li>TSimpleServer：简单单线程服务模型</li>
+<li>TThreadPoolServer：多线程服务模型，使用标准阻塞式I/O</li>
+<li>TNonblockingServer：多线程服务模型，使用非阻塞式I/O
+<ul>
+<li>需使用TFrameTransport传输方式</li>
+</ul></li>
+</ul>
+<h2 id="thrift语法">Thrift语法</h2>
+<h3 id="句法">句法</h3>
+<ul>
+<li><p>支持shell的<code>#</code>注释、C/C++的<code>//</code>/<code>/**/</code>注释</p></li>
+<li>struct等复杂类型定义中
+<ul>
+<li>类型名和<code>{</code>之间必须有空格</li>
+<li>各字段之间<code>,</code>分割（末尾不能有<code>,</code>）</li>
+<li>方法可以使用<code>;</code>、<code>,</code>结尾</li>
+</ul></li>
+</ul>
+<h3 id="函数">函数</h3>
+<h4 id="参数">参数</h4>
+<ul>
+<li>可以是基本类型、结构体</li>
+<li>参数是常量<code>const</code>，不能作为返回值</li>
+</ul>
+<h4 id="返回值">返回值</h4>
+<ul>
+<li>可以是基本类型、结构体</li>
+</ul>
+<h2 id="数据类型">数据类型</h2>
+<h3 id="基本类型">基本类型</h3>
+<p>不支持无符号整形</p>
+<ul>
+<li><code>bool</code></li>
+<li><code>byte</code></li>
+<li><code>i16</code></li>
+<li><code>i32</code></li>
+<li><code>i64</code></li>
+<li><code>double</code></li>
+<li><code>string</code></li>
+<li><code>binary</code>：字节数组</li>
+</ul>
+<h3 id="泛型容器">泛型（容器）</h3>
+<p>容器中元素类型可以是除了service以外的任何类型（包括结构体、 异常）</p>
+<ul>
+<li><code>map&lt;t1, t2&gt;</code>：字典</li>
+<li><code>list&lt;t1&gt;</code>：列表</li>
+<li><code>set&lt;t1&gt;</code>：集合</li>
+</ul>
+<h3 id="结构体">结构体</h3>
+<p>Thrift结构体概念上同C结构体：将相关数据封装</p>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct Work &#123;</span><br><span class="line">	1: i32 num1=0,</span><br><span class="line">	2: i32 num2,</span><br><span class="line">	3: Operation op,</span><br><span class="line">	4: optional string comment,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>编译为面向对象语言时：将被转换为类</p></li>
+<li>结构体中，每个字段包含
+<ul>
+<li>整数ID</li>
+<li>数据类型</li>
+<li>字段名</li>
+<li>可选的默认值</li>
+</ul></li>
+<li>字段可选：<strong>规范</strong>的struct定义中，每个域都使用<code>optional</code> 、<code>required</code>关键字标识
+<ul>
+<li><code>optional</code>：字段未设置时，序列化输出时不被包括</li>
+<li><code>required</code>：字段未设置时，Thrift给与提示</li>
+</ul></li>
+<li><p>不支持继承</p></li>
+</ul>
+<h3 id="exception">Exception</h3>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exception InvalidOperation &#123;</span><br><span class="line">	1: i32 what,</span><br><span class="line">	2: string why</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>异常在语法、功能上类似于结构体，使用<code>exception</code>声明，但 语义不同</li>
+</ul>
+<h3 id="service">Service</h3>
+<p>Thrift编译器根据选择的目标语言为server产生服务接口代码，为 client产生桩代码</p>
+<ul>
+<li>函数、参数列表定义方式同struct</li>
+<li>支持继承：<code>extends</code></li>
+</ul>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">service Twitter &#123;</span><br><span class="line">	# Twitter和`&#123;`中需要有空格</span><br><span class="line">	void ping(),</span><br><span class="line">	bool postTweet(1: Tweet tweet);</span><br><span class="line">	TweetSearchResult searchTweets(1: string query);</span><br><span class="line">	oneway void zip();</span><br></pre></td></tr></table></figure>
+<h3 id="enum">enum</h3>
+<p>枚举类型</p>
+<ul>
+<li>枚举常量必须时32位正整数</li>
+</ul>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">enum TweetType &#123;</span><br><span class="line">	TWEET,</span><br><span class="line">	RETWEET = 2,</span><br><span class="line">	DM = 0xa,</span><br><span class="line">	REPLY</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="const">const</h3>
+<p>常量</p>
+<ul>
+<li>复杂类型、结构体可以使用JSON标识</li>
+</ul>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">i32</span> INT_CONST = <span class="number">1234</span></span><br><span class="line"><span class="keyword">const</span> map&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt; MAP_CONST = &#123;<span class="string">"hello"</span>: <span class="string">"world"</span>, <span class="string">"1"</span>: <span class="string">"2"</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="typedef">typedef</h3>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef i32 new_type</span><br></pre></td></tr></table></figure>
+<h2 id="namespace">namespace</h2>
+<p>Thrift命名空间同C++中namespace类似</p>
+<ul>
+<li>均提供组织（隔离）代码的方式</li>
+<li>因为不同的语言有不同的命名空间定义方式（如：python中 module），Thrift允许针对特定语言定义namespace</li>
+</ul>
+<figure class="highlight thrift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> cpp com.example.project</span><br><span class="line"><span class="keyword">namespace</span> java com.example.project</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Web/" rel="tag"># Web</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/keras/acitivation/" rel="next" title="激活函数">
+                <i class="fa fa-chevron-left"></i> 激活函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/zzdaily/pc/pc_hardware/" rel="prev" title="PC硬件">
+                PC硬件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#thrift架构"><span class="nav-number">1.</span> <span class="nav-text">Thrift架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#thrift网络栈"><span class="nav-number">1.1.</span> <span class="nav-text">Thrift网络栈</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ttransport"><span class="nav-number">1.1.1.</span> <span class="nav-text">TTransport</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#传输协议"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">传输协议</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tprotocol"><span class="nav-number">1.1.2.</span> <span class="nav-text">TProtocol</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#数据格式"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">数据格式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tprocessor"><span class="nav-number">1.1.3.</span> <span class="nav-text">TProcessor</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务模型"><span class="nav-number">1.2.</span> <span class="nav-text">服务模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持的服务模型"><span class="nav-number">1.2.1.</span> <span class="nav-text">支持的服务模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#thrift语法"><span class="nav-number">2.</span> <span class="nav-text">Thrift语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#句法"><span class="nav-number">2.1.</span> <span class="nav-text">句法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数"><span class="nav-number">2.2.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数"><span class="nav-number">2.2.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回值"><span class="nav-number">2.2.2.</span> <span class="nav-text">返回值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">3.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本类型"><span class="nav-number">3.1.</span> <span class="nav-text">基本类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型容器"><span class="nav-number">3.2.</span> <span class="nav-text">泛型（容器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结构体"><span class="nav-number">3.3.</span> <span class="nav-text">结构体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exception"><span class="nav-number">3.4.</span> <span class="nav-text">Exception</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service"><span class="nav-number">3.5.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enum"><span class="nav-number">3.6.</span> <span class="nav-text">enum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const"><span class="nav-number">3.7.</span> <span class="nav-text">const</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#typedef"><span class="nav-number">3.8.</span> <span class="nav-text">typedef</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#namespace"><span class="nav-number">4.</span> <span class="nav-text">namespace</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

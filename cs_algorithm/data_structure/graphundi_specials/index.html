@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="无向图衍生">
+<meta name="keywords" content="算法,数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无向图衍生">
+<meta property="og:url" content="https://xyy15926.github.io/cs_algorithm/data_structure/graphundi_specials/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="无向图衍生">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/bipartite_konig.png">
+<meta property="og:updated_time" content="2019-03-24T01:03:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="无向图衍生">
+<meta name="twitter:description" content="无向图衍生">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/bipartite_konig.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_algorithm/data_structure/graphundi_specials/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>无向图衍生 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_algorithm/data_structure/graphundi_specials/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">无向图衍生
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-24 09:03:52" itemprop="dateCreated datePublished" datetime="2019-03-24T09:03:52+08:00">2019-03-24</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">无向图衍生</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="bipartite-graph">Bipartite Graph</h2>
+<p>二分图：所有顶点可以分为两个不相交集合U、V，两个集合大小不定 相等，但每条边都连接两个集合中各一顶点</p>
+<ul>
+<li><p>可以证明：<strong>当且仅当</strong>图中不存在奇数长度回路时，为二分图</p></li>
+<li><p>二分图中顶点可以可以染成两种颜色，使得每条边两头顶点颜色 不同</p></li>
+<li><p>矩阵存储二分图时，因为U、V内部节点之间无边，大部分场景 只需要<span class="math inline">\(|V| * |U|\)</span>的矩阵（对有序、加权适用）</p></li>
+<li>性质
+<ul>
+<li>二分图匹配意义：同类型（集合内部）之间没有连接</li>
+</ul></li>
+</ul>
+<h3 id="augmenting-path">Augmenting-Path</h3>
+<p>（二分图）增益路径：对合法匹配M，简单<strong>路径两端</strong>连接V、U中 的自由顶点，路径中<strong>边</strong>交替出现在<span class="math inline">\(E-M, M\)</span>中，称M的增益路径</p>
+<ul>
+<li><p>增益路径长度总为奇数，为M中匹配两倍+1</p></li>
+<li><p>则路径中奇数边组成新的匹配，比M多一条边</p></li>
+</ul>
+<h3 id="增益路径-最大匹配证明">增益路径-最大匹配证明</h3>
+<p>当且仅当G中不存在M增益路径时，M为G最大匹配</p>
+<p>必要性</p>
+<ul>
+<li>若M存在增益路径，则可以扩展M得到更多匹配，M不是最大匹配</li>
+</ul>
+<p>充分性</p>
+<ul>
+<li><p>若存在M无增益路径，但不为最大匹配，设<span class="math inline">\(M{*}\)</span>是G中的最大 匹配，则<span class="math inline">\(M{*}\)</span>中边至少比M中边数量大1，有 <span class="math inline">\(|M^{*}| &gt; |M|, |M^{*} - M| &gt; |M - M^{*}|\)</span></p></li>
+<li><p>则两者对称差集为 <span class="math inline">\(M \bigoplus M^{*} = (M - M^{*}) \cup (M^{*} - M)\)</span></p></li>
+<li><p>设<span class="math inline">\(G^{&#39;} \subseteq G\)</span>为二者差集中所有边、点，根据匹配 定义，<span class="math inline">\(G^{&#39;}\)</span>中任何<strong>单个点</strong>和<span class="math inline">\(M, M^{*}\)</span>相连接不会超过 一条边</p></li>
+<li><p>则<span class="math inline">\(G^{&#39;}\)</span>中顶点连通度不大于2，其中连通分量为</p>
+<ul>
+<li><p>偶数长度回路，其中边交替属于 <span class="math inline">\(|M^{*} - M|, |M - M^{*}|\)</span>，在两者中数量相同</p>
+<ul>
+<li><p>若不交替，则说明连续两条边在同个匹配中，有交点， 和匹配定义冲突</p></li>
+<li><p>若不为偶数长度，同样的首、尾两条边在同一匹配中， 和匹配定义冲突</p></li>
+</ul></li>
+<li><p>交替路径（无环）</p>
+<ul>
+<li><p>因为<span class="math inline">\(|M^{*} - M| &gt; |M - M^{*}|\)</span>，所以<span class="math inline">\(G^{*}\)</span>中 不可能仅有回路</p></li>
+<li><p>所以至少存在一条具有交替边路径，起点终点都是 <span class="math inline">\(M^{*} - M\)</span>同一条边（如单边路径），M具有增益路径 ，矛盾</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>最大匹配求解匈牙利算法实现详见<em>graph</em></li>
+</ul>
+</blockquote>
+<h3 id="konig-theorem">Konig Theorem</h3>
+<p>Konig定理：二分图中最大匹配数|M| = 最小点覆盖数|C|</p>
+<ul>
+<li><p>已经通过匈牙利算法求出最大匹配M</p></li>
+<li><p>从集合V中<strong>每个未被匹配</strong>点开始，走一条<strong>类似</strong>增益路径 的交替路径，标记路径中的所有点</p>
+<ul>
+<li><p>只是因为已经找到了最大匹配，所以路径另外一端不可能 是自由顶点</p></li>
+<li><p><strong>允许重复</strong>走过同一条边</p></li>
+</ul></li>
+<li><p>路径中V到U的均为非匹配边、U到V均为匹配边</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>当然也可以从U的所有未匹配顶点开始</li>
+</ul>
+</blockquote>
+<p>记集合V中中未被访问、U集合中已被访问的已匹配顶点点集为C，则 <span class="math inline">\(顶点数目|C| = 最大匹配数 = 最小点覆盖数\)</span> <img src="/imgs/bipartite_konig.png" alt="biparttite_konig"></p>
+<ul>
+<li><p>因为每个点都是M中某边端点，且V中已标记同U中未标记、V中 未标记顶点同U中已标记一一对应，为匹配边两端点，所以</p>
+<p><span class="math display">\[
+顶点数 = V中未被访问 + U中已访问 = \\
+V中未访问 + V中已访问 = （最大）匹配数
+\]</span></p></li>
+<li><p>在最大匹配情况下，所有边至少有一个端点为已匹配点</p>
+<ul>
+<li><p>对于匹配边，肯定被C中顶点覆盖</p></li>
+<li><p>若非匹配顶点在V中，则一定在某个路径中被访问，则被U 中某个已访问匹配顶点覆盖</p></li>
+<li><p>若非匹配顶点在U中，则被V中未访问顶点覆盖的</p></li>
+<li>或者说不存在这样的边：其左端点没有标记、而右端点有 标记
+<ul>
+<li>匹配边肯定不是起点，不可能</li>
+<li>非匹配边，右端有标记则能直接访问左端，标记左端 （通样广度优先搜索遍历所有邻接有顶点点）</li>
+</ul></li>
+</ul></li>
+<li><p>而要覆盖匹配边需要至少<span class="math inline">\(|M|\)</span>个点，所以<span class="math inline">\(|M|\)</span>是最小覆盖点数</p></li>
+</ul>
+<h4 id="推论-1">推论 1</h4>
+<p>二分图中：最小边覆盖|W| = 图中顶点数|V| - 最小点覆盖数|C|</p>
+<p><span class="math display">\[
+|W| = |V| - |M| = |V| - |C|
+\]</span></p>
+<h2 id="ordered-bipartite-graph">Ordered Bipartite Graph</h2>
+<p>有序二分图：以同一顶点作为端点的边的有优先级（独立于其他点）</p>
+<ul>
+<li>即：V中顶点对U中顶点都有优先级排序，U中顶点对V中顶点也有 优先级排序</li>
+</ul>
+<h3 id="marriage-matching">Marriage Matching</h3>
+<p>婚姻匹配问题可以使用特殊的<strong>完全有序二分图</strong>代表</p>
+<ul>
+<li><p>集合V（男士集合）、U（女士集合）大小相同为n</p></li>
+<li><p>任意男士、女士都有之间都有边连接，即任意男士、女士都需要 给出所有女士、男士优先级</p></li>
+</ul>
+<h4 id="存储表示方法">存储、表示方法</h4>
+<ul>
+<li><p>优先列表：各男士、女士按照异性优先级排序列表，共2n个</p>
+<ul>
+<li>对实现匹配算法而言效率更高</li>
+</ul></li>
+<li><p>等级矩阵：男士、女士为分别作为矩阵行、列，矩阵元素<span class="math inline">\(P_ij\)</span> 为男士<span class="math inline">\(m_i\)</span>对女士<span class="math inline">\(w_j\)</span>优先级排序、女士<span class="math inline">\(w_j\)</span>对男士<span class="math inline">\(m_i\)</span> 优先级排序元组</p>
+<ul>
+<li>更容易看出集合元素匹配</li>
+<li>只需要<span class="math inline">\(n * n\)</span>阶方阵</li>
+</ul></li>
+</ul>
+<h4 id="stable-marriage-matching">Stable Marriage Matching</h4>
+<p>对包含n个对的婚姻匹配M</p>
+<ul>
+<li><p><em>Block Pair</em>：受阻对，满足<span class="math inline">\(m \in V, w \in U\)</span>，而<span class="math inline">\((m, w)\)</span> 更倾向于对方，而不是匹配M中对象</p></li>
+<li><p><em>Stable Marriage Matching</em>：稳定婚姻匹配，不存在受阻对的 婚姻匹配</p></li>
+</ul>
+<h4 id="稳定婚姻存在性">稳定婚姻存在性</h4>
+<p>V中存在自由男士时，任选<em>求婚</em>、<em>回应</em>之一执行，直至不存在 自由男士</p>
+<blockquote>
+<ul>
+<li>求婚：自由男士m向女士w求婚，w为其优先级最大、之前未拒绝 过其女士（可以是已匹配）</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>回应：若女士w自由则接受男士m求婚，与之配对；女士w不自由 则把m同当前配偶匹配，选择其中优先级较高者</li>
+</ul>
+</blockquote>
+<p>当不存在自由男士时，得到匹配M就是稳定匹配</p>
+<ul>
+<li><p>若M是不稳定的，设存在受阻对<span class="math inline">\((m, w)\)</span></p></li>
+<li><p>因为m按照降序求婚，所以m必然在某次迭代向w求过婚，则w当前 对偶必然比m拥有更高优先级，和受阻对假设矛盾</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>稳定婚姻问题求解算法参见<em>graph</em></li>
+</ul>
+</blockquote>
+<h2 id="weighted-bipartite-graph">Weighted Bipartite Graph</h2>
+<p>加权二分图；每条边都有权重的二分图</p>
+<h3 id="distribution-problem">Distribution Problem</h3>
+<p>分配问题可以使用特殊的<strong>完全加权二分图</strong>代表</p>
+<ul>
+<li><p>集合V（人员集合）、U（任务集合）大小相同为n</p></li>
+<li><p>任意人员、任务有边相连，人员、任务内部之间无边</p></li>
+</ul>
+<h4 id="存储方法">存储方法</h4>
+<ul>
+<li><p>使用<span class="math inline">\(n * n\)</span>阶成本矩阵C存储，其元素<span class="math inline">\(c_{ij}\)</span>表示人员<span class="math inline">\(i\)</span> 完成任务<span class="math inline">\(j\)</span>的成本</p></li>
+<li><p>则问题转化为：从成本矩阵中每行分别选择元素，且元素不属于 同一行，使得和最小</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>（最小成本）分配问题算法参见<em>graph</em></li>
+</ul>
+</blockquote>
+<h2 id="biconnected-graph"><em>Biconnected Graph</em></h2>
+<blockquote>
+<ul>
+<li><em>articulation point</em>：关节点，删除顶点v、与v相连的各边 之后，将图一个连通分量分割成 两个、两个以上连通分量，则 称顶点v为图的一个关节点</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>biconnected graph</em>：重连通图，没有关节点的连通图</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>重连通图中任意一对结点之间至少存在两条路径</p></li>
+<li><p>若在重连通图中至少删除k个顶点才能破坏图的连通性，则称图 的<strong>连通度</strong>为k</p></li>
+</ul>
+<h3 id="求解关节点">求解关节点</h3>
+<p>利用DFS可以求出图的关节点，判断图是否是重连通的，对DFS生成树</p>
+<ul>
+<li>生成树有两棵及以上子树，则根节点为关节点
+<ul>
+<li>因为不同子树之间不存在连通不同子树顶点的边</li>
+</ul></li>
+<li>非叶子顶点v<strong>某棵子树</strong>中没有指向v前驱的回边，则v为关节点</li>
+</ul>
+<blockquote>
+<ul>
+<li>算法参见<em>algorithm/problems/graph</em></li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_algorithm/data_structure/graph_set/" rel="next" title="无向图">
+                <i class="fa fa-chevron-left"></i> 无向图
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_probability/ref/" rel="prev" title="参考">
+                参考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bipartite-graph"><span class="nav-number">1.</span> <span class="nav-text">Bipartite Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#augmenting-path"><span class="nav-number">1.1.</span> <span class="nav-text">Augmenting-Path</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增益路径-最大匹配证明"><span class="nav-number">1.2.</span> <span class="nav-text">增益路径-最大匹配证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#konig-theorem"><span class="nav-number">1.3.</span> <span class="nav-text">Konig Theorem</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#推论-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">推论 1</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ordered-bipartite-graph"><span class="nav-number">2.</span> <span class="nav-text">Ordered Bipartite Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#marriage-matching"><span class="nav-number">2.1.</span> <span class="nav-text">Marriage Matching</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#存储表示方法"><span class="nav-number">2.1.1.</span> <span class="nav-text">存储、表示方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stable-marriage-matching"><span class="nav-number">2.1.2.</span> <span class="nav-text">Stable Marriage Matching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#稳定婚姻存在性"><span class="nav-number">2.1.3.</span> <span class="nav-text">稳定婚姻存在性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#weighted-bipartite-graph"><span class="nav-number">3.</span> <span class="nav-text">Weighted Bipartite Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#distribution-problem"><span class="nav-number">3.1.</span> <span class="nav-text">Distribution Problem</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#存储方法"><span class="nav-number">3.1.1.</span> <span class="nav-text">存储方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#biconnected-graph"><span class="nav-number">4.</span> <span class="nav-text">Biconnected Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#求解关节点"><span class="nav-number">4.1.</span> <span class="nav-text">求解关节点</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

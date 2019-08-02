@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="HDFS">
+<meta name="keywords" content="工具,Hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS">
+<meta property="og:url" content="https://xyy15926.github.io/tools/hadoop/hdfs/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="HDFS">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-17T03:57:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HDFS">
+<meta name="twitter:description" content="HDFS">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/hadoop/hdfs/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>HDFS | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/hadoop/hdfs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">HDFS
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:08" itemprop="dateModified" datetime="2019-02-17T11:57:08+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">HDFS</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="hdfs设计模式">HDFS设计模式</h2>
+<ul>
+<li>数据读取、写入
+<ul>
+<li>HDFS一般存储不可更新的文件，只能对文件进行数据追加 ，也不支持多个写入者的操作</li>
+<li>认为一次写入、多次读取是最高效的访问模式</li>
+<li>namenode将metadata存储在内存中，所以文件系统所能 存储的文件总数受限于NameNode的内存</li>
+</ul></li>
+<li>适合模式
+<ul>
+<li>每次分析都涉及数据集大部分数据甚至全部，因此读取整个 数据集的大部分数据、甚至全部，因此读取整个数据集的 时间比读取第一条记录时间延迟更重要</li>
+<li>HDFS不适合要求地时间延迟的数据访问应用，HDFS是为 高数据吞吐量应用优化的，可能会提高时间延迟</li>
+</ul></li>
+<li>硬件：HDFS无需高可靠硬件，HDFS被设计为即使节点故障也能 继续运行，且不让用户察觉</li>
+</ul>
+<h3 id="数据块">数据块</h3>
+<p>和普通文件系统一样，HDFS同样也有块的概念，默认为64MB</p>
+<ul>
+<li><p>HDFS上的文件也被划分为块大小的多个chunk，作为独立的存储 单元，但是HDFS中小于块大小的文件不会占据整个块空间</p></li>
+<li>对分布式文件系统块进行抽象的好处
+<ul>
+<li>文件大小可以大于网络中任意一个磁盘的容量</li>
+<li>使用抽象块而非整个文件作为存储单元，简化了存储子系统 的设计
+<ul>
+<li>简化存储管理，块大小固定，计算磁盘能存储块数目 相对容易</li>
+<li>消除了对元素见的顾虑，文件的元信息（权限等）， 不需要和块一起存储，可由其他系统单独管理</li>
+</ul></li>
+</ul></li>
+<li><p>块非常适合用于数据备份，进而提供数据容错能力、提高可用性</p></li>
+</ul>
+<h3 id="namenode">NameNode</h3>
+<p>HDFS系统中的管理者</p>
+<ul>
+<li>集中存储了HDFS的元信息Metadata
+<ul>
+<li>维护文件系统的文件树、全部的文件和文件夹的元数据</li>
+<li>管理文件系统的Namespace：创建、删除、修改、列出所有 文件、目录</li>
+</ul></li>
+<li>执行数据块的管理操作
+<ul>
+<li>把文件映射到所有的数据块</li>
+<li>创建、删除数据块</li>
+<li>管理副本的Placement、Replication</li>
+</ul></li>
+<li>负责DataNode的成员管理
+<ul>
+<li>接受DataNode的Registration</li>
+<li>接受DataNode周期性的Heart Beat</li>
+</ul></li>
+</ul>
+<p>Hadoop上层模块，根据NameNode上的元信息，就可以知道每个数据块 有多少副本、存放在哪些节点上，据此分配计算任务，通过 <strong>Move Computation to Data</strong>，而不是移动数据本身，减少数据 移动开销，加快计算过程</p>
+<h4 id="metadata的保存">Metadata的保存</h4>
+<p>为了支持高效的存取操作，NameNode把所有的元信息保存在主内存， 包括文件和数据块的命名空间、文件到数据块的映射、数据块副本 的位置信息。文件命名空间、文件到数据块的映射信息也会持久化 到NameNode本地文件系统</p>
+<ul>
+<li>FsImage：命名空间镜像文件，保存整个文件系统命名空间、 文件到数据块的映射信息</li>
+<li>EditLog：编辑日志文件，是一个Transaction Log文件，记录了 对文件系统元信息的所有更新操作：创建文件、改变文件的 Replication Factor</li>
+</ul>
+<p>NameNode启动时，读取FsImage、EditLog文件，把EditLog的所有 事务日志应用到从FsImage文件中装载的旧版本元信息上，生成新的 FsImage并保存，然后截短EditLog</p>
+<h4 id="namenode可恢复性">NameNode可恢复性</h4>
+<h5 id="多个文件系统备份">多个文件系统备份</h5>
+<p>备份文件系统元信息的持久化版本</p>
+<ul>
+<li>在NameNode写入元信息的持久化版本时，同步、atomic写入多个 文件系统（一般是本地磁盘、mount为本地目录的NFS）</li>
+</ul>
+<h5 id="secondary-namenode">Secondary NameNode</h5>
+<p>运行Secondary NameNode：负责周期性的使用EditLog更新 FsImage，保持EditLog在一定规模内</p>
+<ul>
+<li><p>Seconadary NameNode保存FsImage、EditLog文件副本， 每个一段时间从NameNode拷贝FsImage，和EditLog文件进行 合并，然后把更新后的FsImage复制回NameNode</p></li>
+<li><p>若NameNode宕机，可以启动其他机器，从Secondary NameNode获得FsImage、EditLog，恢复宕机之前的最新的 元信息，当作新的NameNode，也可以直接作为主NameNode</p></li>
+<li><p>Secondary NameNode保存的出状态总是滞后于主节点，需要 从NFS获取NameNode部分丢失的metadata</p></li>
+<li><p>Secondary NameNode需要运行在另一台机器，需要和主 NameNode一样规模的CPU计算能力、内存，以便完成元信息 管理</p></li>
+</ul>
+<p>想要从失效的NameNode恢复，需要启动一个拥有文件系统数据副本的 新NameNode，并配置DataNode和客户端以便使用新的NameNode</p>
+<ul>
+<li>将namespace的映像导入内存中</li>
+<li>重做编辑日志</li>
+<li>接收到足够多的来自DataNode的数据块报告，并退出安全模式</li>
+</ul>
+<h3 id="datanode">DataNode</h3>
+<p>HDFS中保存数据的节点</p>
+<ul>
+<li><p>数据被切割为多个数据块，以冗余备份的形式存储在多个 DataNode中，因此不需要再每个节点上安装RAID存储获得硬件上 可靠存储支持。DataNode之间可以拷贝数据副本，从而可以重新 平衡每个节点存储数据量、保证数据可靠性（保证副本数量）</p></li>
+<li><p>DotaNode定期向NameNode报告其存储的数据块列表，以备使用者 通过直接访问DataNode获得相应数据</p></li>
+<li><p>所有NameNode和DataNode之间的通讯，包括DataNode的注册、 心跳信息、报告数据块元信息，都是由DataNode发起请求，由 NameNode被动应答和完成管理</p></li>
+</ul>
+<h3 id="hdfs高可用性">HDFS高可用性</h3>
+<p>对于大型集群，NN冷启动需要30min甚至更长，因此Hadoop2.x中添加 对高可用性HA（high-availability）的支持</p>
+<ul>
+<li>配置Active-Standby NameNode
+<ul>
+<li>ANN失效后，SNN就会接管任务并开始服务，没有明显中断</li>
+<li>ANN、SNN应该具有相同的硬件配置</li>
+</ul></li>
+<li>NN之间需要通过<strong>高可用的共享存储（JounalNode）</strong>实现 Editlog共享
+<ul>
+<li>JN进程轻量，可以和其他节点部署在同一台机器</li>
+<li>JN至少为3个，最好为奇数个，这样JN失效<span class="math inline">\((n-1)/2\)</span>个时 仍然可以正常工作</li>
+<li>SNN接管工作后，将通读共享编辑日志直到末尾，实现与ANN 状态同步</li>
+</ul></li>
+<li><p>DN需要同时向两个NN发送数据块处理报告，因为数据块映射信息 存储在NN内存中</p></li>
+<li><p>客户端需要使用特定机制处理NN失效问题，且机制对用户透明</p></li>
+<li><p>如果两个namenode同时失效，同样可以冷启动其他namenode， 此时情况就和<em>no-HA</em>模式冷启动类似</p></li>
+</ul>
+<p>注意：HA模式下，不应该再次配置Secondary NameNode &gt; Note that, in an HA cluster, the Standby NameNode also performs checkpoints of the namespace state, and thus it is not necessary to run a Secondary NameNode, CheckpointNode, or BackupNode in an HA cluster. In fact, to do so would be an error. This also allows one who is reconfiguring a non-HA-enabled HDFS cluster to be HA-enabled to reuse the hardware which they had previously dedicated to the Secondary NameNode.</p>
+<h4 id="failover-controller">Failover Controller</h4>
+<p>故障转移控制器系统中有一个新实体管理者管理namenode之间切换，</p>
+<ul>
+<li><p>Failover Controller最初实现基于Zookeeper，可插拔</p></li>
+<li>每个namenode运行着一个Failover Controller，用于监视宿主 namenode是否失效（heart beat机制）， 并在失效时进行故障 切换
+<ul>
+<li>管理员也可以手动发起故障切换，称为<em>平稳故障转移</em></li>
+</ul></li>
+<li>在非平稳故障切换时，无法确切知道失效namenode是否已经停止 运行，如网速慢、网络切割均可能激发故障转移，引入fencing 机制
+<ul>
+<li>杀死namenode进程</li>
+<li>收回对共享存储目录权限</li>
+<li>屏蔽相应网络端口</li>
+<li>STONITH：shoot the other node in the head，断电</li>
+</ul></li>
+</ul>
+<h3 id="联邦hdfs">联邦HDFS</h3>
+<p>NameNode在内存中保存文件系统中每个文件、数据块的引用关系， 所以对于拥有大量文件的超大集群，内存将成为系统扩展的瓶颈， 2.x中引入的联邦HDFS可以添加NameNode实现扩展</p>
+<ul>
+<li>每个NameNode维护一个namespace volume，包括命名空间的 元数据、命令空间下的文件的所有数据块、数据块池</li>
+<li>namespace volume之间相互独立、不通信，其中一个NameNode 失效也不会影响其他NameNode维护的命名空间的可用性</li>
+<li>数据块池不再切分，因此集群中的DataNode需要注册到每个 NameNode，并且存储来自多个数据块池的数据块</li>
+</ul>
+<h2 id="hadoop文件系统">Hadoop文件系统</h2>
+<p>Hadoop有一个抽象问的文件系统概念，HDFS只是其中的一个实现， Java抽象类<code>org.apche.hadoop.fs.FileSystem</code>定义了Hadoop中的 一个文件系统接口，包括以下具体实现</p>
+<table>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>文件系统</th>
+<th>URI方案</th>
+<th>Java实现</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Local</td>
+<td><code>file</code></td>
+<td><code>fs.LocalFileSystem</code></td>
+<td>使用客户端校验和本地磁盘文件系统，没有使用校验和文件系统<code>RawLocalFileSystem</code></td>
+</tr>
+<tr class="even">
+<td>HDFS</td>
+<td><code>hdfs</code></td>
+<td><code>hdfs.DistributedFileSystem</code></td>
+<td>HDFS设计为与MapReduce结合使用实现高性能</td>
+</tr>
+<tr class="odd">
+<td>HFTP</td>
+<td><code>hftp</code></td>
+<td><code>hdfs.HftpFileSystem</code></td>
+<td>在HTTP上提供对HDFS只读访问的文件系统，通常与distcp结合使用，以实现在运行不同版本HDFS集群之间复制数据</td>
+</tr>
+<tr class="even">
+<td>HSFTP</td>
+<td><code>hsftp</code></td>
+<td><code>hdfs.HsftpFileSystem</code></td>
+<td>在HTTPS上同以上</td>
+</tr>
+<tr class="odd">
+<td>WebHDFS</td>
+<td><code>Webhdfs</code></td>
+<td><code>hdfs.web.WebHdfsFileSystem</code></td>
+<td>基于HTTP，对HDFS提供安全读写访问的文件系统，为了替代HFTP、HFSTP而构建</td>
+</tr>
+<tr class="even">
+<td>HAR</td>
+<td><code>har</code></td>
+<td><code>fs.HarFileSystem</code></td>
+<td>构建于其他文件系统之上，用于文件存档的文件系统，通常用于需要将HDFS中的文件进行存档时，以减少对NN内存的使用</td>
+</tr>
+<tr class="odd">
+<td>hfs</td>
+<td><code>kfs</code></td>
+<td><code>fs.kfs.kosmosFileSystem</code></td>
+<td>CloudStore（前身为Kosmos文件系统）类似于HDFS（GFS），<em>C++</em>编写</td>
+</tr>
+<tr class="even">
+<td>FTP</td>
+<td><code>ftp</code></td>
+<td><code>fs.ftp.FTPFileSystem</code></td>
+<td>由FTP服务器支持的文件系统</td>
+</tr>
+<tr class="odd">
+<td>S3（原生）</td>
+<td><code>S3n</code></td>
+<td><code>fs.s3native.NativeS3FileSystem</code></td>
+<td>由Amazon S3支持的文件系统</td>
+</tr>
+<tr class="even">
+<td>S3（基于块）</td>
+<td><code>S3</code></td>
+<td><code>fs.sa.S3FileSystem</code></td>
+<td>由Amazon S3支持的文件系统，以块格式存储文件（类似于HDFS），以解决S3Native 5GB文件大小限制</td>
+</tr>
+<tr class="odd">
+<td>分布式RAID</td>
+<td><code>hdfs</code></td>
+<td><code>hdfs.DistributedRaidFileSystem</code></td>
+<td>RAID版本的HDFS是为了存档而设计的。针对HDFS中每个文件，创建一个更小的检验文件，并允许数据副本变为2，同时数据丢失概率保持不变。需要在集群中运行一个RaidNode后台进程</td>
+</tr>
+<tr class="even">
+<td>View</td>
+<td><code>viewfs</code></td>
+<td><code>viewfs.ViewFileSystem</code></td>
+<td>针对其他Hadoop文件系统挂载的客户端表，通常用于联邦NN创建挂载点</td>
+</tr>
+</tbody>
+</table>
+<h3 id="文件系统接口">文件系统接口</h3>
+<p>Hadoop对文件系统提供了许多接口，一般使用<strong>URI方案</strong>选择合适的 文件系统实例进行交互</p>
+<h4 id="命令行接口">命令行接口</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ hadoop fs -copyFromLocal file hdfs://localhost/user/xyy15926/file</span><br><span class="line">	<span class="comment"># 调用Hadoop文件系统的shell命令`fs`</span></span><br><span class="line">	<span class="comment"># `-copyFromLocalFile`则是`fs`子命令</span></span><br><span class="line">	<span class="comment"># 事实上`hfds://localhost`可以省略，使用URI默认设置，即</span></span><br><span class="line">		<span class="comment"># 在`core-site.xml`中的默认设置</span></span><br><span class="line">	<span class="comment"># 类似的默认复制文件路径为HDFS中的`$HOME`</span></span><br><span class="line"></span><br><span class="line">$ hadoop fs -copyToLocal file file</span><br></pre></td></tr></table></figure>
+<h4 id="http">HTTP</h4>
+<ul>
+<li>直接访问：HDFS后台进程直接服务来自于客户端的请求
+<ul>
+<li>由NN内嵌的web服务器提供目录服务（默认50070端口）</li>
+<li>DN的web服务器提供文件数据（默认50075端口）</li>
+</ul></li>
+<li>代理访问：依靠独立代理服务器通过HTTP访问HDFS
+<ul>
+<li>代理服务器可以使用更严格的防火墙策略、贷款限制策略</li>
+</ul></li>
+</ul>
+<h4 id="c">C</h4>
+<p>Hadoop提供<code>libhdfs</code>的C语言库，是Java <code>FileSystem</code>接口类的 镜像</p>
+<ul>
+<li>被写成访问HDFS的C语言库，但其实可以访问全部的Hadoop文件 系统</li>
+<li>使用Java原生接口（JNI）调用Java文件系统客户端</li>
+</ul>
+<h4 id="fuse">FUSE</h4>
+<p>Filesystem in Userspace允许把按照用户空间实现的文件系统整合 成一个Unix文件系统</p>
+<ul>
+<li>使用Hadoop Fuse-DFS功能模块，任何一个Hadoop文件系统可以 作为一个标准文件系统进行挂载
+<ul>
+<li>Fuse_DFS使用C语言实现，调用libhdfs作为访问HDFS的接口</li>
+</ul></li>
+<li>然后可以使用Unix工具（<code>ls</code>、<code>cat</code>等）与文件系统交互</li>
+<li>还可以使用任何编程语言调用POSIX库访问文件系统</li>
+</ul>
+<h3 id="读文件">读文件</h3>
+<ol type="1">
+<li><p>客户端程序使用要读取的文件名、Read Range的开始偏移量、 读取范围的程度等信息，询问NameNode</p></li>
+<li><p>NameNode返回落在读取范围内的数据块的Location信息，根据 与客户端的临近性（Proximity）进行排序，客户端一般选择 最临近的DataNode发送读取请求</p></li>
+</ol>
+<p>具体实现如下</p>
+<ol type="1">
+<li><p>客户端调用<code>FileSystem</code>对象<code>open</code>方法，打开文件，获得 <code>DistributedFileSystem</code>类的一个实例</p></li>
+<li><p><code>DistributedFileSystem</code>返回<code>FSDataInputStream</code>类的实例， 支持文件的定位、数据读取</p>
+<ul>
+<li><code>DistributedFileSystem</code>通过<strong>RPC</strong>调用NameNode，获得 文件首批若干数据块的位置信息（Locations of Blocks）</li>
+<li>对每个数据块，NameNode会返回拥有其副本的所有DataNode 地址</li>
+<li>其包含一个<code>DFSInputStream</code>对象，负责管理客户端对HDFS 中DataNode、NameNode存取</li>
+</ul></li>
+<li><p>客户端从输入流调用函数<code>read</code>，读取文件第一个数据块，不断 调用<code>read</code>方法从DataNode获取数据</p>
+<ul>
+<li><code>DFSInputStream</code>保存了文件首批若干数据块所在的 DataNode地址，连接到closest DataNode</li>
+<li>当达到数据块末尾时，<code>DFSInputStream</code>关闭到DataNode 的连接，创建到保存其他数据块DataNode的连接</li>
+<li>首批数据块读取完毕之后，<code>DFSInputStream</code>向NameNode 询问、提取下一批数据块的DataNode的位置信息</li>
+</ul></li>
+<li><p>客户端完成文件的读取，调用<code>FSDataInputStream</code>实例<code>close</code> 方法关闭文件</p></li>
+</ol>
+<h3 id="写文件">写文件</h3>
+<ul>
+<li><p>客户端询问NameNode，了解应该存取哪些DataNode，然后客户端 直接和DataNode进行通讯，使用Data Transfer协议传输数据， 这个流式数据传输协议可以提高数据传输效率</p></li>
+<li><p>创建文件时，客户端把文件数据缓存在一个临时的本地文件上， 当本地文件累计超过一个数据块大小时，客户端程序联系 NameNode，NameNode更新文件系统的NameSpace，返回Newly Allocated数据块的位置信息，客户端根据此信息本文件数据块 从临时文件Flush到DataNode进行保存</p></li>
+</ul>
+<p>具体实现如下：</p>
+<ol type="1">
+<li><p>客户端调用<code>DistributedFileSystem</code>的<code>create</code>方法</p>
+<ul>
+<li><code>DistributedFileSystem</code>通过发起RPC告诉NameNode在 其NameSpace创建一个新文件，此时新文件没有任何数据块</li>
+<li>NameNode检查：文件是否存在、客户端权限等，检查通过 NameNode为新文件创建新记录、保存其信息，否则文件创建 失败</li>
+</ul></li>
+<li><p><code>DistributedFileSystem</code>返回<code>FSDataOutputStream</code>给客户端</p>
+<ul>
+<li>其包括一个<code>DFSOutputStream</code>对象，负责和NameNode、 DataNode的通讯</li>
+</ul></li>
+<li><p>客户端调用<code>FSDataOutputStream</code>对象<code>write</code>方法写入数据</p>
+<ul>
+<li><code>DFSOutputStream</code>把数据分解为数据包Packet，写入内部 Data Queue</li>
+<li><code>DataSteamer</code>消费这个队列，写入本地临时文件中</li>
+<li>当写入数据超过一个数据块大小时，<code>DataStreamer</code>请求 NameNode为新的数据块分配空间，即选择一系列合适的 DataNode存放各个数据块各个副本</li>
+<li>存放各个副本的DataNode形成一个Pipeline，流水线上的 Replica Factor数量的DataNode接收到数据包之后转发给 下个DataNode</li>
+<li><code>DFSOutputStream</code>同时维护数据包内部Ack Queue，用于 等待接受DataNode应答信息，只有某个数据包已经被流水线 上所有DataNode应答后，才会从Ack Queue上删除</li>
+</ul></li>
+<li><p>客户端完成数据写入，调用<code>FSDataOutputStream</code>的<code>close</code> 方法</p>
+<ul>
+<li><code>DFSOutputStream</code>把所有的剩余的数据包发送到DataNode 流水线上，等待应答信息</li>
+<li>最后通知NameNode文件结束</li>
+<li>NameNode自身知道文件由哪些数据块构成，其等待数据块 复制完成，然后返回文件创建成功</li>
+</ul></li>
+</ol>
+<h2 id="hadoop平台上的列存储">Hadoop平台上的列存储</h2>
+<p>列存储的优势</p>
+<ul>
+<li><p>更少的IO操作：读取数据的时候，支持Prject Pushdown，甚至 是Predicate Pushdown，可大大减少IO操作</p></li>
+<li><p>更大的压缩比：每列中数据类型相同，可以针对性的编码、压缩</p></li>
+<li><p>更少缓存失效：每列数据相同，可以使用更适合的Cpu Pipline 编码方式，减少CPU cache miss</p></li>
+</ul>
+<h3 id="rcfile">RCFile</h3>
+<p>Record Columnar File Format：FB、Ohio州立、中科院计算所合作 研发的列存储文件格式，首次在Hadoop中引入列存储格式</p>
+<ul>
+<li><em>允许按行查询，同时提供列存储的压缩效率</em>的列存储格式
+<ul>
+<li>具备相当于行存储的数据加载速度、负载适应能力</li>
+<li>读优化可以在扫描表格时，避免不必要的数据列读取</li>
+<li>使用列维度压缩，有效提升存储空间利用率</li>
+</ul></li>
+<li>具体存储格式
+<ul>
+<li>首先横向分割表格，生成多个Row Group，大小可以由用户 指定</li>
+<li>在RowGroup内部，按照列存储一般做法，按列把数据分开， 分别连续保存
+<ul>
+<li>写盘时，RCFile针对每列数据，使用Zlib/LZO算法进行 压缩，减少空间占用</li>
+<li>读盘时，RCFile采用Lazy Decompression策略，即用户 查询只涉及表中部分列时，会跳过不需要列的解压缩、 反序列化的过程</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="orc存储格式">ORC存储格式</h3>
+<p>Optimized Row Columnar File：对RCFile优化的存储格式</p>
+<ul>
+<li><p>支持更加丰富的数据类型</p>
+<ul>
+<li>包括Date Time、Decimal</li>
+<li>Hive的各种Complex Type，包括：Struct、List、Map、 Union</li>
+</ul></li>
+<li><p>Self Describing的列存储文件格式</p>
+<ul>
+<li>为Streaming Read操作进行了优化</li>
+<li>支持快速查找少数数据行</li>
+</ul></li>
+<li><p>Type Aware的列存储文件格式</p>
+<ul>
+<li>文件写入时，针对不同的列的数据类型，使用不同的编码器 进行编码，提高压缩比
+<ul>
+<li>整数类型：Variable Length Compression</li>
+<li>字符串类型：Dictionary Encoding</li>
+</ul></li>
+</ul></li>
+<li><p>引入轻量级索引、基本统计信息</p>
+<ul>
+<li>包括各数据列的最大/小值、总和、记录数等信息</li>
+<li>在查询过程中，通过谓词下推，可以忽略大量不符合查询 条件的记录</li>
+</ul></li>
+</ul>
+<h4 id="文件结构">文件结构</h4>
+<p>一个ORC文件由多个Stripe、一个包含辅助信息的FileFooter、以及 Postscript构成</p>
+<h5 id="stripe">Stripe</h5>
+<p>每个stripe包含index data、row data、stripe footer</p>
+<ul>
+<li>stripe就是ORC File中划分的row group
+<ul>
+<li>默认大小为256MB，可扩展的长度只受HDFS约束</li>
+<li>大尺寸的strip、对串行IO的优化，能提高数据吞吐量、 读取更少的文件，同时能把减轻NN负担</li>
+</ul></li>
+<li>Index Data部分
+<ul>
+<li>包含每个列的极值</li>
+<li>一系列Row Index Entry记录压缩模块的偏移量，用于跳转 到正确的压缩块的位置，实现数据的快速读取，缺省可以 跳过10000行</li>
+</ul></li>
+<li><p>Row Data部分；包含每个列的数据，每列由若干Data Stream 构成</p></li>
+<li><p>Stripe Footer部分</p>
+<ul>
+<li>Data Stream位置信息</li>
+<li>每列数据的编码方式</li>
+</ul></li>
+</ul>
+<h5 id="file-footer">File Footer</h5>
+<p>包含该ORCFile文件中所有stripe的元信息</p>
+<ul>
+<li>每个Stripe的位置</li>
+<li>每个Stripe的行数</li>
+<li>每列的数据类型</li>
+<li>还有一些列级别的聚集结果，如：记录数、极值、总和</li>
+</ul>
+<h5 id="postscript">Postscript</h5>
+<ul>
+<li>用来存储压缩参数</li>
+<li>压缩过后的Footer的长度</li>
+</ul>
+<h3 id="parquet">Parquet</h3>
+<p>灵感来自于Google关于Drenel系统的论文，其介绍了一种支持嵌套 结构的列存储格式，以提升查询性能</p>
+<h4 id="支持">支持</h4>
+<p>Parquet为hadoop生态系统中的所有项目，提供支持高压缩率的 列存储格式</p>
+<ul>
+<li>兼容各种数据处理框架
+<ul>
+<li>MapReduce</li>
+<li>Spark</li>
+<li>Cascading</li>
+<li>Crunch</li>
+<li>Scalding</li>
+<li>Kite</li>
+</ul></li>
+<li>支持多种对象模型
+<ul>
+<li>Avro</li>
+<li>Thrift</li>
+<li>Protocol Buffers</li>
+</ul></li>
+<li>支持各种查询引擎
+<ul>
+<li>Hive</li>
+<li>Impala</li>
+<li>Presto</li>
+<li>Drill</li>
+<li>Tajo</li>
+<li>HAWQ</li>
+<li>IBM Big SQL</li>
+</ul></li>
+</ul>
+<h4 id="parquet组件">Parquet组件</h4>
+<ul>
+<li><p>Storage Format：存储格式，定义了Parquet内部的数据类型、 存储格式</p></li>
+<li>Object Model Converter：对象转换器，由Parquet-mr实现， 完成对象模型与Parquet数据类型的映射
+<ul>
+<li>如Parquet-pig子项目，负责把内存中的Pig Tuple序列化 并按存储格式保存为Parquet格式的文件，已经反过来， 把Parquet格式文件的数据反序列化为Pig Tuple</li>
+</ul></li>
+<li><p>Object Model：对象模型，可以理解为内存中的数据表示，包括 Avro、Thrift、Protocal Buffer、Hive Serde、Pig Tuple、 SparkSQL Internal Row等对象模型</p></li>
+</ul>
+<h4 id="parquet数据schema">Parquet数据schema</h4>
+<p>数据schema（结构）可以用一个棵树表达</p>
+<ul>
+<li><p>有一个根节点，根节点包含多个Feild（子节点），子节点可以 包含子节点</p></li>
+<li><p>每个field包含三个属性</p>
+<ul>
+<li>repetition：field出现的次数
+<ul>
+<li><code>required</code>：必须出现1次</li>
+<li><code>optional</code>：出现0次或1次</li>
+<li><code>repeated</code>：出现0次或多次</li>
+</ul></li>
+<li>type：数据类型
+<ul>
+<li>primitive：原生类惬</li>
+<li>group：衍生类型</li>
+</ul></li>
+<li>name：field名称</li>
+</ul></li>
+<li><p>Parquet通过把多个schema结构按树结构组合，提供对复杂类型 支持</p>
+<ul>
+<li>List、Set：repeated field</li>
+<li>Map：包含键值对的Repeated Group（key为Required）</li>
+</ul></li>
+<li><p>schema中有多少<strong>叶子节点</strong>，Parquet格式实际存储多少列， 父节点则是在表头组合成schema的结构</p></li>
+</ul>
+<h4 id="parquet文件结构">Parquet文件结构</h4>
+<ul>
+<li>HDFS文件：包含数据和元数据，数据存储在多个block中</li>
+<li>HDFS Block：HDFS上最小的存储单位</li>
+<li>Row Group：按照行将数据表格划分多个单元，每个行组包含 一定行数，行组包含该行数据各列对应的列块
+<ul>
+<li>一般建议采用更大的行组（512M-1G），此意味着更大的 列块，有毅力在磁盘上串行IO</li>
+<li>由于可能依次需要读取整个行组，所以一般让一个行组刚好 在一个HDFS数据块中，HDFS Block需要设置得大于等于行组 大小</li>
+</ul></li>
+<li>Column Chunk：每个行组中每列保存在一个列块中
+<ul>
+<li>行组中所有列连续的存储在行组中</li>
+<li>不同列块使用不同压缩算法压缩</li>
+<li>列块存储时保存相应统计信息，极值、空值数量，用于加快 查询处理</li>
+<li>列块由多个页组成</li>
+</ul></li>
+<li>Page：每个列块划分为多个Page
+<ul>
+<li>Page是压缩、编码的单元</li>
+<li>列块的不同页可以使用不同的编码方式</li>
+</ul></li>
+</ul>
+<h2 id="hdfs命令">HDFS命令</h2>
+<h3 id="用户">用户</h3>
+<ul>
+<li>HDFS的用户就是当前linux登陆的用户</li>
+</ul>
+<h2 id="hadoop组件">Hadoop组件</h2>
+<h3 id="hadoop-streaming">Hadoop Streaming</h3>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/tools/hadoop/hbase/" rel="next" title="HBase">
+                <i class="fa fa-chevron-left"></i> HBase
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/compiler_chain/gdb/" rel="prev" title="GDB">
+                GDB <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs设计模式"><span class="nav-number">1.</span> <span class="nav-text">HDFS设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据块"><span class="nav-number">1.1.</span> <span class="nav-text">数据块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namenode"><span class="nav-number">1.2.</span> <span class="nav-text">NameNode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#metadata的保存"><span class="nav-number">1.2.1.</span> <span class="nav-text">Metadata的保存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#namenode可恢复性"><span class="nav-number">1.2.2.</span> <span class="nav-text">NameNode可恢复性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#多个文件系统备份"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">多个文件系统备份</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#secondary-namenode"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">Secondary NameNode</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#datanode"><span class="nav-number">1.3.</span> <span class="nav-text">DataNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hdfs高可用性"><span class="nav-number">1.4.</span> <span class="nav-text">HDFS高可用性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#failover-controller"><span class="nav-number">1.4.1.</span> <span class="nav-text">Failover Controller</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#联邦hdfs"><span class="nav-number">1.5.</span> <span class="nav-text">联邦HDFS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hadoop文件系统"><span class="nav-number">2.</span> <span class="nav-text">Hadoop文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件系统接口"><span class="nav-number">2.1.</span> <span class="nav-text">文件系统接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#命令行接口"><span class="nav-number">2.1.1.</span> <span class="nav-text">命令行接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http"><span class="nav-number">2.1.2.</span> <span class="nav-text">HTTP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c"><span class="nav-number">2.1.3.</span> <span class="nav-text">C</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fuse"><span class="nav-number">2.1.4.</span> <span class="nav-text">FUSE</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读文件"><span class="nav-number">2.2.</span> <span class="nav-text">读文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写文件"><span class="nav-number">2.3.</span> <span class="nav-text">写文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hadoop平台上的列存储"><span class="nav-number">3.</span> <span class="nav-text">Hadoop平台上的列存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rcfile"><span class="nav-number">3.1.</span> <span class="nav-text">RCFile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#orc存储格式"><span class="nav-number">3.2.</span> <span class="nav-text">ORC存储格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件结构"><span class="nav-number">3.2.1.</span> <span class="nav-text">文件结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#stripe"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">Stripe</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#file-footer"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">File Footer</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#postscript"><span class="nav-number">3.2.1.3.</span> <span class="nav-text">Postscript</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parquet"><span class="nav-number">3.3.</span> <span class="nav-text">Parquet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持"><span class="nav-number">3.3.1.</span> <span class="nav-text">支持</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#parquet组件"><span class="nav-number">3.3.2.</span> <span class="nav-text">Parquet组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#parquet数据schema"><span class="nav-number">3.3.3.</span> <span class="nav-text">Parquet数据schema</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#parquet文件结构"><span class="nav-number">3.3.4.</span> <span class="nav-text">Parquet文件结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs命令"><span class="nav-number">4.</span> <span class="nav-text">HDFS命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户"><span class="nav-number">4.1.</span> <span class="nav-text">用户</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hadoop组件"><span class="nav-number">5.</span> <span class="nav-text">Hadoop组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hadoop-streaming"><span class="nav-number">5.1.</span> <span class="nav-text">Hadoop Streaming</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

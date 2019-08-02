@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Shell脚本执行">
+<meta name="keywords" content="Linux,Bash编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell脚本执行">
+<meta property="og:url" content="https://xyy15926.github.io/linux/bash_prog/execution/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Shell脚本执行">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-31T15:59:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shell脚本执行">
+<meta name="twitter:description" content="Shell脚本执行">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/linux/bash_prog/execution/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Shell脚本执行 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/linux/bash_prog/execution/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Shell脚本执行
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-31 23:59:23" itemprop="dateCreated datePublished" datetime="2019-07-31T23:59:23+08:00">2019-07-31</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/Bash编程/" itemprop="url" rel="index"><span itemprop="name">Bash编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Shell脚本执行</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="脚本执行">脚本执行</h2>
+<h3 id="section"><code>#!</code></h3>
+<p>脚本首行注释</p>
+<ul>
+<li>文件执行时，shell会将文件内容发送至<code>#!</code>之后的解释器上</li>
+<li>不限于shell脚本，也适合其他类型的脚本语言
+<ul>
+<li>当然要求<code>#</code>为脚本语言支持的注释符</li>
+</ul></li>
+<li>建议在首行使用<code>env</code>命令而不是硬编码解释器路径，这样可以 减少对机器的依赖 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env python</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env shell</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="种执行方式">4种执行方式</h3>
+<ul>
+<li><p><code>$ file_name</code>：表示在当前shell执行文件，需要有文件的执行 权限</p></li>
+<li><p><code>$ source/. file_name</code>：<code>source</code>和<code>.</code>意义一致，表示读取 文件内容在shell中，然后在shell里执行文件内容，需要读权限</p></li>
+<li><p><code>$ sh file_name</code>：表示开启一个新的shell进程，并读取文件 内容在新的shell中然后执行，同样的需读权限</p></li>
+</ul>
+<h4 id="例">例</h4>
+<p>以下面的文件<code>test.sh</code>为例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo "fisrt"</span><br><span class="line">sleep 1000</span><br><span class="line">echo "second"</span><br><span class="line">slepp 1000</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>$ test.sh</code>：产生两个新进程test.sh和sleep，在second输出 之前<code>&lt;ctrl-c&gt;</code>，会同时终止两个进程，不会继续输出second</p></li>
+<li><p><code>$ sh test.sh</code>：产生两个新进程，shell和sleep，在second 输出之前<code>&lt;ctrl-c&gt;</code>，同样的会同时终止两个进程，不会继续 输出second（实际上first是在新的shell里输出的）</p></li>
+<li><p><code>source/. test.sh</code>：产生一个新进程sleep，在second输出之前 <code>&lt;ctrl-c&gt;</code>，只有sleep进程被终止，而test.sh的内容在当前 shell里直接执行，当前shell没有被终止，second会继续输出</p></li>
+</ul>
+<h4 id="结论">结论</h4>
+<ul>
+<li><p>如果需要对当前shell进行设置，应该使用source/.</p></li>
+<li><p>否则这三种执行方式除了进程产生、权限要求应该没有差别</p></li>
+</ul>
+<h2 id="shell环境">Shell环境</h2>
+<h3 id="环境变量">环境变量</h3>
+<ul>
+<li><p>设置环境变量直接：<code>$ ENV_NAME=value</code>（<code>=</code>前后不能有空格） 但是此时环境变量只能在当前shell中使用，需要<code>export</code>命令 导出之后才可在子shell中使用</p></li>
+<li><p>环境变量设置代理 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy=socks://ip</span><br><span class="line">export https_proxy=socks5://ip</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h3 id="输入输出">输入输出</h3>
+<ul>
+<li><code>0</code>：STDIN_FILENO，标准输入</li>
+<li><code>1</code>：STDOUT_FILENO，标准输出</li>
+<li><code>2</code>：STDERR_FILENO，标准错误</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li>标准输出和标准错误虽然都是在命令行上显示，但是两个是 不同的流。输出重定向<code>&gt;</code>只能将标准输出重定向，不会将 标准错误重定向，其仍然会在命令行显示</li>
+</ul>
+<h4 id="重定向">重定向</h4>
+<ul>
+<li><code>&lt;</code>：重定向标准输入</li>
+<li><code>&gt;</code>：标准输出write重定向</li>
+<li><code>&gt;&gt;</code>：标准输出add重定向</li>
+<li><code>2&gt;</code>：标准错误重定向</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li>输出重定向就是<code>1 &gt; output</code>，<code>command &gt; output</code>只是省略 <code>1</code>的简写
+<ul>
+<li>命名自己不是输出，不能重定向</li>
+<li>是命令产生的标准输出重定向</li>
+</ul></li>
+<li><p>可以通过<code>2&gt;&amp;1</code>将标准错误重定向到标准输出，从而将命令的 标准输出、错误输出同时输出</p>
+<ul>
+<li><code>&amp;</code>这里表示<strong>等效于标准输出（标准输出的引用）</strong></li>
+<li><code>command&gt;a 2&gt;a</code>和<code>command&gt;a 2&gt;&amp;1</code>看起来类似，实际上 前者写法会打开两次<code>a</code>，stderr覆盖stdout，而后者是 引用，不会覆盖、IO效率更高</li>
+<li><code>2&gt;&amp;1</code>放在后面大概是因为需要获取stdout的引用，所以 需要标准输出先给出重定向</li>
+<li>这种写法还有个<strong>简写</strong><code>&amp;&gt;</code>、<code>&gt;&amp;</code></li>
+</ul></li>
+<li><p>可以重定向到设备，在*nix系统中，设备也被视为文件 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"hello"</span> &gt; /dev/tty01</span></span><br></pre></td></tr></table></figure></p>
+<p>特别的设备<code>/dev/null</code>可以作为不需要输出的重定向目标</p></li>
+</ul>
+<h4 id="管道">管道</h4>
+<p><code>|</code>：将一个程序的标准输出发送到另一个程序的标准输入</p>
+<ul>
+<li>一些平台会并行启动以管道连接的程序，此时使用类似迭代器 输出、输入能提高效率</li>
+</ul>
+<h3 id="shell内置命令">Shell内置命令</h3>
+<blockquote>
+<ul>
+<li><code>which</code>命令无法找到的命令</li>
+</ul>
+</blockquote>
+<h4 id="set"><code>set</code></h4>
+<p><code>set</code>：设置所使用的shell选项、列出shell变量</p>
+<ul>
+<li><code></code>：不带参数，显示<strong>全部</strong>shell变量</li>
+<li><code>-a</code>：输出之后所有至<code>export</code>（环境变量）</li>
+<li><code>-b</code>：使被终止后台程序立即汇报执行状态</li>
+<li><code>-B</code>：执行括号扩展</li>
+<li><code>-C</code>：重定向所产生的文件无法覆盖已存在文件</li>
+<li><code>-d</code>：shell默认使用hash表记忆已使用过的命令以加速 执行，此设置取消该行为</li>
+<li><code>-e</code>：若指令回传值不为0，立即退出shell</li>
+<li><code>-f</code>：取消使用通配符</li>
+<li><code>-h</code>：寻找命令时记录其位置???</li>
+<li><code>-H</code>：（默认）允许使用<code>!</code>加<em><编号></编号></em>方式执行<code>history</code>中 记录的命令</li>
+<li><code>-k</code>：命令<strong>后</strong>的<code>=</code><strong>也</strong>被视为设置命令的环境变量</li>
+<li><code>-m</code>：监视器模式，启动任务控制
+<ul>
+<li>后台进程已单独进程组运行</li>
+<li>每次完成任务时显示包含退出的状态行</li>
+</ul></li>
+<li><code>-n</code>：读取命令但不执行
+<ul>
+<li>通常用于检查脚本句法错误</li>
+</ul></li>
+<li><code>-p</code>：允许<em>set-user/group-id</em>
+<ul>
+<li>禁止处理<code>$ENV</code>文件、从文件中继承shell函数</li>
+</ul></li>
+<li><code>-P</code>：处理<code>cd</code>等改变当前目录的命令时，不解析符号链接</li>
+<li><code>-t</code>：读取、执行下条命令后退出</li>
+<li><code>-u</code>：使用未设置变量作为错误处理</li>
+<li><code>-v</code>：输入行被读取时，显示shell输出行</li>
+<li><code>-x</code>：显示简单命令的PS4扩展值（包括所有参数）、当前命令 的环境变量</li>
+<li><code>-o</code>：option-name，下列之一
+<ul>
+<li><code>allexport</code>：同<code>-a</code></li>
+<li><code>braceexpand shell</code>：（默认）执行花括号扩展</li>
+<li><code>emacs</code>：（默认）使用emacs风格命令行编辑接口</li>
+<li><code>errexit</code>：同<code>-e</code></li>
+<li><code>errtrace</code>：同<code>-E</code></li>
+<li><code>functrace</code>：同<code>-T</code></li>
+<li><code>hashall</code>：同<code>-h</code></li>
+<li><code>histexpand</code>：同<code>-H</code></li>
+<li><code>history</code>：记录命令历史</li>
+<li><code>ignoreeof</code>：读取EOF时不退出shell</li>
+<li><code>interactive-comments</code>：允许交互式命令中出现注释</li>
+<li><code>keyword</code>：同<code>-k</code></li>
+<li><code>monitor</code>：同<code>-m</code></li>
+<li><code>noclobber</code>：同<code>-C</code></li>
+<li><code>noexec</code>：同<code>-n</code></li>
+<li><code>noglob</code>：同<code>-f</code></li>
+<li><code>noglob</code>：currently accepted but ignored</li>
+<li><code>nohash</code>：同<code>-d</code></li>
+<li><code>notify</code>：同<code>-b</code></li>
+<li><code>nounset</code>：同<code>-u</code></li>
+<li><code>physical</code>：同<code>-P</code></li>
+<li><code>pipfail</code>：管道命令返回值为最后返回值非0命令的状态， 若没有非0返回值返回0</li>
+<li><code>posix</code>：改变shell属性以匹配标准，默认操作不同于 POSIX1003.2标准</li>
+<li><code>priviledged</code>：同<code>-p</code></li>
+<li><code>verbose</code>：同<code>-v</code></li>
+<li><code>vi</code>：使用vi风格的命令编辑接口</li>
+<li><code>xtrace</code>：同<code>-x</code></li>
+</ul></li>
+<li><code>+</code>：加以上参数取消标志位设置（包括<code>o</code>参数）</li>
+<li><code>--</code>：给所有剩余参数设置标志位，没有剩余参数则unset</li>
+<li><code>-</code>：给所有剩余参数设置标志位</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>$-</code>中存放有当前已设置标志位</li>
+</ul>
+</blockquote>
+<h4 id="let"><code>let</code></h4>
+<p><code>let</code>：执行计算的工具，用于执行一个、多个表达式</p>
+<ul>
+<li>变量计算中不需要<code>$</code>标识变量</li>
+<li>表达式中包含特殊字符，需要引起来</li>
+</ul>
+<h4 id="declare"><code>declare</code></h4>
+<p><code>declare</code>：声明变量内容</p>
+<ul>
+<li><code>-a</code>：声明变量为普通数组</li>
+<li><code>-A</code>：声明变量为关联数组（下标支持字符串，类似字典）</li>
+<li><code>-i</code>：声明变量为整形</li>
+<li><code>-r</code>：声明变量只读</li>
+<li><code>-x</code>：设置为环境变量（<code>export</code>）</li>
+<li><code>-g</code>：在函数中创建全局变量</li>
+<li><p><code>+</code>：和以上联合使用，取消定义的变量类型</p></li>
+<li><code>-f</code>：列出脚本中定义的函数名称、函数体</li>
+<li><code>-F</code>：列出脚本中定义的函数名称</li>
+<li><p><code>-p</code>：查看变量属性、值</p></li>
+</ul>
+<h4 id="read"><code>read</code></h4>
+<p><code>read</code>：从标准输入读入变量内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">read</span> [&lt;option&gt;] &lt;var&gt;[ &lt;var2&gt;...]</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">read</span> -p <span class="string">"Enter names: "</span> name1, nem</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>读取值数目大于变量数目时，多余值均赋给最后变量</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>-p</code>：命令行提示内容</li>
+<li><code>-n</code>：不换行</li>
+<li><code>-d</code>：分隔标记</li>
+<li><code>-t</code>：阻塞等待时常，之后返回非零</li>
+<li><code>-s</code>：隐藏输入</li>
+<li><code>-r</code>：反折号不被视为转义标记</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat README | while read -r line; do</span><br><span class="line">	echo $line</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h4 id="shift"><code>shift</code></h4>
+<p><code>shift</code>：移除参数列表中头部部分参数，缺省移除1个</p>
+<h4 id="getopts"><code>getopts</code></h4>
+<p><code>getopts</code>：逐个读取解析单字符指示的参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function func ()&#123;</span><br><span class="line">	echo OPTIND: $OPTIND</span><br><span class="line">	while getopts ":a:B:cdef" opt; do</span><br><span class="line">	  case $opt in</span><br><span class="line">		a) echo "this is -a the arg is ! $OPTARG at $OPTIND" ;;</span><br><span class="line">		B) echo "this is -B the arg is ! $OPTARG at $OPTIND" ;;</span><br><span class="line">		c) echo "this is -c the arg is ! $OPTARG at $OPTIND" ;;</span><br><span class="line">		\?) echo "Invalid option: -$OPTARG" ;;</span><br><span class="line">	  esac</span><br><span class="line">	done</span><br><span class="line">	echo OPTIND: $OPTIND</span><br><span class="line">	echo $@</span><br><span class="line">	shift $(($OPTIND - 1))</span><br><span class="line">	echo $@</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">func -a 23 -B 1904-03-04 343 age</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>$OPTARG</code>：参数值</li>
+<li><code>$OPTIND</code>：在参数列表中位移，初始值为1，常配合<code>shift</code> 使用剔除已处理参数</li>
+<li>遇到未指定option则返回0</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>option字符后<code>:</code>：字符可以带有参数，赋给<code>$OPTARG</code>；否则 仅表示标志，仅该字符被处理</p></li>
+<li>option_string开头<code>:</code>可以避免错误输出
+<ul>
+<li><code>:</code>标记option不带参数时
+<ul>
+<li>待匹配值设为<code>:</code></li>
+<li><code>$OPTARG</code>设为option</li>
+</ul></li>
+<li>option无效时
+<ul>
+<li>待匹配值设为<code>?</code></li>
+<li><code>$OPTARG</code>设为option</li>
+</ul></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>函数内部处理函数参数，否则处理脚本参数</li>
+<li>参数标识<code>-</code>可省略</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Bash编程/" rel="tag"># Bash编程</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/linux/inst_set/linux_intro/" rel="next" title="Linux介绍">
+                <i class="fa fa-chevron-left"></i> Linux介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/linux/bash_prog/twists/" rel="prev" title="shell编程技巧">
+                shell编程技巧 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本执行"><span class="nav-number">1.</span> <span class="nav-text">脚本执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-number">1.1.</span> <span class="nav-text">#!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#种执行方式"><span class="nav-number">1.2.</span> <span class="nav-text">4种执行方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例"><span class="nav-number">1.2.1.</span> <span class="nav-text">例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结论"><span class="nav-number">1.2.2.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell环境"><span class="nav-number">2.</span> <span class="nav-text">Shell环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境变量"><span class="nav-number">2.1.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入输出"><span class="nav-number">2.2.</span> <span class="nav-text">输入输出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重定向"><span class="nav-number">2.2.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#管道"><span class="nav-number">2.2.2.</span> <span class="nav-text">管道</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell内置命令"><span class="nav-number">2.3.</span> <span class="nav-text">Shell内置命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#set"><span class="nav-number">2.3.1.</span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#let"><span class="nav-number">2.3.2.</span> <span class="nav-text">let</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#declare"><span class="nav-number">2.3.3.</span> <span class="nav-text">declare</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#read"><span class="nav-number">2.3.4.</span> <span class="nav-text">read</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#shift"><span class="nav-number">2.3.5.</span> <span class="nav-text">shift</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getopts"><span class="nav-number">2.3.6.</span> <span class="nav-text">getopts</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

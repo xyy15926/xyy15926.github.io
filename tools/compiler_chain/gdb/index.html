@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="GDB">
+<meta name="keywords" content="工具,编译工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GDB">
+<meta property="og:url" content="https://xyy15926.github.io/tools/compiler_chain/gdb/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="GDB">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-28T17:32:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GDB">
+<meta name="twitter:description" content="GDB">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/compiler_chain/gdb/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>GDB | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/compiler_chain/gdb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">GDB
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-01 01:32:49" itemprop="dateModified" datetime="2019-03-01T01:32:49+08:00">2019-03-01</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/编译工具/" itemprop="url" rel="index"><span itemprop="name">编译工具</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">GDB</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述">概述</h2>
+<p>GDB是GNU发布的UNIX程序调试工具，可以帮助完成</p>
+<ul>
+<li>自定义运行程序</li>
+<li>让程序在指定断点处停止</li>
+<li>检查停止程序的内部状态</li>
+<li>动态改变程序执行环境</li>
+</ul>
+<h2 id="调试准备">调试准备</h2>
+<ul>
+<li><p>gdb会根据文件名后缀确认调试程序的语言，设置gdb自身语言 环境，并随之改变语言环境</p>
+<ul>
+<li>如果程序由多种语言编译而成，gdb能根据不同语言自动 切换语言环境</li>
+</ul></li>
+<li><p>可以使用<code>info</code>、<code>show</code>、<code>set</code>命令查看设置当前语言环境</p></li>
+<li>可能会缺少<code>glibc-debuginfo</code>，无法显示全部调试信息
+<ul>
+<li>OpenSuse安装可能需要添加源</li>
+</ul></li>
+</ul>
+<h3 id="编译选项">编译选项</h3>
+<ul>
+<li><p>调试C++/C程序时，要求在编译时就把调试信息添加到可执行 文件中</p>
+<ul>
+<li>使用gcc/g++的<code>-g</code>参数添加源码信息</li>
+<li>否则调试时将看不见函数名、变量名，而是全部以运行时 内存地址代替</li>
+</ul></li>
+<li><p>关闭优化选项</p>
+<ul>
+<li>否则优化器会删改程序，使得某些变量不能访问、取值错误</li>
+</ul></li>
+</ul>
+<h3 id="启动gdb调试">启动GDB调试</h3>
+<ul>
+<li><code>gdb &lt;exe&gt;</code>：直接gdb启动可执行文件<code>&lt;exe&gt;</code></li>
+<li><code>gdb &lt;exe&gt; core</code>：用gdb同时调试可执行文件、core文件</li>
+<li><code>gdb &lt;exe&gt; &lt;PID&gt;</code>：给定进程PID，gdb自动attach该进程， 调试已经运行的程序
+<ul>
+<li>也可不指定PID，直接关联源码，在gdb中使用<code>attach</code>命令 手动挂接，调试已运行程序</li>
+</ul></li>
+</ul>
+<h3 id="配置调试环境">配置调试环境</h3>
+<h4 id="源文件">源文件</h4>
+<ul>
+<li>gdb启动程序后，gdb会在<code>PATH</code>、当前目录中搜索程序的源文件 <code>-directory</code>/<code>-d</code>添加源文件搜索路径</li>
+<li>在gdb交互中使用<code>dir[rectory] &lt;dirname&gt;</code>指定源文件搜索 路径</li>
+<li>gdb中使用<code>list</code>/<code>l</code>检查gdb是否能列出源码</li>
+</ul>
+<h4 id="程序运行环境">程序运行环境</h4>
+<p>在gdb中run程序之前，可能需要设置、查看程序运行环境</p>
+<ul>
+<li><p>程序运行参数</p>
+<ul>
+<li><code>set &lt;args&gt;</code>：设置程序运行时参数</li>
+<li><code>show &lt;args&gt;</code>：查看已设置参数</li>
+</ul></li>
+<li><p>环境变量</p>
+<ul>
+<li><code>path [&lt;dir&gt;]</code>：查看、添加<code>&lt;dir&gt;</code>至<code>PATH</code></li>
+<li><code>show paths</code>：查看<code>PATH</code></li>
+<li><code>set environment var [=value]</code>：设置环境变量</li>
+<li><code>show environment var</code>：查看环境变量</li>
+</ul></li>
+<li><p>工作目录</p>
+<ul>
+<li><code>cd &lt;dir&gt;</code>：等价于<code>cd</code></li>
+<li><code>pwd</code>：等价于<code>pwd</code></li>
+</ul></li>
+<li><p>输入输出</p>
+<ul>
+<li><code>info terminal</code>：显示程序所有终端模式</li>
+<li><code>run &gt; outfile</code>：重定向程序输出</li>
+<li><code>tty /dev/</code>：指定输入、输出设备</li>
+</ul></li>
+</ul>
+<h3 id="参数">参数</h3>
+<ul>
+<li><code>-s &lt;file&gt;</code>/<code>-symbols &lt;file&gt;</code>：从指定文件读取符号表</li>
+<li><code>-se &lt;file&gt;</code>：从指定文件读取符号表信息，并用于可执行文件</li>
+<li><code>-c &lt;file&gt;</code>/<code>-core &lt;file&gt;</code>：调试core dump产生的core文件</li>
+<li><code>-d &lt;dir&gt;</code>/<code>-directory &lt;dir&gt;</code>：添加源文件搜索路径
+<ul>
+<li>默认搜索路径是<code>PATH</code></li>
+</ul></li>
+</ul>
+<h3 id="表达式">表达式</h3>
+<ul>
+<li><p>表达式语法应该是<strong>当前所调试语言</strong>的语法</p></li>
+<li><p>gdb另外还支持一些通用操作符</p>
+<ul>
+<li><p><code>@</code>：指定存储在堆上、动态分配内存大小的长度</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int *array = (int*)malloc(len * sizeof(int));</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 源码</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> p *array@len</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 打印数组`*array`</span></span><br></pre></td></tr></table></figure></li>
+<li><code>::</code>：指定某个具体文件、函数中的变量
+<ul>
+<li>常用于取出被隐藏的全局变量</li>
+</ul></li>
+<li><p><code>[(type)]&lt;addr&gt;</code>：内存地址<code>addr</code>处为一个<code>type</code>类型 变量</p></li>
+</ul></li>
+</ul>
+<h2 id="停止点">停止点</h2>
+<h3 id="设置breakpoint">设置<em>Breakpoint</em></h3>
+<h4 id="break"><code>break</code></h4>
+<p><code>break</code>：在某位置设置断点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b[reak] [&lt;probe_modifier&gt;] [&lt;location&gt;] [thread &lt;threadno&gt;]</span><br><span class="line">	[if &lt;condition&gt;]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>probo_modifier</code>：命令处于<em>probe point</em>时需要 &gt; - <code>-probe</code>：通用、自动推测探测类型 &gt; - <code>-probe-stap</code>：<em>SystemTap</em>探测 &gt; - <code>-probe-dtrace</code>：<em>DTrace</em>探测</li>
+<li><code>location</code>：设置断点位置 &gt; - 缺省：当前栈帧中的执行位置 &gt; - <em>linespecs</em>：<strong>冒号分隔</strong>绝对位置参数（逐步精确） &gt; &gt; - 其中可以包括：文件名、函数名、标签名、行号 &gt; - <code>+-[n]</code>标识相对当前行位置 &gt; - <code>*addr</code>：在程序运行的内存地址<code>addr</code>处 &gt; - <em>explicit</em>：类似于<em>linespecs</em>，通过多个参数给出</li>
+<li><code>threadno</code>：设置断点的线程号 &gt; - 缺省断点设置在所有线程上 &gt; - <strong>gdb分配</strong>的线程编号，通过<code>info threads</code>查询 &gt; - 多线程被gdb停止时，<strong>所有</strong>运行线程都被停止，方便 查看运行程序总体情况</li>
+<li><code>if &lt;condition&gt;</code>：满足条件<code>condition</code>时在断点处停止， 缺省立即停止程序</li>
+</ul>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">break</span> factorial.c:fact:the_top</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> factorial.c文件、fact函数、the_top标签</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">break</span> +2</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 当前行之后两行</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">break</span> *main + 4</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> `main`函数4B之后</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">break</span> -<span class="built_in">source</span> factorial.c -<span class="keyword">function</span> fact	</span></span><br><span class="line">	-label the_top</span><br><span class="line"><span class="meta">	#</span><span class="bash"> explicit方式，同linespecs</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>标签：C++/C中配合<code>goto</code>使用（<code>label_1:</code>）</li>
+<li><code>&lt;tab&gt;</code>：补全函数名称、函数原型（重载函数）</li>
+<li>若指定函数名称不唯一，gdb会列出函数原型供选择</li>
+</ul>
+<h4 id="tbreak"><code>tbreak</code></h4>
+<p><code>tbreak</code>：设置一次性断点，生效后立刻被删除</p>
+<h4 id="rbreak"><code>rbreak</code></h4>
+<p><code>rbreak</code>：对匹配正则表达式的行均设置断点</p>
+<h4 id="condition"><code>condition</code></h4>
+<p><code>condition</code>：修改、设置断点<code>n</code>生效条件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> condition &lt;bpnum&gt; &lt;condition&gt;</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 设置断点`bpnum`生效条件为`condition`</span></span><br></pre></td></tr></table></figure>
+<h4 id="ignore"><code>ignore</code></h4>
+<p><code>ignore</code>：设置忽略断点<code>n</code>次数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> ignore &lt;bpnum&gt; &lt;count&gt;`</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 忽略断点`bpnum` `count`次</span></span><br></pre></td></tr></table></figure>
+<h3 id="设置watchpoint">设置<em>Watchpoint</em></h3>
+<h4 id="watch"><code>watch</code></h4>
+<p><code>watch</code>：为某个表达式设置观察点</p>
+<ul>
+<li>观察某个表达式，其值发生变化时停止程序</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> watch [-l|-location] &lt;expr&gt; [thread &lt;threadno&gt;]</span></span><br><span class="line">	[mask &lt;maskvalue&gt;]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>-l</code>：表示将<code>expression</code>视为地址，观察表达式指向的地址 中的值</li>
+<li><code>expr</code>：表达式、<code>*</code>开头表示的内地地址</li>
+<li><code>threadno</code>：同<code>break</code></li>
+<li><code>maskvalue</code>：观察值mask，只观察部分bit值</li>
+</ul>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> watch foo mask 0xffff00ff</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 观察`foo`</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> watch *0xdeadbeef 0xffffff00</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 观察内存地址`0xdeadbeef`处的值</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>取决于系统，观察点有可能以硬件、软件方式实现，大部分 PowerPC、X86支持硬件观察点
+<ul>
+<li>软件观察点通过逐步测试变量实现，程序执行速度慢得多</li>
+<li>硬件观察点不会降低程序执行速度</li>
+</ul></li>
+<li><code>mask</code>参数需要架构支持</li>
+</ul>
+<h4 id="rwatch"><code>rwatch</code></h4>
+<p><code>rwatch</code>：为某表达式设置读观察点</p>
+<ul>
+<li>当表达式值被读取时停止程序</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> rwatch [-l|location] &lt;expression&gt; [thread &lt;threadno&gt;]</span></span><br><span class="line">	[mask &lt;maskvalue&gt;]</span><br></pre></td></tr></table></figure>
+<h4 id="awatch"><code>awatch</code></h4>
+<p><code>awatch</code>：为某表达式设置写观察点</p>
+<ul>
+<li>当表达式值被修改时停止程序</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> awatch [-l|-location] &lt;expression&gt; [thread &lt;threadno&gt;]</span></span><br><span class="line">	[mask &lt;maskvalue&gt;]</span><br></pre></td></tr></table></figure>
+<h3 id="设置catchpoint">设置<em>Catchpoint</em></h3>
+<h4 id="catch"><code>catch</code></h4>
+<p><code>catch</code>：设置捕捉点捕捉事件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> cat[ch] &lt;event&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>通用事件 &gt; - <code>catch</code>：捕获异常 &gt; - <code>exec</code>：调用系统调用<code>exec</code>（仅<em>HP-UX</em>下有用） &gt; - <code>fork</code>：调用系统调用<code>fork</code>（仅<em>HP-UX</em>下有用） &gt; - <code>load [&lt;libname&gt;]</code>：载入共享库（仅<em>HP-UX</em>下有用） &gt; - <code>unload [&lt;libname&gt;]</code>：卸载共享库（仅<em>HP-UX</em>下有用） &gt; - <code>throw</code>：抛出异常 &gt; - <code>rethrow</code>：再次抛出异常 &gt; - <code>vfork</code>：调用系统调用<code>vfork</code>时（仅<em>HP-UX</em>下有用） &gt; - <code>syscall</code>：被系统调用</li>
+<li>Ada &gt; - <code>assert</code>：捕获Ada断言失败 &gt; - <code>exception [arg]</code>：捕获Ada和参数匹配的异常 &gt; - <code>handlers</code>：捕获Ada异常</li>
+</ul>
+</blockquote>
+<ul>
+<li>捕捉点：捕捉程序运行时的一些事件，如：载入动态链接库、 异常事件<code>&lt;event&gt;</code>发生时停止程序</li>
+</ul>
+<h4 id="tcatch"><code>tcatch</code></h4>
+<p><code>tcatch</code>：设置一次性捕捉点，程序停止后自动删除</p>
+<h3 id="信号处理">信号处理</h3>
+<p>gdb可以在调试程序时处理任何信号，可以要求gdb在收到指定信号后 停止正在执行的程序以供调试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> handle &lt;signal&gt; &lt;keywords&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>signal</code>：需要处理的信号 &gt; - 信号可选使用<code>SIG</code>开头 &gt; - 可以定义需要处理的信号范围<code>SIGIO-SIGKILL</code> &gt; - 可以使用<code>all</code>表示处理所有信号</li>
+<li><code>keywords</code>：被调试程序接收到信号后gdb的动作 &gt; - <code>nostop</code>：不停止程序运行，打印消息告知收到信号 &gt; - <code>stop</code>：停止程序运行 &gt; - <code>print</code>：显示信息 #todo &gt; - <code>noprint</code>：不显示信息 &gt; - <code>noigore</code>：gdb处理信号，交给被调试程序处理 &gt; - <code>nopass</code>/<code>ignore</code>：gdb截留信号，不交给被调试程序处理</li>
+</ul>
+</blockquote>
+<h3 id="维护停止点">维护停止点</h3>
+<h4 id="clear"><code>clear</code></h4>
+<p><code>clear</code>：清除指定位置断点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> clear [&lt;location&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>location</code>：指定清除断点位置 &gt; - 缺省：清除当前栈帧中正在执行行断点 &gt; - 其余设置同<code>break</code></li>
+</ul>
+</blockquote>
+<h4 id="commands"><code>commands</code></h4>
+<p><code>commands</code>：设置断点生效时自动执行命令</p>
+<ul>
+<li>利于自动化调试</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> commands [bpnum]</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ...<span class="built_in">command</span>-list...</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> end</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>bpnum</code>：断点序号 &gt; - 缺省：最近设置的断点 &gt; - <code>5-7</code>：指定断点区间</li>
+</ul>
+</blockquote>
+<h2 id="执行">执行</h2>
+<h3 id="文件">文件</h3>
+<h4 id="list"><code>list</code></h4>
+<p><code>list</code>：打印源代码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> l[ist] [&lt;location&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>location</code>：输入的源代码 &gt; - 缺省/<code>+</code>：显示当前行后源代码 &gt; - <code>-</code>：显示当前行前源代码 &gt; - <code>[[start], [end]]</code>：显示范围内源代码（缺省表当前行） &gt; - 指定单行类似<code>break</code>中<code>location</code>参数</li>
+</ul>
+</blockquote>
+<ul>
+<li>一般默认显示10行，可以通过<code>set listsize &lt;count&gt;</code>设置</li>
+</ul>
+<h4 id="forward-searchsearch"><code>forward-search</code>/<code>search</code></h4>
+<p><code>search</code>/<code>forward-search</code>：从打印出最后行开始正则搜索源码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> search/forward-search &lt;regexp&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="revserse-search"><code>revserse-search</code></h4>
+<p><code>reverse-search</code>：从打印出的最后行反向正则搜索源码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> reverse-search &lt;regexp&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="directory"><code>directory</code></h4>
+<p><code>directory</code>：指定源文件搜索路径</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> dir[rectory] &lt;dir&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>dir</code>：源文件路径 &gt; - 可以指定多个搜索路径，linux下<code>:</code>分隔，windows下<code>;</code> &gt; - 缺省：清除自定义源文件搜索路径信息</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>show</code>查看当前</li>
+</ul>
+<h3 id="继续执行">继续执行</h3>
+<h4 id="run"><code>run</code></h4>
+<p><code>run</code>：启动程序开始调试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> r[un] [&lt;args&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>args</code> &gt; - 缺省：上次<code>run</code>、<code>set args</code>指定的参数 &gt; - 参数中包含的<code>*</code>、<code>...</code>将被用于执行的shell扩展 &gt; （需清除参数，使用<code>set args</code>置空）</li>
+</ul>
+</blockquote>
+<ul>
+<li>允许输入、输出重定向</li>
+</ul>
+<h4 id="continue"><code>continue</code></h4>
+<p><code>continue</code>：继续执行直到之后断点、程序结束</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> c[ontinue]/<span class="built_in">fg</span> [&lt;ignore-count&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>ignore-count</code>：执行直到之后第<code>ingore-count</code>个断点 （忽略<code>ignore-count-1</code>个断点） &gt; - 缺省：1</li>
+</ul>
+</blockquote>
+<h4 id="stepnext"><code>step</code>/<code>next</code></h4>
+<p><code>step</code>/<code>next</code>：单步/单行跟踪</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> s[tep]/[n]ext [&lt;count&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>count</code>：执行代码行数 &gt; - 缺省：1</li>
+</ul>
+</blockquote>
+<ul>
+<li>有函数调用，<code>step</code>进入函数（需要函数被编译有debug信息） &gt; &gt; ，<code>next</code>不进入函数调用，视为一代代码</li>
+</ul>
+<h4 id="stepinexti"><code>stepi</code>/<code>nexti</code></h4>
+<p><code>stepi</code>/<code>nexti</code>：单条<em>intruction</em>（机器指令、汇编语句）跟踪</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> s[tep]i/n[ext]i [&lt;count&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>count</code>：执行指令条数 &gt; - 缺省：1</li>
+</ul>
+</blockquote>
+<h4 id="finish"><code>finish</code></h4>
+<p><code>finish</code>：运行直到当前栈帧/函数返回，并打印函数返回值、存入 值历史</p>
+<h4 id="return"><code>return</code></h4>
+<p><code>return</code>：强制函数忽未执行语句，并返回</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">return</span> [expr]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>expr</code>：返回的表达式值 &gt; - 缺省：不返回值</li>
+</ul>
+</blockquote>
+<h4 id="util"><code>util</code></h4>
+<p><code>until/u</code>：运行程序直到退出循环体</p>
+<h4 id="jump"><code>jump</code></h4>
+<p><code>jump</code>：修改程序执行顺序，跳转至程序其他执行处</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> jump [&lt;location&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>location</code>：同<code>break</code></li>
+</ul>
+</blockquote>
+<ul>
+<li><code>jump</code>不改变当前程序栈中内容，所以在函数间跳转时，函数 执行完毕返回时进行弹栈操作式必然发生错误、结果错误、 core dump，所以最好在同一个函数中跳转</li>
+<li>事实上，<code>jump</code>就是改变了寄存器中保存当前代码所在的内存 地址，所以可以通过<code>set $pc</code>更改跳转执行地址</li>
+</ul>
+<h4 id="call"><code>call</code></h4>
+<p><code>call</code>：强制调用函数，并打印函数返回值（<code>void</code>不显示）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> call &lt;expr&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>print</code>也可以调用函数，但是如果函数返回<code>void</code>，<code>print</code> 显示并存储如历史数据中</li>
+</ul>
+<h3 id="查看信息">查看信息</h3>
+<h4 id="printinspect"><code>print</code>/<code>inspect</code></h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> p[rint] [/&lt;f&gt;]&lt;expr&gt;[=value]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>f</code>：输出格式 &gt; - <code>x</code>：16进制格式 &gt; - <code>d</code>：10进制格式 &gt; - <code>u</code>：16进制格式显示无符号整形 &gt; - <code>o</code>：8进制格式 &gt; - <code>t</code>：2进制 &gt; - <code>a</code>：16进制 &gt; - <code>c</code>：字符格式 &gt; - <code>f</code>：浮点数格式 &gt; - <code>i</code>：机制指令码 &gt; - <code>s</code>：</li>
+<li><code>expr</code>：输出表达式、<strong>gdb环境变量、寄存器值、函数</strong> &gt; - 输出表达式：gdb中可以随时查看以下3种变量值 &gt; &gt; - 全局变量：所有文件可见 &gt; &gt; - 静态全局变量：当前文件可见 &gt; &gt; - 局部变量：当前scope可见 &gt; &gt; - 局部变量会隐藏全局变量，查找被隐藏变量可以使用 <code>::</code>指定 &gt; - 编译程序时若开启优化选项，会删改程序，使得某些变量 不能访问 &gt; - 输出环境变量、寄存器变量时，需要使用<code>$</code>前缀 &gt; - 函数名称：强制调用函数，类似<code>call</code></li>
+<li><code>value</code>：修改被调试程序运行时变量值 &gt; - 缺省：打印变量值 &gt; - <code>=</code>是C++/C语法，可以根据被调试程序改为相应程序赋值 语法 &gt; - 可以通过<code>set var</code>实现（当变量名为gdb参数时，必须 使用<code>set var</code>）</li>
+</ul>
+</blockquote>
+<ul>
+<li>每个<code>print</code>输出的表达式都会被gdb记录，gdb会以<code>$1</code>、<code>$2</code> 等方式记录下来，可以使用此编号访问以前的表达式</li>
+</ul>
+<h4 id="examine"><code>examine</code></h4>
+<p><code>examine</code>/<code>x</code>：查看内存地址中的值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> examine/x /[&lt;n/f/u&gt;] &lt;addr&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>输出参数：可以三者同时使用 &gt; - <code>n</code>：查看内存的长度（<strong>单元数目</strong>） &gt; - <code>f</code>：展示格式，同<code>print</code> &gt; &gt; - <code>u</code>：内存单元长度 &gt; &gt; - <code>b</code>：单字节 &gt; &gt; - <code>h</code>：双字节 &gt; &gt; - <code>w</code>：四字节，默认 &gt; &gt; - <code>g</code>：八字节</li>
+<li><code>addr</code>：内存地址</li>
+</ul>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> x/3uh 0x54320</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 从内存地址`0x54320`开始，16进制展示3个双字节单位</span></span><br></pre></td></tr></table></figure>
+<h4 id="display"><code>display</code></h4>
+<p><code>display</code>：设置自动显示变量，程序停止时变量会自动显示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> display/[&lt;fmt&gt;] [&lt;expr&gt;] [&lt;addr&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>fmt</code>：显示格式 &gt; - 同<code>print</code></li>
+<li><code>exprt</code>：表达式</li>
+<li><code>addr</code>：内存地址</li>
+</ul>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> display/i <span class="variable">$pc</span></span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> `<span class="variable">$pc</span>`：gdb环境变量，表示指令地址</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 单步跟踪会在打印程序代码时，同时打印出机器指令</span></span><br></pre></td></tr></table></figure>
+<h4 id="undisplay"><code>undisplay</code></h4>
+<p><code>undisplay</code>：删除自动显示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> undisplay [&lt;num&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>num</code>：自动显示编号 &gt; - <code>info</code>查看 &gt; - 可以使用<code>a-b</code>表示范围</li>
+</ul>
+</blockquote>
+<h2 id="查看设置gdb环境">查看、设置GDB环境</h2>
+<h3 id="info"><code>info</code></h3>
+<h4 id="停止点-1">停止点</h4>
+<ul>
+<li><code>locals</code>：打印当前函数中所有局部变量名、值</li>
+<li><code>args</code>：打印<strong>当前函数</strong>参数名、值</li>
+<li><code>b[reak][points] [n]</code>：查看断点</li>
+<li><code>watchpoints [n]</code>：列出所有观察点</li>
+<li><code>catch</code>：打印当前函数中异常处理信息</li>
+<li><code>line [&lt;location&gt;]</code>：查看源代码在内存中地址</li>
+<li><code>f[rame]</code>：可以打印更详细当前栈帧信息
+<ul>
+<li>大部分为运行时内存地址</li>
+</ul></li>
+<li><code>display</code>：查看<code>display</code>设置的自动显示信息</li>
+</ul>
+<h4 id="线程">线程</h4>
+<ul>
+<li><code>threads</code>查看在<strong>正在运行程序</strong>中的线程信息</li>
+</ul>
+<h4 id="信号">信号</h4>
+<ul>
+<li><code>info signals/handle</code>：查看被gdb检测的信号</li>
+<li><code>frame</code>：查看当前函数语言</li>
+<li><code>source</code>：查看当前文件程序语言</li>
+</ul>
+<h4 id="其他">其他</h4>
+<ul>
+<li><code>terminal</code>：显示程序所有终端模式</li>
+<li><code>registers [reg]</code>：查看寄存器情况
+<ul>
+<li>缺省：除浮点寄存器外所有寄存器</li>
+<li>还可以通过<code>print</code>实现</li>
+</ul></li>
+<li><code>all-registers</code>：查看所有寄存器情况（包括浮点寄存器）</li>
+</ul>
+<h3 id="set"><code>set</code></h3>
+<h4 id="停止点-2">停止点</h4>
+<ul>
+<li><code>step-mode [on] [off]</code>：开启/关闭<code>step-mode</code>模式
+<ul>
+<li>程序不会因为没有debug信息而不停止，方便查看机器码</li>
+</ul></li>
+</ul>
+<h4 id="环境">环境</h4>
+<ul>
+<li><code>language [lang]</code>：设置当前语言环境</li>
+<li><code>args [&lt;args&gt;]</code>：设置被调试程序启动参数</li>
+<li><code>environment var [=value]</code>：设置环境变量</li>
+<li><code>listsize &lt;count&gt;</code>：设置最大打印源码行数</li>
+<li><code>var &lt;var=value&gt;</code>：修改被调试程序运行时变量值
+<ul>
+<li>还可以通过<code>print</code>变量修改</li>
+</ul></li>
+</ul>
+<h4 id="print"><code>print</code></h4>
+<ul>
+<li><code>address [on/off]</code>：打开地址输出
+<ul>
+<li>即程序显示函数信息时，显示函数地址</li>
+<li>默认打开</li>
+</ul></li>
+<li><code>array [on/off]</code>：打开数组显示
+<ul>
+<li>打开数组显示后，每个函数占一行，否则以逗号分隔</li>
+<li>默认关闭</li>
+</ul></li>
+<li><code>elements &lt;num-of-elements&gt;</code>：设置数组显示最大长度
+<ul>
+<li><code>0</code>：不限制数组显示</li>
+</ul></li>
+<li><code>null-stop [on/off]</code>：打开选项后，显示字符串时遇到结束符 则停止显示
+<ul>
+<li>默认关闭</li>
+</ul></li>
+<li><code>pretty [on/off]</code>：打开选项后，美化结构体输出
+<ul>
+<li>打开选项后，结构体成员单行显示，否则逗号分隔</li>
+</ul></li>
+<li><code>sevenbit-strings [on/off]</code>：字符是否按照<code>/nnn</code>格式显示
+<ul>
+<li>打开后字符串/字符按照<code>/nnn</code>显示 #todo</li>
+</ul></li>
+<li><code>union [on/off]</code>：显示结构体时是否显示其内联合体数据
+<ul>
+<li>打开时联合体显示结构体各种值，否则显示<code>...</code></li>
+</ul></li>
+<li><code>object [on/off]</code>：打开选项时，若指针对象指向其派生类， gdb自动按照虚方法调用的规则显示输出，否则gdb忽略虚函数表
+<ul>
+<li>默认关闭</li>
+</ul></li>
+<li><code>static-members [on/off]</code>：是否对象中静态数据成员
+<ul>
+<li>默认打开</li>
+</ul></li>
+<li><code>vtbl [on/off]</code>：选项打开，gdb将用比较规则的格式输出 虚函数表
+<ul>
+<li>默认关闭</li>
+</ul></li>
+</ul>
+<h3 id="show"><code>show</code></h3>
+<h4 id="执行-1">执行</h4>
+<ul>
+<li><code>args</code>：查看被调试程序启动参数</li>
+<li><code>paths</code>：查看gdb中<code>PATH</code></li>
+<li><code>environtment [var]</code>：查看环境变量</li>
+<li><code>directories</code>：显示源文件搜索路径</li>
+<li><code>convenience</code>：查看当前设置的所有环境变量</li>
+</ul>
+<h5 id="print-1"><code>print</code></h5>
+<ul>
+<li><code>address</code>：查看是否打开地址输出</li>
+<li><code>array</code>：查看是否打开数组显示</li>
+<li><code>element</code>：查看再打数组显示最大长度</li>
+<li><code>pretty</code>：查看是否美化结构体输出</li>
+<li><code>sevenbit-strings [on/off]</code>：查看字符显示是否打开</li>
+<li><code>union</code>：查看联合体数据输出方式</li>
+<li><code>object</code>：查看对象选项设置</li>
+<li><code>static-members</code>：查看静态数据成员选项设置</li>
+<li><code>vtbl</code>：查看虚函数显示格式选项设置</li>
+</ul>
+<h3 id="shell"><code>shell</code></h3>
+<p><code>shell</code>：执行shell命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> shell &lt;shell-cmd&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>cd</code>：等同<code>&gt; shell cd</code></li>
+<li><code>pwd</code></li>
+<li><code>make &lt;make-args&gt;</code></li>
+</ul>
+</blockquote>
+<ul>
+<li>Linux：使用环境变量<code>SHELL</code>、<code>/bin/sh</code>执行命令</li>
+<li>Windows：使用<code>cmd.exe</code>执行命令</li>
+</ul>
+<h4 id="path"><code>path</code></h4>
+<p><code>path</code>：添加路径至gdb中<code>PATH</code>（不修改外部<code>PAHT</code>）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> path &lt;dir&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="gdb环境">GDB环境</h3>
+<h4 id="环境变量">环境变量</h4>
+<p>可以在gdb调试环境中自定义环境变量保存调试程序中需要的数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">set</span> <span class="variable">$foo</span> = *object_ptr</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 设置环境变量</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> show convenience</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 查看当前设置的所有环境变量</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">set</span> <span class="variable">$i</span>=0</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">print</span> bar[<span class="variable">$i</span>++] -&gt; contents</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 环境变量、程序变量交互使用</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 只需要回车重复上条命令，环境变量自动累加，逐个输出变量</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>环境变量使用<code>$</code>开头（定义时也需要）</li>
+<li>gdb会在<strong>首次使用时</strong>创建该变量，在以后使用直接对其赋值</li>
+<li>环境变量没有类型，可以定义任何类型，包括结构体、数组</li>
+</ul>
+<h4 id="寄存器">寄存器</h4>
+<p>寄存器：存放了程序运行时数据</p>
+<blockquote>
+<ul>
+<li><code>ip</code>：程序当前运行指令地址</li>
+<li><code>sp</code>：程序当前堆栈地址</li>
+</ul>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> info registers [&lt;reg-name&gt;]</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 输出寄存器值，缺省除浮点外所有</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> info all-registers</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 输出所有寄存器值</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">print</span> <span class="variable">$eip</span></span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 输出寄存器`eip`值</span></span><br></pre></td></tr></table></figure>
+<h3 id="其他-1">其他</h3>
+<ul>
+<li><code>disassemble</code>：查看程序当前执行的机器码
+<ul>
+<li>此命令会dump当前内存中指令</li>
+</ul></li>
+<li><code>si[gnal] &lt;signal&gt;</code>：产生信号量<strong>发给被调试程序</strong>
+<ul>
+<li><code>signal</code>：取值1-15，即Unix信号量</li>
+<li>此命令直接发送信号给被调试程序，而系统信号则是发送给 被调试程序，但由<strong>gdb截获</strong>，</li>
+</ul></li>
+</ul>
+<h2 id="调试设置">调试设置</h2>
+<h3 id="delete"><code>delete</code></h3>
+<p><code>delete</code>：删除断点（缺省）、自动输出表达式等</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> delete [breakpoints] [bookmark] [checkpoints]</span></span><br><span class="line">	[display] [mem] [tracepoints] [tvariable] [num]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>breakpoints</code>：删除断点</li>
+<li><code>bookmark</code>：从书签中删除书签</li>
+<li><code>checkpoints</code>：删除检查点</li>
+<li><code>display</code>：取消程序停止时某些输出信息</li>
+<li><code>mem</code>：删除存储区</li>
+<li><code>tracepoint</code>：删除指定追踪点</li>
+<li><code>tvariable</code>：删除追踪变量</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><code>num</code> &gt; - 缺省：删除所有断点/自动输出/书签等 &gt; - 指定的序号 &gt; &gt; - <code>info</code>查看 &gt; &gt; - 可以使用<code>a-b</code>表示范围</li>
+</ul>
+</blockquote>
+<h3 id="disable"><code>disable</code></h3>
+<p><code>disable</code>：禁用断点（缺省）、输出表达式等</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">disable</span> [breakpoints] [display] [frame-filter]</span></span><br><span class="line">	[mem] [pretty-printer] [probes] [type-printer]</span><br><span class="line">	[unwinder] [xmethod] [num]</span><br></pre></td></tr></table></figure>
+<h4 id="breakpoints"><code>breakpoints</code></h4>
+<p>禁用断点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">disable</span> [breakpoints] [num]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>缺省：禁用所有断点</li>
+<li>仅指定的序号（<code>info</code>查看）</li>
+</ul>
+<h4 id="display-1"><code>display</code></h4>
+<p>禁用程序停止时某些输出信息</p>
+<h4 id="frame-filter"><code>frame-filter</code></h4>
+<p>禁用某些帧过滤器</p>
+<h4 id="mem"><code>mem</code></h4>
+<p>禁用存储区</p>
+<h4 id="pretty-printer"><code>pretty-printer</code></h4>
+<p>禁用某些打印美化</p>
+<h4 id="probes"><code>probes</code></h4>
+<p>禁用探测</p>
+<h4 id="type-printer"><code>type-printer</code></h4>
+<p>禁用某些类型打印</p>
+<h4 id="unwinder"><code>unwinder</code></h4>
+<p>禁用某些unwinder</p>
+<h4 id="xmethod"><code>xmethod</code></h4>
+<p>禁用某些xmethod</p>
+<h3 id="enable"><code>enable</code></h3>
+<p><code>enable</code>：启用断点（缺省）、输出表达式等</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">enable</span> [breakpoints] [display] [frame-filter]</span></span><br><span class="line">	[mem] [pretty-printer] [probes] [type-printer]</span><br><span class="line">	[unwinder] [xmethod] [num]</span><br></pre></td></tr></table></figure>
+<h4 id="breakpoints-1"><code>breakpoints</code></h4>
+<p>启用断点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">enable</span> [breakpoints] [num] [once] [delete]`</span></span><br><span class="line">	-	`[delete]`：启用断点，生效后自动被删除</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>num</code>：断点序号
+<ul>
+<li>缺省：启用所有断点</li>
+</ul></li>
+<li><code>once</code>：启用断点一次</li>
+<li><code>delete</code>：启用生效后自动删除</li>
+<li><code>count</code>：启用断点<code>count</code>次</li>
+</ul>
+<h4 id="display-2"><code>display</code></h4>
+<p>启用程序停止时某些输出信息</p>
+<h4 id="frame-filter-1"><code>frame-filter</code></h4>
+<p>启用某些帧过滤器</p>
+<h4 id="mem-1"><code>mem</code></h4>
+<p>启用存储区</p>
+<h4 id="pretty-printer-1"><code>pretty-printer</code></h4>
+<p>启用某些打印美化</p>
+<h4 id="probes-1"><code>probes</code></h4>
+<p>启用探测</p>
+<h4 id="type-printer-1"><code>type-printer</code></h4>
+<p>启用某些类型打印</p>
+<h4 id="unwinder-1"><code>unwinder</code></h4>
+<p>启用某些unwinder</p>
+<h4 id="xmethod-1"><code>xmethod</code></h4>
+<p>启用某些xmethod</p>
+<h2 id="栈">栈</h2>
+<h3 id="backtrace"><code>backtrace</code></h3>
+<p><code>backtrace</code>：打印函数栈</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> backtrace/bt [-][&lt;n&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>-</code>：打印栈底信息 &gt; - 缺省：打印栈顶信息</li>
+<li><code>n</code>：打印栈数量 &gt; - 缺省：打印当前函数调用栈所有信息</li>
+</ul>
+</blockquote>
+<ul>
+<li>一般而言，程序停止时，最顶层栈就是当前函数栈</li>
+</ul>
+<h3 id="frame"><code>frame</code></h3>
+<p><code>frame</code>：切换当前栈</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> f[rame] [&lt;n&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>n</code>：切换到第<code>n</code>个栈帧 &gt; - 缺省打印当前栈编号、断点信息（函数参数、行号等）</li>
+</ul>
+</blockquote>
+<h3 id="up"><code>up</code></h3>
+<p><code>up</code>：上移当前栈帧</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> up [&lt;n&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>n</code>：上移<code>n</code>层栈帧 &gt; - 缺省：上移1层</li>
+</ul>
+</blockquote>
+<h3 id="down"><code>down</code></h3>
+<p><code>down</code>：下移当前栈帧</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> down [&lt;n&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>n</code>：下移<code>n</code>层栈帧 &gt; - 缺省：下移1层</li>
+</ul>
+</blockquote>
+<h2 id="gdb命令大全">GDB命令大全</h2>
+<h4 id="aliases"><em>aliases</em></h4>
+<h4 id="breakpoints-2"><em>breakpoints</em></h4>
+<h4 id="data"><em>data</em></h4>
+<h4 id="files"><em>files</em></h4>
+<h4 id="internals"><em>internals</em></h4>
+<h4 id="obscure"><em>obscure</em></h4>
+<h4 id="running"><em>running</em></h4>
+<h4 id="stack"><em>stack</em></h4>
+<h4 id="status"><em>status</em></h4>
+<h4 id="support"><em>support</em></h4>
+<h4 id="tracepoints"><em>tracepoints</em></h4>
+<h4 id="user-defined"><em>user-defined</em></h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> gdb tst</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> `gdb`启动可执行文件tst</span></span><br><span class="line">(gdb) l</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `l`：list，列出源码</span></span><br><span class="line">(gdb)</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 直接回车：重复上次命令</span></span><br><span class="line">(gdb) break 16</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `<span class="built_in">break</span> [n]`：在第`n`行设置断点</span></span><br><span class="line">(gdb) break func</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `<span class="built_in">break</span> func`：在函数`func`入口处设置断点</span></span><br><span class="line">(gdb) info break</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `info <span class="built_in">break</span>`：查看断点信息</span></span><br><span class="line">(gdb) r</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `r`：run，执行程序，会自动在断点处停止</span></span><br><span class="line">(gdb) n</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `n`：next，单条语句执行</span></span><br><span class="line">(gdb) c</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `c`：<span class="built_in">continue</span>，继续执行（下个断点、程序结束为止）</span></span><br><span class="line">(gdb) p i</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `p i`：<span class="built_in">print</span>，打印变量i的值</span></span><br><span class="line">(gdb) bt</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `bt`：查看函数栈</span></span><br><span class="line">(gdb) finish</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `finish`：退出**函数**</span></span><br><span class="line">(gdb) 1</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `q`：quit，退出gdb</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/编译工具/" rel="tag"># 编译工具</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/tools/hadoop/hdfs/" rel="next" title="HDFS">
+                <i class="fa fa-chevron-left"></i> HDFS
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_program/mark_lang/md_reference/" rel="prev" title="欢迎使用 Cmd Markdown 编辑阅读器">
+                欢迎使用 Cmd Markdown 编辑阅读器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试准备"><span class="nav-number">2.</span> <span class="nav-text">调试准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译选项"><span class="nav-number">2.1.</span> <span class="nav-text">编译选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动gdb调试"><span class="nav-number">2.2.</span> <span class="nav-text">启动GDB调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置调试环境"><span class="nav-number">2.3.</span> <span class="nav-text">配置调试环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#源文件"><span class="nav-number">2.3.1.</span> <span class="nav-text">源文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程序运行环境"><span class="nav-number">2.3.2.</span> <span class="nav-text">程序运行环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">2.4.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表达式"><span class="nav-number">2.5.</span> <span class="nav-text">表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止点"><span class="nav-number">3.</span> <span class="nav-text">停止点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置breakpoint"><span class="nav-number">3.1.</span> <span class="nav-text">设置Breakpoint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#break"><span class="nav-number">3.1.1.</span> <span class="nav-text">break</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tbreak"><span class="nav-number">3.1.2.</span> <span class="nav-text">tbreak</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rbreak"><span class="nav-number">3.1.3.</span> <span class="nav-text">rbreak</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#condition"><span class="nav-number">3.1.4.</span> <span class="nav-text">condition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ignore"><span class="nav-number">3.1.5.</span> <span class="nav-text">ignore</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置watchpoint"><span class="nav-number">3.2.</span> <span class="nav-text">设置Watchpoint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#watch"><span class="nav-number">3.2.1.</span> <span class="nav-text">watch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rwatch"><span class="nav-number">3.2.2.</span> <span class="nav-text">rwatch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#awatch"><span class="nav-number">3.2.3.</span> <span class="nav-text">awatch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置catchpoint"><span class="nav-number">3.3.</span> <span class="nav-text">设置Catchpoint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#catch"><span class="nav-number">3.3.1.</span> <span class="nav-text">catch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tcatch"><span class="nav-number">3.3.2.</span> <span class="nav-text">tcatch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信号处理"><span class="nav-number">3.4.</span> <span class="nav-text">信号处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#维护停止点"><span class="nav-number">3.5.</span> <span class="nav-text">维护停止点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clear"><span class="nav-number">3.5.1.</span> <span class="nav-text">clear</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#commands"><span class="nav-number">3.5.2.</span> <span class="nav-text">commands</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行"><span class="nav-number">4.</span> <span class="nav-text">执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件"><span class="nav-number">4.1.</span> <span class="nav-text">文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#list"><span class="nav-number">4.1.1.</span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#forward-searchsearch"><span class="nav-number">4.1.2.</span> <span class="nav-text">forward-search/search</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#revserse-search"><span class="nav-number">4.1.3.</span> <span class="nav-text">revserse-search</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#directory"><span class="nav-number">4.1.4.</span> <span class="nav-text">directory</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继续执行"><span class="nav-number">4.2.</span> <span class="nav-text">继续执行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#run"><span class="nav-number">4.2.1.</span> <span class="nav-text">run</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#continue"><span class="nav-number">4.2.2.</span> <span class="nav-text">continue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stepnext"><span class="nav-number">4.2.3.</span> <span class="nav-text">step/next</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stepinexti"><span class="nav-number">4.2.4.</span> <span class="nav-text">stepi/nexti</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#finish"><span class="nav-number">4.2.5.</span> <span class="nav-text">finish</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#return"><span class="nav-number">4.2.6.</span> <span class="nav-text">return</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#util"><span class="nav-number">4.2.7.</span> <span class="nav-text">util</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jump"><span class="nav-number">4.2.8.</span> <span class="nav-text">jump</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#call"><span class="nav-number">4.2.9.</span> <span class="nav-text">call</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看信息"><span class="nav-number">4.3.</span> <span class="nav-text">查看信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#printinspect"><span class="nav-number">4.3.1.</span> <span class="nav-text">print/inspect</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#examine"><span class="nav-number">4.3.2.</span> <span class="nav-text">examine</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#display"><span class="nav-number">4.3.3.</span> <span class="nav-text">display</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undisplay"><span class="nav-number">4.3.4.</span> <span class="nav-text">undisplay</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看设置gdb环境"><span class="nav-number">5.</span> <span class="nav-text">查看、设置GDB环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#info"><span class="nav-number">5.1.</span> <span class="nav-text">info</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#停止点-1"><span class="nav-number">5.1.1.</span> <span class="nav-text">停止点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程"><span class="nav-number">5.1.2.</span> <span class="nav-text">线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#信号"><span class="nav-number">5.1.3.</span> <span class="nav-text">信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他"><span class="nav-number">5.1.4.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set"><span class="nav-number">5.2.</span> <span class="nav-text">set</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#停止点-2"><span class="nav-number">5.2.1.</span> <span class="nav-text">停止点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#环境"><span class="nav-number">5.2.2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#print"><span class="nav-number">5.2.3.</span> <span class="nav-text">print</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#show"><span class="nav-number">5.3.</span> <span class="nav-text">show</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#执行-1"><span class="nav-number">5.3.1.</span> <span class="nav-text">执行</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#print-1"><span class="nav-number">5.3.1.1.</span> <span class="nav-text">print</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell"><span class="nav-number">5.4.</span> <span class="nav-text">shell</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#path"><span class="nav-number">5.4.1.</span> <span class="nav-text">path</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gdb环境"><span class="nav-number">5.5.</span> <span class="nav-text">GDB环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#环境变量"><span class="nav-number">5.5.1.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#寄存器"><span class="nav-number">5.5.2.</span> <span class="nav-text">寄存器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他-1"><span class="nav-number">5.6.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试设置"><span class="nav-number">6.</span> <span class="nav-text">调试设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#delete"><span class="nav-number">6.1.</span> <span class="nav-text">delete</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#disable"><span class="nav-number">6.2.</span> <span class="nav-text">disable</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#breakpoints"><span class="nav-number">6.2.1.</span> <span class="nav-text">breakpoints</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#display-1"><span class="nav-number">6.2.2.</span> <span class="nav-text">display</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#frame-filter"><span class="nav-number">6.2.3.</span> <span class="nav-text">frame-filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mem"><span class="nav-number">6.2.4.</span> <span class="nav-text">mem</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pretty-printer"><span class="nav-number">6.2.5.</span> <span class="nav-text">pretty-printer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#probes"><span class="nav-number">6.2.6.</span> <span class="nav-text">probes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#type-printer"><span class="nav-number">6.2.7.</span> <span class="nav-text">type-printer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#unwinder"><span class="nav-number">6.2.8.</span> <span class="nav-text">unwinder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xmethod"><span class="nav-number">6.2.9.</span> <span class="nav-text">xmethod</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enable"><span class="nav-number">6.3.</span> <span class="nav-text">enable</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#breakpoints-1"><span class="nav-number">6.3.1.</span> <span class="nav-text">breakpoints</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#display-2"><span class="nav-number">6.3.2.</span> <span class="nav-text">display</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#frame-filter-1"><span class="nav-number">6.3.3.</span> <span class="nav-text">frame-filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mem-1"><span class="nav-number">6.3.4.</span> <span class="nav-text">mem</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pretty-printer-1"><span class="nav-number">6.3.5.</span> <span class="nav-text">pretty-printer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#probes-1"><span class="nav-number">6.3.6.</span> <span class="nav-text">probes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#type-printer-1"><span class="nav-number">6.3.7.</span> <span class="nav-text">type-printer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#unwinder-1"><span class="nav-number">6.3.8.</span> <span class="nav-text">unwinder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xmethod-1"><span class="nav-number">6.3.9.</span> <span class="nav-text">xmethod</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#栈"><span class="nav-number">7.</span> <span class="nav-text">栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#backtrace"><span class="nav-number">7.1.</span> <span class="nav-text">backtrace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#frame"><span class="nav-number">7.2.</span> <span class="nav-text">frame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#up"><span class="nav-number">7.3.</span> <span class="nav-text">up</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#down"><span class="nav-number">7.4.</span> <span class="nav-text">down</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gdb命令大全"><span class="nav-number">8.</span> <span class="nav-text">GDB命令大全</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#aliases"><span class="nav-number">8.0.1.</span> <span class="nav-text">aliases</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#breakpoints-2"><span class="nav-number">8.0.2.</span> <span class="nav-text">breakpoints</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data"><span class="nav-number">8.0.3.</span> <span class="nav-text">data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#files"><span class="nav-number">8.0.4.</span> <span class="nav-text">files</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#internals"><span class="nav-number">8.0.5.</span> <span class="nav-text">internals</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#obscure"><span class="nav-number">8.0.6.</span> <span class="nav-text">obscure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#running"><span class="nav-number">8.0.7.</span> <span class="nav-text">running</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stack"><span class="nav-number">8.0.8.</span> <span class="nav-text">stack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#status"><span class="nav-number">8.0.9.</span> <span class="nav-text">status</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#support"><span class="nav-number">8.0.10.</span> <span class="nav-text">support</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tracepoints"><span class="nav-number">8.0.11.</span> <span class="nav-text">tracepoints</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#user-defined"><span class="nav-number">8.0.12.</span> <span class="nav-text">user-defined</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

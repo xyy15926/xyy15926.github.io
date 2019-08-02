@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="协整与误差修正模型">
+<meta name="keywords" content="统计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="协整与误差修正模型">
+<meta property="og:url" content="https://xyy15926.github.io/stat_statistics/time_series_analysis/cointegration/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="协整与误差修正模型">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-17T03:57:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="协整与误差修正模型">
+<meta name="twitter:description" content="协整与误差修正模型">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/stat_statistics/time_series_analysis/cointegration/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>协整与误差修正模型 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/stat_statistics/time_series_analysis/cointegration/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">协整与误差修正模型
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:08" itemprop="dateModified" datetime="2019-02-17T11:57:08+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/统计/" itemprop="url" rel="index"><span itemprop="name">统计</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">协整与误差修正模型</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="spurious-regression">Spurious Regression</h2>
+<p>多变量分析中，平稳性非常重要，忽略序列平稳性判断，容易 出现伪回归现象</p>
+<ul>
+<li>Granger、Newbold的非平稳序列的伪回归随机模型实验（两个 独立随机游走模型）表明，非平稳场合，参数显著性检验犯弃真 错误的概率远大于<span class="math inline">\(\alpha\)</span>，伪回归显著成立，即 <span class="math inline">\(P(|t| \geqslant t_{\alpha/2}(n) | 非平稳序列) \leqslant \alpha\)</span></li>
+</ul>
+<h3 id="cointegration"><em>Cointegration</em></h3>
+<p>协整关系</p>
+<p><span class="math display">\[
+y_t = \beta_0 + \sum_{i=1}^k \beta_i x_{it} + \epsilon_t
+\]</span></p>
+<ul>
+<li><span class="math inline">\({x_1}, {x_2}, \cdots, {x_k}\)</span>：自变量序列</li>
+<li><span class="math inline">\(y_t\)</span>：响应变量序列</li>
+<li><span class="math inline">\({\epsilon_t}\)</span>：平稳回归残差序列</li>
+</ul>
+<h4 id="协整检验">协整检验</h4>
+<ul>
+<li><p>假设条件</p>
+<ul>
+<li><span class="math inline">\(H_0: \epsilon_t ~ I(k), k \geqslant 1\)</span>：多元非平稳 序列之间不存在协整关系</li>
+<li><span class="math inline">\(H_1: \epsilon_t ~ I(0)\)</span>：多元非平稳序列之间存在协整 关系</li>
+</ul></li>
+<li><p>建立响应序列与输入序列之间的回归模型</p></li>
+<li><p>对回归残差序列进行EG平稳性检验</p></li>
+</ul>
+<h4 id="granger因果检验">Granger因果检验</h4>
+<ul>
+<li><p>变量之间因果关系不太容易通过逻辑进行判断，可通过Granger 检验进行统计学意义上的因果关系检验</p></li>
+<li>因果关系：原因导致但效果
+<ul>
+<li>时间角度：原因发生在前，结果发生在后</li>
+<li>影响效果：X事件发生在前，且对Y事件发展结果有意义</li>
+</ul></li>
+</ul>
+<h4 id="granger因果关系">Granger因果关系</h4>
+<p>序列<span class="math inline">\({x}\)</span>是序列<span class="math inline">\({y}\)</span>的Granger原因，当且仅当最优线性预测函数 使得下式成立</p>
+<p><span class="math display">\[
+\theta^2(y_{t+1}|I_t) \leq \theta^2(y_{t+1}|I_t-X_t)
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(I_t = \{ x_t, x_{t-1}, \cdots, y_t, y_{t-1}, \cdots \}\)</span> ：t时刻所有有用信息集合</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(X_t = \{ x_t, x_{t-1}, \cdots \}\)</span>：t时刻所有序列信息集合</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\theta^2()\)</span>：方差函数</li>
+</ul>
+</blockquote>
+<blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\theta^2(y_{t+1}|I_t)\)</span>：使用所有可获得历史信息 （包括<span class="math inline">\({x}\)</span>序列历史信息）得到的一期预测值方差</li>
+<li><span class="math inline">\(\theta^2(y_{t+1}|I_t-X_t)\)</span>：从所有信息中刻意扣除 <span class="math inline">\({x}\)</span>序列历史信息得到的一期预测值方差</li>
+</ul>
+</blockquote>
+</blockquote>
+<ul>
+<li>分类
+<ul>
+<li><span class="math inline">\((x, y)\)</span>：相互独立</li>
+<li><span class="math inline">\((x \leftarrow y)\)</span>：x是y的Granger原因</li>
+<li><span class="math inline">\((x \rightarrow y)\)</span>：y是x的Granger原因</li>
+<li><span class="math inline">\((x \leftrightarrow y)\)</span>：互为因果</li>
+</ul></li>
+</ul>
+<h4 id="granger因果检验-1">Granger因果检验</h4>
+<ul>
+<li><p>建立回归方程 <span class="math display">\[
+y_t = \alpha_0 + \sum_{i=1}^m \alpha_i x_{t-i} +
+    \sum_{j=1}^n b_j y_{t-j} + \sum_k cz_{t-k} +
+    \epsilon_t
+\]</span></p>
+<ul>
+<li><span class="math inline">\(z_t\)</span>：其他解释变量集合</li>
+<li><span class="math inline">\(\epsilon_t ~ I(0)\)</span></li>
+</ul></li>
+<li>假设
+<ul>
+<li><span class="math inline">\(H_0: \alpha_1 = \alpha_2 = \cdots = \alpha_m = 0\)</span></li>
+<li><span class="math inline">\(H_1: \alpha_i 不全为0\)</span></li>
+</ul></li>
+<li><p>检验统计量：F统计量</p>
+<p><span class="math display">\[
+F = \frac {SSE_r - SSE_u) / q} {SSE_u/n-q-p-1}
+    ~ F(q, n-p-q-1)
+\]</span></p></li>
+<li><p>说明</p>
+<ul>
+<li><p>检验结果严重依赖解释变量的延迟阶数，不同延迟阶数可能 会得到不同的检验结果</p></li>
+<li><p>检验结果会受到样本随机性影响，样本容量越小随机性越大 ，所以最好在样本容量比较大时进行检验</p></li>
+</ul></li>
+<li><p>Granger因果检验即使显著拒绝原假设，也不能说明两个序列 之间有真正因果关系</p>
+<ul>
+<li><p>构造思想是：对响应变量预测精度有显著提高的自变量，就 视为响应变量的因</p></li>
+<li><p>因果性可以推出预测精度提高，但预测精度提高不能等价 推出因果性</p></li>
+<li><p>Granger因果检验是处理复杂变量关系时的工具，借助因果 检验信息，可以帮助思考模型结果，不一定准确，但是提供 信息比完全没有信息好</p></li>
+</ul></li>
+</ul>
+<h3 id="error-correction-model">Error Correction Model</h3>
+<p><em>ECM</em>：误差修正模型，解释序列短期波动关系</p>
+<ul>
+<li>协整模型度量序列之间长期均衡关系</li>
+<li>现实模型中，响应序列与解释序列很少处于均衡点上，实际观测 的是序列间短期或非均衡关系</li>
+<li>Granger证明协整模型、误差修正模型具有1-1对应关系</li>
+</ul>
+<h4 id="granger表述定理">Granger表述定理</h4>
+<p>如果变量X、Y是协整的，则他们之间的短期非均衡关系总能用 一个误差修正模型表述</p>
+<p><span class="math display">\[
+\Delta Y_t = lagged(\Delta Y, \Delta X) - 
+    \lambda ECM_{t-1} + \epsilon_t
+\]</span></p>
+<p>响应序列当期波动<span class="math inline">\(\Delta y_t\)</span>主要受到三方面短期波动影响</p>
+<ul>
+<li><span class="math inline">\(\Delta x_t\)</span>：输出序列当前波动</li>
+<li><span class="math inline">\(ECM_{t-1}\)</span>：上一期误差</li>
+<li><span class="math inline">\(\epsilon_t\)</span>：纯随机波动</li>
+</ul>
+<p><span class="math display">\[\begin{align*}
+y_t &amp; = \beta x_t + \epsilon_t \\
+y_t - y_{t-1} &amp; = \beta x_t - \beta x_{t-1} - \epsilon_{t-1}
+    + \epsilon_t \\
+\Delta y_t &amp; = \beta \delta x_t - ECM_{t-1} + \epsilon_t
+\end{align*}\]</span></p>
+<h4 id="误差修正模型">误差修正模型</h4>
+<p>模型结构</p>
+<p><span class="math display">\[
+\Delta y_t = \beta_0 \Delta x_t + \beta_1 ECM_{t-1} +
+    \epsilon_t
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(\beta_1 &lt; 0\)</span>：表示负反馈机制</p>
+<ul>
+<li><span class="math inline">\(ECM_{t-1} &gt; 0\)</span>：正向误差，则会导致下一期值负向变化</li>
+<li><span class="math inline">\(ECM_{t-1} &lt; 0\)</span>：负向误差，则会导致下一期值正向变化</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/统计/" rel="tag"># 统计</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_cppc/cstd/io/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/pandas/df_funcs/" rel="prev" title="Pandas函数目录">
+                Pandas函数目录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#spurious-regression"><span class="nav-number">1.</span> <span class="nav-text">Spurious Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cointegration"><span class="nav-number">1.1.</span> <span class="nav-text">Cointegration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#协整检验"><span class="nav-number">1.1.1.</span> <span class="nav-text">协整检验</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#granger因果检验"><span class="nav-number">1.1.2.</span> <span class="nav-text">Granger因果检验</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#granger因果关系"><span class="nav-number">1.1.3.</span> <span class="nav-text">Granger因果关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#granger因果检验-1"><span class="nav-number">1.1.4.</span> <span class="nav-text">Granger因果检验</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#error-correction-model"><span class="nav-number">1.2.</span> <span class="nav-text">Error Correction Model</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#granger表述定理"><span class="nav-number">1.2.1.</span> <span class="nav-text">Granger表述定理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#误差修正模型"><span class="nav-number">1.2.2.</span> <span class="nav-text">误差修正模型</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

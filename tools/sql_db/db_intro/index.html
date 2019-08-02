@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="数据库背景">
+<meta name="keywords" content="工具,SQLDB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库背景">
+<meta property="og:url" content="https://xyy15926.github.io/tools/sql_db/db_intro/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="数据库背景">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-09T16:48:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据库背景">
+<meta name="twitter:description" content="数据库背景">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/sql_db/db_intro/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据库背景 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/sql_db/db_intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">数据库背景
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-10 00:48:33" itemprop="dateCreated datePublished" datetime="2019-07-10T00:48:33+08:00">2019-07-10</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/SQLDB/" itemprop="url" rel="index"><span itemprop="name">SQLDB</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">数据库背景</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="数据库术语">数据库术语</h2>
+<h3 id="数据库结构">数据库结构</h3>
+<ul>
+<li>数据源：多源数据继承</li>
+<li>数据仓库继承工具：FTL工具、MapReduce</li>
+<li>数据仓库服务器：列存储数据库引擎</li>
+<li>数据即使：数据仓库的数据子集、聚集数据继</li>
+<li>OLAP服务器：提供多维数据视图</li>
+<li>前台数据分析工具
+<ul>
+<li>报表工具</li>
+<li>多维分析工具</li>
+<li>数据挖掘工具</li>
+</ul></li>
+</ul>
+<h3 id="数据库类型">数据库类型</h3>
+<ul>
+<li>传统关系型数据库</li>
+<li>MPP大规模并行处理数据库</li>
+<li>NoSQL数据库</li>
+<li>图数据库</li>
+<li>NewSQL数据库</li>
+<li>GPU数据库</li>
+</ul>
+<h2 id="数据查询">数据查询</h2>
+<ul>
+<li>Project Pushdown：投影下推
+<ul>
+<li>只读取、查询需要的<strong>列</strong></li>
+<li>减少每次查询的IO数据量</li>
+</ul></li>
+<li>Predicate Pushdown：谓词下推
+<ul>
+<li>将过滤条件尽快执行，跳过不满足条件<strong>行</strong></li>
+</ul></li>
+</ul>
+<h2 id="数据压缩算法">数据压缩算法</h2>
+<ul>
+<li>Run Length Encoding：重复数据</li>
+<li>Delta Encoding：有序数据集</li>
+<li>Dictionary Encoding：小规模数据集合</li>
+<li>Prefix Encoding：字符串版Delta Encoding</li>
+</ul>
+<h2 id="数据库调优">数据库调优</h2>
+<p>数据库调优：是数据库具有更高的吞吐量、更快响应</p>
+<ul>
+<li>被调优对象是数据库整体</li>
+<li>需要考虑很多资源、数据库配置</li>
+</ul>
+<h3 id="人工调优">人工调优</h3>
+<ul>
+<li>依赖人工，效率低下</li>
+<li>要求操作者理解查询原理，对应用、DBMS、操作系统、硬件有 一定理解</li>
+</ul>
+<h3 id="基于案例调优">基于案例调优</h3>
+<ul>
+<li>总结典型应用案例情况中数据库参数推荐配置值、逻辑层设计等 情况，为用户调优工作提供参考、借鉴</li>
+<li>忽略系统动态性、不同系统之间差异</li>
+</ul>
+<h3 id="自调优">自调优</h3>
+<ul>
+<li>为DBMS建立模型，根据“影响数据库性能效率的因素”，自动进行 参数配置</li>
+<li>部分商业数据库实现了自调优技术</li>
+</ul>
+<h3 id="需求分析期">需求分析期</h3>
+<h4 id="应用情况估算">应用情况估算</h4>
+<ul>
+<li>应用使用方式
+<ul>
+<li>将业务逻辑转换为读写分布逻辑，以读多写少、读写均衡 区分OLAP、OLTP</li>
+<li>应用对数据库的并发情况、并发是否可池化</li>
+</ul></li>
+<li>数据量</li>
+<li>对数据库压力、峰值压力</li>
+</ul>
+<h4 id="系统选型策略">系统选型策略</h4>
+<ul>
+<li>确定适合的数据库：开源、商业；集群、单机</li>
+<li>操作系统、中间件、硬件、网络选型</li>
+</ul>
+<h3 id="项目设计期">项目设计期</h3>
+<h4 id="数据模型设计">数据模型设计</h4>
+<p>根据业务逻辑，从以下角度考虑表结构</p>
+<ul>
+<li>E-R模型设计：遵循E-R模型设计原理，适当非规范化可以改善 系统查询性能</li>
+<li>数据逻辑分布策略：减少数据请求中不必要的数据量
+<ul>
+<li>分区</li>
+<li>利用E-R模型分表</li>
+</ul></li>
+<li>数据物理存储策略：减少IO操作
+<ul>
+<li>启用压缩</li>
+<li>分开存储索引、表数据</li>
+<li>不同表数据分布在不同表空间</li>
+<li>不同表空间分布在不同物理存储，尤其是读写量大的表空间 分布在不同物理存储上</li>
+<li>日志、索引、数据分布在不同物理存储上</li>
+</ul></li>
+<li>索引：在查询频繁的对象上建立<strong>恰当</strong>索引</li>
+</ul>
+<h3 id="开发期">开发期</h3>
+<h4 id="sql设计">SQL设计</h4>
+<ul>
+<li>编写正确、查询效率高的SQL语句，依据“查询重写规则”
+<ul>
+<li>有意识地保障SQL能利用到索引</li>
+</ul></li>
+</ul>
+<h4 id="数据库功能启用">数据库功能启用</h4>
+<ul>
+<li>查询重用</li>
+<li>数据库参数设计</li>
+</ul>
+<h3 id="测试试运行上线维护">测试、试运行、上线、维护</h3>
+<h4 id="模型系统预运行">模型系统预运行</h4>
+<ul>
+<li>在备用系统上模型实际运行环境，加大压力进行相似测试</li>
+</ul>
+<h4 id="系统监控分析">系统监控分析</h4>
+<ul>
+<li>应用系统表示：收集用户使用意见、系统存在问题</li>
+<li>OS环境监控：实时监控CPU、内存、IO等，对比历史正常情况</li>
+<li>数据库内部状态监控：系统表、视图、工具、锁的情况</li>
+<li>日志分析：在数据库的日志、操作系统日志中找出异常</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/SQLDB/" rel="tag"># SQLDB</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/tools/sql_db/sql_grammer/" rel="next" title="SQL语法">
+                <i class="fa fa-chevron-left"></i> SQL语法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/tools/sql_db/hivesql/" rel="prev" title="HiveSQL">
+                HiveSQL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库术语"><span class="nav-number">1.</span> <span class="nav-text">数据库术语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库结构"><span class="nav-number">1.1.</span> <span class="nav-text">数据库结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库类型"><span class="nav-number">1.2.</span> <span class="nav-text">数据库类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据查询"><span class="nav-number">2.</span> <span class="nav-text">数据查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据压缩算法"><span class="nav-number">3.</span> <span class="nav-text">数据压缩算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库调优"><span class="nav-number">4.</span> <span class="nav-text">数据库调优</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#人工调优"><span class="nav-number">4.1.</span> <span class="nav-text">人工调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于案例调优"><span class="nav-number">4.2.</span> <span class="nav-text">基于案例调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自调优"><span class="nav-number">4.3.</span> <span class="nav-text">自调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需求分析期"><span class="nav-number">4.4.</span> <span class="nav-text">需求分析期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用情况估算"><span class="nav-number">4.4.1.</span> <span class="nav-text">应用情况估算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系统选型策略"><span class="nav-number">4.4.2.</span> <span class="nav-text">系统选型策略</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目设计期"><span class="nav-number">4.5.</span> <span class="nav-text">项目设计期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据模型设计"><span class="nav-number">4.5.1.</span> <span class="nav-text">数据模型设计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发期"><span class="nav-number">4.6.</span> <span class="nav-text">开发期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sql设计"><span class="nav-number">4.6.1.</span> <span class="nav-text">SQL设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库功能启用"><span class="nav-number">4.6.2.</span> <span class="nav-text">数据库功能启用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试试运行上线维护"><span class="nav-number">4.7.</span> <span class="nav-text">测试、试运行、上线、维护</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#模型系统预运行"><span class="nav-number">4.7.1.</span> <span class="nav-text">模型系统预运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系统监控分析"><span class="nav-number">4.7.2.</span> <span class="nav-text">系统监控分析</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

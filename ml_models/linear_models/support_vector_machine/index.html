@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Support Vector Machine">
+<meta name="keywords" content="模型,线性模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Support Vector Machine">
+<meta property="og:url" content="https://xyy15926.github.io/ml_models/linear_models/support_vector_machine/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Support Vector Machine">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-13T04:03:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Support Vector Machine">
+<meta name="twitter:description" content="Support Vector Machine">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_models/linear_models/support_vector_machine/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Support Vector Machine | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_models/linear_models/support_vector_machine/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Support Vector Machine
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-13 23:23:47 / 修改时间：12:03:11" itemprop="dateCreated datePublished" datetime="2019-07-13T23:23:47+08:00">2019-07-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/" itemprop="url" rel="index"><span itemprop="name">模型</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/线性模型/" itemprop="url" rel="index"><span itemprop="name">线性模型</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Support Vector Machine</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="总述">总述</h2>
+<p>支持向量机是二分类模型</p>
+<h3 id="学习要素">学习要素</h3>
+<ul>
+<li><p>基本模型：定义在特征空间上的间隔最大线性分类器</p></li>
+<li><p>学习策略：间隔最大化</p>
+<ul>
+<li><p>可形式化为求解凸二次规划问题，也等价于正则化的合页 损失函数最小化问题</p></li>
+<li><p>间隔最大使其有别于感知机，训练数据线性可分时分离 超平面唯一</p>
+<ul>
+<li>误分类最小策略（0-1损失）得到分离超平面的解无穷 多个</li>
+<li>距离和最小策略（平方损失）得到分离超平面唯一， 但与此不同</li>
+</ul></li>
+</ul></li>
+<li><p>学习算法：求解凸二次规划的最优化算法</p></li>
+</ul>
+<h3 id="数据">数据</h3>
+<p>在给定特征空间上的训练数据集 <span class="math inline">\(T=\{(x_1,y_1), (x_2,y_2),\cdots,(x_N,y_N)\}\)</span>，其中 <span class="math inline">\(x_i \in \mathcal{X} = R^n, y_i \in {-1, +1}, i=1,2,...,N\)</span></p>
+<blockquote>
+<ul>
+<li>输入空间：欧氏空间或离散集合</li>
+<li>特征空间：希尔伯特空间</li>
+<li>输出空间：离散集合</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>SVM假设输入空间、特征空间为两个不同空间，SVM在特征空间 上进行学习</p></li>
+<li><p>线性（可分）支持向量机假设两个空间元素<strong>一一对应</strong>，并将 输入空间中的输入映射为特征空间中特征向量</p></li>
+<li><p>非线性支持向量机利用，输入空间到特征空间的非线性映射 （核函数）将输入映射为特征向量</p></li>
+</ul>
+<h3 id="概念">概念</h3>
+<h2 id="linear-support-vector-machine-in-linearly-separable-case"><em>Linear Support Vector Machine in Linearly Separable Case</em></h2>
+<p>线性可分支持向量机：硬间隔支持向量机，训练数据线性可分时， 通过硬间隔最大化策略学习</p>
+<ul>
+<li>直观含义：不仅将正负实例分开，而且对于最难分的实例点 （离超平面最近的点），也有足够大的确信度将其分开，这样的 超平面对新实例预测能力较好</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Hard-margin Maximization</em>：硬间隔最大化，最大化超平面 <span class="math inline">\((w,b)\)</span>关于线性可分训练数据集的两类样本集几何间隔</li>
+</ul>
+</blockquote>
+<h3 id="原始问题策略">原始问题策略</h3>
+<ul>
+<li><p>约束最优化问题表述</p>
+<p><span class="math display">\[\begin{align}
+\max_{w,b} &amp; \gamma &amp; \\
+s.t. &amp; \frac {y_i} {\|w\|} (wx + b) \geq \gamma,
+    i=1,2,\cdots,N
+\end{align} \]</span></p></li>
+<li>考虑函数间隔、几何间隔关系得到问题
+<ul>
+<li>目标、约束中使用函数间隔表示几何间隔</li>
+<li>就是普通<strong>等比缩放</strong>、<strong>分母移位</strong>，不用考虑太多</li>
+</ul>
+<p><span class="math display">\[\begin{align*}
+\max_{w,b} &amp; \frac {\hat{\gamma}} {\|w\|} \\
+s.t. &amp; y_i(wx_i + b) \geq \hat{\gamma}, i=1,2,\cdots,N
+\end{align*}\]</span></p></li>
+<li><p>而函数间隔<span class="math inline">\(\hat{\gamma}\)</span>大小会随着超平面参数变化 成比例变化，其取值对问题求解无影响，所以可取 <span class="math inline">\(\hat{\gamma}=1\)</span>带入，得到最优化问题</p>
+<p><span class="math display">\[\begin{align*}
+\min_{w,b} &amp; \frac 1 2 {\|w\|}^2 \\
+s.t. &amp; y_i(wx_i + b) - 1 \geq 0, i=1,2,\cdots,N
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\max \frac 1 {\|w\|}\)</span>和 <span class="math inline">\(\min \frac 1 2 {\|w\|}^2\)</span>等价</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>这里确实没有通用变换技巧，因为这里的<span class="math inline">\(\hat \gamma\)</span> 是特殊的值，其取值与<span class="math inline">\(w,b\)</span>相关，这是<strong>问题自然蕴含</strong> ，可以视为还有以下一个依赖</p></li>
+<li><p>当然也可以直接证明两个问题等价：先证明最优解在等式 成立时取到，然后目标函数中1替换为等式左边</p></li>
+</ul></li>
+</ul>
+<h3 id="最大间隔分离平面存在性">最大间隔分离平面存在性</h3>
+<blockquote>
+<ul>
+<li>若训练数据集T线性可分，则可将训练数据集中样本点完全 正确分开的最大间隔分离超平面存在且唯一</li>
+</ul>
+</blockquote>
+<h4 id="存在性">存在性</h4>
+<ul>
+<li>训练数据集线性可分，所以以上中最优化问题一定存在可行解</li>
+<li>又目标函数又下界，则最优化问题必有解 #todo</li>
+<li>又训练数据集中正、负类点都有，所以<span class="math inline">\((0,b)\)</span>必不是最优化 可行解</li>
+</ul>
+<h4 id="唯一性">唯一性</h4>
+<ul>
+<li><p>若以上最优化问题存在两个最优解<span class="math inline">\((w_1^{*},b_1^{*})\)</span>、 <span class="math inline">\(w_2^{*},b_2^{*}\)</span></p></li>
+<li><p>显然<span class="math inline">\(\|w_1^{*}\| = \|w_2^{*}\| = c\)</span>， <span class="math inline">\((w=\frac {w_1^{*}+w_2^{*}} 2,b=\frac {b_1^{*}+b_2^{*}} 2)\)</span> 使最优化问题的一个可行解，则有</p>
+<p><span class="math display">\[
+c \leq \|w\| \leq \frac 1 2 \|w_1^{*}\| + \frac 1 2
+    \|w_2^{*} = c
+\]</span></p></li>
+<li><p>则有<span class="math inline">\(\|w\|=\frac 1 2 \|w_1^{*}\|+\frac 1 2 \|w_2^{*}\|\)</span> ，有<span class="math inline">\(w_1^{*} = \lambda w_2^{*}, |\lambda|=1\)</span></p>
+<ul>
+<li><span class="math inline">\(\lambda = -1\)</span>，不是可行解，矛盾</li>
+<li><span class="math inline">\(\lambda = 1\)</span>，则<span class="math inline">\(w_1^{(*)} = w_2^{*}\)</span>，两个最优解 写为<span class="math inline">\((w^{*}, b_1^{*})\)</span>、<span class="math inline">\((w^{*}, b_2^{*})\)</span></li>
+</ul></li>
+<li><p>设<span class="math inline">\(x_1^{+}, x_1^{-}, x_2^{+}, x_2^{-}\)</span>分别为对应以上两组 超平面，使得约束取等号、正/负类别的样本点，则有</p>
+<p><span class="math display">\[\begin{align*}
+b_1^{*} &amp; = -\frac 1 2 (w^{*} x_1^{+} + w^{*} x_1^{-}) \\
+b_2^{*} &amp; = -\frac 1 2 (w^{*} x_2^{+} + w^{*} x_2^{-}) \\
+\end{align*}\]</span></p>
+<p>则有</p>
+<p><span class="math display">\[
+b_1^{*} - b_2^{*} = -\frac 1 2 [w^{*}(x_1^{+} - x_2^{+})
+    + w^{*} (x_1^{-} - x_2^{-})]
+\]</span></p></li>
+<li><p>又因为以上支持向量的性质可得</p>
+<p><span class="math display">\[\begin{align*}
+w^{*}x_2^{+} + b_1^{*} &amp; \geq 1 = w^{*}x_1^{+} + b_1^{*} \\
+w^{*}x_1^{+} + b_2^{*} &amp; \geq 1 = w^{*}x_2^{+} + b_2^{*}
+\end{align*}\]</span></p>
+<p>则有<span class="math inline">\(w^{*}(x_1^{+} - x_2^{+})=0\)</span>，同理有 <span class="math inline">\(w^{*}(x_1^{-} - x_2^{-})=0\)</span></p></li>
+<li><p>则<span class="math inline">\(b_1^{*} - b_2^{*} = 0\)</span></p></li>
+</ul>
+<h3 id="概念-1">概念</h3>
+<h4 id="support-vector"><em>Support Vector</em></h4>
+<p>支持向量：训练数据集中与超平面距离最近的样本点实例</p>
+<ul>
+<li>在线性可分支持向量机中即为使得约束条件取等号成立的点</li>
+<li>在决定分离超平面时，只有支持向量起作用，其他实例点不起 作用</li>
+<li>支持向量一般很少，所以支持向量机由很少的“重要”训练样本 决定</li>
+</ul>
+<h4 id="间隔边界">间隔边界</h4>
+<p>间隔边界：超平面<span class="math inline">\(wx + b = +/-1\)</span></p>
+<ul>
+<li>支持向量位于其上</li>
+<li>两个间隔边界之间距离称为间隔<span class="math inline">\(=\frac 2 {\|w\|}\)</span></li>
+</ul>
+<h3 id="算法">算法</h3>
+<blockquote>
+<ul>
+<li>输入：线性可分训练数据集T</li>
+<li>输出：最大间隔分离超平面、分类决策函数</li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>构造并求解约束最优化问题</p>
+<p><span class="math display">\[\begin{align*}
+\min_{w,b} &amp;  \frac 1 2 {\|w\|}^2 \\
+s.t. &amp; y_i(wx_i + b) - 1 \geq 0, i=1,2,\cdots,N
+\end{align*}\]</span></p>
+<p>得到最优解<span class="math inline">\(w^{*}, b^{*}\)</span></p></li>
+<li><p>得到分离超平面</p>
+<p><span class="math display">\[
+w^{*}x + b^{*} = 0
+\]</span></p>
+<p>分类决策函数</p>
+<p><span class="math display">\[
+f(x) = sign(w^{*}x + b^{*})
+\]</span></p></li>
+</ol>
+<h3 id="多分类">多分类</h3>
+<ul>
+<li><em>1 vs n-1</em>：对类<span class="math inline">\(k=1,...,n\)</span>分别训练当前类对剩余类分类器
+<ul>
+<li>分类器数据量有偏，可以在负类样本中进行抽样</li>
+<li>训练n个分类器</li>
+</ul></li>
+<li><em>1 vs 1</em>：对<span class="math inline">\(k=1,...,n\)</span>类别两两训练分类器，预测时取各 分类器投票多数
+<ul>
+<li>需要训练<span class="math inline">\(\frac {n(n-1)} 2\)</span>给分类器</li>
+</ul></li>
+<li><em>DAG</em>：对<span class="math inline">\(k=1,...,n\)</span>类别两两训练分类器，根据预先设计的、 可以使用DAG表示的分类器预测顺序依次预测
+<ul>
+<li>即排除法排除较为不可能类别</li>
+<li>一旦某次预测失误，之后分类器无法弥补
+<ul>
+<li>但是错误率可控</li>
+<li>设计DAG时可以每次选择相差最大的类别优先判别</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="dual-algorithm"><em>Dual Algorithm</em></h2>
+<p>对偶算法：求解对偶问题得到原始问题的最优解</p>
+<ul>
+<li>对偶问题往往更容易求解</li>
+<li>自然引入核函数，进而推广到非线性分类问题</li>
+</ul>
+<h3 id="对偶问题策略">对偶问题策略</h3>
+<ul>
+<li><p>Lagrange函数如下</p>
+<p><span class="math display">\[
+L(w,b,\alpha) = \frac 1 2 \|w\|^2 - \sum_{i=1}^N
+    \alpha_i y_i (wx_i + b) + \sum_{i=1}^N \alpha_i
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\alpha_i &gt; 0\)</span>：<em>Lagrange multiplier</em></li>
+</ul>
+</blockquote></li>
+<li><p>根据拉格朗日对偶性，原始问题的对偶问题是极大极小问题</p>
+<p><span class="math display">\[
+\max_{\alpha} \min_{w,b} L(w,b,\alpha)
+\]</span></p></li>
+<li><p>求<span class="math inline">\(\min_{w,b} L(w,b,\alpha)\)</span>，对拉格朗日函数求偏导置0</p>
+<p><span class="math display">\[\begin{align*}
+\triangledown_w L(w,b,\alpha) &amp; = w - \sum_{i=1}^N
+    \alpha_i y_i x_i = 0 \\
+\triangledown_b L(w,b,\alpha) &amp; = -\sum_{i=1}^N
+    \alpha_i y_i = 0
+\end{align*}\]</span></p>
+<p>解得</p>
+<p><span class="math display">\[\begin{align*}
+w = \sum_{i=1}^N \alpha_i y_i x_i \\
+\sum_{i=1}^N \alpha_i y_i = 0
+\end{align*}\]</span></p></li>
+<li><p>将以上结果代理拉格朗日函数可得</p>
+<p><span class="math display">\[\begin{align*}
+L(w,b,\alpha) &amp; = \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+    \alpha_i \alpha_j y_i y_j (x_i x_j) - \sum_{i=1}^N
+    \alpha_i y_i ((\sum_{j=1}^N \alpha_j y_j x_j)x_i + b)
+    + \sum_{i=1}^N \alpha_i \\
+&amp; = -\frac 1 2 \sum_{i=1}^N \sum_{j=1}^N \alpha_i \alpha_j
+    y_i y_i (x_i x_j) + \sum_{i=1}^N \alpha_i
+\end{align*}
+\]</span></p></li>
+<li><p>以上函数对<span class="math inline">\(\alpha\)</span>极大即为对偶问题，为方便改成极小</p>
+<p><span class="math display">\[\begin{align*}
+\min_{\alpha} &amp; \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+    \alpha_i \alpha_j y_i y_j (x_i x_j) -
+    \sum_{i=1}^N \alpha_i \\
+s.t. &amp; \sum_{i=1}^N \alpha_i y_i = 0, \\
+&amp; \alpha_i &gt; 0, i = 1,2,\cdots,N
+\end{align*}\]</span></p></li>
+</ul>
+<h3 id="原始问题解">原始问题解</h3>
+<blockquote>
+<ul>
+<li>设<span class="math inline">\(\alpha^{*} = (\alpha_1^{*}, \cdots, \alpha_N^{*})\)</span>是 上述对偶优化问题的解，则存在<span class="math inline">\(j \in [1, N]\)</span>使得 <span class="math inline">\(\alpha_j^{*} &gt; 0\)</span>，且原始最优化问题解如下 <span class="math display">\[\begin{align*}
+w^{*} &amp; = \sum_{i=1}^N \alpha_i^{*} y_i x_i \\
+b^{*} &amp; = y_j - \sum_{i=1}^N \alpha_i^{*} y_i (x_i x_j)
+\end{align*}\]</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由KKT条件成立有</p>
+<p><span class="math display">\[\begin{align*}
+&amp; \triangledown_w L(w^{*}, b^{*}, \alpha^{*}) = w^{*} -
+    \sum_{i=1}^N \alpha_i{*} y_i x_i = 0 \\
+&amp; \triangledown_b L(w^{*}, b^{*}, \alpha^{*}) =
+    -\sum_{i=1}^N \alpha_i^{*} y_i = 0 \\
+&amp; \alpha^{*}(y_i (w^{*} x_i + b^{*}) - 1) = 0,
+    i = 1,2,\cdots,N \\
+&amp; y_i(w^{*} x_i + b) - 1 \geq 0, i = 1,2,\cdots,N \\
+&amp; \alpha_i^{*} \geq 0, i = 1,2,\cdots,N \\
+\end{align*}
+\]</span></p></li>
+<li><p>可得</p>
+<p><span class="math display">\[
+w^{*} = \sum_i \alpha_i^{*} y_i x_i
+\]</span></p></li>
+<li><p>其中至少有一个<span class="math inline">\(\alpha_j &gt; 0\)</span>，否则<span class="math inline">\(w^{*}=0\)</span>不是原问题解 ，且有</p>
+<p><span class="math display">\[\begin{align*}
+y_j(w^{*} x_j + b^{*}) - 1 = 0
+\end{align*}\]</span></p>
+<p>注意到<span class="math inline">\(y_j \in \{-1, +1\}\)</span>，则有</p>
+<p><span class="math display">\[
+b^{*} = y_j - \sum_{i=1}^N \alpha_i^{*} y_i (x_i x_j)
+\]</span></p></li>
+</ul>
+<h4 id="分离超平面">分离超平面</h4>
+<ul>
+<li><p>则分离超平面为 <span class="math display">\[
+\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*} = 0
+\]</span></p></li>
+<li><p>分类决策函数为 <span class="math display">\[
+f(x) = sgn(\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*})
+\]</span> 即分类决策函数只依赖输入<span class="math inline">\(x\)</span>和训练样本的内积</p></li>
+</ul>
+<h4 id="支持向量">支持向量</h4>
+<blockquote>
+<ul>
+<li>将对偶最优化问题中，训练数据集中对应<span class="math inline">\(\alpha_i^{*} &gt; 0\)</span> 的样本点<span class="math inline">\((x_i, y_i)\)</span>称为支持向量</li>
+</ul>
+</blockquote>
+<ul>
+<li>由KKT互补条件可知，对应<span class="math inline">\(\alpha_i^{*} &gt; 0\)</span>的实例<span class="math inline">\(x_i\)</span>有 <span class="math display">\[
+y_i(w^{*} x_i + b^{*}) - 1 = 0
+\]</span> 即<span class="math inline">\((x_i, y_i)\)</span>在间隔边界上，同原始问题中支持向量定义一致</li>
+</ul>
+<h3 id="算法-1">算法</h3>
+<blockquote>
+<ul>
+<li>输入：线性可分数据集<span class="math inline">\(T\)</span></li>
+<li>输出：分离超平面、分类决策函数</li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>构造并求解以上对偶约束最优化问题，求得最优解 <span class="math inline">\(\alpha^{*} = (\alpha_1^{*},...,\alpha_N^{*})^T\)</span></p></li>
+<li><p>依据以上公式求<span class="math inline">\(w^{*}\)</span>，选取<span class="math inline">\(\alpha^{*}\)</span>正分量 <span class="math inline">\(\alpha_j^{*} &gt; 0\)</span>计算<span class="math inline">\(b^{*}\)</span></p></li>
+<li><p>求出分类超平面、分类决策函数</p></li>
+</ol>
+<h2 id="linear-support-vector-machine"><em>Linear Support Vector Machine</em></h2>
+<p>线性支持向量机：训练数据线性不可分时，通过软间隔最大化策略 学习</p>
+<ul>
+<li><p>训练集线性不可分通常是由于存在一些<em>outlier</em></p>
+<ul>
+<li>这些特异点不能满足函数间隔大于等于1的约束条件</li>
+<li>将这些特异点除去后，剩下大部分样本点组成的集合是 线性可分的</li>
+</ul></li>
+<li><p>对每个样本点<span class="math inline">\((x_i,y_i)\)</span>引入松弛变量<span class="math inline">\(\xi_i \geq 0\)</span></p>
+<ul>
+<li>使得函数间隔加上松弛变量大于等于1</li>
+<li>对每个松弛变量<span class="math inline">\(\xi_i\)</span>，支付一个代价<span class="math inline">\(\xi_i\)</span></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>soft-margin maximization</em>：软间隔最大化，最大化样本点 几何间隔时，尽量减少误分类点数量</li>
+</ul>
+</blockquote>
+<h3 id="策略">策略</h3>
+<p>线性不可分的线性支持向量机的学习变成如下凸二次规划，即 软间隔最大化</p>
+<p><span class="math display">\[\begin{align*}
+\min_{w,b,\xi} &amp; \frac 1 2 \|w\|^2 + C \sum_{i=1}^N \xi_i \\
+s.t. &amp; y_i(w x_i + b) \geq 1 - \xi_i, i=1,2,\cdots,N \\
+&amp; \xi_i \geq 0, i=1,2,\cdots,N
+\end{align*}
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\xi_i\)</span>：松弛变量</li>
+<li><span class="math inline">\(C &gt; 0\)</span>：惩罚参数，由应用问题决定，C越大对误分类惩罚越大</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>最小化目标函数包含两层含义</p>
+<ul>
+<li><span class="math inline">\(\frac 1 2 \|w\|^2\)</span>尽量小，间隔尽量大</li>
+<li>误分类点个数尽量小</li>
+</ul></li>
+<li><p>以上问题是凸二次规划问题，所以<span class="math inline">\((w,b,\xi)\)</span>的解是存在的</p>
+<ul>
+<li><span class="math inline">\(w\)</span>解唯一</li>
+<li><span class="math inline">\(b\)</span>解可能不唯一，存在一个区间</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>对给定的线性不可分训练数据集，通过求解以上凸二次规划问题 得到的分类超平面 <span class="math display">\[ w^{*} x + b^{*} = 0 \]</span> 以及相应的分类决策函数 <span class="math display">\[ f(x) = sgn(w^{*} x + b^{*}) \]</span> 称为线性支持向量机</li>
+</ul>
+</blockquote>
+<ul>
+<li>线性支持向量包括线性可分支持向量机</li>
+<li>现实中训练数据集往往线性不可分，线性支持向量机适用性更广</li>
+</ul>
+<h3 id="对偶问题策略-1">对偶问题策略</h3>
+<p>原始问题的对偶问题</p>
+<p><span class="math display">\[
+\begin{align*}
+\min_\alpha &amp; \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N \alpha_i
+    \alpha_j y_i y_j (x_i x_j) - \sum_{i=1}^N \alpha_i \\
+s.t. &amp; \sum_{i=1}^N \alpha_i y_i = 0 \\
+&amp; 0 \leq \alpha_i \leq C, i=1,2,\cdots,N
+\end{align*}
+\]</span></p>
+<ul>
+<li>类似线性可分支持向量机利用Lagrange对偶即可得</li>
+</ul>
+<h3 id="原始问题解-1">原始问题解</h3>
+<blockquote>
+<ul>
+<li>设<span class="math inline">\(\alpha^{*} = (\alpha_1^{*}, \cdots, \alpha_N^{*})\)</span>是 上述对偶优化问题的解，则存在<span class="math inline">\(j \in [1, N]\)</span>使得 <span class="math inline">\(0 &lt; \alpha_j^{*} &lt; C\)</span>，且原始最优化问题解如下 <span class="math display">\[\begin{align*}
+w^{*} &amp; = \sum_{i=1}^N \alpha_i^{*} y_i x_i \\
+b^{*} &amp; = y_j - \sum_{i=1}^N \alpha_i^{*} y_i (x_i x_j)
+\end{align*}\]</span></li>
+</ul>
+</blockquote>
+<ul>
+<li>类似线性可分支持向量机利用KKT条件即可得</li>
+</ul>
+<h4 id="分离超平面-1">分离超平面</h4>
+<ul>
+<li><p>则分离超平面为 <span class="math display">\[
+\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*} = 0
+\]</span></p></li>
+<li><p>分类决策函数/线性支持向量机对偶形式 <span class="math display">\[
+f(x) = sgn(\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*})
+\]</span> 即分类决策函数只依赖输入<span class="math inline">\(x\)</span>和训练样本的内积</p></li>
+</ul>
+<h4 id="支持向量-1">支持向量</h4>
+<blockquote>
+<ul>
+<li>将对偶最优化问题中，训练数据集中对应<span class="math inline">\(\alpha_i^{*} &gt; 0\)</span> 的样本点<span class="math inline">\(x_i\)</span>称为（软间隔）支持向量</li>
+</ul>
+</blockquote>
+<ul>
+<li><span class="math inline">\(\alpha_i^{*} &lt; C\)</span>：则<span class="math inline">\(\xi_i = 0\)</span>，恰好落在间隔边界上</li>
+<li><span class="math inline">\(\alpha_i^{*} = C, 0 &lt; \xi_i &lt; 1\)</span>：间隔边界与分离超平面 之间</li>
+<li><span class="math inline">\(\alpha_i^{*} = C, \xi=1\)</span>：分离超平面上</li>
+<li><span class="math inline">\(\alpha_i^{*} = C, \xi&gt;1\)</span>：分离超平面误分一侧</li>
+</ul>
+<h3 id="hinge-loss"><em>Hinge Loss</em></h3>
+<p>线性支持向量机策略还可以视为最小化以下目标函数</p>
+<p><span class="math display">\[
+\sum_{i=1}^N [1-y_i(w x_i + b)]_{+} + \lambda \|w\|^2
+\]</span></p>
+<blockquote>
+<ul>
+<li>第一项：经验风险，合页损失函数</li>
+<li>第二项：正则化项</li>
+</ul>
+</blockquote>
+<ul>
+<li><span class="math inline">\(w\)</span>模越大，间隔越小，合页损失越小，所以用这个作为 正则化项是合理的</li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>data_science/loss</em></li>
+</ul>
+</blockquote>
+<h4 id="等价证明">等价证明</h4>
+<p>令</p>
+<p><span class="math display">\[
+\xi_i = [1 - y_i(w x_i + b)]_{+}
+\]</span></p>
+<ul>
+<li><p>则有<span class="math inline">\(\xi_i \geq 0\)</span></p></li>
+<li><p>且</p>
+<p><span class="math display">\[\left \{ \begin{align*}
+&amp; y_i(w x_i + b) = 1 - \xi_i, &amp; y_i(w x_i + b) \leq 1 \\
+&amp; y_i(w x_i + b) &gt; 1 - \xi_i = 1, &amp; y_i(w x_i + b) &gt; 1
+\end{align*} \right.\]</span></p>
+<p>所以有</p>
+<p><span class="math display">\[
+y_i(w x_i + b) \geq 1 - \xi_i
+\]</span></p></li>
+<li><p>则原问题两个约束条件均得到满足，此问题可写成</p>
+<p><span class="math display">\[
+\min_{w,b} \sum_{i=1}^N \xi_i + \lambda \|w\|^2
+\]</span></p>
+<p>取<span class="math inline">\(\lambda = \frac 1 {2C}\)</span>，即同原问题</p></li>
+</ul>
+<h2 id="non-linear-support-vector-machine"><em>Non-Linear Support Vector Machine</em></h2>
+<p>非线性支持向量机</p>
+<ul>
+<li>非线性问题：通过非线性模型才能很好进行分类的问题
+<ul>
+<li>通过<strong>非线性变换</strong><span class="math inline">\(\phi(x)\)</span>，将输入空间映射到特征 空间（维数可能非常高）</li>
+<li>原空间中非线性可分问题在特征空间可能变得线性可分， 在特征空间中学习分类模型</li>
+</ul></li>
+<li>SVM求解非线性问题时
+<ul>
+<li><em>kernel trick</em>：通过非线性变换将输入空间对应一个特征 空间，使得输入空间中超曲面对应于特征空间的超平面模型</li>
+<li>软间隔最大化策略：在特征空间中求解线性支持向量机</li>
+</ul></li>
+</ul>
+<h3 id="kernal-trick"><em>Kernal Trick</em></h3>
+<p>核技巧：线性SVM的对偶问题中，目标函数、决策函数均只涉及输入 实例、实例之间的内积</p>
+<ul>
+<li><p>将内积使用核函数代替，等价进行复杂的非线性变换</p></li>
+<li><p>映射函数是非线性函数时，学习的含有核函数的支持向量机 是非线性模型</p></li>
+<li><ul>
+<li>学习是隐式地在特征空间中进行的，不需要显式定义特征 空间、映射函数</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>data_science/ref/functions</em></li>
+</ul>
+</blockquote>
+<h4 id="对偶问题目标函数">对偶问题目标函数</h4>
+<p><span class="math display">\[
+W(\alpha) = \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+    \alpha_i \alpha_j y_i y_j K(x_i, x_j) -
+    \sum_{i=1}^N \alpha_i
+\]</span></p>
+<h3 id="原始问题解-2">原始问题解</h3>
+<h4 id="分类决策函数">分类决策函数</h4>
+<p><span class="math display">\[\begin{align*}
+f(x) &amp; = sgn(\sum_{i=1}^{N_s} \alpha_i^{*} y_i \phi(x_i)
+    \phi(x) + b^{*}) \\
+&amp; = sgn(\sum_{i=1}^{N_s} \alpha_i^{*} y_i K(x_i, x) + b^{*})
+\end{align*}\]</span></p>
+<h3 id="算法-2">算法</h3>
+<blockquote>
+<ul>
+<li>输入：训练数据集<span class="math inline">\(T\)</span></li>
+<li>输出：分类决策函数</li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>选取适当的核函数<span class="math inline">\(K(x,z)\)</span>、适当参数C，构造求解最优化问题</p>
+<p><span class="math display">\[\begin{align*}
+\min_\alpha &amp; \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+    \alpha_1 \alpha_j y_i y_j K(x_i, x_j) -
+    \sum_{i=1}^N \alpha_i \\
+s.t. &amp; \sum_{i=1}^N \alpha_i y_i = 0 \\
+&amp; 0 \leq \alpha_i \leq C, i=1,2,...,N
+\end{align*}
+\]</span></p>
+<p>求得最优解 <span class="math inline">\(\alpha^{*} = (\alpha_1^{*},\alpha_2^{*},\cdots,\alpha_N^{*})\)</span></p></li>
+<li><p>选择<span class="math inline">\(\alpha^{*}\)</span>的一个正分量<span class="math inline">\(0 &lt; \alpha_j^{*} &lt; C\)</span>，计算</p>
+<p><span class="math display">\[
+b^{*} = y_j - \sum_{i=1}^N \alpha_i^{*} y_i K(x_i x_j)
+\]</span></p></li>
+<li><p>构造决策函数</p></li>
+</ol>
+<blockquote>
+<ul>
+<li><span class="math inline">\(K(x,z)\)</span>是正定核函数时，最优化问题是凸二次规划，有解</li>
+</ul>
+</blockquote>
+<h2 id="sequential-minimal-optimization"><em>Sequential Minimal Optimization</em></h2>
+<p>序列最小最优化算法，主要解如下凸二次规划的对偶问题</p>
+<p><span class="math display">\[\begin{align*}
+\min_\alpha &amp; \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+    \alpha_1 \alpha_j y_i y_j K(x_i, x_j) -
+    \sum_{i=1}^N \alpha_i \\
+s.t. &amp; \sum_{i=1}^N \alpha_i y_i = 0 \\
+&amp; 0 \leq \alpha_i \leq C, i=1,2,...,N
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li>凸二次规划有很多算法可以求得全局最优解，但是在训练样本 容量较大时，算法会很低效</li>
+</ul>
+</blockquote>
+<h3 id="思想">思想</h3>
+<p>将原问题不断分解为子问题求解，进而求解原问题</p>
+<ul>
+<li><p>如果所有变量的解都满足此优化问题的KKT条件，得到此最优化 问题的一个可能解</p>
+<ul>
+<li>对凸二次规划就是最优解，因为凸二次规划只有一个稳定点</li>
+</ul></li>
+<li><p>否则选择两个变量，固定其他变量，构建一个二次规划</p>
+<ul>
+<li><p>目标是使得解符合KKT条件，但是因为等式约束的存在， 不可能<strong>单独改变一个变量</strong>而保持等式约束</p></li>
+<li><p>子问题有解析解，求解速度快</p></li>
+<li><p>二次规划问题关于两个变量的解会使得原始二次规划的目标 函数值变得更小，更接近原始二次规划的解 （这里SMO原始论文有证明，违反KKT条件的变量可以做到）</p></li>
+</ul></li>
+<li><p>不失一般性，假设选择两个变量<span class="math inline">\(\alpha_1, \alpha_2\)</span>，其他 变量<span class="math inline">\(\alpha_i(i=3,4,...,N)\)</span>是固定的，则SMO最优化子问题</p>
+<p><span class="math display">\[\begin{align*}
+\min_{\alpha_1, \alpha_2} &amp; W(\alpha_1, \alpha_2) =
+    \frac 1 2 K_{11} \alpha_1^2 + \frac 1 2
+    K_{22} \alpha_2^2 + y_1 y_2 K_{12} \alpha_1 \alpha_2
+    - (\alpha_1 + \alpha_2) + y_1 \alpha_1 \sum_{i=3}^N
+    y_i \alpha_i K_{i1} + y_2 \alpha_2 \sum_{i=1}^N
+    y_i \alpha_i K{i2} \\
+s.t. &amp; \alpha_1 y_1 + \alpha_2 y_2 = -\sum_{i=3}^N
+    y_i \alpha_i = \zeta \\
+&amp; 0 \leq \alpha_i \leq C, i=1,2
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(K_{ij} = K(x_i, x_j), i,j=1,2,\cdots,N\)</span></li>
+<li><span class="math inline">\(\zeta\)</span>：常数</li>
+</ul>
+</blockquote></li>
+</ul>
+<h3 id="两变量二次规划取值范围">两变量二次规划取值范围</h3>
+<ul>
+<li><p>由<strong>等式约束</strong>，<span class="math inline">\(\alpha_1, \alpha_2\)</span>中仅一个自由变量， 不妨设为<span class="math inline">\(\alpha_2\)</span></p>
+<ul>
+<li><p>设初始可行解为<span class="math inline">\(\alpha_1, \alpha_2\)</span></p></li>
+<li><p>设最优解为<span class="math inline">\(\alpha_1^{*}, \alpha_2^{*}\)</span></p></li>
+<li><p>未经剪辑（不考虑约束条件而来得取值范围）最优解为 <span class="math inline">\(\alpha_2^{**}\)</span></p></li>
+</ul></li>
+<li><p>由<strong>不等式</strong>约束，可以得到<span class="math inline">\(\alpha_2\)</span>取值范围<span class="math inline">\([L, H]\)</span></p>
+<ul>
+<li><p><span class="math inline">\(y_1 = y_2 = +/-1\)</span>时</p>
+<p><span class="math display">\[\begin{align*}
+H &amp; = \min \{C, \alpha_1 + \alpha_2 \} \\
+L &amp; = \max \{0, \alpha_2 + \alpha_1 - C \}
+\end{align*}\]</span></p></li>
+<li><p><span class="math inline">\(y_1 \neq y_2\)</span>时</p>
+<p><span class="math display">\[\begin{align*}
+L &amp; = \max \{0, \alpha_2 - \alpha_1 \} \\
+L &amp; = \min \{C, C + \alpha_2 - \alpha_1 \}
+\end{align*}
+\]</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>以上取值范围第二项都是应用等式约束情况下，考虑 不等式约束</li>
+</ul>
+</blockquote></li>
+</ul>
+<h3 id="两变量二次规划求解">两变量二次规划求解</h3>
+<p>为叙述，记</p>
+<p><span class="math display">\[\begin{align*}
+g(x) &amp; = \sum_{i=1}^N \alpha_i y_i K(x_i, x) + b \\
+E_j &amp; = g(x_j) - y_j \\
+&amp; = (\sum_{i=1}^N \alpha_i y_i K(x_i, x_j)) - y_j
+\end{align*}\]</span></p>
+<ul>
+<li><span class="math inline">\(g(x)\)</span>：SVM预测函数（比分类器少了符号函数）（函数间隔）</li>
+<li><span class="math inline">\(E_j\)</span>：SVM对样本预测与真实值偏差</li>
+</ul>
+<blockquote>
+<ul>
+<li>以上两变量二次规划问题，沿约束方向未经剪辑解是 <span class="math display">\[\begin{align*}
+\alpha_2^{**} &amp; = \alpha_2 + \frac {y_2 (E_1 - E_2)}
+\eta \\
+\eta &amp; = K_{11} + K_{22} - 2K_{12} \\
+&amp; = \|\phi(x_1) - \phi_(x_2)\|^2
+\end{align*}\]</span> 剪辑后的最优解是 <span class="math display">\[\begin{align*}
+\alpha_2^{*} &amp; = \left \{ \begin{array}{l}
+H, &amp; \alpha_2^{**} &gt; H \\
+\alpha_2^{**}, &amp; L \leq \alpha_2^{**} \leq H \\
+L, &amp; \alpha_2^{*} &lt; L
+\end{array} \right. \\
+\alpha_1^{*} &amp; = \alpha_1 + y_1 y_2 (\alpha_2 -
+\alpha_2^{*})
+\end{align*}\]</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>记</p>
+<p><span class="math display">\[\begin{align*}
+v_i &amp; = \sum_{j=3}^N \alpha_j y_j K(x_i, x_j) \\
+&amp; = g(x_i) - \sum_{j=1}^2 \alpha_j y_j K(x_i, x_j) - b
+    i=1,2
+\end{align*}\]</span></p>
+<p>由等式约束<span class="math inline">\(\alpha_1 = (\zeta - y_2 \alpha_2) y_1\)</span>，均 带入目标函数有</p>
+<p><span class="math display">\[\begin{align*}
+W(\alpha_1, \alpha_2) = &amp; \frac 1 2 K_{11} (\zeta -
+    y_2 \alpha_2)^2 + \frac 1 2 K_{22} \alpha_2^2 +
+    y_2 K_{12} (\zeta - y_2 \alpha_2) \alpha_2 - \\
+&amp; y_1 (\zeta - \alpha_2 y_2) - \alpha_2 +
+    v_1 (\zeta - \alpha_2 y_2) + y_2 v_2 \alpha_2
+\end{align*}\]</span></p></li>
+<li><p>对<span class="math inline">\(\alpha_2\)</span>求导置0可得</p>
+<p><span class="math display">\[\begin{align*}
+(K_{11} + K_{22} - 2K_{12}) \alpha_2 &amp; = y_2 (y_2 -
+    y_1 + \zeta K_{11} - \zeta K_{12} + v_1 + v_2) \\
+&amp; = y_2 [y_2 - y_1 + \zeta K_{11} - \zeta K_{12} +
+    (g(x_1) - \sum_{j=1}^2 y_j \alpha_j K_{1j} - b) -
+    (g(x_2) - \sum_{j=1}^2 y_j \alpha_j K_{2j} -b )]
+\end{align*}\]</span></p>
+<p>带入<span class="math inline">\(\zeta = \alpha_1 y_1 + \alpha_2 y2\)</span>，可得</p>
+<p><span class="math display">\[\begin{align*}
+(K_11 + K_22 - 2K_{12}) \alpha_2^{**} &amp; = y_2((K_{11} +
+    K_{22} - 2K_{12}) \alpha_2 y_2 + y_2 - y_1 +
+    g(x_1) - g(x_1)) \\
+&amp; = (K_11 + K_{22} - 2K_{12}) \alpha_2 + y_2 (E_1 - E_2)
+\end{align*}\]</span></p></li>
+</ul>
+<h3 id="变量选择">变量选择</h3>
+<p>SMO算法每个子问题的两个优化变量，其中至少一个违反KKT条件</p>
+<h4 id="外层循环--首个变量选择">外层循环--首个变量选择</h4>
+<p>在训练样本中选择违反KKT条件最严重的样本点，将对应的变量作为 第一个变量<span class="math inline">\(\alpha_1\)</span></p>
+<ul>
+<li><p>检查样本点是否满足KKT条件</p>
+<p><span class="math display">\[\begin{align*}
+\alpha_i = 0 \Leftrightarrow y_i g(x_i) \geq 1 \\
+0 &lt; \alpha_i &lt; C \Leftrightarrow y_i g(x_i) = 1 \\
+\alpha_i = C \Leftrightarrow y_i g(x_i) \leq 1
+\end{align*}\]</span></p></li>
+<li><p>检验过程中</p>
+<ul>
+<li><p>首先遍历所有满足条件的<span class="math inline">\(0 &lt; \alpha_i &lt; C\)</span>样本点，即 在间隔边界上的支持向量点</p></li>
+<li><p>若没有找到违背KKT条件的样本点，则遍历整个训练集</p></li>
+</ul></li>
+</ul>
+<h4 id="内层循环">内层循环</h4>
+<p>第二个变量<span class="math inline">\(\alpha_2\)</span>选择标准是其自身有足够大的变化，以加快 计算速度</p>
+<ul>
+<li><p>由以上推导知，<span class="math inline">\(\alpha_2^{*}\)</span>取值依赖于<span class="math inline">\(|E_1 - E_2|\)</span>， 所以可以选择<span class="math inline">\(\alpha_2\)</span>使其对应的<span class="math inline">\(|E_1 - E_2|\)</span>最大</p>
+<ul>
+<li><span class="math inline">\(\alpha_1\)</span>已经确定，<span class="math inline">\(E_1\)</span>已经确定</li>
+<li><span class="math inline">\(E_1 &gt; 0\)</span>：选最小的<span class="math inline">\(E_2\)</span></li>
+<li><span class="math inline">\(E_1 &lt; 0\)</span>：选最大的<span class="math inline">\(E_2\)</span></li>
+</ul></li>
+<li><p>但以上方法可能不能使得目标函数值有足够下降，采用以下 <strong>启发式</strong>规则继续选择<span class="math inline">\(\alpha_2\)</span></p>
+<ul>
+<li>遍历间隔边界上的点</li>
+<li>遍历整个训练数据集</li>
+<li>放弃<span class="math inline">\(\alpha_1\)</span></li>
+</ul></li>
+</ul>
+<h4 id="更新阈值">更新阈值</h4>
+<ul>
+<li><p><span class="math inline">\(0&lt; \alpha_1^{*} &lt; C\)</span>时，由KKT条件可知</p>
+<p><span class="math display">\[
+\sum_{i=1}^N \alpha_i y_i K_{i1} + b = y_1
+\]</span></p>
+<ul>
+<li><p>则有</p>
+<p><span class="math display">\[
+b_1^{*} = y_1 - \sum_{i=3}^N \alpha_i y_i K_{i1} -
+    \alpha_1^{*} y_1 K_{11} - \alpha_2^{*} y_2 K_{21}
+\]</span></p></li>
+<li><p>将<span class="math inline">\(E_1\)</span>定义式带入有</p>
+<p><span class="math display">\[
+b_1^{*} = -E_1 - y_1 K_{11} (\alpha_1^{*} - \alpha_1)
+    - y_2 K_{21} (\alpha_2^{*} - \alpha_2) + b
+\]</span></p></li>
+</ul></li>
+<li><p>类似的<span class="math inline">\(0 &lt; \alpha_2^{*} &lt; C\)</span>时</p>
+<p><span class="math display">\[
+b_2^{*} = -E_2 - y_2 K_{22} (\alpha_2^{*} - \alpha_2)
+    - y_1 K_{12} (\alpha_1^{*} - \alpha_1) + b
+\]</span></p></li>
+<li><p>若</p>
+<ul>
+<li><p><span class="math inline">\(0 &lt; \alpha_1^{*}, \alpha_2^{*} &lt; C\)</span>，则 <span class="math inline">\(b_1{*} = b_2^{*}\)</span></p></li>
+<li><p>$_1^{*}, <span class="math inline">\(\alpha_2^{*}\)</span>均为0、C，则 <span class="math inline">\([b_1^{*}, b_2^{*}]\)</span>中均为符合KKT条件的阈值，选择 中点作为新阈值<span class="math inline">\(b^{*}\)</span></p></li>
+</ul></li>
+<li><p>同时使用新阈值更新所有的<span class="math inline">\(E_i\)</span>值</p>
+<p><span class="math display">\[
+E_i^{*} = \sum_S y_j \alpha_j K(x_i, x_j) + b^{*} - y_i
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(S\)</span>：所有支持向量的集合</li>
+</ul>
+</blockquote></li>
+</ul>
+<h3 id="算法-3">算法</h3>
+<blockquote>
+<ul>
+<li>输入：训练数据集<span class="math inline">\(T\)</span>，精度<span class="math inline">\(\epsilon\)</span></li>
+<li>输出：近似解<span class="math inline">\(\hat \alpha\)</span></li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>初值<span class="math inline">\(\alpha^{(0)}\)</span>，置k=0</p></li>
+<li><p>选取优化变量<span class="math inline">\(\alpha_1^{(k)}, \alpha_2^{(k)}\)</span>，解析求解 两变量最优化问题得<span class="math inline">\(\alpha_1^{(k+1)}, \alpha_2^{(k+2)}\)</span>， 更新<span class="math inline">\(\alpha^{(k+1)}\)</span></p></li>
+<li><p>若在精度范围内满足停机条件（KKT条件）</p>
+<p><span class="math display">\[\begin{align*}
+&amp; \sum_{i=1}^N \alpha_i y_i = 0 \\
+&amp; 0 \leq \alpha_i \leq C, i=1,2,\cdots,N \\
+&amp; y_i g(x_i) = \left \{ \begin{array}{l}
+    \geq 1, &amp; \{x_i | \alpha_i = 0\} \\
+    = 1, &amp; \{x_i | 0 &lt; \alpha_i &lt; C\} \\
+    \leq 1, &amp; \{x_i | \alpha_i = C\}
+\end{array} \right. \\
+&amp; g(x_i) = \sum_{j=1}^N \alpha_j y_j K(x_j, x_i) + b
+\end{align*}\]</span></p>
+<p>则转4，否则置k=k+1，转2</p></li>
+<li><p>取<span class="math inline">\(\hat \alpha = \alpha^{(k+1)}\)</span></p></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/模型/" rel="tag"># 模型</a>
+          
+            <a href="/tags/线性模型/" rel="tag"># 线性模型</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_specifications/natural_language_processing/bag_of_words/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_models/linear_models/perceptron/" rel="prev" title="Perceptron">
+                Perceptron <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总述"><span class="nav-number">1.</span> <span class="nav-text">总述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#学习要素"><span class="nav-number">1.1.</span> <span class="nav-text">学习要素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据"><span class="nav-number">1.2.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.3.</span> <span class="nav-text">概念</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linear-support-vector-machine-in-linearly-separable-case"><span class="nav-number">2.</span> <span class="nav-text">Linear Support Vector Machine in Linearly Separable Case</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原始问题策略"><span class="nav-number">2.1.</span> <span class="nav-text">原始问题策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大间隔分离平面存在性"><span class="nav-number">2.2.</span> <span class="nav-text">最大间隔分离平面存在性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#存在性"><span class="nav-number">2.2.1.</span> <span class="nav-text">存在性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#唯一性"><span class="nav-number">2.2.2.</span> <span class="nav-text">唯一性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#概念-1"><span class="nav-number">2.3.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#support-vector"><span class="nav-number">2.3.1.</span> <span class="nav-text">Support Vector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#间隔边界"><span class="nav-number">2.3.2.</span> <span class="nav-text">间隔边界</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法"><span class="nav-number">2.4.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多分类"><span class="nav-number">2.5.</span> <span class="nav-text">多分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dual-algorithm"><span class="nav-number">3.</span> <span class="nav-text">Dual Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对偶问题策略"><span class="nav-number">3.1.</span> <span class="nav-text">对偶问题策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始问题解"><span class="nav-number">3.2.</span> <span class="nav-text">原始问题解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分离超平面"><span class="nav-number">3.2.1.</span> <span class="nav-text">分离超平面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#支持向量"><span class="nav-number">3.2.2.</span> <span class="nav-text">支持向量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-1"><span class="nav-number">3.3.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linear-support-vector-machine"><span class="nav-number">4.</span> <span class="nav-text">Linear Support Vector Machine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#策略"><span class="nav-number">4.1.</span> <span class="nav-text">策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对偶问题策略-1"><span class="nav-number">4.2.</span> <span class="nav-text">对偶问题策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始问题解-1"><span class="nav-number">4.3.</span> <span class="nav-text">原始问题解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分离超平面-1"><span class="nav-number">4.3.1.</span> <span class="nav-text">分离超平面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#支持向量-1"><span class="nav-number">4.3.2.</span> <span class="nav-text">支持向量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hinge-loss"><span class="nav-number">4.4.</span> <span class="nav-text">Hinge Loss</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#等价证明"><span class="nav-number">4.4.1.</span> <span class="nav-text">等价证明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#non-linear-support-vector-machine"><span class="nav-number">5.</span> <span class="nav-text">Non-Linear Support Vector Machine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kernal-trick"><span class="nav-number">5.1.</span> <span class="nav-text">Kernal Trick</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对偶问题目标函数"><span class="nav-number">5.1.1.</span> <span class="nav-text">对偶问题目标函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始问题解-2"><span class="nav-number">5.2.</span> <span class="nav-text">原始问题解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分类决策函数"><span class="nav-number">5.2.1.</span> <span class="nav-text">分类决策函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-2"><span class="nav-number">5.3.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sequential-minimal-optimization"><span class="nav-number">6.</span> <span class="nav-text">Sequential Minimal Optimization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#思想"><span class="nav-number">6.1.</span> <span class="nav-text">思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两变量二次规划取值范围"><span class="nav-number">6.2.</span> <span class="nav-text">两变量二次规划取值范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两变量二次规划求解"><span class="nav-number">6.3.</span> <span class="nav-text">两变量二次规划求解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量选择"><span class="nav-number">6.4.</span> <span class="nav-text">变量选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#外层循环--首个变量选择"><span class="nav-number">6.4.1.</span> <span class="nav-text">外层循环--首个变量选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内层循环"><span class="nav-number">6.4.2.</span> <span class="nav-text">内层循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更新阈值"><span class="nav-number">6.4.3.</span> <span class="nav-text">更新阈值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-3"><span class="nav-number">6.5.</span> <span class="nav-text">算法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

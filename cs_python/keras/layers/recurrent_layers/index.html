@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="RNN">
+<meta name="keywords" content="Python,Keras">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RNN">
+<meta property="og:url" content="https://xyy15926.github.io/cs_python/keras/layers/recurrent_layers/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="RNN">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-17T03:57:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RNN">
+<meta name="twitter:description" content="RNN">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_python/keras/layers/recurrent_layers/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>RNN | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_python/keras/layers/recurrent_layers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">RNN
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-20 23:58:15" itemprop="dateCreated datePublished" datetime="2019-02-20T23:58:15+08:00">2019-02-20</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:07" itemprop="dateModified" datetime="2019-02-17T11:57:07+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/Keras/" itemprop="url" rel="index"><span itemprop="name">Keras</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">RNN</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="rnn">RNN</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.RNN(</span><br><span class="line">	cell,</span><br><span class="line">	return_sequences=<span class="literal">False</span>,</span><br><span class="line">	return_state=<span class="literal">False</span>,</span><br><span class="line">	go_backwards=<span class="literal">False</span>,</span><br><span class="line">	stateful=<span class="literal">False</span>,</span><br><span class="line">	unroll=<span class="literal">False</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>循环神经网络层基类：抽象类、无法实例化对象</p>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><p><code>cell</code>：RNN单元实例、列表，为RNN单元列表时，单元 堆叠放置，实现高效堆叠RNN</p></li>
+<li><p><code>return_sequences</code>：返回输出序列最后值/全部序列</p></li>
+<li><p><code>return_state</code>：是否返回最后一个状态</p></li>
+<li><p><code>go_backwards</code>：是否向后处理输入序列并返回相反的序列。</p></li>
+<li><p><code>stateful</code>：批次中索引<code>i</code>处的每个样品的最后状态将 用作下一批次中索引<code>i</code>样品的初始状态</p></li>
+<li><code>unroll</code>：是否将网络展开（否则将使用符号循环）
+<ul>
+<li>展开可以加速 RNN，但它往往会占用更多的内存</li>
+<li>展开只适用于短序列</li>
+</ul></li>
+<li><code>input_dim</code>：输入的维度（整数）
+<ul>
+<li>将此层用作模型中的第一层时，此参数是必需的 （或者关键字参数 <code>input_shape</code>）</li>
+</ul></li>
+<li><code>input_length</code>： 输入序列的长度，在恒定时指定
+<ul>
+<li>如果你要在上游连接 <code>Flatten</code> 和 <code>Dense</code> 层，则 需要此参数（没有它，无法计算全连接输出的尺寸）</li>
+<li>如果循环神经网络层不是模型中的第一层，则需要在 第一层的层级指定输入长度 （或通过关键字参数<code>input_shape</code>）</li>
+</ul></li>
+</ul></li>
+<li><p>输入：<code>(batch_size, timesteps, input_dim)</code>3D张量</p></li>
+<li>输出
+<ul>
+<li><code>return_state=True</code>：则返回张量列表，第一个张量为 输出、剩余的张量为最后的状态，每个张量的尺寸为 <code>(batch_size, units)</code>。</li>
+<li><code>return_state=False</code>：<code>(batch_size, units)</code>2D张量</li>
+</ul></li>
+</ul>
+<p>说明</p>
+<ul>
+<li><p>屏蔽覆盖：支持以可变数量的时间步长对输入数据进行屏蔽覆盖</p></li>
+<li>使用状态：可以将 RNN 层设置为 <code>stateful</code>（有状态的）
+<ul>
+<li>这意味着针对一批中的样本计算的状态将被重新用作下一批 样品的初始状态</li>
+<li><p>这假定在不同连续批次的样品之间有一对一的映射。</p></li>
+<li>为了使状态有效：
+<ul>
+<li>在层构造器中指定 <code>stateful=True</code>。</li>
+<li>为模型指定一个固定的批次大小
+<ul>
+<li>顺序模型：为模型的第一层传递一个 <code>batch_input_shape=(...)</code> 参数</li>
+<li>带有Input层的函数式模型，为的模型的<strong>所有</strong>i 第一层传递一个<code>batch_shape=(...)</code>，这是输入 预期尺寸，包括批量维度</li>
+</ul></li>
+<li>在调用 <code>fit()</code> 是指定 <code>shuffle=False</code>。</li>
+</ul></li>
+<li><p>要重置模型的状态，请在特定图层或整个模型上调用 <code>.reset_states()</code></p></li>
+</ul></li>
+<li><p>初始状态</p>
+<ul>
+<li>通过使用关键字参数<code>initial_state</code>调用它们来符号化地 指定 RNN 层的初始状态（值应该是表示RNN层初始状态的 张量或张量列表）</li>
+<li>通过调用带有关键字参数<code>states</code>的<code>reset_states</code>方法 来数字化地指定 RNN 层的初始状态（值应该是一个代表RNN 层初始状态的NDA/[NDA]）</li>
+</ul></li>
+<li><p>RNN单元对象需要具有</p>
+<ul>
+<li><code>call(input_at_t, states_at_t)</code>方法，它返回 <code>(output_at_t, states_at_t_plus_1)</code>，单元的调用 方法也可以采用可选参数 <code>constants</code></li>
+<li> <code>state_size</code>属性
+<ul>
+<li>单个整数（单个状态）：在这种情况下，它是循环层 状态大小（应该与单元输出的大小相同）</li>
+<li>整数的列表/元组（每个状态一个大小）：第一项应该 与单元输出的大小相同</li>
+</ul></li>
+</ul></li>
+<li><p>传递外部常量</p>
+<ul>
+<li>使用<code>RNN.call</code>以及<code>RNN.call</code>的<code>constants</code>关键字 参数将<em>外部</em>常量传递给单元</li>
+<li>要求<code>cell.call</code>方法接受相同的关键字参数<code>constants</code>， 这些常数可用于调节附加静态输入（不随时间变化）上的 单元转换，也可用于注意力机制</li>
+</ul></li>
+</ul>
+<p>例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MinimalRNNCell</span><span class="params">(keras.layers.Layer)</span>:</span></span><br><span class="line">	<span class="comment"># 定义RNN细胞单元（网络层子类）</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">init</span><span class="params">(self, units, **kwargs)</span>:</span></span><br><span class="line">		self.units = units</span><br><span class="line">		self.state_size = units</span><br><span class="line">		super(MinimalRNNCell, self).init(**kwargs)</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">build</span><span class="params">(self, input_shape)</span>:</span></span><br><span class="line">		self.kernel = self.add_weight(</span><br><span class="line">			shape=(input_shape[<span class="number">-1</span>], self.units),</span><br><span class="line">			initializer=<span class="string">"uniform"</span>,</span><br><span class="line">			name=<span class="string">"kernel"</span></span><br><span class="line">		)</span><br><span class="line">		self.recurrent_kernel = self.add_weight(</span><br><span class="line">			shape=(self.units, self.units),</span><br><span class="line">			initializer=<span class="string">"uniform"</span>,</span><br><span class="line">			name=<span class="string">"recurrent_kernel"</span>)</span><br><span class="line">		self.built = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">call</span><span class="params">(self, inputs, states)</span>:</span></span><br><span class="line">		prev_output = states[<span class="number">0</span>]</span><br><span class="line">		h = K.dot(inputs, self.kernel)</span><br><span class="line">		output = h + K.dot(prev_output, self.recurrent_kernel)</span><br><span class="line">		<span class="keyword">return</span> output, [output]</span><br><span class="line"></span><br><span class="line">cell = MinimalRNNCell(<span class="number">32</span>)</span><br><span class="line">	<span class="comment"># 在RNN层使用这个单元：</span></span><br><span class="line">x = keras.Input((<span class="literal">None</span>, <span class="number">5</span>))</span><br><span class="line">layer = RNN(cell)</span><br><span class="line">y = layer(x)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cells = [MinimalRNNCell(<span class="number">32</span>), MinimalRNNCell(<span class="number">64</span>)]</span><br><span class="line">	<span class="comment"># 用单元格构建堆叠的RNN的方法：</span></span><br><span class="line">x = keras.Input((<span class="literal">None</span>, <span class="number">5</span>))</span><br><span class="line">layer = RNN(cells)</span><br><span class="line">y = layer(x)</span><br></pre></td></tr></table></figure>
+<h2 id="simplernn">SimpleRNN</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.SimpleRNN(</span><br><span class="line">	units,</span><br><span class="line">	activation=<span class="string">"tanh"</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">"glorot_uniform"</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">"orthogonal"</span>,</span><br><span class="line">	bias_initializer=<span class="string">"zeros"</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	dropout=<span class="number">0.0</span>,</span><br><span class="line">	recurrent_dropout=<span class="number">0.0</span>,</span><br><span class="line">	return_sequences=<span class="literal">False</span>,</span><br><span class="line">	return_state=<span class="literal">False</span>,</span><br><span class="line">	go_backwards=<span class="literal">False</span>,</span><br><span class="line">	stateful=<span class="literal">False</span>,</span><br><span class="line">	unroll=<span class="literal">False</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>完全连接的RNN，其输出将被反馈到输入。</p>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><p><code>units</code>：正整数，输出空间的维度。</p></li>
+<li><code>activation</code>：要使用的激活函数
+<ul>
+<li><code>tanh</code>：默认</li>
+<li><code>None</code>：则不使用激活函数，即线性激活：<code>a(x) = x</code></li>
+</ul></li>
+<li><p><code>use_bias</code>：布尔值，该层是否使用偏置向量。</p></li>
+<li><p><code>kernel_initializer</code>：<em>kernel</em>权值矩阵的初始化器</p></li>
+<li><p><code>recurrent_initializer</code>：<em>recurrent_kernel</em>权值矩阵</p></li>
+<li><p><code>bias_initializer</code>：偏置向量的初始化器</p></li>
+<li><p><code>kernel_regularizer</code>：运用到<em>kernel</em>权值矩阵的正则化 函数</p></li>
+<li><p><code>recurrent_regularizer</code>：运用到 <code>recurrent_kernel</code> 权值 矩阵的正则化函数</p></li>
+<li><p><code>bias_regularizer</code>：运用到偏置向量的正则化函数</p></li>
+<li><p><code>activity_regularizer</code>：运用到层输出（它的激活值）的 正则化函数</p></li>
+<li><p><code>kernel_constraint</code>：运用到<em>kernel</em>权值矩阵的约束函数</p></li>
+<li><p><code>recurrent_constraint</code>：运用到<em>recurrent_kernel</em>权值矩阵 的约束函数</p></li>
+<li><p><code>bias_constraint</code>： 运用到偏置向量的约束函数</p></li>
+<li><code>dropout</code>：单元的丢弃比例，用于输入的线性转换
+<ul>
+<li>在<em>0-1</em>之间的浮点数</li>
+</ul></li>
+<li><p><code>recurrent_dropout</code>：单元的丢弃比例，用于循环层状态线性 转换</p></li>
+<li><code>return_sequences</code>：返回输出序列中的全部序列
+<ul>
+<li>默认：返回最后最后一个输出</li>
+</ul></li>
+<li><p><code>return_state</code>：除输出之外是否返回最后一个状态</p></li>
+<li><p><code>go_backwards</code>：向后处理输入序列并返回相反的序列</p></li>
+<li><p><code>stateful</code>：批次中索引 i 处的每个样品的最后状态，将用作 下一批次中索引 i 样品的初始状态</p></li>
+<li><p><code>unroll</code>：展开网络</p></li>
+</ul></li>
+</ul>
+<h2 id="gru">GRU</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.GRU(</span><br><span class="line">	units,</span><br><span class="line">	activation=<span class="string">"tanh"</span>,</span><br><span class="line">	recurrent_activation=<span class="string">"hard_sigmoid"</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">"glorot_uniform"</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">"orthogonal"</span>,</span><br><span class="line">	bias_initializer=<span class="string">"zeros"</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	dropout=<span class="number">0.0</span>,</span><br><span class="line">	recurrent_dropout=<span class="number">0.0</span>,</span><br><span class="line">	implementation=<span class="number">1</span>,</span><br><span class="line">	return_sequences=<span class="literal">False</span>,</span><br><span class="line">	return_state=<span class="literal">False</span>,</span><br><span class="line">	go_backwards=<span class="literal">False</span>,</span><br><span class="line">	stateful=<span class="literal">False</span>,</span><br><span class="line">	unroll=<span class="literal">False</span>,</span><br><span class="line">	reset_after=<span class="literal">False</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>门限循环单元网络</p>
+<ul>
+<li><p>说明：有两种变体</p>
+<ul>
+<li><p>默认的基于<em>1406.1078v3</em>，并且在矩阵乘法之前将复位门 应用于隐藏状态</p></li>
+<li><p>另一种基于<em>1406.1078v1</em>并且顺序倒置</p>
+<ul>
+<li><p>兼容<em>CuDNNGRU(GPU-only)</em>，并且允许在 CPU 上进行 推理</p></li>
+<li><p>对于<em>kernel</em>和<em>recurrent_kernel</em>有可分离偏置 <code>reset_after=True</code>和<code>recurrent_activation=sigmoid</code> 。</p></li>
+</ul></li>
+</ul></li>
+<li><p>参数</p>
+<ul>
+<li><p><code>recurrent_activation</code>：用于循环时间步的激活函数</p></li>
+<li><p><code>implementation</code>：实现模式</p>
+<ul>
+<li><p><code>1</code>：将把它的操作结构化为更多的小的点积和加法操作</p></li>
+<li><p><code>2</code>：将把它们分批到更少，更大的操作中</p></li>
+<li><p>这些模式在不同的硬件和不同的应用中具有不同的性能配置 文件</p></li>
+</ul></li>
+<li><p><code>reset_after</code>：GRU公约，在矩阵乘法之后使用重置门</p></li>
+</ul></li>
+<li><p>参考文献</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1406.1078" target="_blank" rel="noopener">Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation</a></li>
+<li><a href="https://arxiv.org/abs/1409.1259" target="_blank" rel="noopener">On the Properties of Neural Machine Translation：Encoder-Decoder Approaches</a></li>
+<li><a href="http://arxiv.org/abs/1412.3555v1" target="_blank" rel="noopener">Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling</a></li>
+<li><a href="http://arxiv.org/abs/1512.05287" target="_blank" rel="noopener">A Theoretically Grounded Application of Dropout in Recurrent Neural Networks</a></li>
+</ul></li>
+</ul>
+<h2 id="lstm">LSTM</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.LSTM(</span><br><span class="line">	units,</span><br><span class="line">	activation=<span class="string">"tanh"</span>,</span><br><span class="line">	recurrent_activation=<span class="string">"hard_sigmoid"</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">"glorot_uniform"</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">"orthogonal"</span>,</span><br><span class="line">	bias_initializer=<span class="string">"zeros"</span>,</span><br><span class="line">	unit_forget_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	dropout=<span class="number">0.0</span>,</span><br><span class="line">	recurrent_dropout=<span class="number">0.0</span>,</span><br><span class="line">	implementation=<span class="number">1</span>,</span><br><span class="line">	return_sequences=<span class="literal">False</span>,</span><br><span class="line">	return_state=<span class="literal">False</span>,</span><br><span class="line">	go_backwards=<span class="literal">False</span>,</span><br><span class="line">	stateful=<span class="literal">False</span>,</span><br><span class="line">	unroll=<span class="literal">False</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>长短期记忆网络层（Hochreiter 1997）</p>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><code>unit_forget_bias</code>
+<ul>
+<li><code>True</code>：初始化时，将忘记门的偏置加 1，同时还会强制 <code>bias_initializer=&quot;zeros&quot;</code>（这个建议来自 <a href="http://www.jmlr.org/proceedings/papers/v37/jozefowicz15.pdf" target="_blank" rel="noopener">Jozefowicz et al.</a>）</li>
+</ul></li>
+</ul></li>
+<li><p>参考文献</p>
+<ul>
+<li><a href="http://www.bioinf.jku.at/publications/older/2604.pdf" target="_blank" rel="noopener">Long short-term memory</a> (original 1997 paper)</li>
+<li><a href="http://www.mitpressjournals.org/doi/pdf/10.1162/089976600300015015" target="_blank" rel="noopener">Learning to forget：Continual prediction with LSTM</a></li>
+<li><a href="http://www.cs.toronto.edu/~graves/preprint.pdf" target="_blank" rel="noopener">Supervised sequence labeling with recurrent neural networks</a></li>
+<li><a href="http://arxiv.org/abs/1512.05287" target="_blank" rel="noopener">A Theoretically Grounded Application of Dropout in Recurrent Neural Networks</a></li>
+</ul></li>
+</ul>
+<h2 id="convlstm2d">ConvLSTM2D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.ConvLSTM2D(</span><br><span class="line">	filters(int),</span><br><span class="line">	kernel_size(tuple(int, int)),</span><br><span class="line">	strides=(<span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	padding=<span class="string">'valid'</span>,</span><br><span class="line">	data_format=<span class="literal">None</span>,</span><br><span class="line">	dilation_rate=(<span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	activation=<span class="string">'tanh'</span>,</span><br><span class="line">	recurrent_activation=<span class="string">'hard_sigmoid'</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">'orthogonal'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	unit_forget_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	return_sequences=<span class="literal">False</span>,</span><br><span class="line">	go_backwards=<span class="literal">False</span>,</span><br><span class="line">	stateful=<span class="literal">False</span>,</span><br><span class="line">	dropout=<span class="number">0.0</span>,</span><br><span class="line">	recurrent_dropout=<span class="number">0.0</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>卷积LSTM：它类似于LSTM层，但输入变换和循环变换都是卷积的</p>
+<ul>
+<li><p>说明</p>
+<ul>
+<li>当前的实现不包括单元输出的反馈回路</li>
+</ul></li>
+<li><p>参数</p>
+<ul>
+<li><code>dilation_rate</code>：用于膨胀卷积的膨胀率
+<ul>
+<li><code>stride!=1</code>与<code>dilation_rate!=1</code>两者不兼容。</li>
+</ul></li>
+</ul></li>
+<li><p>输入尺寸</p>
+<ul>
+<li><code>data_format=&quot;channels_first&quot;</code>：尺寸为 <code>(batch, time, channels, rows, cols)</code></li>
+<li><code>data_format=&quot;channels_last&quot;</code>：尺寸为 <code>(batch, time, rows, cols, channels)</code></li>
+</ul></li>
+<li><p>输出尺寸</p>
+<ul>
+<li><p><code>return_sequences=True</code></p>
+<ul>
+<li><p><code>data_format=&quot;channels_first&quot;</code>：返回尺寸为 <code>(batch, time, filters, output_row, output_col)</code></p></li>
+<li><p><code>data_format=&quot;channels_last&quot;</code>：返回尺寸为 <code>(batch, time, output_row, output_col, filters)</code></p></li>
+</ul></li>
+<li><p><code>return_seqences=False</code></p>
+<ul>
+<li><p><code>data_format =&quot;channels_first&quot;</code>：返回尺寸为 <code>(batch, filters, output_row, output_col)</code></p></li>
+<li><p><code>data_format=&quot;channels_last&quot;</code>：返回尺寸为 <code>(batch, output_row, output_col, filters)</code></p></li>
+</ul></li>
+</ul></li>
+<li><p>参考文献</p>
+<ul>
+<li><a href="http://arxiv.org/abs/1506.04214v1" target="_blank" rel="noopener">Convolutional LSTM Network：A Machine Learning Approach for Precipitation Nowcasting</a></li>
+</ul></li>
+</ul>
+<h2 id="simplernncell">SimpleRNNCell</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.SimpleRNNCell(</span><br><span class="line">	units,</span><br><span class="line">	activation=<span class="string">'tanh'</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">'orthogonal'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	dropout=<span class="number">0.0</span>,</span><br><span class="line">	recurrent_dropout=<span class="number">0.0</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><em>SimpleRNN</em>的单元类</p>
+<h2 id="grucell">GRUCell</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.GRUCell(</span><br><span class="line">	units,</span><br><span class="line">	activation=<span class="string">'tanh'</span>,</span><br><span class="line">	recurrent_activation=<span class="string">'hard_sigmoid'</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">'orthogonal'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	dropout=<span class="number">0.0</span>,</span><br><span class="line">	recurrent_dropout=<span class="number">0.0</span>,</span><br><span class="line">	implementation=<span class="number">1</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><em>GRU</em>层的单元类</p>
+<h2 id="lstmcell">LSTMCell</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.LSTMCell(</span><br><span class="line">	units,</span><br><span class="line">	activation=<span class="string">'tanh'</span>,</span><br><span class="line">	recurrent_activation=<span class="string">'hard_sigmoid'</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">'orthogonal'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	unit_forget_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	dropout=<span class="number">0.0</span>,</span><br><span class="line">	recurrent_dropout=<span class="number">0.0</span>,</span><br><span class="line">	implementation=<span class="number">1</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>LSTM层的单元类</p>
+<h2 id="stackedrnncells">StackedRNNCells</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.StackedRNNCells(cells)</span><br></pre></td></tr></table></figure>
+<p>将一堆RNN单元表现为一个单元的封装器</p>
+<ul>
+<li><p>说明</p>
+<ul>
+<li>用于实现高效堆叠的 RNN。</li>
+</ul></li>
+<li><p>参数</p>
+<ul>
+<li><code>cells</code>：RNN 单元实例的列表</li>
+</ul></li>
+</ul>
+<p>例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cells = [</span><br><span class="line">    keras.layers.LSTMCell(output_dim),</span><br><span class="line">    keras.layers.LSTMCell(output_dim),</span><br><span class="line">    keras.layers.LSTMCell(output_dim),</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">inputs = keras.Input((timesteps, input_dim))</span><br><span class="line">x = keras.layers.RNN(cells)(inputs)</span><br></pre></td></tr></table></figure>
+<h2 id="cudnngru">CuDNNGRU</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.CuDNNGRU(</span><br><span class="line">	units,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">'orthogonal'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	return_sequences=<span class="literal">False</span>,</span><br><span class="line">	return_state=<span class="literal">False</span>,</span><br><span class="line">	stateful=<span class="literal">False</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>由 <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="noopener">CuDNN</a> 支持的快速<em>GRU</em>实现</p>
+<ul>
+<li><p>说明</p>
+<ul>
+<li>只能以<em>TensorFlow</em>后端运行在<em>GPU</em>上</li>
+</ul></li>
+</ul>
+<h2 id="cudnnlstm">CuDNNLSTM</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.CuDNNLSTM(</span><br><span class="line">	units,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	recurrent_initializer=<span class="string">'orthogonal'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	unit_forget_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	recurrent_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	recurrent_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span>,</span><br><span class="line">	return_sequences=<span class="literal">False</span>,</span><br><span class="line">	return_state=<span class="literal">False</span>,</span><br><span class="line">	stateful=<span class="literal">False</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>由 <a href="https://developer.nvidia.com/cudnn" target="_blank" rel="noopener">CuDNN</a> 支持的快速<em>LSTM</em>实现</p>
+<ul>
+<li><p>说明</p>
+<ul>
+<li>只能以<em>TensorFlow</em>后端运行在<em>GPU</em>上</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/Keras/" rel="tag"># Keras</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/keras/layers/convolutional_layers/" rel="next" title="卷积层">
+                <i class="fa fa-chevron-left"></i> 卷积层
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/stat_statistics/sampling/" rel="prev" title="数据抽样">
+                数据抽样 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#rnn"><span class="nav-number">1.</span> <span class="nav-text">RNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#simplernn"><span class="nav-number">2.</span> <span class="nav-text">SimpleRNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gru"><span class="nav-number">3.</span> <span class="nav-text">GRU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lstm"><span class="nav-number">4.</span> <span class="nav-text">LSTM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#convlstm2d"><span class="nav-number">5.</span> <span class="nav-text">ConvLSTM2D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#simplernncell"><span class="nav-number">6.</span> <span class="nav-text">SimpleRNNCell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grucell"><span class="nav-number">7.</span> <span class="nav-text">GRUCell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lstmcell"><span class="nav-number">8.</span> <span class="nav-text">LSTMCell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stackedrnncells"><span class="nav-number">9.</span> <span class="nav-text">StackedRNNCells</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cudnngru"><span class="nav-number">10.</span> <span class="nav-text">CuDNNGRU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cudnnlstm"><span class="nav-number">11.</span> <span class="nav-text">CuDNNLSTM</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

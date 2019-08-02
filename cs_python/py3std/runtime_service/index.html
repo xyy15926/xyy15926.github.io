@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Python运行时服务">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python运行时服务">
+<meta property="og:url" content="https://xyy15926.github.io/cs_python/py3std/runtime_service/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="Python运行时服务">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-09T17:42:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python运行时服务">
+<meta name="twitter:description" content="Python运行时服务">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_python/py3std/runtime_service/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Python运行时服务 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_python/py3std/runtime_service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Python运行时服务
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-10 01:42:37" itemprop="dateCreated datePublished" datetime="2019-06-10T01:42:37+08:00">2019-06-10</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">Python运行时服务</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="sys"><code>sys</code></h2>
+<p><code>sys</code>：与Python解释器<strong>本身相关</strong>的组件</p>
+<h3 id="平台版本">平台、版本</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.platform</span><br><span class="line">	<span class="comment"># 操作系统名称</span></span><br><span class="line">sys.maxsize</span><br><span class="line">	<span class="comment"># 当前计算机最大容纳“原生”整型</span></span><br><span class="line">	<span class="comment"># 一般就是字长</span></span><br><span class="line">sys.version</span><br><span class="line">	<span class="comment"># python解释器版本号</span></span><br><span class="line">sys.byteorder</span><br><span class="line">	<span class="comment"># 平台字节序</span></span><br><span class="line">sys.hash_info</span><br><span class="line">	<span class="comment"># 数值类型hash信息</span></span><br></pre></td></tr></table></figure>
+<h4 id="sys.xxxcheckinterval"><code>sys.xxxcheckinterval</code></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sys.getcheckinterval()</span><br><span class="line">	<span class="comment"># 查看解释器检查线程切换、信号处理器等的频率</span></span><br><span class="line">sys.setcheckinterval(N)</span><br><span class="line">	<span class="comment"># 设置解释器检查线程切换、信号处理器等的频率</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数
+<ul>
+<li><code>N</code>：线程切换前执行指令的数量</li>
+</ul></li>
+<li>对大多数程序无需更改此设置，但是可以用于调试线程性能
+<ul>
+<li>较大值表示切换频率较低，切换线程开销降低，但是对事件 的应答能力变弱</li>
+<li>较小值表示切换频率较高，切换线程开销增加，对事件应答 能力提升</li>
+</ul></li>
+</ul>
+<h4 id="sys.hash_info"><code>sys.hash_info</code></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sys.hash_info.width</span><br><span class="line">	<span class="comment"># `hash()`函数截取hash值长度</span></span><br></pre></td></tr></table></figure>
+<h3 id="模块搜索路径">模块搜索路径</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sys.path</span><br></pre></td></tr></table></figure>
+<ul>
+<li>返回值：目录名称字符串组成的列表
+<ul>
+<li>每个目录名称代表<strong>正在运行</strong>python解释器的运行时模块 搜索路径</li>
+<li>可以类似普通列表在运行时被修改、生效</li>
+</ul></li>
+</ul>
+<h4 id="sys.path初始化顺序"><code>sys.path</code>初始化顺序</h4>
+<ul>
+<li><p>脚本主目录指示器：空字符串</p>
+<ul>
+<li>脚本主目录是指脚本<strong>所在目录</strong>，不是<code>os.getcwd()</code> 获取的当前工作目录</li>
+</ul></li>
+<li><p><code>PYTHONPATH</code>环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> .bashrc</span></span><br><span class="line">export PYTHONPATH=$PYTHONPATH:/path/to/fold/contains/module</span><br></pre></td></tr></table></figure></li>
+<li><p>标准库目录</p></li>
+<li><p><code>.pth</code>路径文件：在扫描以上目录过程中，遇到<code>.pth</code>文件会 将其中路径加入<code>sys.path</code>中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># extras.pth</span><br><span class="line">/path/to/fold/contains/module</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="导入模块顺序">导入模块顺序</h4>
+<p>导入模块时，python解释器</p>
+<ol type="1">
+<li>搜索<strong>内置</strong>模块，即内置模块优先级最高</li>
+<li>从左至右扫描<code>sys.path</code>列表，在列表目录下搜索模块文件</li>
+</ol>
+<h3 id="嵌入解释器的钩子">嵌入解释器的钩子</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sys.modules</span><br><span class="line">	<span class="comment"># 已加载模块字典</span></span><br><span class="line">sys.builtin_module_names</span><br><span class="line">	<span class="comment"># 可执行程序的内置模块</span></span><br><span class="line">sys.getrefcount()</span><br><span class="line">	<span class="comment"># 查看对象引用次数</span></span><br></pre></td></tr></table></figure>
+<h3 id="异常">异常</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sys.exc_info()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>返回值：<code>(type, value, trackback)</code>
+<ul>
+<li>最近异常的类型、值、追踪对象元组</li>
+<li>处理该异常的<code>except</code>执行之后，<code>sys.exc_info</code>被恢复 为原始值</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>追踪对象可以使用<code>traceback</code>模块处理</li>
+</ul>
+</blockquote>
+<h3 id="命令行参数">命令行参数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sys.argv</span><br></pre></td></tr></table></figure>
+<ul>
+<li>返回值：命令行参数列表
+<ul>
+<li>首项始终为执行脚本名称，交互式python时为空字符串</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>参数可以自行解析，也可以使用以下标准库中模块 &gt; - <code>getopt</code>：类似Unix/C同名工具 &gt; - <code>optparse</code>：功能更加强大</li>
+</ul>
+</blockquote>
+<h3 id="标准流">标准流</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sys.stdin</span><br><span class="line">	<span class="comment"># 标准输入流</span></span><br><span class="line">sys.stdout</span><br><span class="line">	<span class="comment"># 标准输出流</span></span><br><span class="line">sys.stderr</span><br><span class="line">	<span class="comment"># 标准错误流</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>标准流是<strong>预先打开的python文件对象</strong></p>
+<ul>
+<li>在python启动时自动链接到程序上、绑定至终端</li>
+<li>shell会将相应流链接到指定数据源：用户标准输入、文件</li>
+</ul></li>
+</ul>
+<h4 id="重定向">重定向</h4>
+<ul>
+<li><p>可以将<code>sys.stdin</code>、<code>sys.stdout</code>重置到文件类的对象，实现 python<strong>内部的</strong>、<strong>普遍的</strong>重定向方式</p>
+<ul>
+<li>外部：cmd输入输出重定向</li>
+<li>局部：指定<code>print</code>参数</li>
+</ul></li>
+<li><p>任何方法上与文件类似的对象都可以充当标准流，与对象类型 无关，只取决于接口</p>
+<ul>
+<li><p>任何提供了类似文件<code>read</code>方法的对象可以指定给 <code>sys.stdin</code>，以从该对象<code>read</code>读取输入</p></li>
+<li><p>任何提供了类似文件<code>write</code>方法的对象可以指定给 <code>sys.write</code>，将所有标准输出发送至该对象方法上</p></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>标准库<code>io</code>提供可以用于重定向的类<code>StringIO</code>、<code>ByteIO</code></li>
+<li>重定向之后<code>print</code>、<code>input</code>方法将应用在重定向之后的流</li>
+</ul>
+</blockquote>
+<h4 id="stdin"><code>stdin</code></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">stdin.read()</span><br><span class="line">	<span class="comment"># 从标准输入流引用对象读取数据</span></span><br><span class="line">input(<span class="string">"input a word"</span>)</span><br><span class="line">sys.stdin.readlines()[<span class="number">-1</span>]</span><br><span class="line">	<span class="comment"># 以上两行语句类似</span></span><br><span class="line"></span><br><span class="line">stdin.isatty()</span><br><span class="line">	<span class="comment"># 判断stdin是否连接到终端（是否被重定向）</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在stdin被重定向时，若需要接受用户终端输入，需要使用 特殊接口从键盘直接读取用户输入
+<ul>
+<li>win：<code>msvcrt</code>模块</li>
+<li>linux：读取<code>/dev/tty</code>设备文件</li>
+</ul></li>
+</ul>
+<h3 id="退出">退出</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sys.exit(N)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>用途：当前<strong>线程</strong>以状态N退出
+<ul>
+<li>实际上只是抛出一个内建的<code>SystemExit</code>异常，可以被正常 捕获</li>
+<li>等价于显式<code>raise SystemExit</code></li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>进程退出参见<code>os._exit()</code></li>
+</ul>
+</blockquote>
+<h4 id="sys.exitfuncs"><code>sys.exitfuncs</code></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sys.exitfuncs</span><br></pre></td></tr></table></figure>
+<h3 id="编码">编码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sys.getdefaulencoding()</span><br><span class="line">	<span class="comment"># 文件内容编码，平台默认值</span></span><br><span class="line">	<span class="comment"># 默认输入解码、输出编码方案</span></span><br><span class="line">sys.getfilesystemencoding()</span><br><span class="line">	<span class="comment"># 文件名编码，平台默认体系</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>win10中二者都是<code>utf-8</code>，win7中文件名编码是<code>mbcs</code></li>
+</ul>
+</blockquote>
+<h2 id="sysconfig"><code>sysconfig</code></h2>
+<h2 id="builtins"><code>builtins</code></h2>
+<h2 id="main__"><code>__main__</code></h2>
+<h2 id="warnings"><code>warnings</code></h2>
+<h2 id="dataclass"><code>dataclass</code></h2>
+<h2 id="atexit"><code>atexit</code></h2>
+<p><code>atexit</code>：主要用于在<strong>程序结束前</strong>执行代码</p>
+<ul>
+<li>类似于析构，主要做资源清理工作</li>
+</ul>
+<h3 id="atexit.register"><code>atexit.register</code></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	func,</span></span></span><br><span class="line"><span class="function"><span class="params">	*arg,</span></span></span><br><span class="line"><span class="function"><span class="params">	**kwargs</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>用途：注册回调函数
+<ul>
+<li>在程序退出之前，按照注册顺序反向调用已注册回调函数</li>
+<li>如果程序非正常crash、通过<code>os._exit()</code>退出，注册回调 函数不会被调用</li>
+</ul></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> atexit</span><br><span class="line"></span><br><span class="line">df func1():</span><br><span class="line">	print(<span class="string">"atexit func 1, last out"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func2</span><span class="params">(name, age)</span>:</span></span><br><span class="line">	print(<span class="string">"atexit func 2"</span>)</span><br><span class="line"></span><br><span class="line">atexit.register(func1)</span><br><span class="line">atexit.register(func2, <span class="string">"john"</span>, <span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@atexit.register</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func3</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">"atexit func 3, first out"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="实现">实现</h3>
+<p><code>atexit</code>内部是通过<code>sys.exitfunc</code>实现的</p>
+<ul>
+<li><p>将注册函数放到列表中，当程序退出时按照<strong>先进后出</strong>方式 调用注册的回调函数，</p></li>
+<li><p>若回调函数执行过程中抛出异常，<code>atexit</code>捕获异常然后继续 执行之后回调函数，知道所有回调函数执行完毕再抛出异常</p></li>
+<li><p>二者同时使用，通过<code>atexit.register</code>注册回调函数可能不会 被正常调用</p></li>
+</ul>
+<h2 id="traceback"><code>traceback</code></h2>
+<h3 id="traceback.print_tb"><code>traceback.print_tb</code></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> traceback, sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	...</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">	exc_info = sys.exec_info()</span><br><span class="line">	print(exec_info[<span class="number">0</span>], exec_info[<span class="number">1</span>])</span><br><span class="line">	traceback.print_tb(exec_info[<span class="number">2</span>])</span><br></pre></td></tr></table></figure>
+<h2 id="future__"><code>__future__</code></h2>
+<h2 id="gc"><code>gc</code></h2>
+<h2 id="inspect"><code>inspect</code></h2>
+<h2 id="site"><code>site</code></h2>
+<h2 id="abc"><code>abc</code></h2>
+<h3 id="abcmeta"><code>ABCMeta</code></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> abc <span class="keyword">import</span> ABCMeta, abstractmethod</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IStream</span><span class="params">(metaclass=ABCMeta)</span>:</span></span><br><span class="line"><span class="meta">	@abstractmethod</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(self, maxbytes=<span class="number">-1</span>)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">	@abstractmethod</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(self, data)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SocketStream</span><span class="params">(IStream)</span>:</span></span><br><span class="line">	<span class="comment"># 抽象类目的就是让别的类继承并实现特定抽象方法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">read</span><span class="params">(self, maxbytes=<span class="number">-1</span>)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(self, data)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">serialize</span><span class="params">(obj, stream)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> isinstance(stream, IStream):</span><br><span class="line">		<span class="comment"># 抽象基类的主要用途之一：检查某些类是否为特定类型、</span></span><br><span class="line">			<span class="comment"># 实现特定接口</span></span><br><span class="line">		<span class="keyword">raise</span> TypeError(<span class="string">"expect an IStream"</span>)</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(metaclass=ABCMeta)</span>:</span></span><br><span class="line"><span class="meta">	@property</span></span><br><span class="line"><span class="meta">	@abstract</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">name</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	</span><br><span class="line"><span class="meta">	@name.setter</span></span><br><span class="line"><span class="meta">	@abstractmethod</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">name</span><span class="params">(self, value)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">	@classmethod</span></span><br><span class="line"><span class="meta">	@abstractmethod</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">method1</span><span class="params">(cls)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="meta">	@staticmethod</span></span><br><span class="line"><span class="meta">	@abstractmethod</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">method2</span><span class="params">()</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># `@abstract`还能注解静态方法、类方法、`@property`</span></span><br><span class="line">	<span class="comment"># 但是需要保证这个方法**紧靠**函数定义</span></span><br></pre></td></tr></table></figure>
+<h3 id="用途">用途</h3>
+<p>标准库中有很多用到抽象基类的地方</p>
+<ul>
+<li><p><code>collections</code>模块定义了很多和容器、迭代器（序列、映射、 集合）有关的抽象基类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections <span class="keyword">as</span> clt</span><br><span class="line"></span><br><span class="line">clt.Sequence</span><br><span class="line">clt.Iterable</span><br><span class="line">clt.Sized</span><br><span class="line">clt.Mapping</span><br></pre></td></tr></table></figure></li>
+<li><p><code>numbers</code>库定义了跟数据对象：整数、浮点数、有理数有关的 基类</p></li>
+<li><p><code>IO</code>库定义了很多跟IO操作相关的基类</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/py3ref/dm_gfuncs/" rel="next" title="数据模型--函数决定对象">
+                <i class="fa fa-chevron-left"></i> 数据模型--函数决定对象
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/py3ref/simple_stmts/" rel="prev" title="Simple Statements">
+                Simple Statements <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sys"><span class="nav-number">1.</span> <span class="nav-text">sys</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#平台版本"><span class="nav-number">1.1.</span> <span class="nav-text">平台、版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sys.xxxcheckinterval"><span class="nav-number">1.1.1.</span> <span class="nav-text">sys.xxxcheckinterval</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sys.hash_info"><span class="nav-number">1.1.2.</span> <span class="nav-text">sys.hash_info</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块搜索路径"><span class="nav-number">1.2.</span> <span class="nav-text">模块搜索路径</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sys.path初始化顺序"><span class="nav-number">1.2.1.</span> <span class="nav-text">sys.path初始化顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导入模块顺序"><span class="nav-number">1.2.2.</span> <span class="nav-text">导入模块顺序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#嵌入解释器的钩子"><span class="nav-number">1.3.</span> <span class="nav-text">嵌入解释器的钩子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常"><span class="nav-number">1.4.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行参数"><span class="nav-number">1.5.</span> <span class="nav-text">命令行参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准流"><span class="nav-number">1.6.</span> <span class="nav-text">标准流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重定向"><span class="nav-number">1.6.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stdin"><span class="nav-number">1.6.2.</span> <span class="nav-text">stdin</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#退出"><span class="nav-number">1.7.</span> <span class="nav-text">退出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sys.exitfuncs"><span class="nav-number">1.7.1.</span> <span class="nav-text">sys.exitfuncs</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编码"><span class="nav-number">1.8.</span> <span class="nav-text">编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sysconfig"><span class="nav-number">2.</span> <span class="nav-text">sysconfig</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#builtins"><span class="nav-number">3.</span> <span class="nav-text">builtins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#main__"><span class="nav-number">4.</span> <span class="nav-text">__main__</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#warnings"><span class="nav-number">5.</span> <span class="nav-text">warnings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dataclass"><span class="nav-number">6.</span> <span class="nav-text">dataclass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#atexit"><span class="nav-number">7.</span> <span class="nav-text">atexit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#atexit.register"><span class="nav-number">7.1.</span> <span class="nav-text">atexit.register</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">7.2.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#traceback"><span class="nav-number">8.</span> <span class="nav-text">traceback</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#traceback.print_tb"><span class="nav-number">8.1.</span> <span class="nav-text">traceback.print_tb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#future__"><span class="nav-number">9.</span> <span class="nav-text">__future__</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gc"><span class="nav-number">10.</span> <span class="nav-text">gc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inspect"><span class="nav-number">11.</span> <span class="nav-text">inspect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#site"><span class="nav-number">12.</span> <span class="nav-text">site</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#abc"><span class="nav-number">13.</span> <span class="nav-text">abc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#abcmeta"><span class="nav-number">13.1.</span> <span class="nav-text">ABCMeta</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用途"><span class="nav-number">13.2.</span> <span class="nav-text">用途</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

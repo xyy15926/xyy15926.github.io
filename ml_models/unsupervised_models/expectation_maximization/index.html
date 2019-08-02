@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="EM算法">
+<meta name="keywords" content="模型,无监督模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EM算法">
+<meta property="og:url" content="https://xyy15926.github.io/ml_models/unsupervised_models/expectation_maximization/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="EM算法">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-13T04:03:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="EM算法">
+<meta name="twitter:description" content="EM算法">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_models/unsupervised_models/expectation_maximization/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>EM算法 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_models/unsupervised_models/expectation_maximization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">EM算法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-13 23:26:35 / 修改时间：12:03:12" itemprop="dateCreated datePublished" datetime="2019-07-13T23:26:35+08:00">2019-07-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/" itemprop="url" rel="index"><span itemprop="name">模型</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/无监督模型/" itemprop="url" rel="index"><span itemprop="name">无监督模型</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">EM算法</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="总述">总述</h2>
+<p><em>expectation maximization algorithm</em>：含有隐变量的概率模型 参数的极大似然估计法、极大后验概率估计法</p>
+<ul>
+<li><p>模型含有<em>latent variable</em>（潜在变量）、<em>hidden variable</em> （隐变量）似然函数将没有解析解</p></li>
+<li>所以EM算法需要迭代求解，每次迭代由两步组成
+<ul>
+<li>E步：求期望expectation</li>
+<li>M步：求极大maximization</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>模型变量都是<em>observable variable</em>、给定数据情况下，可以 直接使用极大似然估计、贝叶斯估计</li>
+</ul>
+</blockquote>
+<h2 id="em算法">EM算法</h2>
+<p>对含有隐变量的概率模型，目标是极大化观测数据（不完全数据） <span class="math inline">\(Y\)</span>关于参数<span class="math inline">\(\theta\)</span>的对数似然函数，即极大化</p>
+<p><span class="math display">\[\begin{align*}
+L(\theta) &amp; = log P(Y|\theta) \\
+&amp; = log \sum_Z P(Y, Z|\theta) \\
+&amp; = log \left(\sum_Z P(Y|Z,\theta) P(Z|\theta) \right)
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(Y\)</span>：观测变量数据</li>
+<li><span class="math inline">\(Z\)</span>：隐随机变量数据（未知）</li>
+<li><span class="math inline">\(Y,Z\)</span>合在一起称为完全数据</li>
+<li><span class="math inline">\(P(Y,Z|\theta)\)</span>：联合分布</li>
+<li><span class="math inline">\(P(Z|Y,\theta)\)</span>：条件分布</li>
+</ul>
+</blockquote>
+<ul>
+<li>但是极大化目标函数中包括未观测数据<span class="math inline">\(Z\)</span>、求和（积分）的 对数，直接求极大化非常困难</li>
+<li>EM算法通过<strong>迭代</strong>逐步近似极大化<span class="math inline">\(L(\theta)\)</span></li>
+</ul>
+<h3 id="推导">推导</h3>
+<ul>
+<li><p>假设第i次迭代后<span class="math inline">\(\theta\)</span>的估计值是<span class="math inline">\(\theta^{(i)}\)</span>，希望 新估计值<span class="math inline">\(\theta\)</span>能使<span class="math inline">\(L(\theta)\)</span>增加，并逐步增加到极大值 ，考虑两者之差</p>
+<p><span class="math display">\[
+L(\theta) - L(\theta^{(i)}) = log (\sum_Z P(Y|Z,\theta)
+    P(Z|\theta)) - log P(Y|\theta^{(i)})
+\]</span></p></li>
+<li><p>利用Jensen不等式有</p>
+<p><span class="math display">\[\begin{align*}
+L(\theta) - L(|theta^{(i)}) &amp; = log(\sum_Z P(Y|Z,
+    \theta^{(i)}) \frac {P(Y|Z,\theta) P(Z|\theta)}
+    {P(Y|Z,\theta^{(i)})}) - log P(Y|\theta^{(i)}) \\
+&amp; \geq \sum_Z P(Z|Y,\theta^{(i)}) log \frac
+    {P(Y|Z,\theta) P(Z|\theta)} {P(Z|Y,\theta^{(i)})}
+    - log P(Y|\theta^{(i)}) \\
+&amp; = \sum_z P(Z|Y,\theta^{(i)}) log \frac
+    {P(Y|Z,\theta) P(Z|\theta)}
+    {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}
+\end{align*}\]</span></p></li>
+<li><p>令</p>
+<p><span class="math display">\[
+B(\theta, \theta^{(i)}) = L(\theta^{(i)}) + \sum_Z
+    P(Z|Y,\theta^{(i)}) log \frac
+    {P(Y|Z,\theta) P(Z|\theta)}
+    {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}
+\]</span></p>
+<p>则<span class="math inline">\(B(\theta, \theta^{(i)})\)</span>是<span class="math inline">\(L(\theta)\)</span>的一个下界，即</p>
+<p><span class="math display">\[\begin{align*}
+L(\theta) &amp; \geq B(\theta, \theta^{(i)}) \\
+\end{align*}\]</span></p>
+<p>并根据<span class="math inline">\(B(\theta, \theta^{(i)})\)</span>定义有b</p>
+<p><span class="math display">\[\begin{align*}
+L(\theta^{(i)}) = B(\theta^{(i)}, \theta^{(i)})
+\end{align*}\]</span></p></li>
+<li><p>则任意<span class="math inline">\(\theta\)</span>满足 <span class="math inline">\(B(\theta,\theta^{(i)}) &gt; B(\theta^{(i)},\theta^{(i)})\)</span> ，将满足<span class="math inline">\(L(\theta) &gt; L(\theta^{(i)})\)</span>，应选择 <span class="math inline">\(\theta^{(i+1)}\)</span>使得<span class="math inline">\(B(\theta,\theta^{(i)})\)</span>达到极大</p>
+<p><span class="math display">\[\begin{align*}
+\theta^{(i+1)} &amp; = \arg\max_{\theta}
+    B(\theta,\theta^{(i)}) \\
+&amp; = \arg\max_{\theta} L(\theta^{(i)}) + \sum_Z
+    P(Z|Y,\theta^{(i)}) log \frac
+    {P(Y|Z,\theta) P(Z|\theta)}
+    {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})} \\
+&amp; = \arg\max_{\theta} (\sum_Z P(Z|Y,\theta^{(i)})
+    log(P(Y|Z,\theta)P(Z|\theta))) \\
+&amp; = \arg\max_{\theta} (\sum_Z P(Z|Y,\theta^{(i)})
+    log P(Y,Z|\theta)) \\
+&amp; = \arg\max_{\theta} Q(\theta, \theta^{(i)})
+\end{align*}
+\]</span></p>
+<blockquote>
+<ul>
+<li>和<span class="math inline">\(\theta\)</span>无关的常数项全部舍去</li>
+</ul>
+</blockquote></li>
+</ul>
+<blockquote>
+<ul>
+<li><span class="math inline">\(Q(\theta, \theta^{(i)})\)</span>：Q函数，完全数据的对数似然函数 <span class="math inline">\(logP(Y,Z|\theta)\)</span>，关于在给定观测<span class="math inline">\(Y\)</span>和当前参数 <span class="math inline">\(\theta^{(i)}\)</span>下，对未观测数据Z的条件概率分布 <span class="math inline">\(P(Z|Y,\theta^{(i)})\)</span> <span class="math display">\[
+Q(\theta, \theta^{(i)}) = E_z
+[logP(Y,Z|\theta)|Y,\theta^{(i)}]
+\]</span></li>
+</ul>
+</blockquote>
+<h3 id="算法">算法</h3>
+<ol type="1">
+<li><p>选择参数初值<span class="math inline">\(\theta^{0}\)</span>，开始迭代</p></li>
+<li><p>E步：记<span class="math inline">\(\theta^{(i)}\)</span>为第<span class="math inline">\(i\)</span>迭代时，参数<span class="math inline">\(\theta\)</span>的估计值 ，在第<span class="math inline">\(i+1\)</span>步迭代的E步时，计算Q函数 <span class="math inline">\(Q(\theta, \theta^{(i)})\)</span></p></li>
+<li><p>M步：求使得Q函数极大化<span class="math inline">\(\theta\)</span>作为第<span class="math inline">\(i+1\)</span>次估计值 <span class="math inline">\(\theta^{(i+1)}\)</span></p>
+<p><span class="math display">\[
+\theta^{(i+1)} = \arg\max_{\theta} Q(\theta, \theta^{(i)})
+\]</span></p></li>
+<li><p>重复E步、M步直到待估参数收敛</p></li>
+</ol>
+<blockquote>
+<ul>
+<li>算法初值可以任意选择，但EM算法对初值敏感</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>E步：参数值估计缺失值分布，计算Q函数（似然函数）</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>M步：Q函数取极大得新参数估计值</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>收敛条件一般是对较小正数<span class="math inline">\(\epsilon\)</span>，满足 <span class="math inline">\(\|\theta^{(i+1)} - \theta^{(i)}\| &lt; \epsilon\)</span>或 <span class="math inline">\(\|Q(\theta^{(i+1)},\theta^{(i)}) - Q(\theta^{(i)},\theta^{(i)})\| &lt; \epsilon\)</span></li>
+</ul>
+</blockquote>
+<h3 id="em算法特点">EM算法特点</h3>
+<h4 id="em算法优点">EM算法优点</h4>
+<ul>
+<li>EM算法可以用于估计含有隐变量的模型参数</li>
+<li>非常简单，稳定上升的步骤能非常可靠的找到最优估计值</li>
+<li>应用广泛，能应用在多个领域中
+<ul>
+<li>生成模型的非监督学习</li>
+</ul></li>
+</ul>
+<h4 id="em算法缺点">EM算法缺点</h4>
+<ul>
+<li>EM算法计算复杂、受外较慢，不适合高维数据、大规模数据集</li>
+<li>参数估计结果依赖初值，不够稳定，不能保证找到全局最优解</li>
+</ul>
+<h3 id="算法收敛性">算法收敛性</h3>
+<h4 id="定理1">定理1</h4>
+<blockquote>
+<ul>
+<li>设<span class="math inline">\(P(Y|\theta)\)</span>为观测数据的似然函数，<span class="math inline">\(\theta^{(i)}\)</span>为 EM算法得到的参数估计序列，<span class="math inline">\(P(Y|\theta^{(i)}),i=1,2,...\)</span> 为对应的似然函数序列，则<span class="math inline">\(P(Y|\theta^{(i)})\)</span>是单调递增的 <span class="math display">\[
+P(Y|\theta^{(i+1)}) \geq P(Y|\theta^{(i)})
+\]</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由条件概率</p>
+<p><span class="math display">\[\begin{align*}
+P(Y|\theta) &amp; = \frac {P(Y,Z|\theta)} {P(Z|Y,\theta)} \\
+logP(Y|\theta) &amp; = logP(Y,Z|\theta) - logP(Z|Y,\theta)
+\end{align*}\]</span></p></li>
+<li><p>则对数似然函数有</p>
+<p><span class="math display">\[
+logP(Y|\theta) = Q(\theta, \theta^{(i)}) -
+    H(\theta, \theta^{(i)})
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(H(\theta, \theta^{(i)}) = \sum_Z log P(Z|Y,\theta) P(Z|Y,\theta)\)</span></li>
+<li><span class="math inline">\(Q(\theta, \theta^{(i)})\)</span>：前述Q函数</li>
+<li><span class="math inline">\(logP(Y|\theta)\)</span>和<span class="math inline">\(Z\)</span>无关，可以直接提出</li>
+</ul>
+</blockquote></li>
+<li><p>分别取<span class="math inline">\(\theta^{(i+1)}, \theta^{(i)}\)</span>带入，做差</p>
+<p><span class="math display">\[
+logP(Y|\theta^{(i+1)}) - logP(Y|\theta^{(i)}) =
+    [Q(\theta^{(i+1)}, \theta^{(i)}) - 
+    Q(\theta^{(i)}, \theta^{(i)}] -
+    [H(\theta^{(i+1)}, \theta^{(i)}) -
+    H(\theta^{(i)}, \theta^{(i)})]
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(\theta^{(i+1)}\)</span>使得<span class="math inline">\(Q(\theta, \theta^{(i)})\)</span>取极大</p></li>
+<li><p>又有</p>
+<p><span class="math display">\[\begin{align*}
+&amp; H(\theta^{(i+1)}, \theta^{(i)}) -
+    H(\theta^{(i)}, \theta^{(i)}) \\
+= &amp; \sum_Z (log \frac {P(Z|Y,\theta^{(i+1)})}
+    {P(Z|Y,\theta^{(I)})}) P(Z|Y,\theta^{(i)}) \\
+\leq &amp; log (\sum_Z \frac {P(Z|Y,\theta^{(i+1)})}
+    {P(Z|Y,\theta^{(I)})} P(Z|Y,\theta^{(i)})) \\
+= &amp; log \sum_Z P(Z|Y,\theta^{(i+1)}) = 0
+\end{align*}\]</span></p></li>
+</ul></li>
+</ul>
+<h4 id="定理2">定理2</h4>
+<blockquote>
+<ul>
+<li>设<span class="math inline">\(L(\theta)=log P(Y|\theta)\)</span>为观测数据的对数似然函数， <span class="math inline">\(\theta^{(i)},i=1,2,...\)</span>为EM算法得到的参数估计序列， <span class="math inline">\(L(\theta^{(i)}),i=1,2,...\)</span>为对应的对数似然函数序列 &gt; - 若<span class="math inline">\(P(Y|\theta)\)</span>有上界，则<span class="math inline">\(L(\theta^{(i)})\)</span>收敛到某 定值<span class="math inline">\(L^{*}\)</span> &gt; - Q函数<span class="math inline">\(Q(\theta, \theta^{&#39;})\)</span>与<span class="math inline">\(L(\theta)\)</span>满足一定 条件的情况下，由EM算法得到的参数估计序列 <span class="math inline">\(\theta^{(i)}\)</span>的收敛值<span class="math inline">\(\theta^{*}\)</span>是<span class="math inline">\(L(\theta)\)</span>的 稳定点</li>
+</ul>
+</blockquote>
+<ul>
+<li>结论1由序列单调、有界显然</li>
+</ul>
+<blockquote>
+<ul>
+<li>Q函数<span class="math inline">\(Q(\theta, \theta^{&#39;})\)</span>与<span class="math inline">\(L(\theta)\)</span>的条件在大多数 情况下是满足的</li>
+<li>EM算法收敛性包含对数似然序列<span class="math inline">\(L(\theta^{(i)})\)</span>、参数估计 序列<span class="math inline">\(\theta^{(i)}\)</span>的收敛性，前者不蕴含后者</li>
+<li>此定理只能保证参数估计序列收敛到对数似然序列的稳定点， 不能保证收敛到极大点，可选取多个不同初值迭代，从多个结果 中选择最好的</li>
+</ul>
+</blockquote>
+<h2 id="gaussion-mixture-model"><em>Gaussion Mixture Model</em></h2>
+<blockquote>
+<ul>
+<li>高斯混合模型是指具有如下概率分布模型 <span class="math display">\[
+P(y|\theta) = \sum_{k=1}^K \alpha_k \phi(y|\theta_k)
+\]</span> &gt; - <span class="math inline">\(\alpha_k \geq 0, \sum_{k=1}^K \alpha_k=1\)</span>：系数 &gt; - <span class="math inline">\(\phi(y|\theta_k)\)</span>：高斯分布密度函数 &gt; - <span class="math inline">\(\theta_k=(\mu_k, \sigma_k)\)</span>：第k个分模型参数</li>
+</ul>
+</blockquote>
+<ul>
+<li>用EM算法估计高斯混合模型参数 <span class="math inline">\(\theta=(\alpha_1,...,\alpha_2,\theta_1,...,\theta_K)\)</span></li>
+</ul>
+<h3 id="推导-1">推导</h3>
+<h4 id="明确隐变量">明确隐变量</h4>
+<p>明确隐变量，写出完全数据对数似然函数</p>
+<ul>
+<li><p>反映观测数据<span class="math inline">\(y_j\)</span>来自第k个分模型的数据是未知的</p>
+<p><span class="math display">\[\gamma_{j,k} = \left \{ \begin{array}{l}
+1, &amp; 第j个观测来自第k个分模型 \\
+0, &amp; 否则
+\end{array} \right.
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(j=1,2,\cdots,N\)</span>：观测编号</li>
+<li><span class="math inline">\(k=1,2,\cdots,K\)</span>：模型编号</li>
+</ul>
+</blockquote></li>
+<li><p>则完全数据为</p>
+<p><span class="math display">\[(y_j,\gamma_{j,1},\cdots,\gamma_{j,K}), j=1,2,...,N\]</span></p></li>
+<li><p>完全数据似然函数为</p>
+<p><span class="math display">\[\begin{align*}
+P(y,\gamma|\theta) &amp; = \prod_{j=1}^N
+    P(y_j,\gamma_{j,1},\cdots,\gamma_{j,N}|\theta) \\
+&amp; = \prod_{k=1}^{K} \prod_{j=1}^N
+    [\alpha_k \phi(y_j|\theta_k)]^{\gamma _{j,k}} \\
+&amp; = \prod_{k=1}^{K} \alpha_k^{n_k} \prod_{j=1}^N
+    [\phi(y_j|\theta_k)]^{\gamma _{j,k}} \\
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(n_k = \sum_{j=1}^{N} \gamma_{j,k}\)</span></li>
+<li><span class="math inline">\(\sum_{k=1}^K n_k = N\)</span></li>
+</ul>
+</blockquote></li>
+<li><p>完全数据的对数似然函数为</p>
+<p><span class="math display">\[
+logP(y, \gamma|\theta) = \sum_{k=1}^K \left \{
+    n_k log \alpha_k + \sum_{j=1}^N \gamma_{j,k}
+    [log \frac 1 {\sqrt {2\pi}} - log \sigma_k -
+    \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \}
+\]</span></p></li>
+</ul>
+<h4 id="e步确定q函数">E步：确定Q函数</h4>
+<p><span class="math display">\[\begin{align*}
+Q(\theta, \theta^{(i)}) &amp; =
+    E_z[logP(y,\gamma|\theta)|Y,\theta^{(i)}] \\
+&amp; = E \sum_{k=1}^K \left \{ n_k log\alpha_k + \sum_{j=1}^N
+    \gamma_{j,k} [log \frac 1 {\sqrt {2\pi}} - log \sigma_k
+    - \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \} \\
+&amp; = \sum_{k=1}^K \left \{ \sum_{k=1}^K (E\gamma_{j,k})
+    log\alpha_k + \sum_{j=1}^N (E\gamma_{j,k})
+    [log \frac 1 {\sqrt {2\pi}} - log \sigma_k
+    - \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(E\gamma_{j,k} = E(\gamma_{j,k}|y,\theta)\)</span>：记为 <span class="math inline">\(\hat \gamma_{j,k}\)</span></li>
+</ul>
+</blockquote>
+<p><span class="math display">\[\begin{align*}
+\hat \gamma_{j,k} &amp; = E(\gamma_{j,k}|y,\theta) =
+    P(\gamma_{j,k}|y,\theta) \\
+&amp; = \frac {P(\gamma_{j,k}=1, y_j|\theta)}
+    {\sum_{k=1}^K P(\gamma_{j,k}=1,y_j|\theta)} \\
+&amp; = \frac {P(y_j|\gamma_{j,k}=1,\theta)
+    P(\gamma_{j,k}=1|\theta)} {\sum_{k=1}^K
+    P(y_j|\gamma_{j,k}=1,\theta) P(\gamma_{j,k}|\theta)} \\
+&amp; = \frac {\alpha_k \phi(y_j|\theta _k)}
+    {\sum_{k=1}^K \alpha_k \phi(y_j|\theta_k)}
+\end{align*}\]</span></p>
+<p>带入可得</p>
+<p><span class="math display">\[
+Q(\theta, \theta^{(i)}) = \sum_{k=1}^K \left\{
+    n_k log\alpha_k + \sum_{k=1}^N \hat \gamma_{j,k}
+    [log \frac 1 {\sqrt{2\pi}} - log \sigma_k -
+    \frac 1 {2\sigma^2}(y_j - \mu_k)^2] \right \}
+\]</span></p>
+<h4 id="m步">M步</h4>
+<p>求新一轮模型参数 <span class="math inline">\(\theta^{(i+1)}=(\hat \alpha_1,...,\hat \alpha_2,\hat \theta_1,...,\hat \theta_K)\)</span></p>
+<p><span class="math display">\[\begin{align*}
+\theta^{(i+1)} &amp; = \arg\max_{\theta} Q(\theta,\theta^{(i)}) \\
+\hat \mu_k &amp; = \frac {\sum_{j=1}^N \hat \gamma_{j,k} y_j}
+    {\sum_{j=1}^N \hat \gamma_{j,k}} \\
+\hat \sigma_k^2 &amp; = \frac {\sum_{j=1}^N \hat \gamma_{j,k}
+    (y_j - \mu_p)^2} {\sum_{j=1}^N \hat \gamma_{j,k}} \\
+\hat \alpha_k &amp; = \frac {n_k} N = \frac {\sum_{j=1}^N
+    \hat \gamma_{j,k}} N
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\hat \theta_k = (\hat \mu_k, \hat \sigma_k^2)\)</span>：直接求 偏导置0即可得</li>
+<li><span class="math inline">\(\hat \alpha_k\)</span>：在<span class="math inline">\(\sum_{k=1}^K \alpha_k = 1\)</span>条件下求 偏导置0求得</li>
+</ul>
+</blockquote>
+<h3 id="算法-1">算法</h3>
+<blockquote>
+<ul>
+<li>输入：观测数据<span class="math inline">\(y_1, y_2,\cdots, y_N\)</span>，N个高斯混合模型</li>
+<li>输出：高斯混合模型参数</li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>取参数初始值开始迭代</p></li>
+<li><p>E步：依据当前模型参数，计算分模型k对观测数据<span class="math inline">\(y_j\)</span>响应度 <span class="math display">\[
+\hat \gamma_{j,k} = \frac {\alpha \phi(y_k|\theta_k)}
+    {\sum_{k=1}^N \alpha_k \phi(y_j|\theta)}
+\]</span></p></li>
+<li><p>M步：计算新一轮迭代的模型参数 <span class="math inline">\(\hat mu_k, \hat \sigma_k^2, \hat \alpha_k\)</span></p></li>
+<li><p>重复2、3直到收敛</p></li>
+</ol>
+<blockquote>
+<ul>
+<li>GMM模型的参数估计的EM算法非常类似K-Means算法 &gt; - E步类似于K-Means中计算各点和各聚类中心之间距离，不过 K-Means将点归类为离其最近类，而EM算法则是算期望 &gt; - M步根据聚类结果更新聚类中心</li>
+</ul>
+</blockquote>
+<h2 id="gem">GEM</h2>
+<h3 id="maximization-maximization-algorithm"><em>Maximization-Maximization Algorithm</em></h3>
+<h4 id="free-energy函数"><em>Free Energy</em>函数</h4>
+<blockquote>
+<ul>
+<li>假设隐变量数据Z的概率分布为<span class="math inline">\(\tilde P(Z)\)</span>，定义分布 <span class="math inline">\(\tilde P\)</span>与参数<span class="math inline">\(\theta\)</span>的函数<span class="math inline">\(F(\tilde P, \theta)\)</span>如下 <span class="math display">\[
+F(\tilde P, \theta) = E_{\tilde P}
+[log P(Y,Z|\theta)] + H(\tilde P)
+\]</span></li>
+</ul>
+</blockquote>
+<blockquote>
+<blockquote>
+<ul>
+<li><span class="math inline">\(H(\tilde P)=-E_{\tilde P} log \tilde P(Z)\)</span>：分布 <span class="math inline">\(\tilde P(Z)\)</span>的熵</li>
+<li>通常假设<span class="math inline">\(P(Y,Z|\theta)\)</span>是<span class="math inline">\(\theta\)</span>的连续函数，则函数 <span class="math inline">\(F(\tilde P,\theta)\)</span>是<span class="math inline">\(\tilde P, \theta\)</span>的连续函数</li>
+</ul>
+</blockquote>
+</blockquote>
+<h4 id="定理1-1">定理1</h4>
+<blockquote>
+<ul>
+<li>对于固定<span class="math inline">\(\theta\)</span>，存在唯一分布<span class="math inline">\(\tilde P_\theta\)</span>，极大化 <span class="math inline">\(F(\tilde P, \theta)\)</span>，这时<span class="math inline">\(\tilde P_\theta\)</span>由下式给出 <span class="math display">\[
+\tilde P_\theta(Z) = P(Z|Y,\theta)
+\]</span> 并且<span class="math inline">\(\tilde P_{\theta}\)</span>随<span class="math inline">\(\theta\)</span>连续变化</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对于固定的<span class="math inline">\(\theta\)</span>，求使得<span class="math inline">\(F(\tilde P, \theta)\)</span>的极大， 构造Lagrange函数</p>
+<p><span class="math display">\[
+L(\tilde P, \lambda, \mu) = F(\tilde P, \theta) +
+    \lambda(1 - \sum_Z \tilde P(Z)) - \mu \tilde P(Z)
+\]</span></p>
+<p>因为<span class="math inline">\(\tilde P(Z)\)</span>是概率密度，自然包含两个约束</p>
+<p><span class="math display">\[\left \{ \begin{array}{l}
+\sum_Z \tilde P(Z) = 1 \\
+\tilde P(Z) \geq 0
+\end{array} \right.\]</span></p>
+<p>即Lagrange方程中后两项</p></li>
+<li><p>对<span class="math inline">\(\tilde P(Z)\)</span>求偏导，得</p>
+<p><span class="math display">\[
+\frac {\partial L} {\partial \tilde P(Z)} =
+    log P(Y,Z|\theta) - log \tilde P(Z) - \lambda - \mu
+\]</span></p>
+<p>令偏导为0，有</p>
+<p><span class="math display">\[\begin{align*}
+log P(Y,Z|\theta) - log \tilde P(Z) &amp; = \lambda + \mu \\
+\frac {P(Y,Z|\theta)} {\tilde P(Z)} &amp; = e^{\lambda + \mu}
+\end{align*}\]</span></p></li>
+<li><p>则使得<span class="math inline">\(F(\tilde P, \theta)\)</span>极大的<span class="math inline">\(\tilde P_\theta(Z)\)</span> 应该和<span class="math inline">\(P(Y,Z|\theta)\)</span>成比例，由概率密度自然约束有</p>
+<p><span class="math display">\[\tilde P_\theta(Z) = P(Y,Z|\theta) \]</span></p>
+<p>而由假设条件，<span class="math inline">\(P(Y,Z|\theta)\)</span>是<span class="math inline">\(\theta\)</span>的连续函数</p></li>
+</ul>
+<blockquote>
+<ul>
+<li>这里概率密度函数<span class="math inline">\(\tilde P(Z)\)</span>是作为自变量出现</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>理论上对<span class="math inline">\(\tilde P(Z)\)</span>和一般的<strong>复合函数求导</strong>没有区别， 但<span class="math inline">\(E_{\tilde P}, \sum_Z\)</span>使得整体看起来非常不和谐 <span class="math display">\[\begin{align*}
+E_{\tilde P} f(Z) &amp; = \sum_Z f(Z) \tilde P(Z) \\
+&amp; = \int f(Z) d(\tilde P(Z))
+\end{align*}\]</span></li>
+</ul>
+</blockquote>
+<h4 id="定理2-1">定理2</h4>
+<blockquote>
+<ul>
+<li>若<span class="math inline">\(\tilde P_\theta(Z) = P(Z|Y, \theta)\)</span>，则 <span class="math display">\[
+F(\tilde P, \theta) = log P(Y|\theta)
+\]</span></li>
+</ul>
+</blockquote>
+<h4 id="定理3">定理3</h4>
+<blockquote>
+<ul>
+<li>设<span class="math inline">\(L(\theta)=log P(Y|\theta)\)</span>为观测数据的对数似然函数， <span class="math inline">\(\theta^{(i)}, i=1,2,\cdots\)</span>为EM算法得到的参数估计序列， 函数<span class="math inline">\(F(\tilde P,\theta)\)</span>如上定义 &gt; - 若<span class="math inline">\(F(\tilde P,\theta)\)</span>在<span class="math inline">\(\tilde P^{*}, \theta^{*}\)</span> 上有局部极大值，则<span class="math inline">\(L(\theta)\)</span>在<span class="math inline">\(\theta^{*}\)</span>也有局部 最大值 &gt; - 若<span class="math inline">\(F(\tilde P,\theta)\)</span>在<span class="math inline">\(\tilde P^{*}, \theta^{*}\)</span> 达到全局最大，则<span class="math inline">\(L(\theta)\)</span>在<span class="math inline">\(\theta^{*}\)</span>也达到全局 最大</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由定理1、定理2有</p>
+<p><span class="math display">\[
+L(\theta) = logP(Y|\theta) = F(\tilde P_\theta, \theta)
+\]</span></p>
+<p>特别的，对于使<span class="math inline">\(F(\tilde P,\theta)\)</span>极大<span class="math inline">\(\theta^{8}\)</span>有</p>
+<p><span class="math display">\[
+L(\theta^{*}) = logP(Y|\theta^{*}) =
+    F(\tilde P_\theta^{*}, \theta{*})
+\]</span></p></li>
+<li><p>由<span class="math inline">\(\tilde P_\theta\)</span>关于<span class="math inline">\(\theta\)</span>连续，局部点域内不存在点 <span class="math inline">\(\theta^{**}\)</span>使得<span class="math inline">\(L(\theta^{**}) &gt; L(\theta^{*})\)</span>，否则 与<span class="math inline">\(F(\tilde P, \theta^{*})\)</span>矛盾</p></li>
+</ul>
+<h4 id="定理4">定理4</h4>
+<blockquote>
+<ul>
+<li>EM算法的依次迭代可由F函数的极大-极大算法实现</li>
+<li>设<span class="math inline">\(\theta^{(i)}\)</span>为第i次迭代参数<span class="math inline">\(\theta\)</span>的估计， <span class="math inline">\(\tilde P^{(i)}\)</span>为第i次迭代参数<span class="math inline">\(\tilde P\)</span>的估计，在第 i+1次迭代的两步为 &gt; - 对固定的<span class="math inline">\(\theta^{(i)}\)</span>，求<span class="math inline">\(\tilde P^{(i)}\)</span>使得 <span class="math inline">\(F(\tilde P, \theta^{(i)})\)</span>极大 &gt; - 对固定的<span class="math inline">\(\tilde P^{(i+1)}\)</span>，求<span class="math inline">\(\theta^{(i+1)}\)</span>使 <span class="math inline">\(F(\tilde P^{(t+1)}, \theta)\)</span>极大化</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>固定<span class="math inline">\(\theta^{(i)}\)</span></p>
+<p><span class="math display">\[\begin{align*}
+F(\tilde P^{(i+1)}, \theta^{(i)} &amp; = E_{\tilde P^{(t+1)}}
+    [log P(Y,Z|\theta)] + H(\tilde P^{(i+1)}) \\
+&amp; = \sum_Z log P(Y,Z|\theta) P(Z|Y,\theta^{(i)}) +
+    H(\tilde P^{(i+1)}) \\
+&amp; = Q(\theta, \theta^{(i)}) + H(\tilde P^{(i+1)})
+\end{align*}\]</span></p></li>
+<li><p>则固定<span class="math inline">\(\tilde P^{(i+1)}\)</span>求极大同EM算法M步</p></li>
+</ul>
+<h3 id="gem算法">GEM算法</h3>
+<blockquote>
+<ul>
+<li>输入：观测数据，F函数</li>
+<li>输出：模型参数</li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>初始化<span class="math inline">\(\theta^{(0)}\)</span>，开始迭代</p></li>
+<li><p>第i+1次迭代：记<span class="math inline">\(\theta^{(i)}\)</span>为参数<span class="math inline">\(\theta\)</span>的估计值， <span class="math inline">\(\tilde P^{(i)}\)</span>为函数<span class="math inline">\(\tilde P\)</span>的估计，求 <span class="math inline">\(\tilde P^{(t+1)}\)</span>使<span class="math inline">\(\tilde P\)</span>极大化<span class="math inline">\(F(\tilde P,\theta)\)</span></p></li>
+<li><p>求<span class="math inline">\(\theta^{(t+1)}\)</span>使<span class="math inline">\(F(\tilde P^{(t+1)l}, \theta)\)</span>极大化</p></li>
+<li><p>重复2、3直到收敛</p></li>
+</ol>
+<h3 id="次优解代替最优解">次优解代替最优解</h3>
+<blockquote>
+<ul>
+<li>输入：观测数据，Q函数</li>
+<li>输出：模型参数</li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>初始化参数<span class="math inline">\(\theta^{(0)}\)</span>，开始迭代</p></li>
+<li><p>第i+1次迭代，记<span class="math inline">\(\theta^{(i)}\)</span>为参数<span class="math inline">\(\theta\)</span>的估计值， 计算</p>
+<p><span class="math display">\[\begin{align*}
+Q(\theta, \theta^{(i)}) &amp; = E_Z [
+    log P(Y,Z|\theta)|Y,\theta^{(i)}] \\
+&amp; = \sum_Z P(Z|Y, \theta^{(i)}) log P(Y,Z|\theta)
+\end{align*}\]</span></p></li>
+<li><p>求<span class="math inline">\(\theta^{(i+1)}\)</span>使</p>
+<p><span class="math display">\[
+Q(\theta^{(i+1)}, \theta^{(i)}) &gt;
+    Q(\theta^{(i)}, \theta^{(i)})
+\]</span></p></li>
+<li><p>重复2、3直到收敛</p></li>
+</ol>
+<blockquote>
+<ul>
+<li>有时候极大化<span class="math inline">\(Q(\theta, \theta^{(i)})\)</span>非常困难，此算法 仅寻找使目标函数值上升方向</li>
+</ul>
+</blockquote>
+<h3 id="admm求次优解">ADMM求次优解</h3>
+<blockquote>
+<ul>
+<li>输入：观测数据，Q函数</li>
+<li>输出：函数模型</li>
+</ul>
+</blockquote>
+<ol type="1">
+<li><p>初始化参数 <span class="math inline">\(\theta^{(0)} = (\theta_1^{(0)},...,\theta_d^{(0)})\)</span>， 开始迭代</p></li>
+<li><p>第i次迭代，记 <span class="math inline">\(\theta^{(i)} = (\theta_1^{(i)},...,\theta_d^{(i)})\)</span>， 为参数<span class="math inline">\(\theta = (\theta_1,...,\theta_d)\)</span>的估计值，计算</p>
+<p><span class="math display">\[\begin{align*}
+Q(\theta, \theta^{(i)}) &amp; = E_Z [
+    log P(Y,Z|\theta)|Y,\theta^{(i)}] \\
+&amp; = \sum_Z P(Z|Y, \theta^{(i)}) log P(Y,Z|\theta)
+\end{align*}\]</span></p></li>
+<li><p>进行d次条件极大化</p>
+<ol type="1">
+<li><p>在<span class="math inline">\(\theta_1^{(i)},...,\theta_{j-1}^{(i)},\theta_{j+1}^{(i)},...,\theta_d^{(i)}\)</span> 保持不变条件下 ，求使<span class="math inline">\(Q(\theta, \theta^{(i)})\)</span>达到极大的 <span class="math inline">\(\theta_j^{(i+1)}\)</span></p></li>
+<li><p>j从1到d，进行d次条件极大化的，得到 <span class="math inline">\(\theta^{(i+1)} = (\theta_1^{(i+1)},...,\theta_d^{(i+1)})\)</span> 使得</p>
+<p><span class="math display">\[
+Q(\theta^{(i+1)}, \theta^{(i)}) &gt;
+    Q(\theta^{(i)}, \theta^{(i)})
+\]</span></p></li>
+</ol></li>
+<li><p>重复2、3直到收敛</p></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/模型/" rel="tag"># 模型</a>
+          
+            <a href="/tags/无监督模型/" rel="tag"># 无监督模型</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_models/nolinear_models/k_nearest_neighbors/" rel="next" title="K-Nearest Neighor">
+                <i class="fa fa-chevron-left"></i> K-Nearest Neighor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_models/unsupervised_models/auto_encoder/" rel="prev" title="Auto-Encoders">
+                Auto-Encoders <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总述"><span class="nav-number">1.</span> <span class="nav-text">总述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#em算法"><span class="nav-number">2.</span> <span class="nav-text">EM算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#推导"><span class="nav-number">2.1.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法"><span class="nav-number">2.2.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#em算法特点"><span class="nav-number">2.3.</span> <span class="nav-text">EM算法特点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#em算法优点"><span class="nav-number">2.3.1.</span> <span class="nav-text">EM算法优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#em算法缺点"><span class="nav-number">2.3.2.</span> <span class="nav-text">EM算法缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法收敛性"><span class="nav-number">2.4.</span> <span class="nav-text">算法收敛性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定理1"><span class="nav-number">2.4.1.</span> <span class="nav-text">定理1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定理2"><span class="nav-number">2.4.2.</span> <span class="nav-text">定理2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gaussion-mixture-model"><span class="nav-number">3.</span> <span class="nav-text">Gaussion Mixture Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#推导-1"><span class="nav-number">3.1.</span> <span class="nav-text">推导</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#明确隐变量"><span class="nav-number">3.1.1.</span> <span class="nav-text">明确隐变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#e步确定q函数"><span class="nav-number">3.1.2.</span> <span class="nav-text">E步：确定Q函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#m步"><span class="nav-number">3.1.3.</span> <span class="nav-text">M步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-1"><span class="nav-number">3.2.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gem"><span class="nav-number">4.</span> <span class="nav-text">GEM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#maximization-maximization-algorithm"><span class="nav-number">4.1.</span> <span class="nav-text">Maximization-Maximization Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#free-energy函数"><span class="nav-number">4.1.1.</span> <span class="nav-text">Free Energy函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定理1-1"><span class="nav-number">4.1.2.</span> <span class="nav-text">定理1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定理2-1"><span class="nav-number">4.1.3.</span> <span class="nav-text">定理2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定理3"><span class="nav-number">4.1.4.</span> <span class="nav-text">定理3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定理4"><span class="nav-number">4.1.5.</span> <span class="nav-text">定理4</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gem算法"><span class="nav-number">4.2.</span> <span class="nav-text">GEM算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#次优解代替最优解"><span class="nav-number">4.3.</span> <span class="nav-text">次优解代替最优解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#admm求次优解"><span class="nav-number">4.4.</span> <span class="nav-text">ADMM求次优解</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="卷积层">
+<meta name="keywords" content="Python,Keras">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积层">
+<meta property="og:url" content="https://xyy15926.github.io/cs_python/keras/layers/convolutional_layers/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="卷积层">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-17T03:57:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="卷积层">
+<meta name="twitter:description" content="卷积层">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_python/keras/layers/convolutional_layers/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>卷积层 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_python/keras/layers/convolutional_layers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">卷积层
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-20 23:58:15" itemprop="dateCreated datePublished" datetime="2019-02-20T23:58:15+08:00">2019-02-20</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:07" itemprop="dateModified" datetime="2019-02-17T11:57:07+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/Keras/" itemprop="url" rel="index"><span itemprop="name">Keras</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">卷积层</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="conv1d">Conv1D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.Conv1D(</span><br><span class="line">	filters(int),</span><br><span class="line">	kernel_size(int),</span><br><span class="line">	strides=<span class="number">1</span>,</span><br><span class="line">	padding=<span class="string">'valid'</span>,</span><br><span class="line">	dilation_rate=<span class="number">1</span>,</span><br><span class="line">	activation=<span class="literal">None</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>一维卷积层（即时域卷积）</p>
+<ul>
+<li>说明
+<ul>
+<li>用以在一维输入信号上进行邻域滤波</li>
+<li>作为首层时，需要提供关键字参数<code>input_shape</code></li>
+<li>该层生成将输入信号与卷积核按照单一的空域（或时域） 方向进行卷积</li>
+<li>可以将Convolution1D看作Convolution2D的快捷版</li>
+</ul></li>
+<li><p>参数</p>
+<ul>
+<li><p><code>filters</code>：卷积核的数目（即输出的维度）</p></li>
+<li><p><code>kernel_size</code>：整数或由单个整数构成的list/tuple， 卷积核的空域或时域窗长度</p></li>
+<li><code>strides</code>：整数或由单个整数构成的list/tuple，为卷积 步长
+<ul>
+<li>任何不为1的strides均与任何不为1的dilation_rate 均不兼容</li>
+</ul></li>
+<li><p><code>padding</code>：补0策略</p></li>
+<li><p><code>activation</code>：激活函数</p></li>
+<li><code>dilation_rate</code>：整数或由单个整数构成的list/tuple， 指定dilated convolution中的膨胀比例
+<ul>
+<li>任何不为1的dilation_rate均与任何不为1的strides 均不兼容</li>
+</ul></li>
+<li><p><code>use_bias</code>：布尔值，是否使用偏置项</p></li>
+<li><code>kernel_initializer</code>：权值初始化方法
+<ul>
+<li>预定义初始化方法名的字符串</li>
+<li>用于初始化权重的初始化器（参考initializers）</li>
+</ul></li>
+<li><code>bias_initializer</code>：偏置初始化方法
+<ul>
+<li>为预定义初始化方法名的字符串</li>
+<li>用于初始化偏置的初始化器</li>
+</ul></li>
+<li><p><code>kernel_regularizer</code>：施加在权重上的正则项，为 Regularizer对象</p></li>
+<li><p><code>bias_regularizer</code>：施加在偏置向量上的正则项</p></li>
+<li><p><code>activity_regularizer</code>：施加在输出上的正则项</p></li>
+<li><p><code>kernel_constraints</code>：施加在权重上的约束项</p></li>
+<li><p><code>bias_constraints</code>：施加在偏置上的约束项</p></li>
+</ul></li>
+<li><p>输入：形如<code>(batch, steps, input_dim)</code>的3D张量</p></li>
+<li>输出：形如<code>(batch, new_steps, filters)</code>的3D张量
+<ul>
+<li>因为有向量填充的原因，<code>steps</code>的值会改变</li>
+</ul></li>
+</ul>
+<h2 id="conv2d">Conv2D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.Conv2D(</span><br><span class="line">	filters,</span><br><span class="line">	kernel_size,</span><br><span class="line">	strides=(<span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	padding=<span class="string">'valid'</span>,</span><br><span class="line">	data_format=<span class="literal">None</span>,</span><br><span class="line">	dilation_rate=(<span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	activation=<span class="literal">None</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>二维卷积层，即对图像的空域卷积</p>
+<ul>
+<li>说明
+<ul>
+<li>该层对二维输入进行滑动窗卷积</li>
+<li>当使用该层作为第一层时，应提供</li>
+</ul></li>
+<li><p>参数</p>
+<ul>
+<li><p><code>filters</code>：卷积核的数目（即输出的维度）</p></li>
+<li><code>kernel_size</code>：单个整数或由两个整数构成的list/tuple， 卷积核的宽度和长度
+<ul>
+<li>如为单个整数，则表示在各个空间维度的相同长度</li>
+</ul></li>
+<li><code>strides</code>：单个整数或由两个整数构成的list/tuple， 卷积的步长
+<ul>
+<li>如为单个整数，则表示在各个空间维度的相同步长</li>
+<li>任何不为1的strides均与任何不为1的dilation_rate 均不兼容</li>
+</ul></li>
+<li><p><code>padding</code>：补0策略</p></li>
+<li><p><code>activation</code>：激活函数</p></li>
+<li><code>dilation_rate</code>：单个或两个整数构成的list/tuple， 指定dilated convolution中的膨胀比例
+<ul>
+<li>任何不为1的dilation_rate均与任何不为1的strides 均不兼容</li>
+</ul></li>
+</ul></li>
+<li><p>输入：<code>(batch, channels, rows, cols)</code> （&quot;channels_first&quot;）4D张量</p></li>
+<li><p>输出：<code>(batch, filters, new_rows, new_cols)</code> （&quot;channels_first&quot;）4D张量</p>
+<ul>
+<li>输出的行列数可能会因为填充方法而改变</li>
+</ul></li>
+</ul>
+<h2 id="separableconv2d">SeparableConv2D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.SeparableConv2D(</span><br><span class="line">	filters,</span><br><span class="line">	kernel_size,</span><br><span class="line">	strides=(<span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	padding=<span class="string">'valid'</span>,</span><br><span class="line">	data_format=<span class="literal">None</span>,</span><br><span class="line">	depth_multiplier=<span class="number">1</span>,</span><br><span class="line">	activation=<span class="literal">None</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	depthwise_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	pointwise_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	depthwise_regularizer=<span class="literal">None</span>,</span><br><span class="line">	pointwise_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	depthwise_constraint=<span class="literal">None</span>,</span><br><span class="line">	pointwise_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>该层是在深度方向上的可分离卷积。</p>
+<ul>
+<li>说明
+<ul>
+<li>首先按深度方向进行卷积（对每个输入通道分别卷积）</li>
+<li>然后逐点卷积，将上步卷积结果混合到输出通道中</li>
+<li>直观来说，可分离卷积可以看做讲一个卷积核分解为两个小 卷积核，或看作Inception模块的一种极端情况</li>
+</ul></li>
+<li><p>参数</p>
+<ul>
+<li><p><code>depth_multiplier</code>：按深度卷积的步骤中，每个输入通道 使用（产生）多少个输出通道</p></li>
+<li><p><code>depthwise_regularizer</code>：按深度卷积的权重上的正则项</p></li>
+<li><p><code>pointwise_regularizer</code>：按点卷积的权重上的正则项</p></li>
+<li><p><code>depthwise_constraint</code>：按深度卷积权重上的约束项</p></li>
+<li><p><code>pointwise_constraint</code>：在按点卷积权重的约束项</p></li>
+</ul></li>
+<li><p>输入：<code>(batch, channels, rows, cols)</code>4DT （&quot;channels_first&quot;)</p></li>
+<li><p>输出：<code>(batch, filters, new_rows, new_cols)</code>4DTK （&quot;channels_first&quot;）</p>
+<ul>
+<li>输出的行列数可能会因为填充方法而改变</li>
+</ul></li>
+</ul>
+<h2 id="conv2dtranspose">Conv2DTranspose</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.Conv2DTranspose(</span><br><span class="line">	filters,</span><br><span class="line">	kernel_size,</span><br><span class="line">	strides=(<span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	padding=<span class="string">"valid"</span>,</span><br><span class="line">	output_padding=<span class="literal">None</span>/int/tuple,</span><br><span class="line">	data_format=<span class="literal">None</span>,</span><br><span class="line">	activation=<span class="literal">None</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">"glorot_uniform"</span>,</span><br><span class="line">	bias_initializer=<span class="string">"zeros"</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>该层是反卷积操作（转置卷积）</p>
+<ul>
+<li>说明
+<ul>
+<li>通常发生在用户想要对普通卷积的结果做反方向的变换</li>
+<li>参考文献
+<ul>
+<li><a href="https://arxiv.org/abs/1603.07285" target="_blank" rel="noopener">A guide to convolution arithmetic for deep learning</a></li>
+<li><a href="http://deeplearning.net/software/theano_versions/dev/tutorial/conv_arithmetic.html#transposed-convolution-arithmetic" target="_blank" rel="noopener">Transposed convolution arithmetic</a></li>
+<li><a href="http://www.matthewzeiler.com/pubs/cvpr2010/cvpr2010.pdf" target="_blank" rel="noopener">Deconvolutional Networks</a></li>
+</ul></li>
+</ul></li>
+<li>参数
+<ul>
+<li><code>output_padding</code>：指定输出的长、宽padding
+<ul>
+<li>必须小于相应的<code>stride</code></li>
+</ul></li>
+</ul></li>
+<li><p>输入：<code>(batch, rows, cols, channels)</code>4DT （&quot;channels_last&quot;)</p></li>
+<li><p>输出：<code>(batch, new_rows, new_cols, filters)</code>4DT （&quot;channels_last&quot;）</p>
+<ul>
+<li>输出的行列数可能会因为填充方法而改变</li>
+</ul></li>
+</ul>
+<h2 id="conv3d">Conv3D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.Conv3D(</span><br><span class="line">	filters,</span><br><span class="line">	kernel_size,</span><br><span class="line">	strides=(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	padding=<span class="string">'valid'</span>,</span><br><span class="line">	data_format=<span class="literal">None</span>,</span><br><span class="line">	dilation_rate=(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	activation=<span class="literal">None</span>,</span><br><span class="line">	use_bias=<span class="literal">True</span>,</span><br><span class="line">	kernel_initializer=<span class="string">'glorot_uniform'</span>,</span><br><span class="line">	bias_initializer=<span class="string">'zeros'</span>,</span><br><span class="line">	kernel_regularizer=<span class="literal">None</span>,</span><br><span class="line">	bias_regularizer=<span class="literal">None</span>,</span><br><span class="line">	activity_regularizer=<span class="literal">None</span>,</span><br><span class="line">	kernel_constraint=<span class="literal">None</span>,</span><br><span class="line">	bias_constraint=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>三维卷积对三维的输入（视频）进行滑动窗卷积</p>
+<ul>
+<li>输入：<code>(batch, channels, conv_dim1, conv_dim2, conv_dim3)</code> 5D张量（&quot;channnels_first&quot;）</li>
+</ul>
+<h2 id="cropping1d">Cropping1D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.Cropping1D(</span><br><span class="line">	cropping=(<span class="number">1</span>, <span class="number">1</span>)/tuple/int</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>在时间轴上对1D输入（即时间序列）进行裁剪</p>
+<ul>
+<li>参数
+<ul>
+<li><code>cropping</code>：指定在序列的首尾要裁剪掉多少个元素
+<ul>
+<li>单值表示首尾裁剪相同</li>
+</ul></li>
+</ul></li>
+<li><p>输入：<code>(batch, axis_to_crop, features)</code>的3DT</p></li>
+<li><p>输出：<code>(batch, cropped_axis, features)</code>的3DT</p></li>
+</ul>
+<h2 id="cropping2d">Cropping2D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.Cropping2D(</span><br><span class="line">	cropping=((<span class="number">0</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">0</span>)),</span><br><span class="line">	data_format=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>对2D输入（图像）进行裁剪</p>
+<ul>
+<li>说明
+<ul>
+<li>将在空域维度，即宽和高的方向上裁剪</li>
+</ul></li>
+<li><p>参数</p>
+<ul>
+<li><code>cropping</code>：长为2的整数tuple，分别为宽和高方向上头部 与尾部需要裁剪掉的元素数
+<ul>
+<li>单值表示宽高、首尾相同</li>
+<li>单元组类似</li>
+</ul></li>
+</ul></li>
+<li><p>输入：<code>(batch, rows, cols, channels)</code>4DT（&quot;channels_last&quot;）</p></li>
+<li><p>输出：<code>(batch, cropped_rows, cropped_cols, channels)</code></p></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment"># Crop the input 2D images or feature maps</span></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Cropping2D(cropping=((<span class="number">2</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">4</span>)),</span><br><span class="line">                     input_shape=(<span class="number">28</span>, <span class="number">28</span>, <span class="number">3</span>)))</span><br><span class="line">	<span class="comment"># now model.output_shape == (None, 24, 20, 3)</span></span><br><span class="line">model.add(Conv2D(<span class="number">64</span>, (<span class="number">3</span>, <span class="number">3</span>), padding=<span class="string">'same'</span>))</span><br><span class="line">model.add(Cropping2D(cropping=((<span class="number">2</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">2</span>))))</span><br><span class="line">	<span class="comment"># now model.output_shape == (None, 20, 16, 64)</span></span><br></pre></td></tr></table></figure>
+<h2 id="cropping3d">Cropping3D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.Cropping3D(</span><br><span class="line">	cropping=((<span class="number">1</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">1</span>)),</span><br><span class="line">	data_format=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>对3D输入（空间、时空）进行裁剪</p>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><code>cropping</code>：长为3的整数tuple，分别为三个方向上头部 与尾部需要裁剪掉的元素数</li>
+</ul></li>
+<li><p>输入：<code>(batch, depth, first_axis_to_crop, second_axis_to_crop, third_axis_to_crop)</code> （&quot;channels_first&quot;）</p></li>
+<li><p>输出：<code>(batch, depth, first_cropped_axis, second_cropped_axis, third_cropped_axis)</code></p></li>
+</ul>
+<h2 id="upsampling1d">UpSampling1D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.UpSampling1D(</span><br><span class="line">	size=<span class="number">2</span>/integer</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>在时间轴上，将每个时间步重复<code>size</code>次</p>
+<ul>
+<li>参数
+<ul>
+<li><code>size</code>：轴上采样因子</li>
+</ul></li>
+<li><p>输入：<code>(batch, steps, features)</code>的3D张量</p></li>
+<li><p>输出：<code>(batch, upsampled_steps, feature)</code>的3D张量</p></li>
+</ul>
+<h2 id="upsampling2d">UpSampling2D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.UpSampling2D(</span><br><span class="line">	size=(<span class="number">2</span>, <span class="number">2</span>)/tuple/int,</span><br><span class="line">	data_format=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>将数据的行和列分别重复<code>size[0]</code>和<code>size[1]</code>次</p>
+<ul>
+<li>参数
+<ul>
+<li><code>size</code>：分别为行和列上采样因子</li>
+</ul></li>
+<li><p>输入：<code>(batch, channels, rows, cols)</code>的4D张量 （&quot;channels_first&quot;）</p></li>
+<li><p>输出：<code>(batch, channels, upsampled_rows, upsampled_cols)</code></p></li>
+</ul>
+<h2 id="upsampling3d">UpSampling3D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.UpSampling3D(</span><br><span class="line">	size=(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>)/tuple/int,</span><br><span class="line">	data_format=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>将数据的三个维度上分别重复<code>size</code>次</p>
+<ul>
+<li>说明
+<ul>
+<li>本层目前只能在使用Theano为后端时可用</li>
+</ul></li>
+<li>参数
+<ul>
+<li><code>size</code>：代表在三个维度上的上采样因子</li>
+</ul></li>
+<li><p>输入：<code>(batch, dim1, dim2, dim3, channels)</code>5DT （&quot;channels_last&quot;）</p></li>
+<li><p>输出：<code>(batch, upsampled_dim1, upsampled_dim2, upsampled_dim3, channels)</code></p></li>
+</ul>
+<h2 id="zeropadding1d">ZeroPadding1D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.ZeroPadding1D(</span><br><span class="line">	padding=<span class="number">1</span>/int</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>对1D输入的首尾端（如时域序列）填充0</p>
+<ul>
+<li>说明
+<ul>
+<li>以控制卷积以后向量的长度</li>
+</ul></li>
+<li>参数
+<ul>
+<li><code>padding</code>：整数，在axis 1起始和结束处填充0数目</li>
+</ul></li>
+<li><p>输入：<code>(batch, axis_to_pad, features)</code>3DT</p></li>
+<li><p>输出：<code>(batch, paded_axis, features)</code>3DT</p></li>
+</ul>
+<h2 id="zeropadding2d">ZeroPadding2D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.ZeroPadding2D(</span><br><span class="line">	padding=(<span class="number">1</span>, <span class="number">1</span>)/tuple/int,</span><br><span class="line">	data_format=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>对2D输入（如图片）的边界填充0</p>
+<ul>
+<li>说明
+<ul>
+<li>以控制卷积以后特征图的大小</li>
+</ul></li>
+<li>参数
+<ul>
+<li><code>padding</code>：在要填充的轴的起始和结束处填充0的数目</li>
+</ul></li>
+</ul>
+<h2 id="zeropadding3d">ZeroPadding3D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.ZeroPadding3D(</span><br><span class="line">	padding=(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	data_format=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>将数据的三个维度上填充0</p>
+<ul>
+<li>说明
+<ul>
+<li>本层目前只能在使用Theano为后端时可用</li>
+</ul></li>
+</ul>
+<p>结束处填充0的数目</p>
+<h2 id="zeropadding3d-1">ZeroPadding3D</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">keras.layers.convolutional.ZeroPadding3D(</span><br><span class="line">	padding=(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">	data_format=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>将数据的三个维度上填充0</p>
+<ul>
+<li>说明
+<ul>
+<li>本层目前只能在使用Theano为后端时可用</li>
+</ul></li>
+</ul>
+<p>�时可用</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/Keras/" rel="tag"># Keras</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/keras/layers/core_layers/" rel="next" title="常用层">
+                <i class="fa fa-chevron-left"></i> 常用层
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/keras/layers/recurrent_layers/" rel="prev" title="RNN">
+                RNN <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#conv1d"><span class="nav-number">1.</span> <span class="nav-text">Conv1D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conv2d"><span class="nav-number">2.</span> <span class="nav-text">Conv2D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#separableconv2d"><span class="nav-number">3.</span> <span class="nav-text">SeparableConv2D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conv2dtranspose"><span class="nav-number">4.</span> <span class="nav-text">Conv2DTranspose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conv3d"><span class="nav-number">5.</span> <span class="nav-text">Conv3D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cropping1d"><span class="nav-number">6.</span> <span class="nav-text">Cropping1D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cropping2d"><span class="nav-number">7.</span> <span class="nav-text">Cropping2D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cropping3d"><span class="nav-number">8.</span> <span class="nav-text">Cropping3D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#upsampling1d"><span class="nav-number">9.</span> <span class="nav-text">UpSampling1D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#upsampling2d"><span class="nav-number">10.</span> <span class="nav-text">UpSampling2D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#upsampling3d"><span class="nav-number">11.</span> <span class="nav-text">UpSampling3D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zeropadding1d"><span class="nav-number">12.</span> <span class="nav-text">ZeroPadding1D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zeropadding2d"><span class="nav-number">13.</span> <span class="nav-text">ZeroPadding2D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zeropadding3d"><span class="nav-number">14.</span> <span class="nav-text">ZeroPadding3D</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zeropadding3d-1"><span class="nav-number">15.</span> <span class="nav-text">ZeroPadding3D</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

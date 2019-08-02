@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="vimscripts函数编程">
+<meta name="keywords" content="工具,VIM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vimscripts函数编程">
+<meta property="og:url" content="https://xyy15926.github.io/tools/vim/vimscripts/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="vimscripts函数编程">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-17T03:57:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vimscripts函数编程">
+<meta name="twitter:description" content="vimscripts函数编程">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/tools/vim/vimscripts/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>vimscripts函数编程 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/tools/vim/vimscripts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">vimscripts函数编程
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:08" itemprop="dateModified" datetime="2019-02-17T11:57:08+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/VIM/" itemprop="url" rel="index"><span itemprop="name">VIM</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">vimscripts函数编程</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="变量">变量</h2>
+<h3 id="普通变量">普通变量</h3>
+<p>创建变量、变量赋值都需要用到<code>let</code>关键字</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> foo = <span class="string">"bar"</span></span><br><span class="line"><span class="keyword">echo</span> foo</span><br><span class="line"><span class="keyword">let</span> foo = <span class="string">"foo"</span></span><br><span class="line"><span class="keyword">echo</span> foo</span><br></pre></td></tr></table></figure>
+<h4 id="数字">数字</h4>
+<ul>
+<li><p><code>Number</code>32位带符号整形（整形之间除法同c）</p>
+<ul>
+<li><code>:echo 0xef</code>：16进制</li>
+<li><code>:echo 017</code>：8进制（鉴于以下，不建议使用）</li>
+<li><code>:echo 019</code>：10进制（9不可能出现，vim自动处理）</li>
+</ul></li>
+<li><p><code>Float</code></p>
+<ul>
+<li><code>:echo 5.1e-3</code>：科学计数法）</li>
+<li><code>:echo 5.0e3</code>：科学计数法中一定要有小数点</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>类型转换：Number和Float运算时会强制转换为Float</p>
+</blockquote>
+<h4 id="字符串">字符串</h4>
+<h5 id="类型转换">类型转换</h5>
+<ul>
+<li><code>+</code>、<code>if</code>这些“运算”中，vim会强制转换变量类型
+<ul>
+<li>数字开头的字符串会转为相应<code>Number</code>（即使符合Float也 会舍弃小数点后）</li>
+<li>而非数字开头 则转换为0</li>
+</ul></li>
+<li>连接<code>.</code>
+<ul>
+<li><code>.</code>连接时vim可以自动将Number转换为字符串然后连接</li>
+<li>但是对于 Float，vim不能自动转换</li>
+</ul></li>
+<li>转义<code>\</code>：
+<ul>
+<li>注意<code>echom &quot;foo\nbar&quot;</code>类似的输出时，<code>echom</code>不会像 <code>echo</code>一样输出两行，而是将换行输出为vim<strong>默认</strong> （即使设置了<code>listchars</code>）的“换行符”</li>
+</ul></li>
+<li>字符串字面量<code>''</code>
+<ul>
+<li>所见即所得（py中r'')，注意连续两个单引号表示单引号</li>
+</ul></li>
+<li>内建字符串函数
+<ul>
+<li><code>strlen(str)</code>（len(str)效果对字符串同）</li>
+<li><code>split(str, token=&quot; &quot;)</code></li>
+<li><code>join([str], token=&quot; &quot;)</code></li>
+<li><code>tolower(str)</code></li>
+<li><code>toupper(str)</code></li>
+</ul></li>
+<li><p>字符串比较<code>==</code>、<code>==？</code>、<code>==#</code></p>
+<ul>
+<li><p><code>==</code>：对字符串比较是否大小写敏感取决于设置 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">set noignorecase</span><br><span class="line">if &quot;foo&quot;==&quot;Foo&quot;</span><br><span class="line">	echo &quot;bar&quot;（不会输出）</span><br><span class="line">endif</span><br><span class="line"></span><br><span class="line">set ignorecase</span><br><span class="line">if &quot;foo&quot;==&quot;Foo&quot;</span><br><span class="line">	echo &quot;bar&quot;（会输出）</span><br><span class="line">endif</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>==?</code>：对字符串比较大小写永远不敏感</p></li>
+<li><p><code>==#</code>：对字符串比较大小写永远敏感</p></li>
+</ul></li>
+<li><p><code>&lt;</code>、<code>&gt;</code>：同上，也有3种</p></li>
+</ul>
+<h3 id="集合类型变量">集合类型变量</h3>
+<h4 id="列表">列表</h4>
+<p>vim列表特点</p>
+<ul>
+<li>有序、异质</li>
+<li>索引从0开始，可以使用负数索引，使用下标得到对应元素</li>
+<li>支持切割
+<ul>
+<li>是闭区间（这个和<code>python</code>不同）</li>
+<li>可以负数区间切割</li>
+<li>可以忽略起始/结尾索引表示从0开始/末尾截至</li>
+<li>切割区间越界是安全的 &gt; 字符串可以像列表一样切割、索引，但是不可以使用负数 索引，却可以使用负数切割</li>
+</ul></li>
+<li><code>+</code>用于连接两个列表</li>
+</ul>
+<p>列表内建函数</p>
+<ul>
+<li><code>add(list, item)</code>：添加新元素</li>
+<li><code>len(list)</code>：列表长度</li>
+<li><code>get(list, index, default_val)</code>：获取列表元素，越界则 返回<code>default_val</code></li>
+<li><code>index(list, item)</code>：返回元素索引，不存在返回<code>-1</code></li>
+<li><code>join(list, token)</code>：将列表中元素转换为字符串后，使用 <code>toke</code>连接，缺省为<code>&lt;space&gt;</code></li>
+<li><code>reverse(list)</code>：反转列表</li>
+</ul>
+<h4 id="字典">字典</h4>
+<p>字典特性</p>
+<ul>
+<li><p>值是异质的，键可以不是字符串，但是会被强制转换为字符串， 因此，在查找值时也可以使用非字符串<code>dict[100]</code>，同样会被 强制转换为字符串<code>dict[&quot;100&quot;]</code>之后查找</p></li>
+<li><p>支持属性<code>.</code>查找，甚至可以后接<code>Number</code></p></li>
+<li><p>添加新元素就和普通赋值一样：<code>let dict.100 = 100</code></p></li>
+<li>移除字典中的元素
+<ul>
+<li><code>remove(dict, index)</code></li>
+<li><code>unlet dict.index</code>/<code>unlet dict[index]</code> 移除不存在的元素事报错</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>允许定义时多一个<code>,</code></p>
+</blockquote>
+<h5 id="内建函数">内建函数</h5>
+<ul>
+<li><p><code>get(dict, index, default_val)</code>：同列表</p></li>
+<li><p><code>has_key(dict, index)</code>：检查字典中是否有给定键，返回 <code>1</code>（真）或<code>0</code>（假）</p></li>
+<li><p><code>item(dict)</code>：返回字典键值对，和字典一样无序</p></li>
+<li><p><code>keys(dict)</code>：返回字典所有键</p></li>
+<li><p><code>values(dict)</code>：返回字典所有值</p></li>
+</ul>
+<h3 id="作为变量的选项">作为变量的选项</h3>
+<ul>
+<li><p>bool选项输出0、1 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:set wrap</span><br><span class="line">:set nowrap</span><br></pre></td></tr></table></figure></p></li>
+<li><p>键值选项 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:set textwidth=80</span><br><span class="line">:echo &amp;textwidth</span><br></pre></td></tr></table></figure></p></li>
+<li><p>本地选项（<code>l:</code>作用域下） <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let &amp;l:number=1</span><br></pre></td></tr></table></figure></p></li>
+<li><p>选项变量还可以参与运算 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let &amp;textwidth=100</span><br><span class="line">let &amp;textwidht = &amp;textwidth + 10</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h3 id="作为变量的寄存器">作为变量的寄存器</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let @a = &quot;hello&quot;</span><br><span class="line">echo @a</span><br><span class="line">echo @&quot;</span><br><span class="line">echo @/</span><br></pre></td></tr></table></figure>
+<h3 id="变量作用域">变量作用域</h3>
+<p>以<code>&lt;char&gt;:</code>开头表示作用域变量</p>
+<ul>
+<li>变量默认为全局变量</li>
+<li><code>b:</code>：当前缓冲区作用域变量</li>
+<li><code>g:</code>：全局变量</li>
+</ul>
+<h2 id="语句">语句</h2>
+<h3 id="条件语句">条件语句</h3>
+<p>vim中没有<code>not</code>关键字，可以使用<code>!</code>表示否定</p>
+<ul>
+<li><code>!</code>：否</li>
+<li><code>||</code>：或</li>
+<li><code>&amp;&amp;</code>：与</li>
+</ul>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">"1one"</span></span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"one"</span>（会输出）</span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"><span class="keyword">if</span> ! <span class="string">"one"</span></span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"one"</span>（会输出）</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"two"</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+<h4 id="finish关键字"><code>finish</code>关键字</h4>
+<p><code>finally</code>时结束整个vimscripts的运行</p>
+<h3 id="循环语句">循环语句</h3>
+<h4 id="for语句"><code>for</code>语句</h4>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">c</span> = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i in [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line">	<span class="keyword">let</span> <span class="keyword">c</span>+=i</span><br><span class="line"><span class="keyword">endfor</span></span><br><span class="line"><span class="keyword">echom</span> <span class="keyword">c</span></span><br></pre></td></tr></table></figure>
+<h4 id="while语句"><code>while</code>语句</h4>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">c</span> = <span class="number">1</span></span><br><span class="line"><span class="keyword">let</span> total = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">c</span>&lt;=<span class="number">4</span></span><br><span class="line">	<span class="keyword">let</span> total+=<span class="keyword">c</span></span><br><span class="line">	<span class="keyword">let</span> <span class="keyword">c</span>+=<span class="number">1</span></span><br><span class="line"><span class="keyword">endwhile</span></span><br><span class="line"><span class="keyword">echom</span> total</span><br></pre></td></tr></table></figure>
+<h2 id="函数">函数</h2>
+<p>没有作用域限制的vimscripts函数必须以大写字母开头 （有作用域限制最好也是大写字母开头）</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">func Func(arg1,...)</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"Func"</span></span><br><span class="line">	<span class="keyword">echo</span> <span class="variable">a:arg1</span>（arg1）</span><br><span class="line">	<span class="keyword">echo</span> <span class="variable">a:0</span>（额外（可变）参数数量）</span><br><span class="line">	<span class="keyword">echo</span> <span class="variable">a:1</span>（第一个额外参数）</span><br><span class="line">	<span class="keyword">echo</span> <span class="variable">a:000</span>（所有额外参数的<span class="keyword">list</span>）</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"Func"</span></span><br><span class="line"><span class="keyword">endfunction</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>当<code>function</code>后没有紧跟<code>!</code>时，函数已经被定义，将会给出 错误，而<code>function!</code>时会直接将原函数替换，除非原函数正在 执行，此时仍然报错</p>
+</blockquote>
+<ul>
+<li><p>调用方式</p>
+<ul>
+<li><code>:call Func()</code>：call直接调用（return值会被直接丢弃）</li>
+<li><code>:echo Func()</code>：表达式中调用</li>
+</ul></li>
+<li><p>函数结束时没有return，隐式返回0</p></li>
+<li><p>函数参数：最多20个</p>
+<ul>
+<li>参数全部位于<code>a:</code>参数作用域下
+<ul>
+<li><code>a:arg1</code>：一般参数</li>
+<li><code>a:0</code>：额外（可变）参数数量</li>
+<li><code>a:n</code>：第n个额外参数</li>
+<li><code>a:000</code>：包含额外参数list</li>
+</ul></li>
+<li>参数不能重新赋值</li>
+</ul></li>
+</ul>
+<p>vim中函数可以赋值给变量，同样的此时变量需要大写字母开头， 当然可以作为集合变量的元素，甚至也可以作为参数传递</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function! Reversed(l)</span><br><span class="line">	let nl = deepcopy(a:l)</span><br><span class="line">	call reverse(nl)</span><br><span class="line">	return nl</span><br><span class="line">endfunction</span><br><span class="line"></span><br><span class="line">let Myfunc = function(&quot;Reversed&quot;)</span><br><span class="line"></span><br><span class="line">function! Mapped(func, l)</span><br><span class="line">	let nl = deepcopy(a:l)</span><br><span class="line">	call map(nl, string(a:func) . &apos;(v:val)&apos;)</span><br><span class="line">	return nl</span><br><span class="line">endfunction</span><br><span class="line"></span><br><span class="line">call Mapped(function(&quot;Reversed&quot;), [[3,2], [1,2]])</span><br><span class="line"></span><br><span class="line">let funcs = [function(&quot;Reversed&quot;), function(&quot;Mapped&quot;)]</span><br></pre></td></tr></table></figure>
+<p>更多函数参见<code>functions.vim</code>（如果完成了）</p>
+<h2 id="executenormal">Execute、Normal</h2>
+<ul>
+<li><p><code>:execute</code>：把字符串当作vimscript命令执行（命令行输入） <code>:execute &quot;echom 'hello, world'&quot;&lt;cr&gt;</code></p>
+<p>大多数语言中应该避免使用&quot;eval&quot;之类构造可执行字符串，但是 vimscripts代码大部分只接受用户输入，安全不是严重问题， 使用<code>:execute</code>命令能够极大程度上简化命令</p>
+<blockquote>
+<p><code>:execute</code>命令用于配置文件时，不要忽略结尾的<code>&lt;cr&gt;</code>， 表示“执行命令”</p>
+</blockquote></li>
+<li><p><code>:normal</code>：接受一串<strong>键值</strong>，并当作是normal模式接受按键</p>
+<ul>
+<li><p><code>:normal</code>后的按键会执行映射，<code>:normal!</code>忽略所有映射</p></li>
+<li><p><code>:normal</code>无法识别“<cr>”这样的特殊字符序列 <code>:normal /foo&lt;cr&gt;</code> 这样的命令并不会搜索，因为“没有按回车”</cr></p></li>
+</ul></li>
+<li><p><code>:execute</code>和:normal结合使用，让<code>:normal</code>接受<strong>按下</strong> “无法打印”字符（<code>&lt;cr&gt;</code>、<code>&lt;esc&gt;</code>等），<code>execute</code>能够接受 按键</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">execute</span> <span class="string">"normal! gg/foo\&lt;cr&gt;dd"</span></span><br><span class="line">:<span class="keyword">execute</span> <span class="string">"normal! mqA;\&lt;esc&gt;`q"</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="正则表达式">正则表达式</h2>
+<p>vim有四种不同的解析正则表达式的“模式”</p>
+<ul>
+<li><p>默认模式下<code>\+</code>表示“一个或多个之前字符”的正常<code>+</code>意义， 其他的符号如<code>{,},*</code>也都需要添加转义斜杠表示正常意义， 否则表示字符字面意</p>
+<ul>
+<li><p><code>:execute &quot;normal! gg/for .\\+ in .\\+:\&lt;cr&gt;</code>： execute接受字符串，将<code>\\</code>转义，然后正则表达式解析， 查找<code>python</code>的<code>for</code>语句</p></li>
+<li><p><code>:execute &quot;normal! gg&quot;.'/for .\+ in .\+:'.&quot;\&lt;cr&gt;&quot;</code>： 使用字符串字面量避免<code>\\</code>，但是注意此时<code>\&lt;cr&gt;</code>也不会 被转义为<strong>按下回车</strong>（<code>\n</code>才是换行符），所以需要分开 书写、连接</p></li>
+</ul></li>
+<li><code>\v</code>模式下，vim使用“very magic”<strong>正常</strong>正则解析模式
+<ul>
+<li><code>:execute &quot;normal! gg&quot;.'/\vfor .+ in .+:'.&quot;\&lt;cr&gt;&quot;</code></li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/工具/" rel="tag"># 工具</a>
+          
+            <a href="/tags/VIM/" rel="tag"># VIM</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/tools/wintools/wsl/" rel="next" title="Windows Linux Subsystem">
+                <i class="fa fa-chevron-left"></i> Windows Linux Subsystem
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_rust/basics/error_handling/" rel="prev" title="Rust错误（Panic）处理规范">
+                Rust错误（Panic）处理规范 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">1.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#普通变量"><span class="nav-number">1.1.</span> <span class="nav-text">普通变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数字"><span class="nav-number">1.1.1.</span> <span class="nav-text">数字</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字符串"><span class="nav-number">1.1.2.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#类型转换"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">类型转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合类型变量"><span class="nav-number">1.2.</span> <span class="nav-text">集合类型变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#列表"><span class="nav-number">1.2.1.</span> <span class="nav-text">列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字典"><span class="nav-number">1.2.2.</span> <span class="nav-text">字典</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#内建函数"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">内建函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作为变量的选项"><span class="nav-number">1.3.</span> <span class="nav-text">作为变量的选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作为变量的寄存器"><span class="nav-number">1.4.</span> <span class="nav-text">作为变量的寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量作用域"><span class="nav-number">1.5.</span> <span class="nav-text">变量作用域</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语句"><span class="nav-number">2.</span> <span class="nav-text">语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件语句"><span class="nav-number">2.1.</span> <span class="nav-text">条件语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#finish关键字"><span class="nav-number">2.1.1.</span> <span class="nav-text">finish关键字</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环语句"><span class="nav-number">2.2.</span> <span class="nav-text">循环语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#for语句"><span class="nav-number">2.2.1.</span> <span class="nav-text">for语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#while语句"><span class="nav-number">2.2.2.</span> <span class="nav-text">while语句</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number">3.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#executenormal"><span class="nav-number">4.</span> <span class="nav-text">Execute、Normal</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则表达式"><span class="nav-number">5.</span> <span class="nav-text">正则表达式</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

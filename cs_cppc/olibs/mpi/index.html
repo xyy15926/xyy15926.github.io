@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="MPI">
+<meta name="keywords" content="C&#x2F;C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MPI">
+<meta property="og:url" content="https://xyy15926.github.io/cs_cppc/olibs/mpi/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="MPI">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/mpi_data_migration.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/mpi_data_reduction.png">
+<meta property="og:updated_time" content="2019-02-17T03:57:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MPI">
+<meta name="twitter:description" content="MPI">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/mpi_data_migration.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_cppc/olibs/mpi/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MPI | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_cppc/olibs/mpi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">MPI
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-21 17:27:37" itemprop="dateCreated datePublished" datetime="2019-03-21T17:27:37+08:00">2019-03-21</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-17 11:57:07" itemprop="dateModified" datetime="2019-02-17T11:57:07+08:00">2019-02-17</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">MPI</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="总述">总述</h2>
+<p><em>Message Passing Interface</em>：消息传递函数库的标准规范</p>
+<ul>
+<li>标准、规范，不是特指其某个具体实现</li>
+<li>库描述，包括上百个函数调用接口，支持<em>Fortran</em>、<em>CppC</em></li>
+<li>消息传递编程模型，并且是这种编程模型的代表、事实上的标准</li>
+</ul>
+<h3 id="说明">说明</h3>
+<ul>
+<li><p>高移植性</p>
+<ul>
+<li>在所有主流并行机上得到实现</li>
+<li>使用MPI做消息传递的<em>CppC</em>、<em>Fortran</em>并行程序可以不加 改变移植</li>
+</ul></li>
+<li><p>常用版本：所有版本遵循MPI标准，MPI程序可以不加修改的运行</p>
+<ul>
+<li><em>MPICH</em>：最流行的非专利实现，具有更好的可移植性</li>
+<li><em>OpenMPI</em>：<em>LAMMPI</em>的下代MPI实现</li>
+<li>其他商用版本MPI：<em>HP-MPI</em>、<em>MS-MPI</em></li>
+</ul></li>
+</ul>
+<h3 id="编译运行">编译运行</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mpicc -o hello hello.c</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mpirun np 4 hello</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 指定进程数</span></span><br></pre></td></tr></table></figure>
+<h3 id="概念">概念</h3>
+<h4 id="通信组">通信组</h4>
+<p>通信子：进程组集合，所有参与并行计算的进程可以组合为一个或 多个通信组</p>
+<ul>
+<li><p>MPI通信操作函数中必要参数，用于限定参加通信的进程范围</p></li>
+<li><p><code>MPI_COMM_WORLD</code>：<code>MPI_Init</code>后，MPI程序的所有进程形成的 缺省组</p></li>
+</ul>
+<h2 id="mpi接口">MPI接口</h2>
+<ul>
+<li>头文件为<code>mpi.h</code></li>
+<li>MPI函数均以<code>MPI_</code>为前缀，其后第一个字符大写</li>
+<li>MPI函数返回出错代码或成功代码<code>MPI_SUCCESS</code></li>
+</ul>
+<h3 id="mpi数据类型">MPI数据类型</h3>
+<table>
+<thead>
+<tr class="header">
+<th>MPI(C Binding)</th>
+<th>C</th>
+<th>MPI(Fortran Binding)</th>
+<th>Fortran</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MPI_BYTE</td>
+<td></td>
+<td>MPI_BYTE</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MPI_CHAR</td>
+<td>signed char</td>
+<td>MPI_CHARACTER</td>
+<td>CHARACTER(1)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>MPI_COMPLEX</td>
+<td>COMPLEX</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MPI_DOUBLE</td>
+<td>double</td>
+<td>MPI_DOUBLE_PRECISION</td>
+<td>DOUBLE_PRECISION</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MPI_FLOAT</td>
+<td>float</td>
+<td>MPI_REAL</td>
+<td>REAL</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MPI_INT</td>
+<td>int</td>
+<td>MPI_INTEGER</td>
+<td>INTEGER</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>MPI_LOGICAL</td>
+<td>LOGICAL</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MPI_LONG</td>
+<td>long</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MPI_LONG_DOUBLE</td>
+<td>long double</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MPI_PACKED</td>
+<td></td>
+<td>MPI_PACKED</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MPI_SHORT</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MPI_UNSIGNED_CHAR</td>
+<td>unsigned char</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MPI_UNSIGNED</td>
+<td>unsigned int</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>MPI_UNSIGNED_LONG</td>
+<td>unsigned long</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>MPI_UNSIGNED_SHORT</td>
+<td>unsigned short</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="用途">用途</h4>
+<ul>
+<li><p>异构计算：不同系统架构有不同数据表示格式，MPI预定义一些 基本数据类型，实现过程中以这些基本数据类型为桥梁进行转换</p></li>
+<li><p>派生数据类型：允许消息来自不连续、类型不一致存储区域，如 数组散元、结构类型等</p></li>
+</ul>
+<h3 id="开始结束">开始结束</h3>
+<h4 id="mpi_init"><code>MPI_Init</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Init</span><span class="params">(<span class="keyword">int</span> *argc, <span class="keyword">char</span> **argv)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>MPI程序的第一个调用（除<code>MPI_Initialize</code>）
+<ul>
+<li>完成MPI程序的所有初始化工作</li>
+<li>启动MPI环境</li>
+<li>标志并行代码开始</li>
+</ul></li>
+<li><code>main</code>必须带参数运行</li>
+</ul>
+<h4 id="mpi_finalize-void"><code>MPI_Finalize (void)</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Finalize</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>MPI程序的最后一个调用
+<ul>
+<li>结束MPI程序的运行</li>
+<li>必须是MPI程序的最后一条可执行语句，否则程序运行结果 不可预知</li>
+<li>标志并行代码结束，结束除主进程外其他进程</li>
+</ul></li>
+<li>串行代码之后仍然可在主进程上运行</li>
+</ul>
+<h3 id="进程判断">进程判断</h3>
+<h4 id="mpi_common_size"><code>MPI_Common_size</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Common_size</span><span class="params">(MPI_Comm comm, <span class="keyword">int</span> *size)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：获得进程个数<em>p</em>存储于<code>size</code>中</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>comm</code>：通信组</li>
+</ul></li>
+</ul>
+<h4 id="mpi_common_rank"><code>MPI_Common_rank</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Comm_rank</span><span class="params">(MPI_Comm comm, <span class="keyword">int</span> *rank)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：获得<em>0~p-1</em>间进程rank值，相当于进程ID</li>
+</ul>
+<h4 id="mpi_get_processor_name"><code>MPI_Get_processor_name</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Get_processor_name</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">char</span> *processor_name,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> *namelen</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：获得进程名称</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>processor_name</code>：存储进程名称</li>
+<li><code>namelen</code>：存储进程名称长度</li>
+</ul></li>
+</ul>
+<h3 id="其他">其他</h3>
+<h4 id="mpi_get_count"><code>MPI_Get_count</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">init <span class="title">MPI_Get_count</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Status status,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype datatype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> *count</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：返回实际接收到的消息长度</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>status</code>：接收操作返回值</li>
+<li><code>datatype</code>：接收缓冲区中元素类型</li>
+<li><code>count</code>：<strong>OUT</strong>，接受区元素个数</li>
+</ul></li>
+</ul>
+<h2 id="p2p通信">P2P通信</h2>
+<ul>
+<li>一对一通信</li>
+<li>注意
+<ul>
+<li><code>MPI_Send/Recv</code>匹配，避免死锁</li>
+</ul></li>
+</ul>
+<h3 id="同步p2p">同步P2P</h3>
+<h4 id="mpi_send"><code>MPI_Send</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Send</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *buf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> count,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype datatype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> dest,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> tag,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Comm comm</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：<strong>阻塞</strong>发送缓冲区中<code>count</code>个<code>datatype</code>数据类型 数据至目的进程</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>buf</code>：发送缓冲区起始地址</li>
+<li><code>count</code>：发送元素个数</li>
+<li><code>datatype</code>：发送信息元素类型</li>
+<li><code>dest</code>：目标进程rank值
+<ul>
+<li>阻塞式消息传递中不允许<code>source == dest</code>，即自身 作为接收者，会导致死锁</li>
+</ul></li>
+<li><code>tag</code>：消息标签</li>
+<li><code>comm</code>：通信组
+<ul>
+<li>缺省<code>MPI_COMM_WORLD</code></li>
+<li>消息传递必须限制在同一个消息组内</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="mpi_recv"><code>MPI_Recv</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Recv</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *buf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> count,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype datatype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> source,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> tag,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Common comm,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Status *status</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：<strong>阻塞</strong>从发送源进程获取<code>count</code>个<code>datatype</code> 数据类型至数据缓冲区<code>buf</code></p></li>
+<li><p>参数</p>
+<ul>
+<li><code>buf</code>：<strong>OUT</strong>，接收缓冲区起始地址
+<ul>
+<li>必须至少可以容纳<code>count</code>个<code>datatype</code>类型数据， 否则溢出、出错</li>
+</ul></li>
+<li><p><code>count</code>：最多可接收数据个数</p></li>
+<li><p><code>datatype</code>：接收数据类型，必须同<code>MPI_Send</code>匹配</p>
+<ul>
+<li>有类型数据：发送、接收两者数据类型相同</li>
+<li>无类型数据：使用<code>MPI_BYTE</code>数据类型</li>
+<li>打包数据通信：使用<code>MPI_PACKED</code></li>
+</ul></li>
+<li><code>source</code>：接收数据源进程rank值
+<ul>
+<li>发送进程隐式确定，由进程rank值唯一标识</li>
+<li><code>MPI_ANY_SOURCE</code>：接收任意进程来源</li>
+</ul></li>
+<li><code>tag</code>：消息标签
+<ul>
+<li><code>MPI_ANY_TAG</code>：匹配任意tag值</li>
+</ul></li>
+<li><code>comm</code>：通信组
+<ul>
+<li>缺省<code>MPI_COMM_WORLD</code></li>
+<li>消息传递必须限制在同一个消息组内</li>
+</ul></li>
+<li><p><code>status</code>：<strong>OUT</strong>，包含实际接收到消息的有关信息</p>
+<ul>
+<li><code>status.MPI_SOURCE</code>：<code>MPI_ANY_SOURCE</code>时，确定 消息来源</li>
+<li><code>status.MPI_TAG</code>：<code>MPI_ANY_TAG</code>时，确定消息tag</li>
+<li>和<code>MPI_Get_count</code>获取接收到的消息长度</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="案例">案例</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"mpi.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">maini</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> myid, numprocs, source;</span><br><span class="line">	MPI_Status status;</span><br><span class="line">	<span class="keyword">char</span> message[<span class="number">100</span>];</span><br><span class="line"></span><br><span class="line">	MPI_Init(&amp;argc, &amp;argv);</span><br><span class="line">	MPI_Comm_rank(MPI_COMM_WORLD, &amp;myid);</span><br><span class="line">	MPI_Comm_size(MPI_COMM_WORLD, &amp;numprocs);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (myid != <span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">sprintf</span>(message, <span class="string">"Hello! From process %d"</span>, myid);</span><br><span class="line">		MPI_Send(message, <span class="built_in">strlen</span>(message)+<span class="number">1</span>, MPI_CHAR, <span class="number">0</span>,</span><br><span class="line">			<span class="number">99</span>, MPI_COMM_WORLD);</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (source = <span class="number">1</span>; source &lt; numproces; source++)&#123;</span><br><span class="line">			MPI_Recv(message, <span class="number">100</span>, MPI_CHAR, source, <span class="number">99</span>,</span><br><span class="line">				MPI_COMM_WORLD, &amp;status);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%s\n"</span>, message);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	MPI_Finalize()</span><br></pre></td></tr></table></figure>
+<h3 id="异步p2p">异步P2P</h3>
+<h4 id="mpi_isend"><code>MPI_Isend</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Isend</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *buf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> count,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype datatype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> dest,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> tag,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Comm comm,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Request *request</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：<strong>非阻塞</strong>发送缓冲区中<code>count</code>个<code>datatype</code>数据类型 数据至目的进程</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>request</code>：<strong>OUT</strong>，非阻塞通信完成对象（句柄、指针）</li>
+</ul></li>
+</ul>
+<h4 id="mpi_irecv"><code>MPI_Irecv</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Recv</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *buf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> count,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype datatype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> source,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> tag,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Common comm,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Request *request</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：<strong>非阻塞</strong>从发送源进程获取<code>count</code>个<code>datatype</code> 数据类型至数据缓冲区<code>buf</code></li>
+</ul>
+<h2 id="collective-communication">Collective Communication</h2>
+<p>集合通信</p>
+<ul>
+<li>通信空间中所有进程都参与通信操作</li>
+<li>每个进程都需要调用操作函数</li>
+<li>多对一或一对多、同步通信</li>
+</ul>
+<h3 id="数据移动">数据移动</h3>
+<blockquote>
+<ul>
+<li><code>All-</code>：结果到所有进程</li>
+<li><code>-v</code>：variety，被操作的对象、操作更灵活 &gt; - 通信元素块大小可变 &gt; - 发送、接收时数据位置可以不连续</li>
+</ul>
+</blockquote>
+<figure>
+<img src="/imgs/mpi_data_migration.png" alt="mpi_data_migration"><figcaption>mpi_data_migration</figcaption>
+</figure>
+<h4 id="mpi_bcast"><code>MPI_Bcast</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Bcast</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *buffer,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> count,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype datatype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> root,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Comm comm</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：数据广播，一到多</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>root</code>：根进程</li>
+</ul></li>
+</ul>
+<h4 id="mpi_gather"><code>MPI_Gather</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Gather</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *sendbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> sendcnt,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype sendtype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *recvbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> recvcount,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype recvtype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> root,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Comm comm</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：数据聚合，多到一</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>sendbuf</code>：发送缓冲区起始位置</li>
+<li><code>sendcnt</code>：发送数据元素个数</li>
+<li><code>sendtype</code>：发送数据类型</li>
+<li><code>recvcount</code>：接收元素个数
+<ul>
+<li>所有进程相同</li>
+<li>仅对根进程有效</li>
+</ul></li>
+<li><code>recvtype</code>：接收数据类型
+<ul>
+<li>仅对根进程有效</li>
+</ul></li>
+<li><code>root</code>：接收进程rank值</li>
+<li><code>comm</code>：通信组</li>
+</ul></li>
+</ul>
+<h4 id="mpi_gatherv"><code>MPI_Gatherv</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Gatherv</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *sendbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> sendcnt,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype sendtype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *recvbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> *recvcnts,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> *displs,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI Datatype recvtype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> root,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Comm comm</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：<code>MPI_Gather</code>的一般形式</p></li>
+<li><p>参数</p>
+<ul>
+<li><code>recvcnts</code>：从各进程分别要接受的元素个数数组
+<ul>
+<li>大小等于通信组大小</li>
+<li>仅对根进程有效</li>
+</ul></li>
+<li><code>displs</code>：从各进程要接受存放位置相对于接收缓冲区 起始位置的偏移量
+<ul>
+<li>仅对根进程有效</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="mpi_allgather"><code>MPI_Allgather</code></h4>
+<ul>
+<li>说明：<code>MPI_Gather</code>特殊形式</li>
+</ul>
+<h4 id="mpi_allgatherv"><code>MPI_Allgatherv</code></h4>
+<ul>
+<li>说明：<code>MPI_Allgather</code>一般形式</li>
+</ul>
+<h4 id="mpi_scatter"><code>MPI_Scatter</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Scatter</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *sendbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> sendcnt,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype sendtype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *recvbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> recvbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype recvtype,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> root,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Comm comm</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：数据分散，一对多</li>
+</ul>
+<h4 id="mpi_scatterv"><code>MPI_Scatterv</code></h4>
+<ul>
+<li>说明：<code>MPI_Scatter</code>一般形式</li>
+</ul>
+<h4 id="mpi_alltoall"><code>MPI_Alltoall</code></h4>
+<ul>
+<li>说明：多对多，全交换置换数据</li>
+</ul>
+<h4 id="mpi_alltoallv"><code>MPI_Alltoallv</code></h4>
+<ul>
+<li>说明：<code>MPI_Alltoall</code>一般形式</li>
+</ul>
+<h3 id="数据聚集">数据聚集</h3>
+<figure>
+<img src="/imgs/mpi_data_reduction.png" alt="mpi_data_reduction"><figcaption>mpi_data_reduction</figcaption>
+</figure>
+<h4 id="mpi_reduce"><code>MPI_Reduce</code></h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MPI_Reduce</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *sendbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">void</span> *recvbuf,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> count,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Datatype datatype,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Op op,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">int</span> root,</span></span></span><br><span class="line"><span class="function"><span class="params">	MPI_Comm comm</span></span></span><br><span class="line"><span class="function"><span class="params">_</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：数据规约，多对一</li>
+</ul>
+<h4 id="mpi_allreduce"><code>MPI_Allreduce</code></h4>
+<ul>
+<li>说明：<code>MPI_Allreduce</code>特殊形式，结果在所有进程</li>
+</ul>
+<h4 id="mpi_reduce_scatter"><code>MPI_Reduce_scatter</code></h4>
+<ul>
+<li>说明：结果分散到每个进程</li>
+</ul>
+<h4 id="mpi_scan"><code>MPI_Scan</code></h4>
+<ul>
+<li>说明：前缀操作</li>
+</ul>
+<h3 id="同步">同步</h3>
+<h4 id="mpi_barrier"><code>MPI_Barrier</code></h4>
+<ul>
+<li>说明：同步操作</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_program/program_design/function_design/" rel="next" title="函数设计">
+                <i class="fa fa-chevron-left"></i> 函数设计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_algorithm/problems/numeric_analysis/" rel="prev" title="数值问题">
+                数值问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总述"><span class="nav-number">1.</span> <span class="nav-text">总述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">1.1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译运行"><span class="nav-number">1.2.</span> <span class="nav-text">编译运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.3.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通信组"><span class="nav-number">1.3.1.</span> <span class="nav-text">通信组</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mpi接口"><span class="nav-number">2.</span> <span class="nav-text">MPI接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mpi数据类型"><span class="nav-number">2.1.</span> <span class="nav-text">MPI数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用途"><span class="nav-number">2.1.1.</span> <span class="nav-text">用途</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始结束"><span class="nav-number">2.2.</span> <span class="nav-text">开始结束</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_init"><span class="nav-number">2.2.1.</span> <span class="nav-text">MPI_Init</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_finalize-void"><span class="nav-number">2.2.2.</span> <span class="nav-text">MPI_Finalize (void)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程判断"><span class="nav-number">2.3.</span> <span class="nav-text">进程判断</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_common_size"><span class="nav-number">2.3.1.</span> <span class="nav-text">MPI_Common_size</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_common_rank"><span class="nav-number">2.3.2.</span> <span class="nav-text">MPI_Common_rank</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_get_processor_name"><span class="nav-number">2.3.3.</span> <span class="nav-text">MPI_Get_processor_name</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">2.4.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_get_count"><span class="nav-number">2.4.1.</span> <span class="nav-text">MPI_Get_count</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#p2p通信"><span class="nav-number">3.</span> <span class="nav-text">P2P通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#同步p2p"><span class="nav-number">3.1.</span> <span class="nav-text">同步P2P</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_send"><span class="nav-number">3.1.1.</span> <span class="nav-text">MPI_Send</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_recv"><span class="nav-number">3.1.2.</span> <span class="nav-text">MPI_Recv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#案例"><span class="nav-number">3.1.3.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步p2p"><span class="nav-number">3.2.</span> <span class="nav-text">异步P2P</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_isend"><span class="nav-number">3.2.1.</span> <span class="nav-text">MPI_Isend</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_irecv"><span class="nav-number">3.2.2.</span> <span class="nav-text">MPI_Irecv</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#collective-communication"><span class="nav-number">4.</span> <span class="nav-text">Collective Communication</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据移动"><span class="nav-number">4.1.</span> <span class="nav-text">数据移动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_bcast"><span class="nav-number">4.1.1.</span> <span class="nav-text">MPI_Bcast</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_gather"><span class="nav-number">4.1.2.</span> <span class="nav-text">MPI_Gather</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_gatherv"><span class="nav-number">4.1.3.</span> <span class="nav-text">MPI_Gatherv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_allgather"><span class="nav-number">4.1.4.</span> <span class="nav-text">MPI_Allgather</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_allgatherv"><span class="nav-number">4.1.5.</span> <span class="nav-text">MPI_Allgatherv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_scatter"><span class="nav-number">4.1.6.</span> <span class="nav-text">MPI_Scatter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_scatterv"><span class="nav-number">4.1.7.</span> <span class="nav-text">MPI_Scatterv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_alltoall"><span class="nav-number">4.1.8.</span> <span class="nav-text">MPI_Alltoall</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_alltoallv"><span class="nav-number">4.1.9.</span> <span class="nav-text">MPI_Alltoallv</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据聚集"><span class="nav-number">4.2.</span> <span class="nav-text">数据聚集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_reduce"><span class="nav-number">4.2.1.</span> <span class="nav-text">MPI_Reduce</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_allreduce"><span class="nav-number">4.2.2.</span> <span class="nav-text">MPI_Allreduce</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_reduce_scatter"><span class="nav-number">4.2.3.</span> <span class="nav-text">MPI_Reduce_scatter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_scan"><span class="nav-number">4.2.4.</span> <span class="nav-text">MPI_Scan</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步"><span class="nav-number">4.3.</span> <span class="nav-text">同步</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mpi_barrier"><span class="nav-number">4.3.1.</span> <span class="nav-text">MPI_Barrier</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

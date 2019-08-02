@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="系统级查看、设置">
+<meta name="keywords" content="Linux,Shell命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统级查看、设置">
+<meta property="og:url" content="https://xyy15926.github.io/linux/shell/cmd_sysctl/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="系统级查看、设置">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-03T17:09:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="系统级查看、设置">
+<meta name="twitter:description" content="系统级查看、设置">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/linux/shell/cmd_sysctl/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>系统级查看、设置 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/linux/shell/cmd_sysctl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">系统级查看、设置
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-31 21:10:52" itemprop="dateCreated datePublished" datetime="2019-07-31T21:10:52+08:00">2019-07-31</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-04 01:09:52" itemprop="dateModified" datetime="2019-06-04T01:09:52+08:00">2019-06-04</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/Shell命令/" itemprop="url" rel="index"><span itemprop="name">Shell命令</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">系统级查看、设置</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="进程管理">进程管理</h2>
+<h3 id="ps"><code>ps</code></h3>
+<p>查看当前进程瞬时快照</p>
+<h3 id="top"><code>top</code></h3>
+<p>显示当前正在运行进程（动态更新）</p>
+<ul>
+<li>按照<strong>使用内存</strong>大小排序，可以用于查找内存使用情况</li>
+</ul>
+<h3 id="pgrep"><code>pgrep</code></h3>
+<p>按名称、属性查找进程</p>
+<h3 id="pidof"><code>pidof</code></h3>
+<p>根据进程名查找正在运行的进程进程号</p>
+<h3 id="kill"><code>kill</code></h3>
+<p>终止进程</p>
+<h3 id="killall"><code>killall</code></h3>
+<p>按名称终止进程</p>
+<h3 id="pkill"><code>pkill</code></h3>
+<p>按名称、属性终止进程</p>
+<h3 id="timeout"><code>timeout</code></h3>
+<p>在指定时间后仍然运行则终止进程</p>
+<h3 id="wait"><code>wait</code></h3>
+<p>等待指定进程</p>
+<h3 id="fuser"><code>fuser</code></h3>
+<p>显示使用指定文件、socket的进程</p>
+<h3 id="pmap"><code>pmap</code></h3>
+<p>报告进程的内存映射</p>
+<h3 id="lsof"><code>lsof</code></h3>
+<p>列出打开的文件</p>
+<h3 id="chkconfig"><code>chkconfig</code></h3>
+<p>为系统服务更新、查询运行级别信息</p>
+<h2 id="作业">作业</h2>
+<h3 id="section"><code>&amp;</code></h3>
+<p>放在命令之后，命令后台执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./pso &gt; pso.file 2&gt;&amp;1 &amp;</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 将`pso`放在后台运行，把终端输出（包括标准错误）</span></span><br><span class="line"><span class="meta">		#</span><span class="bash"> 重定向的到文件中</span></span><br></pre></td></tr></table></figure>
+<h3 id="nohup"><code>nohup</code></h3>
+<p>不挂起job，即使shell退出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nohup ./pso &gt; pso.file 2&gt;&amp;1 &amp;</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 不挂起任务，输出重定向到文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> nohup -p PID</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 不挂起某个进程</span></span><br></pre></td></tr></table></figure>
+<h3 id="jobs"><code>jobs</code></h3>
+<p>列出活动的作业</p>
+<p><code>-l</code>：返回任务编号、进程号</p>
+<h3 id="bg"><code>bg</code></h3>
+<p>恢复在后台暂停工作的作业</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">bg</span> %n</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 将编号为`n`的任务转后台运行</span></span><br></pre></td></tr></table></figure>
+<h3 id="fg"><code>fg</code></h3>
+<p>将程序、命令放在前台执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">fg</span> %n</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 将编号为`n`的任务转前台运行</span></span><br></pre></td></tr></table></figure>
+<h3 id="setsid"><code>setsid</code></h3>
+<p>在一个新的会话中运行程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> setsid ./test.sh &amp;`</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 新会话中非中断执行程序，此时当前shell退出不会终止job</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> (./test.sh &amp;)</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 同`setsid`，用`()`括起，进程在subshell中执行</span></span><br></pre></td></tr></table></figure>
+<h3 id="disown">`disown</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">disown</span> -h %job_id</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> *放逐*已经在后台运行的job，</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 则即使当前shell退出，job也不会结束</span></span><br></pre></td></tr></table></figure>
+<h3 id="screen"><code>screen</code></h3>
+<p>创建断开模式的虚拟终端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ screen -dmS screen_test</span><br><span class="line">	<span class="comment"># 创建断开（守护进程）模式的虚拟终端screen_test</span></span><br><span class="line">$ screen -list</span><br><span class="line">	<span class="comment"># 列出虚拟终端</span></span><br><span class="line">$ screen -r screen_test</span><br><span class="line">	<span class="comment"># 重新连接screen_test，此时执行的任何命令都能达到nohup</span></span><br></pre></td></tr></table></figure>
+<h3 id="快捷键">快捷键</h3>
+<ul>
+<li><code>&lt;c-z&gt;</code>：挂起当前任务</li>
+<li><code>&lt;c-c&gt;</code>：结束当前任务</li>
+</ul>
+<h2 id="定时任务">定时任务</h2>
+<h3 id="atq"><code>atq</code></h3>
+<p>列出用户等待执行的作业</p>
+<h3 id="atrm"><code>atrm</code></h3>
+<p>删除用户等待执行的作业</p>
+<h3 id="watch"><code>watch</code></h3>
+<p>定期执行程序</p>
+<h3 id="at"><code>at</code></h3>
+<p>设置在某个时间执行任务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">at now+2minutes/ now+5hours</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 从现在开始计时</span></span><br><span class="line">at 5:30pm/ 17:30 [today]</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 当前时间</span></span><br><span class="line">at 17:30 7.11.2018/ 17:30 11/7/2018/ 17:30 Nov 7</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 指定日期时间</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 输入命令之后，`&lt;c<span class="_">-d</span>&gt;`退出编辑，任务保存</span></span><br></pre></td></tr></table></figure>
+<h3 id="crontab"><code>crontab</code></h3>
+<p>针对用户维护的<code>/var/spool/cron/crontabs/user_name</code>文件，其中 保存了cron调度的内容（根据用户名标识）</p>
+<ul>
+<li><code>-e</code>：编辑</li>
+<li><code>-l</code>：显示</li>
+<li><code>-r</code>：删除</li>
+</ul>
+<p>任务计划格式见文件部分</p>
+<h2 id="系统监控">系统监控</h2>
+<h3 id="scar"><code>scar</code></h3>
+<p>收集、报告、保存系统活动信息</p>
+<h3 id="iostat"><code>iostat</code></h3>
+<p>报告CUP统计数据，设备、分区输入/输出信息</p>
+<h3 id="iotop"><code>iotop</code></h3>
+<p>I/O监控</p>
+<h3 id="mpstat"><code>mpstat</code></h3>
+<p>报告CPU相关统计数据</p>
+<h3 id="vmstat"><code>vmstat</code></h3>
+<p>报告虚拟内存统计</p>
+<h3 id="tload"><code>tload</code></h3>
+<p>加载显示系统平均负载、指定tty终端平均负载</p>
+<h3 id="time"><code>time</code></h3>
+<p>显示资源资源使用时间</p>
+<h3 id="uptime"><code>uptime</code></h3>
+<p>显示系统已运行时间</p>
+<h3 id="ipcs"><code>ipcs</code></h3>
+<p>提供IPC设施信息</p>
+<h3 id="ipcrm"><code>ipcrm</code></h3>
+<p>删除消息队列、信号量集、共享内存ID</p>
+<h3 id="lslk"><code>lslk</code></h3>
+<p>列出本地锁</p>
+<h2 id="包管理">包管理</h2>
+<h3 id="apt"><code>apt</code></h3>
+<ul>
+<li><code>install</code></li>
+<li><code>update</code></li>
+<li><code>remove</code></li>
+<li><code>autoremove</code></li>
+<li><code>clean</code></li>
+</ul>
+<h3 id="rpm"><code>rpm</code></h3>
+<h3 id="yum"><code>yum</code></h3>
+<h4 id="说明">说明</h4>
+<ul>
+<li><code>yum</code>在不使用<code>yum makecache</code>手动检查源配置文件时，可能 很长时间都不会更新cache，也就无法发现软件仓库的更新 （当然，可能和仓库类型有关，使用ISO镜像作为仓库时如此， 即使不挂载镜像，yum在执行其他操作也不会发现有个仓库无法 连接）</li>
+</ul>
+<h3 id="dpkg"><code>dpkg</code></h3>
+<h3 id="zypper"><code>zypper</code></h3>
+<h3 id="pacman"><code>pacman</code></h3>
+<h2 id="库依赖">库、依赖</h2>
+<h3 id="ldconfig"><code>ldconfig</code></h3>
+<p>创建、查看动态链接库缓存</p>
+<ul>
+<li><p>根据<code>/etc/ld.so.conf</code>文件中包含路径，搜索动态链接库文件 ，创建缓存文件<code>/etc/ld.so.cache</code></p></li>
+<li><p>默认包含<code>/lib</code>、<code>/lib64</code>、<code>/usr/lib</code>、<code>/usr/lib64</code>， 优先级逐渐降低，且低于<code>/etc/ld.so.conf</code>中路径</p></li>
+</ul>
+<h4 id="参数">参数</h4>
+<ul>
+<li>生成动态链接库缓存，并打印至标准输出</li>
+<li><code>-v/--verbose</code>：详细版</li>
+<li><code>-n</code>：仅扫描命令行指定目录</li>
+<li><code>-N</code>：不更新缓存</li>
+<li><code>-X</code>：不更新文件链接</li>
+<li><code>-p</code>：查看当前缓存中库文件</li>
+<li><code>-f CONF</code>：指定配置文件，默认<code>/etc/ld.so.conf</code></li>
+<li><code>-C CACHE</code>：指定生成缓存文件</li>
+<li><code>-r ROOT</code>：指定执行根目录，默认<code>/</code>（调用<code>chroot</code>实现）</li>
+<li><code>-l</code>：专家模式，手动设置</li>
+<li><code>-f Format/--format=Format</code>：缓存文件格式
+<ul>
+<li><code>ld</code>：老格式</li>
+<li><code>new</code>：新格式</li>
+<li><code>compat</code>：兼容格式</li>
+</ul></li>
+</ul>
+<h3 id="ldd"><code>ldd</code></h3>
+<p>查看程序所需共享库的bash脚本</p>
+<ul>
+<li><p>通过设置一系列环境变量，如<code>LD_TRACE_LOADED_OBJECTS</code>、 <code>LD_WARN</code>、<code>LD_BIND_NOW</code>、<code>LD_LIBRARY_VERSION</code>、 <code>LD_VERBOSE</code>等</p></li>
+<li><p>当<code>LD_TRACE_LOAD_OBJECTS</code>环境变量不空时，任何可执行程序 运行时只显示模块的依赖，且程序不真正执行</p></li>
+<li><p>实质上是通过<code>ld-linux.so</code>实现</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ /lib/ld-linux.so* --<span class="built_in">list</span> exe</span><br><span class="line">$ ldd exe</span><br><span class="line">	<span class="comment">// 二者等价</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>ld-linux.so*</code>参见<code>cppc/func_lib.md</code></li>
+</ul>
+</blockquote></li>
+</ul>
+<h4 id="参数-1">参数</h4>
+<ul>
+<li><code>-v</code>：详细模式</li>
+<li><code>-u</code>：打印未使用的直接依赖</li>
+<li><code>-d</code>：执行重定位，报告任何丢失对象</li>
+<li><code>-r</code>：执行数据、函数重定位，报告任何丢失的对象、函数</li>
+</ul>
+<h4 id="打印">打印</h4>
+<ul>
+<li>第1列：程序动态链接库依赖</li>
+<li>第2列：系统提供的与程序需要的库所对应的库</li>
+<li>第3列：库加载的开始地址</li>
+</ul>
+<blockquote>
+<ul>
+<li>首行、尾行可能是两个由kernel向所有进程都注入的库</li>
+</ul>
+</blockquote>
+<h3 id="strings"><code>strings</code></h3>
+<p>查看系统<em>glibc</em>支持的版本</p>
+<h3 id="objdump"><code>objdump</code></h3>
+<p>查看目标文件的动态符号引用表</p>
+<h2 id="systemd服务">Systemd（服务）</h2>
+<ul>
+<li>Systemd作为新系统管理器，替代service更加强大
+<ul>
+<li>支持服务并行启动，提高效率</li>
+<li>具有日志管理、快照备份和恢复、挂载点管理</li>
+<li>包括一组命令</li>
+</ul></li>
+<li>Systemd可以管理所有系统资源，不同资源统称为<em>Unit</em>
+<ul>
+<li><em>service unit</em>：系统服务</li>
+<li><em>target unit</em>：多个unit构成的组</li>
+<li><em>devie unit</em>：硬件设备</li>
+<li><em>mount unit</em>：文件系统挂载点</li>
+<li><em>automount unit</em>：自动挂载点</li>
+<li><em>path unit</em>：文件、路径</li>
+<li><em>scope unit</em>：不是由Systemd启动外部进程</li>
+<li><em>slice unit</em>：进程组</li>
+<li><em>snapshot unit</em>：Systemd快照，可以切换某个快照</li>
+<li><em>socket unit</em>：进程间通信socket</li>
+<li><em>swap unit</em>：swap文件</li>
+<li><em>timer unit</em>：定时器</li>
+</ul></li>
+<li>unit<strong>配置文件状态</strong>（无法反映unit是否运行）
+<ul>
+<li><code>enabled</code>：已建立启动链接</li>
+<li><code>diabled</code>：未建立启动链接</li>
+<li><code>static</code>：配置文件没有<code>[Install]</code>部分，只能作为 其他unit配置文件依赖，不能独立注册</li>
+<li><code>masked</code>：被禁止建立启动链接</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><code>systemd</code>进程ID为1，掌管所有进程</li>
+<li><em>unit</em>配置文件参见<em>linux/shell/config_files</em></li>
+</ul>
+</blockquote>
+<h3 id="systemctl"><code>systemctl</code></h3>
+<blockquote>
+<ul>
+<li><code>systemctl</code>通过<code>d-bus</code>和systemd交流，在docker和wsl中可能 没有systemd-daemon，此命令可能不能使用，使用<code>service</code> 代替</li>
+</ul>
+</blockquote>
+<h4 id="查看服务系统状态">查看服务、系统状态</h4>
+<ul>
+<li><code>status &lt;unit&gt;</code>：查看系统、unit（服务）状态
+<ul>
+<li><code>-H &lt;host&gt;</code>：查看远程主机unit状态</li>
+</ul></li>
+<li><code>show &lt;unit&gt;</code>：查看unit底层参数
+<ul>
+<li><code>-p &lt;attr&gt;</code>：查看某个具体属性参数</li>
+</ul></li>
+<li>三个查询状态的简单方法，方便脚本使用
+<ul>
+<li><code>is-active &lt;serivce&gt;</code></li>
+<li><code>is-failed &lt;serivce&gt;</code></li>
+<li><code>is-enabled &lt;serivce&gt;</code></li>
+</ul></li>
+<li><p><code>reset-failed &lt;unit&gt;</code>：清除错误状态</p></li>
+<li><code>list-units</code>：列出所有已加载unit</li>
+<li><code>list-unit-files</code>：列出所有系统中unit配置文件、状态
+<ul>
+<li><code>--type=</code>：指定特定类型文件</li>
+<li><code>--status=</code>：指定特定状态文件</li>
+</ul></li>
+<li><code>list-dependencies &lt;unit&gt;</code>：查看依赖关系
+<ul>
+<li><code>-all</code>：展开target类型</li>
+</ul></li>
+</ul>
+<h4 id="状态点启动级别">状态点/启动级别</h4>
+<ul>
+<li><code>get-default</code>：查看默认target</li>
+<li><code>set-default &lt;target&gt;</code>：设置默认target</li>
+<li><code>isolate &lt;target&gt;</code>：切换target，其他target的unit将 被停止</li>
+</ul>
+<h4 id="设置服务系统">设置服务、系统</h4>
+<ul>
+<li><code>start &lt;service&gt;</code>：启动服务</li>
+<li><code>stop &lt;service&gt;</code>：关闭服务</li>
+<li><p><code>enable &lt;service&gt;</code>：开机自启动服务</p>
+<blockquote>
+<ul>
+<li>行为参见<em>linux/shell/config_files</em></li>
+</ul>
+</blockquote></li>
+<li><code>disable &lt;service&gt;</code>：关闭开机自启动服务
+<ul>
+<li><code>enable</code>启动后的服务仅仅<code>disable</code>不会立刻停止服务</li>
+</ul></li>
+<li><code>kill &lt;service&gt;</code>：杀死服务的所有子进程</li>
+<li><code>mask &lt;service&gt;</code>：禁用服务
+<ul>
+<li>无法通过<code>start</code>、<code>restart</code>启动服务</li>
+<li>可以防止服务被其他服务间接启动</li>
+</ul></li>
+<li><code>umask &lt;service&gt;</code>：启用已禁用服务</li>
+<li><code>daemon-reload</code>：重新读取所有服务项
+<ul>
+<li>修改、删除、添加服务项后执行该命令</li>
+</ul></li>
+<li><code>poweroff</code>：关机</li>
+<li><code>reboot</code>：重启</li>
+<li><p><code>rescue</code>：进入rescue模式</p></li>
+</ul>
+<h4 id="配置文件">配置文件</h4>
+<ul>
+<li><code>cat &lt;service_name&gt;.service</code>：查看Unit定义文件</li>
+<li><code>edit &lt;service_name&gt;.service</code>：编辑Unit定义文件</li>
+<li><code>reload &lt;service_name&gt;.service</code>：重新加载Unit定义文件</li>
+</ul>
+<h3 id="journalctl"><code>journalctl</code></h3>
+<p><code>journalctl</code>：统一管理所有日志：内核日志、应用日志</p>
+<ul>
+<li><code>-k</code>：仅内核日志</li>
+<li><code>--since</code>：指定日志时间</li>
+<li><code>-n</code>：指定查看日志行数</li>
+<li><code>-f</code>：最新日志</li>
+<li><code>_PID=</code>：进程日志</li>
+<li><code>_UID=</code>：用户日志</li>
+<li><code>-u</code>：unit日志</li>
+<li><code>-p</code>：日志有限集
+<ul>
+<li><code>emerg</code>：0</li>
+<li><code>alert</code>：1</li>
+<li><code>crit</code>：2</li>
+<li><code>err</code>：3</li>
+<li><code>warning</code>：4</li>
+<li><code>notice</code>：5</li>
+<li><code>info</code>：6</li>
+<li><code>debug</code>：7</li>
+</ul></li>
+<li><code>--nopager</code>：非分页输出</li>
+<li><code>-o</code>：日志输出格式
+<ul>
+<li><code>json</code></li>
+<li><code>json-pretty</code></li>
+</ul></li>
+<li><code>--disk-usage</code>：日志占用空间</li>
+<li><code>--vacuum-size=</code>：指定日志占用最大空间</li>
+<li><code>--vacuum-time=</code>：指定日志保持时间</li>
+</ul>
+<h3 id="systemd-analyze"><code>systemd-analyze</code></h3>
+<p><code>systemd-analyze</code>：查看系统启动耗时</p>
+<ul>
+<li><code>blame</code>：查看各项服务启动耗时</li>
+<li><code>critical-chain</code>：瀑布状启动过程流</li>
+</ul>
+<h3 id="hostnamectl"><code>hostnamectl</code></h3>
+<p><code>hostnamectl</code>：查看主机当前信息</p>
+<ul>
+<li><code>set-hostname &lt;hostname&gt;</code>：设置主机名称</li>
+</ul>
+<h3 id="localectl"><code>localectl</code></h3>
+<p><code>localctl</code>：查看本地化设置</p>
+<ul>
+<li><code>set-locale LANG=en_GB.utf8</code></li>
+<li><code>set-keymap en_GB</code></li>
+</ul>
+<h3 id="timedatectl"><code>timedatectl</code></h3>
+<p><code>timedatectl</code>：查看当前时区设置</p>
+<ul>
+<li><code>list-timezones</code>：显示所有可用时区</li>
+<li><code>set-timezone America/New_York</code></li>
+<li><code>set-time YYYY-MM-DD</code></li>
+<li><code>set-time HH:MM:SS</code></li>
+</ul>
+<h3 id="loginctl"><code>loginctl</code></h3>
+<p><code>loginctl</code>：查看当前登陆用户</p>
+<ul>
+<li><code>list-sessions</code>：列出当前session</li>
+<li><code>list-users</code>：列出当前登陆用户</li>
+<li><code>show-user &lt;user&gt;</code>：显示用户信息</li>
+</ul>
+<h3 id="service"><code>service</code></h3>
+<p>控制系统服务</p>
+<h2 id="环境">环境</h2>
+<h3 id="export"><code>export</code></h3>
+<p>显示、设置环境变量，使其可在shell子系统中使用</p>
+<ul>
+<li>设置环境变量直接<code>$ ENV=value</code>即可，但是此环境变量 不能在子shell中使用，只有<code>$ export ENV</code>导出后才可</li>
+<li><code>-f</code>：变量名称为函数名称</li>
+<li><code>-n</code>：取消导出变量，原shell仍可用</li>
+<li><code>-p</code>：列出所有shell赋予的环境变量</li>
+</ul>
+<h2 id="字体">字体</h2>
+<h3 id="fc-list"><code>fc-list</code></h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">fc</span>-list :lang=zh</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 查找系统已安装字体，参数表示中文字体</span></span><br></pre></td></tr></table></figure>
+<h3 id="fc-cache"><code>fc-cache</code></h3>
+<p>创建字体信息缓存文件</p>
+<h3 id="mkfontdirmkfontscale"><code>mkfontdir/mkfontscale</code></h3>
+<p>创建字体文件index</p>
+<ul>
+<li>还不清楚这个字体index有啥用</li>
+<li><code>man</code>这两个命令作用差不多，只是后者是说创建scalable 字体文件index</li>
+<li>网上信息是说这两个命令配合<code>fc-cache</code>用于安装字体， 但是好像没啥用，把字体文件复制到<code>/usr/share/fonts</code> （系统）或<code>~/.local/share/fonts</code>（用户），不用执行 这两个命令，直接<code>fc-cache</code>就行</li>
+</ul>
+<h2 id="常用服务">常用服务</h2>
+<ul>
+<li><p><code>mysqld</code>/<code>mariadb</code></p></li>
+<li><p><code>sshd</code></p></li>
+<li><p><code>firewalld</code></p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Shell命令/" rel="tag"># Shell命令</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/linux/shell/cmd_usrgrps/" rel="next" title="用户、登陆">
+                <i class="fa fa-chevron-left"></i> 用户、登陆
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/linux/shell/commands/" rel="prev" title="Shell命令">
+                Shell命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#进程管理"><span class="nav-number">1.</span> <span class="nav-text">进程管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ps"><span class="nav-number">1.1.</span> <span class="nav-text">ps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#top"><span class="nav-number">1.2.</span> <span class="nav-text">top</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pgrep"><span class="nav-number">1.3.</span> <span class="nav-text">pgrep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pidof"><span class="nav-number">1.4.</span> <span class="nav-text">pidof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kill"><span class="nav-number">1.5.</span> <span class="nav-text">kill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#killall"><span class="nav-number">1.6.</span> <span class="nav-text">killall</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pkill"><span class="nav-number">1.7.</span> <span class="nav-text">pkill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#timeout"><span class="nav-number">1.8.</span> <span class="nav-text">timeout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wait"><span class="nav-number">1.9.</span> <span class="nav-text">wait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fuser"><span class="nav-number">1.10.</span> <span class="nav-text">fuser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pmap"><span class="nav-number">1.11.</span> <span class="nav-text">pmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsof"><span class="nav-number">1.12.</span> <span class="nav-text">lsof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chkconfig"><span class="nav-number">1.13.</span> <span class="nav-text">chkconfig</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业"><span class="nav-number">2.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-number">2.1.</span> <span class="nav-text">&amp;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nohup"><span class="nav-number">2.2.</span> <span class="nav-text">nohup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jobs"><span class="nav-number">2.3.</span> <span class="nav-text">jobs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bg"><span class="nav-number">2.4.</span> <span class="nav-text">bg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fg"><span class="nav-number">2.5.</span> <span class="nav-text">fg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#setsid"><span class="nav-number">2.6.</span> <span class="nav-text">setsid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#disown"><span class="nav-number">2.7.</span> <span class="nav-text">`disown</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#screen"><span class="nav-number">2.8.</span> <span class="nav-text">screen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快捷键"><span class="nav-number">2.9.</span> <span class="nav-text">快捷键</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定时任务"><span class="nav-number">3.</span> <span class="nav-text">定时任务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#atq"><span class="nav-number">3.1.</span> <span class="nav-text">atq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#atrm"><span class="nav-number">3.2.</span> <span class="nav-text">atrm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#watch"><span class="nav-number">3.3.</span> <span class="nav-text">watch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#at"><span class="nav-number">3.4.</span> <span class="nav-text">at</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab"><span class="nav-number">3.5.</span> <span class="nav-text">crontab</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统监控"><span class="nav-number">4.</span> <span class="nav-text">系统监控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#scar"><span class="nav-number">4.1.</span> <span class="nav-text">scar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iostat"><span class="nav-number">4.2.</span> <span class="nav-text">iostat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iotop"><span class="nav-number">4.3.</span> <span class="nav-text">iotop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mpstat"><span class="nav-number">4.4.</span> <span class="nav-text">mpstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vmstat"><span class="nav-number">4.5.</span> <span class="nav-text">vmstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tload"><span class="nav-number">4.6.</span> <span class="nav-text">tload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#time"><span class="nav-number">4.7.</span> <span class="nav-text">time</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uptime"><span class="nav-number">4.8.</span> <span class="nav-text">uptime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ipcs"><span class="nav-number">4.9.</span> <span class="nav-text">ipcs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ipcrm"><span class="nav-number">4.10.</span> <span class="nav-text">ipcrm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lslk"><span class="nav-number">4.11.</span> <span class="nav-text">lslk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包管理"><span class="nav-number">5.</span> <span class="nav-text">包管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apt"><span class="nav-number">5.1.</span> <span class="nav-text">apt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rpm"><span class="nav-number">5.2.</span> <span class="nav-text">rpm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yum"><span class="nav-number">5.3.</span> <span class="nav-text">yum</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#说明"><span class="nav-number">5.3.1.</span> <span class="nav-text">说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dpkg"><span class="nav-number">5.4.</span> <span class="nav-text">dpkg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zypper"><span class="nav-number">5.5.</span> <span class="nav-text">zypper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pacman"><span class="nav-number">5.6.</span> <span class="nav-text">pacman</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#库依赖"><span class="nav-number">6.</span> <span class="nav-text">库、依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ldconfig"><span class="nav-number">6.1.</span> <span class="nav-text">ldconfig</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数"><span class="nav-number">6.1.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ldd"><span class="nav-number">6.2.</span> <span class="nav-text">ldd</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-1"><span class="nav-number">6.2.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打印"><span class="nav-number">6.2.2.</span> <span class="nav-text">打印</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strings"><span class="nav-number">6.3.</span> <span class="nav-text">strings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#objdump"><span class="nav-number">6.4.</span> <span class="nav-text">objdump</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd服务"><span class="nav-number">7.</span> <span class="nav-text">Systemd（服务）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#systemctl"><span class="nav-number">7.1.</span> <span class="nav-text">systemctl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查看服务系统状态"><span class="nav-number">7.1.1.</span> <span class="nav-text">查看服务、系统状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态点启动级别"><span class="nav-number">7.1.2.</span> <span class="nav-text">状态点/启动级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置服务系统"><span class="nav-number">7.1.3.</span> <span class="nav-text">设置服务、系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置文件"><span class="nav-number">7.1.4.</span> <span class="nav-text">配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#journalctl"><span class="nav-number">7.2.</span> <span class="nav-text">journalctl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#systemd-analyze"><span class="nav-number">7.3.</span> <span class="nav-text">systemd-analyze</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hostnamectl"><span class="nav-number">7.4.</span> <span class="nav-text">hostnamectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localectl"><span class="nav-number">7.5.</span> <span class="nav-text">localectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#timedatectl"><span class="nav-number">7.6.</span> <span class="nav-text">timedatectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loginctl"><span class="nav-number">7.7.</span> <span class="nav-text">loginctl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service"><span class="nav-number">7.8.</span> <span class="nav-text">service</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">8.</span> <span class="nav-text">环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#export"><span class="nav-number">8.1.</span> <span class="nav-text">export</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字体"><span class="nav-number">9.</span> <span class="nav-text">字体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fc-list"><span class="nav-number">9.1.</span> <span class="nav-text">fc-list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fc-cache"><span class="nav-number">9.2.</span> <span class="nav-text">fc-cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mkfontdirmkfontscale"><span class="nav-number">9.3.</span> <span class="nav-text">mkfontdir/mkfontscale</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用服务"><span class="nav-number">10.</span> <span class="nav-text">常用服务</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

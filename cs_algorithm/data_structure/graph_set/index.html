@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="无向图">
+<meta name="keywords" content="算法,数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无向图">
+<meta property="og:url" content="https://xyy15926.github.io/cs_algorithm/data_structure/graph_set/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="无向图">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-23T15:43:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="无向图">
+<meta name="twitter:description" content="无向图">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_algorithm/data_structure/graph_set/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>无向图 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_algorithm/data_structure/graph_set/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">无向图
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-23 23:43:02" itemprop="dateCreated datePublished" datetime="2019-03-23T23:43:02+08:00">2019-03-23</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/数据结构/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">无向图</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="点集">点集</h2>
+<h3 id="点覆盖集">点覆盖集</h3>
+<ul>
+<li><p><em>Vertex Covering Set</em>：点覆盖（集），顶点子集<span class="math inline">\(S \subseteq V\)</span> ，满足每条边至少有一个顶点在集合中</p></li>
+<li><p><em>Minimum Vertex Covering Set</em>：最小顶点覆盖集，最少顶点的 点覆盖集</p></li>
+</ul>
+<h3 id="点支配集">点支配集</h3>
+<ul>
+<li><p><em>Vertex Dominating Set</em>：点支配集，顶点子集<span class="math inline">\(D \subseteq V\)</span> ，满足<span class="math inline">\(\forall u \in V-D, \exists v \in D, (u, v) \in E\)</span></p>
+<ul>
+<li>即V中顶点要么是D中元素，要么同D中一个顶点相邻</li>
+</ul></li>
+<li><p><em>Minimum Vertext Dominating Set</em>：最小支配集，顶点数目 最小支配集</p></li>
+<li><p>极小支配集：真子集都不是支配集的支配集</p></li>
+</ul>
+<h3 id="点独立集">点独立集</h3>
+<ul>
+<li><p><em>Vertext Independent Set</em>：（点）独立集，顶点子集 <span class="math inline">\(I \subseteq V\)</span>，满足I中任意两顶点不相邻</p></li>
+<li><p><em>Maximum Vertext Independent Set</em>：最大独立点集，顶点数 最多的独立点集</p></li>
+<li><p>极大点独立集：超集都不是独立集的独立集</p></li>
+</ul>
+<h3 id="性质">性质</h3>
+<h4 id="thoerem-1">Thoerem 1</h4>
+<p>若无向图<span class="math inline">\(G(V, E)\)</span>中无孤立顶点，则G的极大点独立集都是G的极小 支配集（反之不成立）</p>
+<h4 id="thoerem-2">Thoerem 2</h4>
+<p>一个独立集是极大独立集，当前且仅当其为支配集</p>
+<h4 id="thoerem-3">Thoerem 3</h4>
+<p>若无向图<span class="math inline">\(G=(V, E)\)</span>中无孤立点，顶点集<span class="math inline">\(C \subseteq V\)</span>为G点覆盖 ，当且仅当<span class="math inline">\(V - C\)</span>是G的点独立集</p>
+<h2 id="边集">边集</h2>
+<h3 id="边覆盖">边覆盖</h3>
+<ul>
+<li><p><em>Edge Covering Set</em>：边覆盖（集），边子集<span class="math inline">\(W \subseteq E\)</span>， 满足<span class="math inline">\(\forall v \in V, \exists e \in W\)</span>，使得v是e端点</p>
+<ul>
+<li>即G中所有点都是便覆盖W的邻接顶点</li>
+</ul></li>
+<li><p><em>Minimum Edge Covering Set</em>：边数最少的边覆盖集</p></li>
+<li><p>极小边覆盖集：任意真子集都不是边覆盖集的边覆盖</p></li>
+</ul>
+<h3 id="边独立集">边独立集</h3>
+<ul>
+<li><p><em>Matching/Edge Indepdent Set</em>：匹配（边独立集），边子集 <span class="math inline">\(I \subseteq E\)</span>，满足I中所有边没有公共顶点</p></li>
+<li><p><em>Maximum (Cardinality) Matching</em>：最大（基数）匹配，包含 最多边的匹配</p></li>
+<li><p>极大匹配：任意超集都不是匹配的匹配</p></li>
+<li><p><em>Perfect Matching</em>：完美匹配，匹配所有点的最大匹配</p></li>
+<li><p><em>Mate</em>：对偶，匹配中相互连接的一对顶点</p></li>
+</ul>
+<h3 id="性质-1">性质</h3>
+<h4 id="thoerem-1-1">Thoerem 1</h4>
+<p>M为G一个最大匹配，对G中每个M未覆盖点v，选取一条与v关联边组成 集合N，则边集<span class="math inline">\(W = M \cup N\)</span>为G中最小边覆盖</p>
+<h4 id="thoerem-2-1">Thoerem 2</h4>
+<p>若W为G最小边覆盖，其中每存在相邻边就移去其中一条，设移去边集 为N，则边集<span class="math inline">\(M = W - N\)</span>为G中一个最大匹配</p>
+<h4 id="thoerem-3-1">Thoerem 3</h4>
+<p>最大匹配、最小边覆盖满足：<span class="math inline">\(|M| + |W|= |V|\)</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_algorithm/data_structure/graph_derived/" rel="next" title="图衍生">
+                <i class="fa fa-chevron-left"></i> 图衍生
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_algorithm/data_structure/graphundi_specials/" rel="prev" title="无向图衍生">
+                无向图衍生 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#点集"><span class="nav-number">1.</span> <span class="nav-text">点集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点覆盖集"><span class="nav-number">1.1.</span> <span class="nav-text">点覆盖集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点支配集"><span class="nav-number">1.2.</span> <span class="nav-text">点支配集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点独立集"><span class="nav-number">1.3.</span> <span class="nav-text">点独立集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性质"><span class="nav-number">1.4.</span> <span class="nav-text">性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#thoerem-1"><span class="nav-number">1.4.1.</span> <span class="nav-text">Thoerem 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#thoerem-2"><span class="nav-number">1.4.2.</span> <span class="nav-text">Thoerem 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#thoerem-3"><span class="nav-number">1.4.3.</span> <span class="nav-text">Thoerem 3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#边集"><span class="nav-number">2.</span> <span class="nav-text">边集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#边覆盖"><span class="nav-number">2.1.</span> <span class="nav-text">边覆盖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#边独立集"><span class="nav-number">2.2.</span> <span class="nav-text">边独立集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性质-1"><span class="nav-number">2.3.</span> <span class="nav-text">性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#thoerem-1-1"><span class="nav-number">2.3.1.</span> <span class="nav-text">Thoerem 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#thoerem-2-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">Thoerem 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#thoerem-3-1"><span class="nav-number">2.3.3.</span> <span class="nav-text">Thoerem 3</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
