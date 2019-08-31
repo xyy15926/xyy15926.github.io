@@ -348,12 +348,49 @@
 <li><p>函数书写声明同Python全局</p></li>
 <li><p>以下常用参数如不特殊注明，按照此解释</p></li>
 </ul>
-<h3 id="tensorflow">Tensorflow</h3>
+<h3 id="session">Session</h3>
+<ul>
+<li><code>target = &quot;&quot;/str</code>
+<ul>
+<li>含义：执行引擎</li>
+</ul></li>
+<li><code>graph = None/tf.Graph</code>
+<ul>
+<li>含义：Session中加载的图</li>
+<li>默认：缺省为当前默认图</li>
+</ul></li>
+<li><code>config = None/tf.ConfigProto</code>
+<ul>
+<li>含义：包含Session配置的<em>Protocal Buffer</em></li>
+<li>默认：<code>None</code>，默认配置</li>
+</ul></li>
+<li><code>fetches = tf.OPs/[tf.OPs]</code>
+<ul>
+<li>含义：需要获得/计算的OPs值列表</li>
+<li>默认：无</li>
+</ul></li>
+<li><code>feed_dict = None/dict</code>
+<ul>
+<li>含义：替换/赋值Graph中feedable OPs的tensor字典</li>
+<li>默认：无</li>
+<li>说明
+<ul>
+<li>键为图中节点名称、值为向其赋的值</li>
+<li>可向所有可赋值OPs传递值</li>
+<li>常配合<code>tf.placeholder</code>（强制要求）</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="operators">Operators</h3>
 <ul>
 <li><code>name = None/str</code>
 <ul>
 <li>含义：Operations名</li>
-<li>默认：有的为None，有的为Operation类型，但效果一样， 没有传参时使用Operation类型（加顺序后缀）</li>
+<li>默认：<code>None/OP类型</code>，后加上顺序后缀</li>
+<li>说明
+<ul>
+<li>重名时TF自动加上<code>_[num]</code>后缀</li>
+</ul></li>
 </ul></li>
 <li><code>axis = None/0/int</code>
 <ul>
@@ -369,6 +406,53 @@
 <li>含义：是否保持维度数目</li>
 <li>默认：<code>False</code>不保持</li>
 </ul></li>
+<li><code>dtype=tf.int32/tf.float32/...</code>
+<ul>
+<li>含义：数据类型</li>
+<li>默认：根据其他参数、函数名推断</li>
+</ul></li>
+<li><code>shape/dims=(int)/[int]</code>
+<ul>
+<li>含义：各轴维数</li>
+<li>默认：<code>None/1</code>???</li>
+<li>说明
+<ul>
+<li><code>-1</code>表示该轴维数由TF计算得到</li>
+<li>有些情况下，此参数可省略，由TF隐式计算得到， 但显式指明方便debug</li>
+</ul></li>
+</ul></li>
+<li><code>start=int</code>
+<ul>
+<li>含义：起始位置</li>
+<li>默认：<code>0</code></li>
+</ul></li>
+<li><code>stop=int</code>
+<ul>
+<li>含义：终点位置</li>
+<li>默认：一般无</li>
+</ul></li>
+</ul>
+<h2 id="tensorflow基本概念">TensorFlow基本概念</h2>
+<blockquote>
+<ul>
+<li>TensorFlow将计算的定义、执行分开</li>
+</ul>
+</blockquote>
+<h3 id="流程">流程</h3>
+<h4 id="组合计算图">组合计算图</h4>
+<ul>
+<li>为输入、标签创建placeholder</li>
+<li>创建weigth、bias</li>
+<li>指定模型</li>
+<li>指定损失函数</li>
+<li>创建Opitmizer</li>
+</ul>
+<h4 id="在会话中执行图中操作">在会话中执行图中操作</h4>
+<ul>
+<li>初始化Variable</li>
+<li>运行优化器</li>
+<li>使用<code>FileWriter</code>记录log</li>
+<li>查看TensorBoard</li>
 </ul>
 
     </div>
@@ -388,8 +472,8 @@
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/cs_program/network/iso9001/" rel="next" title="ISO9001标准">
-                <i class="fa fa-chevron-left"></i> ISO9001标准
+              <a href="/cs_python/tensorflow/inset/" rel="next" title="TensorFlow安装配置">
+                <i class="fa fa-chevron-left"></i> TensorFlow安装配置
               </a>
             
           </div>
@@ -397,8 +481,8 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/zzdaily/pc/os_installation/" rel="prev" title="系统安装常识">
-                系统安装常识 <i class="fa fa-chevron-right"></i>
+              <a href="/cs_web/thrift/thrift_intro/" rel="prev" title="Thrift简介">
+                Thrift简介 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -452,7 +536,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -581,7 +665,59 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -710,7 +846,115 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -760,7 +1004,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用参数说明"><span class="nav-number">1.</span> <span class="nav-text">常用参数说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tensorflow"><span class="nav-number">1.1.</span> <span class="nav-text">Tensorflow</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用参数说明"><span class="nav-number">1.</span> <span class="nav-text">常用参数说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#session"><span class="nav-number">1.1.</span> <span class="nav-text">Session</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#operators"><span class="nav-number">1.2.</span> <span class="nav-text">Operators</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensorflow基本概念"><span class="nav-number">2.</span> <span class="nav-text">TensorFlow基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#流程"><span class="nav-number">2.1.</span> <span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#组合计算图"><span class="nav-number">2.1.1.</span> <span class="nav-text">组合计算图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在会话中执行图中操作"><span class="nav-number">2.1.2.</span> <span class="nav-text">在会话中执行图中操作</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

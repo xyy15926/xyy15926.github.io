@@ -58,7 +58,7 @@
 </script>
 
   <meta name="description" content="Loss Function">
-<meta name="keywords" content="机器学习">
+<meta name="keywords" content="Machine Learning,Loss Function">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Loss Function">
 <meta property="og:url" content="https://xyy15926.github.io/ml_techniques/functions/func_loss/index.html">
@@ -301,7 +301,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a></span>
 
                 
                 
@@ -545,226 +545,6 @@ L(y, f(x)) &amp; = \sum_{x \in X} log \prod_{k=1}^K
 <li><p>损失极值：SVM（几何间隔最小）</p></li>
 </ul></li>
 </ul>
-<h2 id="loss-models">Loss Models</h2>
-<p>模型（目标函数）在样本整体的损失：度量模型整体预测效果</p>
-<ul>
-<li><p>代表模型在整体上的性质，有不同的设计形式</p></li>
-<li>可以用于<strong>设计学习策略、评价模型</strong>
-<ul>
-<li>风险函数</li>
-<li>评价函数</li>
-</ul></li>
-<li><p>有时在算法中也会使用整体损失</p></li>
-</ul>
-<h3 id="risk-function"><em>Risk Function</em></h3>
-<p>（期望）风险函数：<em>expected loss</em>，是损失函数<span class="math inline">\(L(Y, f(X))\)</span> （随机变量）期望</p>
-<p><span class="math display">\[
-R_{exp}(f) = E_p[L(Y, f(X))] = \int_{x*y} L(y,f(x))P(x,y) dxdy
-\]</span></p>
-<blockquote>
-<ul>
-<li><span class="math inline">\(P(X, Y)\)</span>：随机变量<span class="math inline">\((X, Y)\)</span>遵循的联合分布，未知</li>
-</ul>
-</blockquote>
-<ul>
-<li><p>风险函数值度量模型预测错误程度</p></li>
-<li><p>评价标准（<strong>监督学习目标</strong>）就应该是选择期望风险最小</p></li>
-<li><p>联合分布未知，所以才需要学习，否则可以直接计算条件分布 概率，而计算期望损失需要知道联合分布，因此监督学习是一个 病态问题</p></li>
-</ul>
-<h3 id="empirical-risk"><em>Empirical Risk</em></h3>
-<p>经验风险：<em>empirical loss</em>，模型关于给定训练数据集的平均损失</p>
-<p><span class="math display">\[
-R_{emp}(f) = \sum_{i=1}^N D_i L(y_i, f(x_i;\theta))
-\]</span></p>
-<blockquote>
-<ul>
-<li><span class="math inline">\(\theta\)</span>：模型参数</li>
-<li><span class="math inline">\(D_i\)</span>：样本损失权重，常为<span class="math inline">\(\frac 1 N\)</span>，在Boosting框架中 不同</li>
-<li>经验风险损失一般是<span class="math inline">\(f(x)\)</span>模型的函数，建立<strong>损失函数和 模型参数之间的函数关系</strong></li>
-</ul>
-</blockquote>
-<ul>
-<li><p>根据大数定律，样本量容量N趋于无穷时，<span class="math inline">\(R_{emp}(f)\)</span>趋于 <span class="math inline">\(R_{exp}(f)\)</span></p></li>
-<li><p>但是现实中训练样本数目有限、很小，利用经验风险估计期望 常常并不理想，需要对经验风险进行矫正</p></li>
-<li>例子
-<ul>
-<li><em>maximum probability estimation</em>：极大似然估计
-<ul>
-<li>模型：条件概率分布（贝叶斯生成模型、逻辑回归）</li>
-<li>损失函数：对数损失函数</li>
-</ul></li>
-</ul></li>
-</ul>
-<h3 id="structual-risk"><em>Structual Risk</em></h3>
-<p><em>结构风险</em>：在经验风险上加上表示<strong>模型复杂度</strong>的 <em>regularizer</em>（<em>penalty term</em>）</p>
-<p><span class="math display">\[
-R_{srm} = \frac 1 N \sum_{i=1}^N L(y_i, f(x_i)) +
-    \lambda J(f)
-\]</span></p>
-<blockquote>
-<ul>
-<li><span class="math inline">\(J(f)\)</span>：模型复杂度，定义在假设空间<span class="math inline">\(F\)</span>上的泛函</li>
-<li><span class="math inline">\(\lambda\)</span>：权衡经验风险、模型复杂度的系数</li>
-</ul>
-</blockquote>
-<ul>
-<li><p>结构风险最小化通过添加<em>regularization</em>（正则化）实现</p></li>
-<li><p>模型复杂度<span class="math inline">\(J(f)\)</span>表示对复杂模型的惩罚：模型<span class="math inline">\(f\)</span>越复杂， 复杂项<span class="math inline">\(J(f)\)</span>越大</p></li>
-<li>例子
-<ul>
-<li><em>maximum posterior probability estimation</em>：最大后验 概率估计
-<ul>
-<li>损失函数：对数损失函数</li>
-<li>模型复杂度：模型先验概率对数后取负</li>
-<li>先验概率对应模型复杂度，先验概率越小，复杂度越大</li>
-</ul></li>
-</ul></li>
-</ul>
-<h2 id="regularization"><em>Regularization</em></h2>
-<p>正则化：（向目标函数）添加额外信息以求解病态问题、避免过拟合</p>
-<ul>
-<li><p>常应用在机器学习、逆问题求解</p>
-<ul>
-<li>对模型（目标函数）复杂度惩罚</li>
-<li>提高学习模型的泛化能力、避免过拟合</li>
-<li>学习简单模型：稀疏模型、引入组结构</li>
-</ul></li>
-<li><p>有多种用途</p>
-<ul>
-<li>最小二乘也可以看作是简单的正则化</li>
-<li>岭回归中的<span class="math inline">\(\mathcal{l_2}\)</span>范数</li>
-</ul></li>
-</ul>
-<h3 id="模型复杂度">模型复杂度</h3>
-<p>模型复杂度：经常作为正则化项添加作为额外信息添加的，衡量模型 复杂度方式有很多种</p>
-<ul>
-<li><p>函数光滑限制</p>
-<ul>
-<li>多项式最高次数</li>
-</ul></li>
-<li><p>向量空间范数</p>
-<ul>
-<li><span class="math inline">\(\mathcal{L_0}\)</span> norm：参数个数</li>
-<li><span class="math inline">\(\mathcal{L_1}\)</span> norm：参数绝对值和</li>
-<li><span class="math inline">\(\mathcal{L_2}\)</span> norm：参数平方和</li>
-</ul></li>
-</ul>
-<h4 id="mathcall_0-norm"><span class="math inline">\(\mathcal{L_0}\)</span> norm</h4>
-<ul>
-<li><p>稀疏化约束</p></li>
-<li><p>解<span class="math inline">\(\mathcal{L_0}\)</span>范数正则化是NP-hard问题</p></li>
-</ul>
-<h4 id="mathcall_1-norm"><span class="math inline">\(\mathcal{L_1}\)</span> norm</h4>
-<ul>
-<li><p><span class="math inline">\(\mathcal{L_1}\)</span>范数可以通过凸松弛得到<span class="math inline">\(\mathcal{L_0}\)</span>的 近似解</p></li>
-<li><p>有时候出现解不唯一的情况</p></li>
-<li><p><span class="math inline">\(\mathcal{L_1}\)</span>范数凸但不严格可导，可以使用依赖次梯度的 方法求解极小化问题</p></li>
-<li>应用
-<ul>
-<li><em>LASSO</em></li>
-</ul></li>
-<li>求解
-<ul>
-<li><em>Proximal Method</em></li>
-<li><em>LARS</em></li>
-</ul></li>
-</ul>
-<h4 id="mathcall_2-norm"><span class="math inline">\(\mathcal{L_2}\)</span> norm</h4>
-<ul>
-<li><p><span class="math inline">\(\mathcal{L_2}\)</span>范数凸且严格可导，极小化问题有解析解</p></li>
-<li><p>求解</p></li>
-</ul>
-<h4 id="mathcall_1-l_2"><span class="math inline">\(\mathcal{L_1 + L_2}\)</span></h4>
-<ul>
-<li><p>有组效应，相关变量权重倾向于相同</p></li>
-<li>应用
-<ul>
-<li><em>Elastic Net</em></li>
-</ul></li>
-</ul>
-<h3 id="earlty-stopping">Earlty Stopping</h3>
-<p><em>Early Stopping</em>也可以被视为是<em>regularizing on time</em></p>
-<ul>
-<li>迭代式训练随着迭代次数增加，往往会有学习复杂模型的倾向</li>
-<li>对时间施加正则化，可以减小模型复杂度、提高泛化能力</li>
-</ul>
-<h3 id="稀疏解产生">稀疏解产生</h3>
-<p>稀疏解：待估参数系数在某些分量上为0</p>
-<h4 id="mathcall_1稀疏解的产生"><span class="math inline">\(\mathcal{L_1}\)</span>稀疏解的产生</h4>
-<p><span class="math inline">\(\mathcal{L_1}\)</span>范数在参数满足<strong>一定条件</strong>情况下，能对 <strong>平方损失</strong>产生稀疏效果</p>
-<ul>
-<li><p>在<span class="math inline">\([-1,1]\)</span>内<span class="math inline">\(y=|x|\)</span>导数大于<span class="math inline">\(y=x^2\)</span>（除0点），所以特征在 一定范围内变动时，为了取到极小值，参数必须始终为0</p></li>
-<li><p>满足条件的<strong>一定范围</strong>就是，特征满足在0附近、<span class="math inline">\(y=x\)</span>导数 较大</p>
-<ul>
-<li><p>高阶项在0点附近增加速度较慢，所以<span class="math inline">\(\mathcal{L_1}\)</span> 能产生稀疏解是很广泛的</p></li>
-<li><p><span class="math inline">\(mathcal{L_1}\)</span>前系数越大，能够容许高阶项增加的幅度 越大，即压缩能力越强</p></li>
-</ul></li>
-<li><p>在0附近导数“不小”，即导数在0点非0</p>
-<ul>
-<li><p>对多项式正则化项而言，其必须“带有”<span class="math inline">\(\mathcal{L_1}\)</span>， 并且稀疏化解就是<span class="math inline">\(\mathcal{L_1}\)</span>起决定性作用，其他项 没有稀疏解的用途</p></li>
-<li><p>对“非多项式”正则化项，比如：<span class="math inline">\(e^{|x|}-1\)</span>、<span class="math inline">\(ln(|x|+1)\)</span> ，在0点泰勒展开同样得到<span class="math inline">\(\mathcal{L_1}\)</span>，但是这样的 正则化项难以计算数值，所以其实不常用</p></li>
-</ul></li>
-</ul>
-<h4 id="mathcall_1稀疏解推广"><span class="math inline">\(\mathcal{L_1}\)</span>稀疏解推广</h4>
-<p>推广的方向有如下</p>
-<ul>
-<li><p>正负差异化：在正负设置不同大小的<span class="math inline">\(\mathcal{L_1}\)</span>，赋予 在正负不同的压缩能力，甚至某侧完全不压缩</p></li>
-<li><p>分段函数压缩：即只要保证在0点附近包含<span class="math inline">\(\mathcal{L_1}\)</span>用于 产生稀疏解，远离0处可以设计为常数等不影响精确解的值</p>
-<ul>
-<li><p><em>smoothly clipped absolute deviation</em></p>
-<p><span class="math display">\[
-R(x|\lambda, \gamma) = \left \{ \begin{array} {l}
-    \lambda|x| \qquad &amp; if |x| \leq \lambda \\
-    \frac {2\gamma\lambda|x| - x^2 - {\lambda}^2 }
-        {2(\gamma - 1)} &amp;
-        if \gamma&lt; |x| &lt;\gamma\lambda \\
-    \frac { {\lambda}^2(\gamma+1)} 2 &amp;
-        if |x| \geq \gamma\lambda
-\end{array} \right.
-\]</span></p></li>
-<li><p>derivate of SCAD</p>
-<p><span class="math display">\[
-R(x; \lambda, \gamma) = \left \{ \begin{array} {l}
-    \lambda \qquad &amp; if |x| \leq \gamma \\
-    \frac {\gamma\lambda - |x|} {\gamma - 1} &amp;
-        if \lambda &lt; |x| &lt; \gamma\lambda \\
-    0 &amp; if |x| \geq \gamma\lambda
-\end{array} \right.
-\]</span></p></li>
-<li><p><em>minimax concave penalty</em></p>
-<p><span class="math display">\[
-R_{\gamma}(x;\lambda) = \left \{ \begin{array} {l}
-    \lambda|x| - \frac {x^2} {2\gamma} \qquad &amp;
-        if |x| \leq \gamma\lambda \\
-    \frac 1 2 \gamma{\lambda}^2 &amp;
-        if |x| &gt; \gamma\lambda
-\end{array} \right.
-\]</span></p></li>
-</ul></li>
-<li><p>分指标：对不同指标动态设置<span class="math inline">\(\mathcal{L_0}\)</span>系数</p>
-<ul>
-<li><em>adaptive lasso</em>：<span class="math inline">\(\lambda \sum_J w_jx_j\)</span></li>
-</ul></li>
-</ul>
-<h4 id="稀疏本质">稀疏本质</h4>
-<p>稀疏本质：极值、<strong>不光滑</strong>，即导数符号突然变化</p>
-<ul>
-<li><p>若某约束项导数符号突然变化、其余项在该点处导数为0，为 保证仍然取得极小值，解会聚集（极小）、疏远（极大）该点 （类似坡的陡峭程度）</p>
-<ul>
-<li>即这样的不光滑点会<strong>抑制解的变化</strong>，不光滑程度即导数 变化幅度越大，抑制解变化能力越强，即吸引、排斥解能力 越强</li>
-<li>这样非常容易构造压缩至任意点的约束项</li>
-<li>特殊的，不光滑点为0时，即得到稀疏解</li>
-</ul></li>
-<li><p>可以设置的多个极小不光滑点，使得解都在不连续集合中</p>
-<ul>
-<li><p>可以使用三角函数、锯齿函数等构造，不过需要考虑的是 这样的约束项要起效果，必然会使得目标函数非凸</p>
-<ul>
-<li>但是多变量场合，每个变量实际解只会在某个候选解 附近，其邻域内仍然是凸的</li>
-<li>且锯齿函数这样的突变非凸可能和凸函数具有相当的 优秀性质</li>
-</ul></li>
-<li><p>当这些点均为整数时，这似乎可以近似解<strong>整数规划</strong></p></li>
-</ul></li>
-</ul>
 
     </div>
 
@@ -776,7 +556,9 @@ R_{\gamma}(x;\lambda) = \left \{ \begin{array} {l}
           
         
         <div class="post-tags">
-            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Loss-Function/" rel="tag"># Loss Function</a>
           
         </div>
         <div class="post-nav">
@@ -845,7 +627,7 @@ R_{\gamma}(x;\lambda) = \left \{ \begin{array} {l}
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -974,7 +756,59 @@ R_{\gamma}(x;\lambda) = \left \{ \begin{array} {l}
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1103,7 +937,115 @@ R_{\gamma}(x;\lambda) = \left \{ \begin{array} {l}
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1153,7 +1095,7 @@ R_{\gamma}(x;\lambda) = \left \{ \begin{array} {l}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#综述"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#损失函数设计"><span class="nav-number">1.1.</span> <span class="nav-text">损失函数设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singluar-loss"><span class="nav-number">2.</span> <span class="nav-text">Singluar Loss</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#loss"><span class="nav-number">2.1.</span> <span class="nav-text">0-1 Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hinge-loss"><span class="nav-number">2.2.</span> <span class="nav-text">Hinge Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#quadratic-loss"><span class="nav-number">2.3.</span> <span class="nav-text">Quadratic Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#absolute-loss"><span class="nav-number">2.4.</span> <span class="nav-text">Absolute Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#logarithmic-loss"><span class="nav-number">2.5.</span> <span class="nav-text">Logarithmic Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exponential-loss"><span class="nav-number">2.6.</span> <span class="nav-text">Exponential Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pseudo-loss"><span class="nav-number">2.7.</span> <span class="nav-text">Pseudo Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cross-entropy"><span class="nav-number">2.8.</span> <span class="nav-text">Cross Entropy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#收敛速度对比"><span class="nav-number">2.8.1.</span> <span class="nav-text">收敛速度对比</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#batch-loss"><span class="nav-number">3.</span> <span class="nav-text">Batch Loss</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loss-models"><span class="nav-number">4.</span> <span class="nav-text">Loss Models</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#risk-function"><span class="nav-number">4.1.</span> <span class="nav-text">Risk Function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#empirical-risk"><span class="nav-number">4.2.</span> <span class="nav-text">Empirical Risk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#structual-risk"><span class="nav-number">4.3.</span> <span class="nav-text">Structual Risk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#regularization"><span class="nav-number">5.</span> <span class="nav-text">Regularization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型复杂度"><span class="nav-number">5.1.</span> <span class="nav-text">模型复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_0-norm"><span class="nav-number">5.1.1.</span> <span class="nav-text">\(\mathcal{L_0}\) norm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1-norm"><span class="nav-number">5.1.2.</span> <span class="nav-text">\(\mathcal{L_1}\) norm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_2-norm"><span class="nav-number">5.1.3.</span> <span class="nav-text">\(\mathcal{L_2}\) norm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1-l_2"><span class="nav-number">5.1.4.</span> <span class="nav-text">\(\mathcal{L_1 + L_2}\)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#earlty-stopping"><span class="nav-number">5.2.</span> <span class="nav-text">Earlty Stopping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#稀疏解产生"><span class="nav-number">5.3.</span> <span class="nav-text">稀疏解产生</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1稀疏解的产生"><span class="nav-number">5.3.1.</span> <span class="nav-text">\(\mathcal{L_1}\)稀疏解的产生</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1稀疏解推广"><span class="nav-number">5.3.2.</span> <span class="nav-text">\(\mathcal{L_1}\)稀疏解推广</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#稀疏本质"><span class="nav-number">5.3.3.</span> <span class="nav-text">稀疏本质</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#综述"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#损失函数设计"><span class="nav-number">1.1.</span> <span class="nav-text">损失函数设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singluar-loss"><span class="nav-number">2.</span> <span class="nav-text">Singluar Loss</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#loss"><span class="nav-number">2.1.</span> <span class="nav-text">0-1 Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hinge-loss"><span class="nav-number">2.2.</span> <span class="nav-text">Hinge Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#quadratic-loss"><span class="nav-number">2.3.</span> <span class="nav-text">Quadratic Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#absolute-loss"><span class="nav-number">2.4.</span> <span class="nav-text">Absolute Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#logarithmic-loss"><span class="nav-number">2.5.</span> <span class="nav-text">Logarithmic Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exponential-loss"><span class="nav-number">2.6.</span> <span class="nav-text">Exponential Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pseudo-loss"><span class="nav-number">2.7.</span> <span class="nav-text">Pseudo Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cross-entropy"><span class="nav-number">2.8.</span> <span class="nav-text">Cross Entropy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#收敛速度对比"><span class="nav-number">2.8.1.</span> <span class="nav-text">收敛速度对比</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#batch-loss"><span class="nav-number">3.</span> <span class="nav-text">Batch Loss</span></a></li></ol></div>
             
 
           </div>

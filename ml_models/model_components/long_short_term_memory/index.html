@@ -58,27 +58,28 @@
 </script>
 
   <meta name="description" content="Long Short Term Memory">
-<meta name="keywords" content="模型,模型组件">
+<meta name="keywords" content="Machine Learning,Models,Components,LSTM,GRU">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Long Short Term Memory">
 <meta property="og:url" content="https://xyy15926.github.io/ml_models/model_components/long_short_term_memory/index.html">
 <meta property="og:site_name" content="XYY15926&#39;s Blog">
 <meta property="og:description" content="Long Short Term Memory">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_flow.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_flow_notations.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_cell_status.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_forget_gate.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_input_gate.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_output_gate.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_peephole_connection.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_cifg.png">
-<meta property="og:image" content="https://xyy15926.github.io/imgs/rnn_lstm_gru.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_flow_along_time.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_flow_notations.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_cell_strucure.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_forget_gate.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_input_gate.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_output_gate.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_cell_status.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_gru.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_peephole_connection.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/lstm_cifg.png">
 <meta property="og:updated_time" content="2019-07-29T13:16:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Long Short Term Memory">
 <meta name="twitter:description" content="Long Short Term Memory">
-<meta name="twitter:image" content="https://xyy15926.github.io/imgs/rnn_lstm_flow.png">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/lstm_flow_along_time.png">
   <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
   <link rel="canonical" href="https://xyy15926.github.io/ml_models/model_components/long_short_term_memory/">
 
@@ -311,14 +312,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/" itemprop="url" rel="index"><span itemprop="name">模型</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ML-Models/" itemprop="url" rel="index"><span itemprop="name">ML Models</span></a></span>
 
                 
                 
                   ，
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/模型/模型组件/" itemprop="url" rel="index"><span itemprop="name">模型组件</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ML-Models/Model-Components/" itemprop="url" rel="index"><span itemprop="name">Model Components</span></a></span>
 
                 
                 
@@ -339,11 +340,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="long-short-term-memory"><em>Long Short Term Memory</em></h2>
+        <h2 id="long-short-term-memory">Long Short Term Memory</h2>
 <p><em>LSTM</em>：通过刻意设计、默认可以学习长期依赖信息的RNN网络</p>
-<p><img src="/imgs/rnn_lstm_flow.png" alt="rnn_lstm_flow"> <img src="/imgs/rnn_lstm_flow_notations.png" alt="rnn_lstm_flow_notions"></p>
+<p><img src="/imgs/lstm_flow_along_time.png" alt="lstm_flow_along_time"> <img src="/imgs/lstm_flow_notations.png" alt="lstm_flow_notions"></p>
 <ul>
-<li>LSTM中每个重复的模块（层）称为细胞</li>
+<li>LSTM中每个重复的模块（层）称为细胞
+<ul>
+<li>细胞结构经过特殊设计，相较于准RNN简单细胞结构能较好 保留长时信息</li>
+</ul></li>
+<li>多个LSTM细胞可以组成<em>block</em>，其中细胞<strong>门权值共享</strong>
+<ul>
+<li>block中各个细胞状态不同</li>
+<li>这个是同时刻、不同层的真权值共享，类似CNN中的卷积核</li>
+<li>减少参数个数，效率更高</li>
+</ul></li>
 </ul>
 <blockquote>
 <ul>
@@ -352,74 +362,118 @@
 <li><em>long short term memory</em>：长[的]短期记忆，细胞状态</li>
 </ul>
 </blockquote>
-<h3 id="结构">结构</h3>
-<p>相较于标准RNN中简单的细胞结构，LSTM中细胞结构经过特殊设计</p>
-<h4 id="cell-state"><em>Cell State</em></h4>
-<p>细胞状态：LSTM中最重要的核心思想</p>
+<h3 id="lstm标准细胞结构">LSTM标准细胞结构</h3>
 <figure>
-<img src="/imgs/rnn_lstm_cell_status.png" alt="rnn_lstm_cell_status"><figcaption>rnn_lstm_cell_status</figcaption>
+<img src="/imgs/lstm_cell_strucure.png" alt="lstm_cell_strucure"><figcaption>lstm_cell_strucure</figcaption>
 </figure>
+<p><span class="math display">\[ \beign{align*}
+i^{(t)} &amp; = \sigma(W_i[x^{(t)}, h^{(t-1)}], b_i), &amp; input gate \\
+f^{(t)} &amp; = \sigma(W_f[x^{(t)}, h^{(t-1)}], b_f), &amp; forget gate \\
+o^{(t)} &amp; = \sigma(W_o[x^{(t)}, h^{(t-1)}], b_o), &amp; output gate \\
+\tilde C^{(t)} &amp; = tanh((W_c[x^{(t)}, h^{(t)}])), &amp; memory alternates \\
+C^{(t)} &amp; = f^{(t)} \odot c^{(t-1)} + i^{(t)} \odot c^{(t)}, &amp; new memory \\
+h^{(t)} &amp; = o^{(t)} \odot tanh(c^{(t)}), &amp; output
+\end{align*}\]</span></p>
+<blockquote>
 <ul>
-<li>随着时间流动，承载之前所有状态信息，代表长期记忆</li>
-<li>类似于传送带，直接在整个链上运行，只有少量<strong>线性交互</strong></li>
-<li>信息其上流派很容易保持不变</li>
-<li>通过“三个门”保护、控制</li>
+<li><span class="math inline">\(W_i, b_i, W_f, b_f, W_o, b_o\)</span>：输入门、遗忘门、输出门 参数</li>
+<li><span class="math inline">\(\odot\)</span>：逐项乘积</li>
+<li><span class="math inline">\(x_t\)</span>：第<span class="math inline">\(t\)</span>期输入</li>
+<li><span class="math inline">\(i^{(t)}\)</span>：输出门权重，决定需要更新的信息</li>
+<li><span class="math inline">\(f^{(t)}\)</span>：遗忘门权重，决定需要遗忘的信息</li>
+<li><span class="math inline">\(o^{(t)}\)</span>：输出门权重，决定需要输出的信息</li>
+<li><span class="math inline">\(h^{(t-1)}\)</span>：第<span class="math inline">\(t-1\)</span>期细胞状态输出</li>
+<li><span class="math inline">\(\tilde C_t\)</span>：第<span class="math inline">\(t\)</span>期更新备选内容</li>
+<li><span class="math inline">\(C^{(t)}\)</span>：第<span class="math inline">\(t\)</span>期更新完成后细胞状态</li>
 </ul>
-<h4 id="gates">Gates</h4>
+</blockquote>
 <ul>
-<li><p>tanh处理<span class="math inline">\(h_{t-1}, x_t\)</span>、<span class="math inline">\(C_{t-1}\)</span>得到备选输入、输出流</p></li>
-<li><p>sigmoid处理<span class="math inline">\(h_{t-1}, x_t\)</span>，得到介于<span class="math inline">\(0-1\)</span>之间控制向量， 与输入、输出流做<em>point wise</em>点乘确定最终遗忘、输入、输出</p>
+<li>输入、遗忘、输出门特点
+<ul>
+<li>当期输入<span class="math inline">\(x^{(t)}\)</span>、上期输出<span class="math inline">\(h^{(t-1)}\)</span>作为输入</li>
+<li>sigmoid作为激活函数，得到<span class="math inline">\([0,1]\)</span>间<strong>控制、权重</strong>向量
 <ul>
 <li><em>1</em>：完全保留</li>
 <li><em>0</em>：完全舍弃</li>
 </ul></li>
-<li><p>多个LSTM细胞可以组成<em>block</em>，其中细胞<strong>门权值共享</strong></p>
+</ul></li>
+<li>细胞状态、输出特点
 <ul>
-<li>block中各个细胞状态还是不同的</li>
-<li>这个是真权值共享，类似CNN中的卷积核</li>
-<li>减少参数个数，效率更高</li>
+<li>tanh作激活函数，得到<span class="math inline">\([-1,1]\)</span>间<strong>信息</strong>向量
+<ul>
+<li><span class="math inline">\(h^{(t-1)}, x^t\)</span>：备选更新信息输入</li>
+<li><span class="math inline">\(C^{(t-1)}\)</span>：输出信息输入</li>
+</ul></li>
+<li>与门限权重逐项乘积确定最终遗忘、输入、输出</li>
+</ul>
+<blockquote>
+<ul>
+<li>细胞状态选择（候选、输出）都是使用双曲正切激活，应该 是为了有正由负</li>
+</ul>
+</blockquote></li>
+</ul>
+<h4 id="gates">Gates</h4>
+<ul>
+<li><p><em>Forget Gate</em>：遗忘门，决定要从细胞状态中舍弃的信息</p>
+<figure>
+<img src="/imgs/lstm_forget_gate.png" alt="lstm_forget_gate"><figcaption>lstm_forget_gate</figcaption>
+</figure></li>
+<li><p><em>Input Gate</em>：输入门，决定向细胞状态中保留的信息</p>
+<figure>
+<img src="/imgs/lstm_input_gate.png" alt="lstm_input_gate"><figcaption>lstm_input_gate</figcaption>
+</figure></li>
+<li><p><em>Ouput Gate</em>：输出门，决定从细胞状态中输出的信息</p>
+<figure>
+<img src="/imgs/lstm_output_gate.png" alt="lstm_output_gate"><figcaption>lstm_output_gate</figcaption>
+</figure></li>
+</ul>
+<h4 id="cell-state">Cell State</h4>
+<p>细胞状态：LSTM中最重要的核心思想</p>
+<figure>
+<img src="/imgs/lstm_cell_status.png" alt="lstm_cell_status"><figcaption>lstm_cell_status</figcaption>
+</figure>
+<ul>
+<li>随着时间流动，承载之前所有状态信息，代表长期记忆
+<ul>
+<li>类似于传送带，直接在整个链上运行，只有少量<strong>线性交互</strong></li>
+<li>信息其上流派很容易保持不变</li>
+<li>通过“三个门”保护、控制</li>
+</ul></li>
+<li>LSTM可以保证长短时记忆可以理解为
+<ul>
+<li><span class="math inline">\(C_t\)</span>中历史信息比重由<span class="math inline">\(f^{(t)}\)</span>确定</li>
+<li><span class="math inline">\(f^{(t)}\)</span>趋近于1时历史信息能较好的保留</li>
 </ul></li>
 </ul>
-<h5 id="forget-gate"><em>Forget Gate</em></h5>
-<p>遗忘门：决定要从细胞状态中舍弃的信息</p>
+<h3 id="gated-recurrent-unit">Gated Recurrent Unit</h3>
 <figure>
-<img src="/imgs/rnn_lstm_forget_gate.png" alt="rnn_lstm_forget_gate"><figcaption>rnn_lstm_forget_gate</figcaption>
+<img src="/imgs/lstm_gru.png" alt="lstm_gru"><figcaption>lstm_gru</figcaption>
 </figure>
+<p><span class="math display">\[\begin{align*}
+r^{(t)} &amp; = \sigma(W_r [h^{(t-1)}, x^{(t)}] + b_r), &amp; reset gate \\
+z^{(t)} &amp; = \sigma(W_z [h^{(t-1)}, x^{(t)}] + b_z), &amp; update gate \\
+\tilde h^{(t)} &amp;= tanh(W_h [r^{(t)} h^{(t-1)}, x^{(t)}]),
+    &amp; memory alternates\\
+h^{(t)} &amp; = (1 - z^{(t)}) \odot h^{(t-1)} + z^{(t)} \odot \tilde h^{(t)},
+    &amp; new memory
+\end{align*}\]</span></p>
 <blockquote>
 <ul>
-<li><span class="math inline">\(C_{t-1}\)</span>：第<span class="math inline">\(t\)</span>期更新前细胞状态</li>
-<li><span class="math inline">\(h_{t-1}\)</span>：第<span class="math inline">\(t-1\)</span>期细胞状态输出</li>
-<li><span class="math inline">\(x_t\)</span>：第<span class="math inline">\(t\)</span>期输入</li>
-<li><span class="math inline">\(f_t\)</span>：决定保留/遗忘的信息</li>
+<li><span class="math inline">\(W_r, b_r, W_z, b_z\)</span>：重置门、更新门参数</li>
+<li><span class="math inline">\(h^{(t)}\)</span>：原细胞状态、隐层输出合并</li>
+<li><span class="math inline">\(\tilde{h}_t\)</span>：第<span class="math inline">\(t\)</span>期更新备选信息</li>
+<li><span class="math inline">\(r^{(t)}\)</span>：重置门权重输出，重置上期状态<span class="math inline">\(h_{t-1}\)</span>再作为更新 门输入</li>
+<li><span class="math inline">\(z^{(t)]\)</span>：更新门权重输出，当期状态<span class="math inline">\(h_t\)</span>中<span class="math inline">\(h_{t-1}\)</span>、 <span class="math inline">\(\tilde{h}_t\)</span>占比（遗忘、更新的结合）</li>
 </ul>
 </blockquote>
-<h5 id="input-gate"><em>Input Gate</em></h5>
-<p>输入门：决定向细胞状态中保留的信息</p>
-<figure>
-<img src="/imgs/rnn_lstm_input_gate.png" alt="rnn_lstm_input_gate"><figcaption>rnn_lstm_input_gate</figcaption>
-</figure>
-<blockquote>
 <ul>
-<li><span class="math inline">\(\tilde{C}_t\)</span>：第<span class="math inline">\(t\)</span>期更新备选内容</li>
-<li><span class="math inline">\(i_t\)</span>：决定需要更新的信息</li>
-<li><span class="math inline">\(C_t\)</span>：第<span class="math inline">\(t\)</span>期更新完成后细胞状态</li>
+<li>合并细胞状态、隐层输出</li>
+<li>合并遗忘门、输出门为更新门</li>
 </ul>
-</blockquote>
-<h5 id="ouput-gate"><em>Ouput Gate</em></h5>
-<p>输出门：决定从细胞状态中输出的信息</p>
-<figure>
-<img src="/imgs/rnn_lstm_output_gate.png" alt="rnn_lstm_output_gate"><figcaption>rnn_lstm_output_gate</figcaption>
-</figure>
-<blockquote>
-<ul>
-<li><span class="math inline">\(o_t\)</span>：决定需要输出的信息</li>
-<li><span class="math inline">\(h_t\)</span>：第<span class="math inline">\(t\)</span>期输出信息</li>
-</ul>
-</blockquote>
-<h3 id="变体结构">变体结构</h3>
+<h3 id="其他变体结构">其他变体结构</h3>
 <h4 id="vanilla-lstm"><em>Vanilla LSTM</em></h4>
 <figure>
-<img src="/imgs/rnn_lstm_peephole_connection.png" alt="rnn_lstm_peephole_connection"><figcaption>rnn_lstm_peephole_connection</figcaption>
+<img src="/imgs/lstm_peephole_connection.png" alt="lstm_peephole_connection"><figcaption>lstm_peephole_connection</figcaption>
 </figure>
 <blockquote>
 <ul>
@@ -428,35 +482,11 @@
 </blockquote>
 <h4 id="coupled-input-and-forget-gate"><em>Coupled Input and Forget Gate</em></h4>
 <figure>
-<img src="/imgs/rnn_lstm_cifg.png" alt="rnn_lstm_cifg"><figcaption>rnn_lstm_cifg</figcaption>
+<img src="/imgs/lstm_cifg.png" alt="lstm_cifg"><figcaption>lstm_cifg</figcaption>
 </figure>
 <blockquote>
 <ul>
 <li><span class="math inline">\(1-f_i\)</span>代替<span class="math inline">\(i_t\)</span>，结合遗忘门、输入门</li>
-</ul>
-</blockquote>
-<h4 id="gated-recurrent-unit"><em>Gated Recurrent Unit</em></h4>
-<figure>
-<img src="/imgs/rnn_lstm_gru.png" alt="rnn_lstm_gru"><figcaption>rnn_lstm_gru</figcaption>
-</figure>
-<blockquote>
-<ul>
-<li><span class="math inline">\(h_{t-1}\)</span>：原细胞状态、隐层状态合并</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><span class="math inline">\(r_t\)</span>：<em>reset gate</em>输出，重置上期状态<span class="math inline">\(h_{t-1}\)</span>再作为更新 门输入</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><span class="math inline">\(\tilde{h}_t\)</span>：第<span class="math inline">\(t\)</span>期更新备选信息</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><span class="math inline">\(z_t\)</span>：<em>update gate</em>输出，当期状态<span class="math inline">\(h_t\)</span>中<span class="math inline">\(h_{t-1}\)</span>、 <span class="math inline">\(\tilde{h}_t\)</span>占比（遗忘、更新的结合）</li>
 </ul>
 </blockquote>
 <h4 id="结构比较">结构比较</h4>
@@ -495,6 +525,7 @@
 <li>高斯噪声的引入有损性能、增加训练时间</li>
 </ul></li>
 </ul>
+<p>?时间</p>
 
     </div>
 
@@ -506,15 +537,21 @@
           
         
         <div class="post-tags">
-            <a href="/tags/模型/" rel="tag"># 模型</a>
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
           
-            <a href="/tags/模型组件/" rel="tag"># 模型组件</a>
+            <a href="/tags/Models/" rel="tag"># Models</a>
+          
+            <a href="/tags/Components/" rel="tag"># Components</a>
+          
+            <a href="/tags/LSTM/" rel="tag"># LSTM</a>
+          
+            <a href="/tags/GRU/" rel="tag"># GRU</a>
           
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/math_algebra/linear_algebra/matrix/" rel="next" title="矩阵">
-                <i class="fa fa-chevron-left"></i> 矩阵
+              <a href="/ml_models/model_components/interaction/" rel="next" title="Interaction Layers">
+                <i class="fa fa-chevron-left"></i> Interaction Layers
               </a>
             
           </div>
@@ -522,8 +559,8 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/ml_models/model_components/pooling/" rel="prev" title="Pooling Layers">
-                Pooling Layers <i class="fa fa-chevron-right"></i>
+              <a href="/ml_techniques/functions/func_activation/" rel="prev" title="激活函数">
+                激活函数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -577,7 +614,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -706,7 +743,59 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -835,7 +924,115 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -885,7 +1082,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#long-short-term-memory"><span class="nav-number">1.</span> <span class="nav-text">Long Short Term Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结构"><span class="nav-number">1.1.</span> <span class="nav-text">结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cell-state"><span class="nav-number">1.1.1.</span> <span class="nav-text">Cell State</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gates"><span class="nav-number">1.1.2.</span> <span class="nav-text">Gates</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#forget-gate"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">Forget Gate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#input-gate"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">Input Gate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ouput-gate"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">Ouput Gate</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变体结构"><span class="nav-number">1.2.</span> <span class="nav-text">变体结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vanilla-lstm"><span class="nav-number">1.2.1.</span> <span class="nav-text">Vanilla LSTM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#coupled-input-and-forget-gate"><span class="nav-number">1.2.2.</span> <span class="nav-text">Coupled Input and Forget Gate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gated-recurrent-unit"><span class="nav-number">1.2.3.</span> <span class="nav-text">Gated Recurrent Unit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构比较"><span class="nav-number">1.2.4.</span> <span class="nav-text">结构比较</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#long-short-term-memory"><span class="nav-number">1.</span> <span class="nav-text">Long Short Term Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lstm标准细胞结构"><span class="nav-number">1.1.</span> <span class="nav-text">LSTM标准细胞结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gates"><span class="nav-number">1.1.1.</span> <span class="nav-text">Gates</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cell-state"><span class="nav-number">1.1.2.</span> <span class="nav-text">Cell State</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gated-recurrent-unit"><span class="nav-number">1.2.</span> <span class="nav-text">Gated Recurrent Unit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他变体结构"><span class="nav-number">1.3.</span> <span class="nav-text">其他变体结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vanilla-lstm"><span class="nav-number">1.3.1.</span> <span class="nav-text">Vanilla LSTM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#coupled-input-and-forget-gate"><span class="nav-number">1.3.2.</span> <span class="nav-text">Coupled Input and Forget Gate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构比较"><span class="nav-number">1.3.3.</span> <span class="nav-text">结构比较</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

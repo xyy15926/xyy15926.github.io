@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="在线最优化">
+<meta name="keywords" content="Machine Learning,Optimization,Online">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在线最优化">
+<meta property="og:url" content="https://xyy15926.github.io/math_mixin/constrained_optimization/online_optimization/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="在线最优化">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/truncated_gradient_compared_with_l1.png">
+<meta property="og:updated_time" content="2019-08-26T01:53:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在线最优化">
+<meta name="twitter:description" content="在线最优化">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/truncated_gradient_compared_with_l1.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/math_mixin/constrained_optimization/online_optimization/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>在线最优化 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/math_mixin/constrained_optimization/online_optimization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">在线最优化
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-26 09:53:43 / 修改时间：09:53:48" itemprop="dateCreated datePublished" datetime="2019-08-26T09:53:43+08:00">2019-08-26</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Optimization/" itemprop="url" rel="index"><span itemprop="name">Optimization</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Optimization/Constraint-Optimization/" itemprop="url" rel="index"><span itemprop="name">Constraint Optimization</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">在线最优化</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="truncated-gradient">Truncated Gradient</h2>
+<h3 id="l1正则化法">L1正则化法</h3>
+<p>L1正则化</p>
+<p><span class="math display">\[
+w^{(t+1)} = w^{(t)} - \eta^{(t)}g^{(t)} - \eta^{(t)} \lambda sgn(w^{(t)})
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\lambda\)</span>：正则化项参数</li>
+<li><span class="math inline">\(sgn\)</span>：符号函数</li>
+<li><span class="math inline">\(g^{(t)}=\nabla_w L(w^{(t)}, Z^{(t)})\)</span>：损失函数对参数梯度</li>
+</ul>
+</blockquote>
+<ul>
+<li>L1正则化项在0处不可导，每次迭代使用次梯度计算正则项梯度</li>
+<li>OGD中每次根据观测到的一个样本进行权重更新 （所以后面正则项次梯度只考虑非0处？？？）</li>
+</ul>
+<h3 id="简单截断法">简单截断法</h3>
+<p>简单截断法：以<span class="math inline">\(k\)</span>为窗口，当<span class="math inline">\(t/k\)</span>非整数时，使用标准SGD迭代， 否则如下更新权重</p>
+<p>$$<span class="math display">\[\begin{align*}
+w^{(t+1)} &amp; = T_0 (w^{(t)} - \eta^{(t)} G^{(t)}, \theta) \\
+
+T_0(v_i, \theta) &amp; = \left \{ \begin{array}{l}
+    0, &amp; |v_i| \leq \theta \\
+    v_i, &amp; otherwise
+\end{array} \right.
+\end{align*}\]</span>$$</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(w^{(t)}\)</span>：模型参数</li>
+<li><span class="math inline">\(g^{(t)}\)</span>：损失函数对模型参数梯度</li>
+<li><span class="math inline">\(T_0\)</span>：截断函数</li>
+<li><span class="math inline">\(\theta\)</span>：控制参数稀疏性</li>
+</ul>
+</blockquote>
+<h3 id="截断梯度法">截断梯度法</h3>
+<p>截断梯度法：以<span class="math inline">\(k\)</span>为窗口，当<span class="math inline">\(t/k\)</span>非整数时，使用标准SGD迭代， 否则如下更新权重</p>
+<p>$$<span class="math display">\[\begin{align*}
+w^{(t+1)} &amp; = T_1(w^{(t)} - \eta^{(t)} g^{(t)}, \lambda^{(t)} \eta^{(t)},
+    \theta) \\
+
+T_1(v_i, \alpha, \theta) &amp; = \left \{ \begin{array}{l}
+    max(0, v_i - \alpha), &amp; v_i \in [0, \theta] \\
+    min(0, v_1 + \alpha), &amp; v_i \in [-\theta, 0] \\
+    v_i, &amp; otherwise
+\end{array} \right.
+\end{align*}\]</span>$$</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\lambda, \theta\)</span>：控制参数<span class="math inline">\(w\)</span>稀疏性</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对简单截断的改进，避免在实际（OgD）中参数因训练不足过小 而被错误截断，造成特征丢失</p>
+<figure>
+<img src="/imgs/truncated_gradient_compared_with_l1.png" alt="truncated_gradient_compared_with_l1"><figcaption>truncated_gradient_compared_with_l1</figcaption>
+</figure></li>
+</ul>
+<h2 id="forward-backward-spliting">Forward-Backward Spliting</h2>
+<p>FOBOS：前向后向切分，权重更新方式为<em>proximal method</em>如下</p>
+<p><span class="math display">\[\begin{align*}
+w^{(t.5)} &amp; = w^{(t)} - \eta^{(t)} g^{(t)} \\
+w^{(t+1)} &amp; = \arg\min_w \{ \frac 1 2 \|w - w^{(t.5)}\|
+    + \eta^{(t+0.5)} \Phi(w) \} \\
+&amp; = \arg\min_w \{ \frac 1 2 \|w - w^{(t)} + \eta^{(t)} g^{(t)}\|
+    + \eta^{(t+0.5)} \Phi(w) \}
+\end{align*}\]</span></p>
+<h3 id="l1-fobos">L1-FOBOS</h3>
+<p>L1-FOBOS：即令<span class="math inline">\(Phi(w)=\lambda \|w\|_1\)</span>，则根据可加性如下</p>
+<p><span class="math display">\[\begin{align*}
+w^{(t+1)} &amp; = \arg\min_w \sum_{i=1}^N (\frac 1 2 (w_i - v_i)^2
+    + \tilde \lambda |w_i|)
+w_i^{(t+1)} = \arg\min_{w_i} (\frac 1 2 (w_i - v_i)^2
+    + \tilde \lambda |w_i|)
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(V=[v_1, v_2, \cdots, v_N]:=w^{(t.5)}\)</span>：为方便</li>
+<li><span class="math inline">\(\tilde \lambda := \eta^{t.5} \lambda\)</span>：为方便</li>
+<li><span class="math inline">\(\eta^{t.5}\)</span>：学习率，常取 <span class="math inline">\(\eta^{(t)} \in \theta(\frac 1 {\sqrt t})\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>则对<span class="math inline">\(w_i\)</span>求次梯度、分类讨论，解得</p>
+<p><span class="math display">\[
+w_i^{(t+1)} = \left \{ \begin{array}{l}
+    v_i - \tilde \lambda, &amp; v_i &gt; \tilde \lambda \\
+    0, &amp; |v_i| &lt; \tilde \lambda \\
+    v_i + \tilde \lambda, &amp; v_i &lt; -\tilde \lambda
+\end{array} \right.
+\]</span></p>
+<ul>
+<li><p>可以理解为：到当前样本为止，维度权重小于阈值 <span class="math inline">\(\eta^{(t.5)} \lambda\)</span>）时，认为该维度不够重要， 权重置为0</p></li>
+<li><p>可视为<span class="math inline">\(k=1, \theta=\infty\)</span>的Tg算法</p></li>
+</ul></li>
+<li><p>另外，显然有<span class="math inline">\(w_i^{(t+1)} v_i \geq 0\)</span></p>
+<p><span class="math display">\[\begin{align*}
+\frac 1 2 (w_i^{(t+1)} - v_i)^2 + \tilde \lambda |w_i^{(t+1)}|
+&amp; = \frac 1 2((w_i^{(t+1)})^2 - 2 w_i^{(t+1)} v_i + v_i^2)
+    + \tilde \lambda |w_i^{(t+1)}| \\
+&amp; \leq \frac 1 2 v_i^2
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li>考虑<span class="math inline">\(w_i^{(t+1)}\)</span>使得目标函数最小，带入<span class="math inline">\(w=0\)</span>则得</li>
+</ul>
+</blockquote></li>
+</ul>
+<h2 id="regularized-dual-averaging">Regularized Dual Averaging</h2>
+<p>RDA算法：正则对偶平均算法，权重更新方式为 <strong>包含[增广]正则项的最速下降</strong></p>
+<p><span class="math display">\[
+w^{(t+1)} = \arg\min_w {\frac 1 t \sum_{r=1}^t g^{(r)} w + \Phi(w)
+    + \frac {\beta^{(t)}} t h(w)}
+\]</span></p>
+<ul>
+<li>目标函数包括三个部分
+<ul>
+<li><span class="math inline">\(\frac 1 t \sum_{r=1}^t g^{(r)} w\)</span>：包含之前所有梯度 均值</li>
+<li><span class="math inline">\(\Phi(w)\)</span>：正则项</li>
+<li><span class="math inline">\(\frac {\beta^{(t)}} t h(w)\)</span>：额外正则项，严格凸，且 不影响稀疏性</li>
+</ul></li>
+<li>相较于TG、FOBOS是从另一方面求解在线最优化，更有效地提升 特征权重稀疏性</li>
+</ul>
+<h3 id="l1-rda">L1 RDA</h3>
+<p>L1 RDA：令<span class="math inline">\(\Phi(w) := \lambda \|w\|_1\)</span>， 再设<span class="math inline">\(h(w) := \|w\|_2^2\)</span>，根据可加性则有</p>
+<p><span class="math display">\[\begin{align*}
+w^{(t+1)} &amp; = \arg\min_w \{ \frac 1 t \sum_{r=1}^t &lt;g^{(t)}, w&gt;
+    + \lambda \|w\|_1 + \frac {\gamma} {2\sqrt t} \|w\|_2^2 \} \\
+w_i^{(t+1)} &amp; = \arg\min_{w_i} \{bar g_i^{(t)} w_i + \lambda |w_i|
+    \frac {\gamma} {2 \sqrt t} w_i^2 \}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\lambda &gt; 0, \gamma &gt; 0\)</span></li>
+<li><span class="math inline">\(\bar g_i^{(t)} = \frac 1 t \sum_{r=1}^t g_i^{(r)}\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对<span class="math inline">\(w_i\)</span>求次梯度、置零、求解得</p>
+<p><span class="math display">\[
+w_i^{(t+1)} = \left \{ \begin{array}{l}
+    -\frac {\sqrt t} {\gamma} (\bar g^{(t)} - \lambda),
+        &amp; \bar g_i^{(t)} &gt; \lambda \\
+    0, &amp; |\bar g_i^{(t)}| \leq \lambda \\
+    -\frac {\sqrt t} {\gamma} (\bar g^{(t)} + \lambda),
+        &amp; \bar g_i^{(t)} &lt; -\lambda \\
+\end{array} \right.
+\]</span></p>
+<ul>
+<li>可以理解为：某维度梯度累计均值绝对值<span class="math inline">\(|bar g_i^{(t)}\)</span> 小于阈值<span class="math inline">\(\lambda\)</span>时，对应权重被置零、产生稀疏性</li>
+</ul></li>
+<li>相较于L1-FOBOS的截断
+<ul>
+<li>截断阈值为常数，更加激进、容易产生稀疏性</li>
+<li>截断判断对象为梯度累加均值，避免由于训练不足而产生 截断</li>
+<li>只需条件<span class="math inline">\(\lambda\)</span>参数，容易权衡精度、稀疏性</li>
+</ul></li>
+</ul>
+<h2 id="follow-the-regularized-leader">Follow the Regularized Leader</h2>
+<p>FTRL：综合考虑L1-RDA、L1-FOBOS</p>
+<h3 id="l1-fobosl1-rda变换">L1-FOBOS、L1-RDA变换</h3>
+<ul>
+<li><p>将L1-FOBOS类似近端算法收敛证明中展开、去除无关项、放缩， 得到类似L1-RDA目标函数</p>
+<p><span class="math display">\[\begin{align*}
+w^{(t+1)} &amp; = \arg\min_w \{ \frac 1 2 \|w - w^{(t)} +
+    \eta^{(t)} g^{(t)}\| + \eta^{(t)} \lambda \|w\|_1 \} \\
+&amp; = \arg\min_w \{ g^{(t)} w + \lambda \|w\|_1 +
+    \frac 1 {2 \eta^{(t)}} \|w - w^{(t)}\|_2^2 \}
+\end{align*}\]</span></p></li>
+<li><p>将L1-RDA目标函数整体整体放缩，得到</p>
+<p><span class="math display">\[
+w^{(t+1)} = \arg\min_w \{ g^{(1:t)} w + t \lambda \|w\|_1
+    + \frac 1 {2\eta^{(t)}} \|w - 0\|_2^2 \}
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(g^{(1:t)} := \sum_{r=1}^t g^{(r)}\)</span></li>
+</ul>
+</blockquote></li>
+<li><p>FTRL综合考虑L1-FOBOS、L1-RDA，得到目标函数</p>
+<p><span class="math display">\[
+w^{(t+1)} = \arg\min_w \{ g^{(1:t)} W + \lambda_1 \|w\|_1
+    + \frac {\lambda_2} 2 \|w\|_2^2 + \frac 1 2
+    \sum_{r=1}^t \sigma^{(r)} \|w - w^{(r)}\|_2^2 \}
+\]</span></p>
+<ul>
+<li>使用累加梯度更新，避免因训练不充分错误截断</li>
+<li>包含L1-FOBOS、L1-RDA全部正则化项</li>
+</ul></li>
+</ul>
+<h3 id="求解">求解</h3>
+<ul>
+<li><p>将FTRL中最后一项拆分、去除无关项</p>
+<p><span class="math display">\[\begin{align*}
+w^{(t+1)} &amp; = \arg\min_w \{(g^{(1:t)} - \sum_{r=1}^t
+    \sigma^{(r)} w^{(r)})w + \lambda_1 \|w\|_1 +
+    \frac 1 2 (\lambda_2 + \sum_{r=1}^t \sigma^{(r)})
+    \|w\|_2^2 + \frac 1 2 \sum_{r=1}^t \sigma^{(r)}
+    \|w^{(r)}\|_2^2 \} \\
+&amp; = \arg\min_w \{ z^{(t)} w + \lambda_1 \|w\|_1
+    + \frac 1 2 (\lambda_2 + \sum_{r=1}^t \sigma^{(r)})
+    \|w\|_2^2 \} \\
+z^{(t)} &amp;= g^{(1:t)} - \sum_{r=1}^t \sigma^{(r)} w^{(r)}
+\end{align*}\]</span></p></li>
+<li><p>则同样根据可加性，对各分量求次梯度、置零、求解得</p>
+<p><span class="math display">\[
+w_i^{(t+1)} = \left \{ \begin{array}{l}
+    \frac 1 {\lambda_1 + \sum_{r=1}^t \sigma^{(r)}}
+        (z_i^{(t)} - \lambda_1 z_i), &amp; z_i &gt; \lambda_1 \\
+    0, &amp; |z_i^{(t)}| \leq \lambda_1 \\
+    \frac 1 {\lambda_1 + \sum_{r=1}^t \sigma^{(r)}}
+        (z_i^{(t)} + \lambda_1 z_i), &amp; z_i &lt; -\lambda_1 \\
+\end{array} \right.
+\]</span></p></li>
+<li><p>其中学习率<span class="math inline">\(\eta\)</span>为类似Adagrad优化器的学习率，但包括可学习 参数<span class="math inline">\(\alpha, \beta\)</span></p>
+<p><span class="math display">\[
+\eta_i^{(t)} = \frac {\alpha} {\beta + \sqrt{\sum_{r=1}^t
+    (g_i^{(r)})^2}}
+\]</span></p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Optimization/" rel="tag"># Optimization</a>
+          
+            <a href="/tags/Online/" rel="tag"># Online</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/ml_techniques/theories/ml_loss/" rel="next" title="机器学习损失">
+                <i class="fa fa-chevron-left"></i> 机器学习损失
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/ml_models/model_enhancement/lightgbm/" rel="prev" title="LightGBM">
+                LightGBM <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#truncated-gradient"><span class="nav-number">1.</span> <span class="nav-text">Truncated Gradient</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#l1正则化法"><span class="nav-number">1.1.</span> <span class="nav-text">L1正则化法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单截断法"><span class="nav-number">1.2.</span> <span class="nav-text">简单截断法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#截断梯度法"><span class="nav-number">1.3.</span> <span class="nav-text">截断梯度法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forward-backward-spliting"><span class="nav-number">2.</span> <span class="nav-text">Forward-Backward Spliting</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#l1-fobos"><span class="nav-number">2.1.</span> <span class="nav-text">L1-FOBOS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#regularized-dual-averaging"><span class="nav-number">3.</span> <span class="nav-text">Regularized Dual Averaging</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#l1-rda"><span class="nav-number">3.1.</span> <span class="nav-text">L1 RDA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#follow-the-regularized-leader"><span class="nav-number">4.</span> <span class="nav-text">Follow the Regularized Leader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#l1-fobosl1-rda变换"><span class="nav-number">4.1.</span> <span class="nav-text">L1-FOBOS、L1-RDA变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#求解"><span class="nav-number">4.2.</span> <span class="nav-text">求解</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

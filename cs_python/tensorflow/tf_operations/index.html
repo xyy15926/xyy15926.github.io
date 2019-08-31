@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="TensorFlow中操作符">
+<meta name="keywords" content="Python,TensorFlow,Machine Learning,Operation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TensorFlow操作符">
+<meta property="og:url" content="https://xyy15926.github.io/cs_python/tensorflow/tf_operations/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="TensorFlow中操作符">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-19T09:13:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TensorFlow操作符">
+<meta name="twitter:description" content="TensorFlow中操作符">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_python/tensorflow/tf_operations/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TensorFlow操作符 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_python/tensorflow/tf_operations/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">TensorFlow操作符
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-19 17:13:00" itemprop="dateCreated datePublished" datetime="2019-08-19T17:13:00+08:00">2019-08-19</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/TensorFlow/" itemprop="url" rel="index"><span itemprop="name">TensorFlow</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">TensorFlow中操作符</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="tensor">Tensor</h2>
+<p>张量：n-dimensional array，类型化的多维数组</p>
+<ul>
+<li>TF使用Tensor表示所有的数据</li>
+<li>Tensor包含一个静态类型rank、一个shape</li>
+<li>TF会将python原生类型转换为相应的Tensor
+<ul>
+<li>0-d tensor：scalar</li>
+<li>1-d tensor：vector，1d-array</li>
+<li>2-d tensor：matrix，2d-array</li>
+</ul></li>
+</ul>
+<h3 id="data-type">Data Type</h3>
+<ul>
+<li>TF被设计为和numpy可以无缝结合
+<ul>
+<li>TF的变量类型基于numpy变量类型：<code>tf.int32==np.int32</code></li>
+<li>bool、numeric等大部分类型可以不加转换的使用TF、np 变量类型</li>
+<li>TF、np中string类型不完全一样，但TF仍然可以从numpy 中导入string数组，但是不能在numpy中指定类型</li>
+</ul></li>
+<li>但尽量使用TF变量类型
+<ul>
+<li>python原生类型：没有<strong>细分</strong>类型，TF需要推断类型</li>
+<li>numpy类型：numpy不兼容GPU，也不能自动计算衍生类型</li>
+</ul></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>数据类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tf.float16</code></td>
+<td>16-bit half-precision floating-point</td>
+</tr>
+<tr class="even">
+<td><code>tf.float32</code></td>
+<td>32-bit single-presicion floating-point</td>
+</tr>
+<tr class="odd">
+<td><code>tf.float64</code></td>
+<td>64-bit double-presicion floating-point</td>
+</tr>
+<tr class="even">
+<td><code>tf.bfloat16</code></td>
+<td>16-bit truncated floating-point</td>
+</tr>
+<tr class="odd">
+<td><code>tf.complex64</code></td>
+<td>64-bit single-presicion complex</td>
+</tr>
+<tr class="even">
+<td><code>tf.complex128</code></td>
+<td>128-bit double-presicion complex</td>
+</tr>
+<tr class="odd">
+<td><code>tf.int8</code></td>
+<td>8-bit signed integer</td>
+</tr>
+<tr class="even">
+<td><code>tf.uint8</code></td>
+<td>8-bit unsigned integer</td>
+</tr>
+<tr class="odd">
+<td><code>tf.int16</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>tf.uint16</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>tf.int32</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>tf.int64</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>tf.bool</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>tf.string</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>tf.qint8</code></td>
+<td>quantized 8-bit signed integer</td>
+</tr>
+<tr class="even">
+<td><code>tf.quint8</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>tf.qint16</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>tf.quint16</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>tf.qint32</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>tf.resource</code></td>
+<td>handle to a mutable resource</td>
+</tr>
+</tbody>
+</table>
+<h2 id="constant-ops">Constant OPs</h2>
+<h3 id="tf.constant"><code>tf.constant</code></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">constant</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	value,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=none,</span></span></span><br><span class="line"><span class="function"><span class="params">	shape=none,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=<span class="string">"Const"</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	verify_shape=False</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="同值常量ops">同值常量OPs</h3>
+<ul>
+<li><p><em>zeros</em>：类似np中相应函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># `np.zeros`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">zeros</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	shape,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=tf.float32,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"># `<span class="title">np</span>.<span class="title">zores_like</span>`</span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">zeros_like</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	input_tensor,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	optimizeTrue</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>若没有指明<code>dtype</code>，根据<code>input_tensor</code>确定其中值
+<ul>
+<li>对数值型为<code>0.0</code></li>
+<li>对bool型为<code>False</code></li>
+<li>对字符串为<code>b''</code></li>
+</ul></li>
+</ul></li>
+<li><p><em>ones</em>：类似np中相应函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># `np.ones`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">ones</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	shape,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=tf.float32,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"># `<span class="title">np</span>.<span class="title">ones_like</span>`</span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">ones_like</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	input_tensor,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	optimize=True</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>若没有指明<code>dtype</code>，根据<code>input_tensor</code>确定
+<ul>
+<li>对数值型为<code>0.0</code></li>
+<li>对bool型为<code>True</code></li>
+<li>对字符串报错</li>
+</ul></li>
+</ul></li>
+<li><p><em>fill</em>：以<code>value</code>填充<code>dims</code>给定形状</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># `np.fill`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">fill</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	dims,</span></span></span><br><span class="line"><span class="function"><span class="params">	value,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="列表常量ops">列表常量OPs</h3>
+<blockquote>
+<ul>
+<li>tensor列表不能直接<code>for</code>语句等迭代</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><code>tf.lin_space</code>：<code>start</code>、<code>stop</code>直接均分为<code>num</code>部分</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># `np.linspace`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lin_space</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	start,</span></span></span><br><span class="line"><span class="function"><span class="params">	stop,</span></span></span><br><span class="line"><span class="function"><span class="params">	num,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure></li>
+<li><p><code>tf.range</code>：<code>start</code>、<code>stop</code>间等间隔<code>delta</code>取值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># `np.arange`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">range</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	start,</span></span></span><br><span class="line"><span class="function"><span class="params">	limit=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	delta=<span class="number">1</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=<span class="string">"range"</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="随机常量ops">随机常量OPs</h3>
+<ul>
+<li><p><em>seed</em>：设置随机数种子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># np.random.seed</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">set_random_seed</span><span class="params">(seed)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure></li>
+<li><p><em>random</em>：随机生成函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">random_normal</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">truncated_normal</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	?avg=<span class="number">0</span>/int/<span class="params">(int)</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	stddev=<span class="number">1.0</span>/float,</span></span></span><br><span class="line"><span class="function"><span class="params">	seed=None/int,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None</span></span></span><br><span class="line"><span class="function"><span class="params">)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">random_uniform</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	shape<span class="params">(<span class="number">1</span>d-arr)</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	minval=<span class="number">0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	maxval=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=tf.float32,</span></span></span><br><span class="line"><span class="function"><span class="params">	seed=None/int,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None/str</span></span></span><br><span class="line"><span class="function"><span class="params">)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">random_crop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">multinomial</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">random_gamma</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure></li>
+<li><p><em>shuffle</em></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">random_shuffle</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="运算ops">运算OPs</h2>
+<h3 id="元素ops">元素OPs</h3>
+<h4 id="四则运算">四则运算</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">subtract</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">sub</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">multiply</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">mul</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function">	# 加、减、乘</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">floordiv</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">floor_div</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">div</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">truncatediv</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function">	# 地板除</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">divide</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">truediv</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function">	# 浮点除</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">realdiv</span><span class="params">(x, y, name=None)</span></span></span><br><span class="line"><span class="function">	# 实数除法，只能用于实数？</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">add_n</span><span class="params">(input, name=None)</span></span></span><br><span class="line"><span class="function">	# `<span class="title">input</span>`：<span class="title">list</span>-<span class="title">like</span>，元素<span class="title">shape</span>、<span class="title">type</span>相同</span></span><br><span class="line"><span class="function">	# 累加`<span class="title">input</span>`中元素的值</span></span><br></pre></td></tr></table></figure>
+<h4 id="逻辑运算">逻辑运算</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greater</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">less</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">equal</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<h4 id="数学函数">数学函数</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">log</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">square</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">round</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">sqrt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">rsqrt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">pow</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">abs</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">negative</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">sign</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">reciprocal</span><span class="params">()</span>		# 倒数</span></span><br></pre></td></tr></table></figure>
+<h3 id="列表运算ops">列表运算OPs</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">Concat</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">Slice</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">Split</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">Rank</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">Shape</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">Shuffle</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="矩阵ops">矩阵OPs</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">MatMul</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">MatrixInverse</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">MatrixDeterminant</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">tf</span>.<span class="title">tensordot</span><span class="params">()</span>				# 矩阵点乘</span></span><br></pre></td></tr></table></figure>
+<h3 id="梯度ops">梯度OPs</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">def tf.gradients(				# 求`y`对`[xs]`个元素偏导</span><br><span class="line">	ys: tf.OPs,</span><br><span class="line">	xs: tf.OPs/[tf.OPs],</span><br><span class="line">	grad_ys=None,</span><br><span class="line">	name=None</span><br><span class="line">)</span><br><span class="line">def tf.stop_gradient(</span><br><span class="line">	input,</span><br><span class="line">	name=None</span><br><span class="line">)</span><br><span class="line"><span class="function">def <span class="title">clip_by_value</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	t,</span></span></span><br><span class="line"><span class="function"><span class="params">	clip_value_min,</span></span></span><br><span class="line"><span class="function"><span class="params">	clip_value_max,</span></span></span><br><span class="line"><span class="function"><span class="params">	name=None</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br><span class="line">def tf.clip_by_norm(</span><br><span class="line">	t,</span><br><span class="line">	clip_norm,</span><br><span class="line">	axes=None,</span><br><span class="line">	name=None</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="variable">Variable</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Variable</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,</span></span></span><br><span class="line"><span class="function"><span class="params">		init_value=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		trainable=True,</span></span></span><br><span class="line"><span class="function"><span class="params">		collections=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		validata_shape=True,</span></span></span><br><span class="line"><span class="function"><span class="params">		caching_device=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		name=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		variable_def=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		dtype=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		expected_shape=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		import_scope=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		constraint=None</span></span></span><br><span class="line"><span class="function"><span class="params">	)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	# 初始化变量</span></span><br><span class="line"><span class="function">	# `<span class="title">sess</span>.<span class="title">run</span>`其即初始化变量</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">intializer</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 读取变量值</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">value</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 获取变量初始化值，其他变量调用、声明依赖该变量</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">initilized_value</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 计算、获取变量值，类似`sess.run(OP)`</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">eval</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 给变量赋值</span></span><br><span class="line">	<span class="comment"># `assgin`内部有初始化Variable，所以有时可以不用初始化</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">assign</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="comment">#`assgin_add`等依赖于原始值，不会初始化变量</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">assign_add</span><span class="params">(self, ?dec)</span></span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">assign_divide</span><span class="params">(self, ?dec)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Variable</code>是包含很多方法的类
+<ul>
+<li>其中<strong>方法OPs</strong>和一般的OP一样，也需要在Session中执行 才能生效</li>
+<li><code>Variable</code>必须在会话中<strong>初始化</strong>后，才能使用</li>
+<li>会话维护自身独立<code>Variable</code>副本，不相互影响</li>
+</ul></li>
+<li><code>Variable</code>和图分开存储，甚至是存储在独立参数服务器上
+<ul>
+<li>存储大量数据也不会拖慢图载入速度</li>
+<li>通常用于存储训练过程中weight、bias、维护图执行过程 中状态信息</li>
+</ul></li>
+<li>constants是常数OPs
+<ul>
+<li>存储在图中：每次载入图会同时被载入，过大的constants 会使得载入图非常慢</li>
+<li>所以最好只对原生类型使用constants</li>
+</ul></li>
+</ul>
+<h3 id="variable创建">Variable创建</h3>
+<h4 id="tf.get_variable"><code>tf.get_variable</code></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_variable</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	name,</span></span></span><br><span class="line"><span class="function"><span class="params">	shape=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	dtype=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	initializer=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	regularizer=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	trainable=True,</span></span></span><br><span class="line"><span class="function"><span class="params">	collections=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	caching_device=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	partitioner=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	validate_shape=True,</span></span></span><br><span class="line"><span class="function"><span class="params">	use_resource=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	custom_getter=None,</span></span></span><br><span class="line"><span class="function"><span class="params">	constraint=None</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>此封装工厂方法相较于直接通过<code>tf.Variable</code>更好
+<ul>
+<li>若变量已设置，可通过变量名获取变量，方便变量共享</li>
+<li>可以提供更多的参数定制变量值</li>
+</ul></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment"># `tf.Variable`创建变量</span></span><br><span class="line">s = tf.Variable(<span class="number">2</span>, name=<span class="string">"scalar"</span>)</span><br><span class="line">m = tf.Variable([[<span class="number">0</span>,<span class="number">1</span>], [<span class="number">2</span>,<span class="number">3</span>]], name=<span class="string">"matrix"</span>)</span><br><span class="line">w = tf.Variable(tf.zeros([<span class="number">784</span>, <span class="number">10</span>]))</span><br><span class="line">	<span class="comment"># `tf.get_variable`创建、获取变量</span></span><br><span class="line">s = tf.get_variable(<span class="string">"scalar"</span>, initializer=tf.constant(<span class="number">2</span>))</span><br><span class="line">m = tf.get_variable(<span class="string">"matrix"</span>, initializer=tf.constant([[<span class="number">0</span>,<span class="number">1</span>], [<span class="number">2</span>,<span class="number">3</span>]])</span><br><span class="line">W = tf.get_variable(<span class="string">"big_matrix"</span>,</span><br><span class="line">	shape=(<span class="number">784</span>, <span class="number">10</span>),</span><br><span class="line">	initializer=tf.zeros_initializer()</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="variable初始化">Variable初始化</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	<span class="comment"># 初始化所有Variables</span></span><br><span class="line">	sess.run(tf.global_variable_initialier())</span><br><span class="line">	<span class="comment"># 初始化变量子集</span></span><br><span class="line">	sess.run(tf.variable_initializer([s, m])</span><br><span class="line">	<span class="comment"># 初始化指定单个变量</span></span><br><span class="line">	sess.run(s.initializer)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>若某Variable依赖其他Variable，需要使用 <code>initialized_value</code>指明依赖，确保依赖线性初始化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">W = tr.Variable(tf.truncated_normal([<span class="number">700</span>, <span class="number">100</span>])</span><br><span class="line"><span class="comment"># 指明依赖，保证依赖线性初始化</span></span><br><span class="line">U = tf.Variable(W.initialized_value() * <span class="number">2</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/TensorFlow/" rel="tag"># TensorFlow</a>
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Operation/" rel="tag"># Operation</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/tensorflow/tf_train/" rel="next" title="TensorFlow训练">
+                <i class="fa fa-chevron-left"></i> TensorFlow训练
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/tensorflow/tf_persistence/" rel="prev" title="TensorFlow持久化">
+                TensorFlow持久化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor"><span class="nav-number">1.</span> <span class="nav-text">Tensor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#data-type"><span class="nav-number">1.1.</span> <span class="nav-text">Data Type</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#constant-ops"><span class="nav-number">2.</span> <span class="nav-text">Constant OPs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tf.constant"><span class="nav-number">2.1.</span> <span class="nav-text">tf.constant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同值常量ops"><span class="nav-number">2.2.</span> <span class="nav-text">同值常量OPs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列表常量ops"><span class="nav-number">2.3.</span> <span class="nav-text">列表常量OPs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机常量ops"><span class="nav-number">2.4.</span> <span class="nav-text">随机常量OPs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运算ops"><span class="nav-number">3.</span> <span class="nav-text">运算OPs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#元素ops"><span class="nav-number">3.1.</span> <span class="nav-text">元素OPs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#四则运算"><span class="nav-number">3.1.1.</span> <span class="nav-text">四则运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逻辑运算"><span class="nav-number">3.1.2.</span> <span class="nav-text">逻辑运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数学函数"><span class="nav-number">3.1.3.</span> <span class="nav-text">数学函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列表运算ops"><span class="nav-number">3.2.</span> <span class="nav-text">列表运算OPs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#矩阵ops"><span class="nav-number">3.3.</span> <span class="nav-text">矩阵OPs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度ops"><span class="nav-number">3.4.</span> <span class="nav-text">梯度OPs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#variable"><span class="nav-number">4.</span> <span class="nav-text">Variable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#variable创建"><span class="nav-number">4.1.</span> <span class="nav-text">Variable创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#tf.get_variable"><span class="nav-number">4.1.1.</span> <span class="nav-text">tf.get_variable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable初始化"><span class="nav-number">4.2.</span> <span class="nav-text">Variable初始化</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

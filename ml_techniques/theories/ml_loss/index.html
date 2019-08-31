@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="机器学习中损失函数的理论">
+<meta name="keywords" content="Machine Learning,Loss">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习损失">
+<meta property="og:url" content="https://xyy15926.github.io/ml_techniques/theories/ml_loss/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="机器学习中损失函数的理论">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-25T13:53:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习损失">
+<meta name="twitter:description" content="机器学习中损失函数的理论">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_techniques/theories/ml_loss/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>机器学习损失 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_techniques/theories/ml_loss/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">机器学习损失
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-25 21:53:20 / 修改时间：21:53:28" itemprop="dateCreated datePublished" datetime="2019-08-25T21:53:20+08:00">2019-08-25</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ML-Tech/" itemprop="url" rel="index"><span itemprop="name">ML Tech</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ML-Tech/ML-Theory/" itemprop="url" rel="index"><span itemprop="name">ML Theory</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">机器学习中损失函数的理论</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="loss-models">Loss Models</h2>
+<p>模型（目标函数）在样本整体的损失：度量模型整体预测效果</p>
+<ul>
+<li><p>代表模型在整体上的性质，有不同的设计形式</p></li>
+<li>可以用于<strong>设计学习策略、评价模型</strong>
+<ul>
+<li>风险函数</li>
+<li>评价函数</li>
+</ul></li>
+<li><p>有时在算法中也会使用整体损失</p></li>
+</ul>
+<h3 id="expected-riskexpected-lossgeneralization-loss">Expected Risk/Expected Loss/Generalization Loss</h3>
+<p>期望风险（函数）：损失函数<span class="math inline">\(L(Y, f(X))\)</span>（随机变量）期望</p>
+<p><span class="math display">\[
+R_{exp}(f) = E_p[L(Y, f(X))] = \int_{x*y} L(y,f(x))P(x,y) dxdy
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(P(X, Y)\)</span>：随机变量<span class="math inline">\((X, Y)\)</span>遵循的联合分布，未知</li>
+</ul>
+</blockquote>
+<ul>
+<li>风险函数值度量模型预测错误程度
+<ul>
+<li>反映了学习方法的泛化能力</li>
+<li>评价标准（<strong>监督学习目标</strong>）就应该是选择期望风险最小</li>
+</ul></li>
+<li>联合分布未知，所以才需要学习，否则可以直接计算条件分布 概率，而计算期望损失需要知道联合分布，因此监督学习是一个 病态问题</li>
+</ul>
+<h3 id="empirical-riskempirical-loss">Empirical Risk/Empirical Loss</h3>
+<p>经验风险：模型关于给定训练数据集的平均损失</p>
+<p><span class="math display">\[\begin{align*}
+R_{emp}(f) &amp; = \sum_{i=1}^N D_i L(y_i, f(x_i;\theta)) \\
+E(R_{emp}(f)) &amp; = R_{exp}(f)
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\theta\)</span>：模型参数</li>
+<li><span class="math inline">\(D_i\)</span>：样本损失权重，常为<span class="math inline">\(\frac 1 N\)</span>，在Boosting框架中 不同</li>
+</ul>
+</blockquote>
+<ul>
+<li>经验风险损失是模型<span class="math inline">\(f(x)\)</span>的函数
+<ul>
+<li>训练时，模型是模型参数的函数</li>
+<li>即其为模型参数函数</li>
+</ul></li>
+<li><p>根据大数定律，样本量容量N趋于无穷时，<span class="math inline">\(R_{emp}(f)\)</span>趋于 <span class="math inline">\(R_{exp}(f)\)</span></p></li>
+<li><p>但是现实中训练样本数目有限、很小，利用经验风险估计期望 常常并不理想，需要对经验风险进行矫正</p></li>
+<li>例子
+<ul>
+<li><em>maximum probability estimation</em>：极大似然估计
+<ul>
+<li>模型：条件概率分布（贝叶斯生成模型、逻辑回归）</li>
+<li>损失函数：对数损失函数</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="structual-riskstructual-loss">Structual Risk/Structual Loss</h3>
+<p>结构风险：在经验风险上加上表示<strong>模型复杂度</strong>的 <em>regularizer</em>（<em>penalty term</em>）</p>
+<p><span class="math display">\[
+R_{srm} = \frac 1 N \sum_{i=1}^N L(y_i, f(x_i)) +
+    \lambda J(f)
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(J(f)\)</span>：模型复杂度，定义在假设空间<span class="math inline">\(F\)</span>上的泛函</li>
+<li><span class="math inline">\(\lambda\)</span>：权衡经验风险、模型复杂度的系数</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>结构风险最小化通过添加<em>regularization</em>（正则化）实现</p></li>
+<li><p>模型复杂度<span class="math inline">\(J(f)\)</span>表示对复杂模型的惩罚：模型<span class="math inline">\(f\)</span>越复杂， 复杂项<span class="math inline">\(J(f)\)</span>越大</p></li>
+<li>例子
+<ul>
+<li><em>maximum posterior probability estimation</em>：最大后验 概率估计
+<ul>
+<li>损失函数：对数损失函数</li>
+<li>模型复杂度：模型先验概率对数后取负</li>
+<li>先验概率对应模型复杂度，先验概率越小，复杂度越大</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="generalization-ability">Generalization Ability</h2>
+<p>泛化能力：方法学习到的模型对未知数据的预测能力，是学习方法 本质、重要的性质</p>
+<ul>
+<li><p>测试误差衡量学习方法的泛化能力不可靠，其依赖于测试集， 而测试集有限</p></li>
+<li><p>学习方法的泛化能力往往是通过研究泛化误差的概率上界进行</p></li>
+</ul>
+<h3 id="generalization-error-bound">Generalization Error Bound</h3>
+<p>泛化误差上界：泛化误差的<strong>概率</strong>上界</p>
+<ul>
+<li>是样本容量函数，样本容量增加时，泛化上界趋于0</li>
+<li>是假设空间容量函数，假设空间容量越大，模型越难学习，泛化 误差上界越大</li>
+</ul>
+<h4 id="泛化误差">泛化误差</h4>
+<ul>
+<li><p>根据Hoeffding不等式，泛化误差满足</p>
+<p>$$<span class="math display">\[\begin{align*}
+&amp; \forall h \in H, &amp; P(|E(h) - \hat E(h)| \geq \epsilon)
+    \leq 2 e^{-2 N \epsilon^2} \\
+
+\Rightarrow &amp; \forall h \in H, &amp; P(|E(h) - \hat E(h)|
+    \leq \epsilon) \geq 1 - 2|H|e^{-2N\epsilon^2}
+\end{align*}\]</span>$$</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(H\)</span>：假设空间</li>
+<li><span class="math inline">\(N\)</span>：样本数量</li>
+<li><span class="math inline">\(E(h) := R_{exp}(h)\)</span></li>
+<li><span class="math inline">\(\hat E(h) := R_{emp}(h)\)</span></li>
+</ul>
+</blockquote></li>
+<li><p>证明如下：</p>
+<p><span class="math display">\[\begin{align*}
+P(\forall h \in H: |E(h) - \hat E(h)| \leq \epsilon|)
+    &amp; = 1 - P(\exists h \in H: |E(h) - \hat E(h)|
+    \geq \epsilon) \\
+&amp; = 1 - P((|E(h_1) - \hat E(h_1) \geq \epsilon) \vee \cdots
+    \vee (|E(h_{|H|}) - \hat E_{|H|}| \geq \epsilon)) \\
+&amp; \geq 1 - \sum_{i=1}^{|H|} P(|E(h_i) - \hat E(h_i)|
+    \geq \epsilon) \\
+&amp; \geq 1 - 2|H|e^{-2N \epsilon^2}
+\end{align*}\]</span></p></li>
+<li><p>对任意<span class="math inline">\(\epsilon\)</span>，随样本数量<span class="math inline">\(m\)</span>增大， <span class="math inline">\(|E(h) - \hat E(h)| \leq \epsilon\)</span>概率增大，可以使用经验 误差近似泛化误差</p></li>
+</ul>
+<h4 id="二分类泛化误差上界">二分类泛化误差上界</h4>
+<ul>
+<li><p>由Hoeffding不等式 <span class="math display">\[\begin{align*}
+P(E(h) - \hat E(h) &amp; \geq \epsilon) \leq
+    exp(-2N\epsilon^2) \\
+P(\exists h \in H: E(h) - \hat E(h) \geq \epsilon) &amp; =
+    P(\bigcup_{h \in H} \{ E(h) - \hat E(h)
+    \geq \epsilon \}) \\
+&amp; \leq \sum_{h \in H} P(E(h) - \hat E(h) \geq \epsilon) \\
+&amp; \leq |H| exp(-2 N \epsilon^2)
+\end{align*}\]</span></p></li>
+<li><p>则<span class="math inline">\(\forall h \in H\)</span>，有</p>
+<p><span class="math display">\[
+P(E(h) - \hat E(h) &lt; \epsilon) \geq 1 - |H|
+    exp(-2 N \epsilon)
+\]</span></p>
+<p>则令<span class="math inline">\(\sigma = |H| exp(-2N\epsilon^2)\)</span>，则至少以概率 <span class="math inline">\(1-\sigma\)</span>满足如下，即得到泛化误差上界</p>
+<p><span class="math display">\[\begin{align*}
+E(h)  &amp; \leq \hat E(h) + \epsilon(|H|, N, \sigma) \\
+\epsilon(|H|, N, \sigma) &amp; = \sqrt
+    {\frac 1 {2N} (log |H| + log \frac 1 {\sigma})}
+\end{align*}\]</span></p></li>
+</ul>
+<h3 id="probably-approximate-correct可学习">Probably Approximate Correct可学习</h3>
+<p>PAC可学习：在短时间内利用少量（多项式级别）样本能够找到假设 <span class="math inline">\(h^{&#39;}\)</span>，满足</p>
+<p><span class="math display">\[
+P(E(h^{&#39;}) \leq \epsilon) \geq 1 - \sigma, 0 &lt; \epsilon,
+    \sigma &lt; 1
+\]</span></p>
+<ul>
+<li>即需要假设满足两个PAC辨识条件
+<ul>
+<li>近似条件：泛化误差<span class="math inline">\(E(h^{&#39;})\)</span>足够小</li>
+<li>可能正确：满足近似条件概率足够大</li>
+</ul></li>
+<li>同等条件下
+<ul>
+<li>模型越复杂，泛化误差越大</li>
+<li>满足条件的样本数量越大，模型泛化误差越小</li>
+</ul></li>
+<li>PAC学习理论关心能否从假设空间<span class="math inline">\(H\)</span>中学习到好的假设<span class="math inline">\(h\)</span>
+<ul>
+<li>由以上泛化误差可得，取 <span class="math inline">\(\sigma = 2|H|e^{-2N\epsilon^2}\)</span>，则样本量满足 <span class="math inline">\(N = \frac {ln \frac {2|H|} \sigma} {2 \epsilon^2}\)</span> 时，模型是PAC可学习的</li>
+</ul></li>
+</ul>
+<h2 id="regularization"><em>Regularization</em></h2>
+<p>正则化：（向目标函数）添加额外信息以求解病态问题、避免过拟合</p>
+<ul>
+<li><p>常应用在机器学习、逆问题求解</p>
+<ul>
+<li>对模型（目标函数）复杂度惩罚</li>
+<li>提高学习模型的泛化能力、避免过拟合</li>
+<li>学习简单模型：稀疏模型、引入组结构</li>
+</ul></li>
+<li><p>有多种用途</p>
+<ul>
+<li>最小二乘也可以看作是简单的正则化</li>
+<li>岭回归中的<span class="math inline">\(\mathcal{l_2}\)</span>范数</li>
+</ul></li>
+</ul>
+<h3 id="模型复杂度">模型复杂度</h3>
+<p>模型复杂度：经常作为正则化项添加作为额外信息添加的，衡量模型 复杂度方式有很多种</p>
+<ul>
+<li><p>函数光滑限制</p>
+<ul>
+<li>多项式最高次数</li>
+</ul></li>
+<li><p>向量空间范数</p>
+<ul>
+<li><span class="math inline">\(\mathcal{L_0}\)</span> norm：参数个数</li>
+<li><span class="math inline">\(\mathcal{L_1}\)</span> norm：参数绝对值和</li>
+<li><span class="math inline">\(\mathcal{L_2}\)</span> norm：参数平方和</li>
+</ul></li>
+</ul>
+<h4 id="mathcall_0-norm"><span class="math inline">\(\mathcal{L_0}\)</span> norm</h4>
+<ul>
+<li><p>稀疏化约束</p></li>
+<li><p>解<span class="math inline">\(\mathcal{L_0}\)</span>范数正则化是NP-hard问题</p></li>
+</ul>
+<h4 id="mathcall_1-norm"><span class="math inline">\(\mathcal{L_1}\)</span> norm</h4>
+<ul>
+<li><p><span class="math inline">\(\mathcal{L_1}\)</span>范数可以通过凸松弛得到<span class="math inline">\(\mathcal{L_0}\)</span>的 近似解</p></li>
+<li><p>有时候出现解不唯一的情况</p></li>
+<li><p><span class="math inline">\(\mathcal{L_1}\)</span>范数凸但不严格可导，可以使用依赖次梯度的 方法求解极小化问题</p></li>
+<li>应用
+<ul>
+<li><em>LASSO</em></li>
+</ul></li>
+<li>求解
+<ul>
+<li><em>Proximal Method</em></li>
+<li><em>LARS</em></li>
+</ul></li>
+</ul>
+<h4 id="mathcall_2-norm"><span class="math inline">\(\mathcal{L_2}\)</span> norm</h4>
+<ul>
+<li><p><span class="math inline">\(\mathcal{L_2}\)</span>范数凸且严格可导，极小化问题有解析解</p></li>
+<li><p>求解</p></li>
+</ul>
+<h4 id="mathcall_1-l_2"><span class="math inline">\(\mathcal{L_1 + L_2}\)</span></h4>
+<ul>
+<li><p>有组效应，相关变量权重倾向于相同</p></li>
+<li>应用
+<ul>
+<li><em>Elastic Net</em></li>
+</ul></li>
+</ul>
+<h3 id="earlty-stopping">Earlty Stopping</h3>
+<p><em>Early Stopping</em>也可以被视为是<em>regularizing on time</em></p>
+<ul>
+<li>迭代式训练随着迭代次数增加，往往会有学习复杂模型的倾向</li>
+<li>对时间施加正则化，可以减小模型复杂度、提高泛化能力</li>
+</ul>
+<h3 id="稀疏解产生">稀疏解产生</h3>
+<p>稀疏解：待估参数系数在某些分量上为0</p>
+<h4 id="mathcall_1稀疏解的产生"><span class="math inline">\(\mathcal{L_1}\)</span>稀疏解的产生</h4>
+<p><span class="math inline">\(\mathcal{L_1}\)</span>范数在参数满足<strong>一定条件</strong>情况下，能对 <strong>平方损失</strong>产生稀疏效果</p>
+<ul>
+<li><p>在<span class="math inline">\([-1,1]\)</span>内<span class="math inline">\(y=|x|\)</span>导数大于<span class="math inline">\(y=x^2\)</span>（除0点），所以特征在 一定范围内变动时，为了取到极小值，参数必须始终为0</p></li>
+<li><p>满足条件的<strong>一定范围</strong>就是，特征满足在0附近、<span class="math inline">\(y=x\)</span>导数 较大</p>
+<ul>
+<li><p>高阶项在0点附近增加速度较慢，所以<span class="math inline">\(\mathcal{L_1}\)</span> 能产生稀疏解是很广泛的</p></li>
+<li><p><span class="math inline">\(mathcal{L_1}\)</span>前系数越大，能够容许高阶项增加的幅度 越大，即压缩能力越强</p></li>
+</ul></li>
+<li><p>在0附近导数“不小”，即导数在0点非0</p>
+<ul>
+<li><p>对多项式正则化项而言，其必须“带有”<span class="math inline">\(\mathcal{L_1}\)</span>， 并且稀疏化解就是<span class="math inline">\(\mathcal{L_1}\)</span>起决定性作用，其他项 没有稀疏解的用途</p></li>
+<li><p>对“非多项式”正则化项，比如：<span class="math inline">\(e^{|x|}-1\)</span>、<span class="math inline">\(ln(|x|+1)\)</span> ，在0点泰勒展开同样得到<span class="math inline">\(\mathcal{L_1}\)</span>，但是这样的 正则化项难以计算数值，所以其实不常用</p></li>
+</ul></li>
+</ul>
+<h4 id="mathcall_1稀疏解推广"><span class="math inline">\(\mathcal{L_1}\)</span>稀疏解推广</h4>
+<p>推广的方向有如下</p>
+<ul>
+<li><p>正负差异化：在正负设置不同大小的<span class="math inline">\(\mathcal{L_1}\)</span>，赋予 在正负不同的压缩能力，甚至某侧完全不压缩</p></li>
+<li><p>分段函数压缩：即只要保证在0点附近包含<span class="math inline">\(\mathcal{L_1}\)</span>用于 产生稀疏解，远离0处可以设计为常数等不影响精确解的值</p>
+<ul>
+<li><p><em>smoothly clipped absolute deviation</em></p>
+<p><span class="math display">\[
+R(x|\lambda, \gamma) = \left \{ \begin{array} {l}
+    \lambda|x| \qquad &amp; if |x| \leq \lambda \\
+    \frac {2\gamma\lambda|x| - x^2 - {\lambda}^2 }
+        {2(\gamma - 1)} &amp;
+        if \gamma&lt; |x| &lt;\gamma\lambda \\
+    \frac { {\lambda}^2(\gamma+1)} 2 &amp;
+        if |x| \geq \gamma\lambda
+\end{array} \right.
+\]</span></p></li>
+<li><p>derivate of SCAD</p>
+<p><span class="math display">\[
+R(x; \lambda, \gamma) = \left \{ \begin{array} {l}
+    \lambda \qquad &amp; if |x| \leq \gamma \\
+    \frac {\gamma\lambda - |x|} {\gamma - 1} &amp;
+        if \lambda &lt; |x| &lt; \gamma\lambda \\
+    0 &amp; if |x| \geq \gamma\lambda
+\end{array} \right.
+\]</span></p></li>
+<li><p><em>minimax concave penalty</em></p>
+<p><span class="math display">\[
+R_{\gamma}(x;\lambda) = \left \{ \begin{array} {l}
+    \lambda|x| - \frac {x^2} {2\gamma} \qquad &amp;
+        if |x| \leq \gamma\lambda \\
+    \frac 1 2 \gamma{\lambda}^2 &amp;
+        if |x| &gt; \gamma\lambda
+\end{array} \right.
+\]</span></p></li>
+</ul></li>
+<li><p>分指标：对不同指标动态设置<span class="math inline">\(\mathcal{L_0}\)</span>系数</p>
+<ul>
+<li><em>adaptive lasso</em>：<span class="math inline">\(\lambda \sum_J w_jx_j\)</span></li>
+</ul></li>
+</ul>
+<h4 id="稀疏本质">稀疏本质</h4>
+<p>稀疏本质：极值、<strong>不光滑</strong>，即导数符号突然变化</p>
+<ul>
+<li><p>若某约束项导数符号突然变化、其余项在该点处导数为0，为 保证仍然取得极小值，解会聚集（极小）、疏远（极大）该点 （类似坡的陡峭程度）</p>
+<ul>
+<li>即这样的不光滑点会<strong>抑制解的变化</strong>，不光滑程度即导数 变化幅度越大，抑制解变化能力越强，即吸引、排斥解能力 越强</li>
+<li>这样非常容易构造压缩至任意点的约束项</li>
+<li>特殊的，不光滑点为0时，即得到稀疏解</li>
+</ul></li>
+<li><p>可以设置的多个极小不光滑点，使得解都在不连续集合中</p>
+<ul>
+<li><p>可以使用三角函数、锯齿函数等构造，不过需要考虑的是 这样的约束项要起效果，必然会使得目标函数非凸</p>
+<ul>
+<li>但是多变量场合，每个变量实际解只会在某个候选解 附近，其邻域内仍然是凸的</li>
+<li>且锯齿函数这样的突变非凸可能和凸函数具有相当的 优秀性质</li>
+</ul></li>
+<li><p>当这些点均为整数时，这似乎可以近似解<strong>整数规划</strong></p></li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Loss/" rel="tag"># Loss</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/cs_python/tensorflow/tf_resources/" rel="next" title="TensorFlow资源管理">
+                <i class="fa fa-chevron-left"></i> TensorFlow资源管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_mixin/constrained_optimization/online_optimization/" rel="prev" title="在线最优化">
+                在线最优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#loss-models"><span class="nav-number">1.</span> <span class="nav-text">Loss Models</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#expected-riskexpected-lossgeneralization-loss"><span class="nav-number">1.1.</span> <span class="nav-text">Expected Risk/Expected Loss/Generalization Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#empirical-riskempirical-loss"><span class="nav-number">1.2.</span> <span class="nav-text">Empirical Risk/Empirical Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#structual-riskstructual-loss"><span class="nav-number">1.3.</span> <span class="nav-text">Structual Risk/Structual Loss</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generalization-ability"><span class="nav-number">2.</span> <span class="nav-text">Generalization Ability</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#generalization-error-bound"><span class="nav-number">2.1.</span> <span class="nav-text">Generalization Error Bound</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#泛化误差"><span class="nav-number">2.1.1.</span> <span class="nav-text">泛化误差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二分类泛化误差上界"><span class="nav-number">2.1.2.</span> <span class="nav-text">二分类泛化误差上界</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#probably-approximate-correct可学习"><span class="nav-number">2.2.</span> <span class="nav-text">Probably Approximate Correct可学习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#regularization"><span class="nav-number">3.</span> <span class="nav-text">Regularization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型复杂度"><span class="nav-number">3.1.</span> <span class="nav-text">模型复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_0-norm"><span class="nav-number">3.1.1.</span> <span class="nav-text">\(\mathcal{L_0}\) norm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1-norm"><span class="nav-number">3.1.2.</span> <span class="nav-text">\(\mathcal{L_1}\) norm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_2-norm"><span class="nav-number">3.1.3.</span> <span class="nav-text">\(\mathcal{L_2}\) norm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1-l_2"><span class="nav-number">3.1.4.</span> <span class="nav-text">\(\mathcal{L_1 + L_2}\)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#earlty-stopping"><span class="nav-number">3.2.</span> <span class="nav-text">Earlty Stopping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#稀疏解产生"><span class="nav-number">3.3.</span> <span class="nav-text">稀疏解产生</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1稀疏解的产生"><span class="nav-number">3.3.1.</span> <span class="nav-text">\(\mathcal{L_1}\)稀疏解的产生</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mathcall_1稀疏解推广"><span class="nav-number">3.3.2.</span> <span class="nav-text">\(\mathcal{L_1}\)稀疏解推广</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#稀疏本质"><span class="nav-number">3.3.3.</span> <span class="nav-text">稀疏本质</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

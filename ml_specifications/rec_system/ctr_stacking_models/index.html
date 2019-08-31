@@ -73,6 +73,7 @@
 <meta property="og:image" content="https://xyy15926.github.io/imgs/wide_and_deep_logit_structure.png">
 <meta property="og:image" content="https://xyy15926.github.io/imgs/deepfm_structure.png">
 <meta property="og:image" content="https://xyy15926.github.io/imgs/deep_and_cross_structure.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/cross_network_cross_layer.png">
 <meta property="og:image" content="https://xyy15926.github.io/imgs/nfm_structure.png">
 <meta property="og:image" content="https://xyy15926.github.io/imgs/afm_structure.png">
 <meta property="og:image" content="https://xyy15926.github.io/imgs/din_structure.png">
@@ -381,7 +382,7 @@
 <li>传统DNN中通过多层全连接层完成特征交叉组合，缺乏针对性 &gt; - 没有针对不同特征域进行交叉 &gt; - 不是直接针对交叉特征设计</li>
 </ul>
 </blockquote>
-<h2 id="widedeep">Wide&amp;Deep</h2>
+<h2 id="widedeep-network">Wide&amp;Deep Network</h2>
 <p><em>Wide&amp;Deep</em>：结合深层网络、广度网络平衡记忆、泛化</p>
 <figure>
 <img src="/imgs/wide_and_deep_structure.png" alt="wide_and_deep_structure"><figcaption>wide_and_deep_structure</figcaption>
@@ -389,7 +390,7 @@
 <blockquote>
 <ul>
 <li><em>deep models</em>：基于稠密embedding前馈神经网络</li>
-<li><em>wide models</em>：基于稀疏特征、特征转换的线性模型</li>
+<li><em>wide models</em>：基于稀疏特征、特征交叉、特征转换线性模型</li>
 </ul>
 </blockquote>
 <ul>
@@ -407,7 +408,7 @@
 <li>wide&amp;deep系模型应该都属于stacking集成</li>
 </ul>
 </blockquote>
-<h3 id="逻辑回归示例">逻辑回归示例</h3>
+<h3 id="google-app-store实现">Google App Store实现</h3>
 <figure>
 <img src="/imgs/wide_and_deep_logit_structure.png" alt="wide_and_deep_logit_structure"><figcaption>wide_and_deep_logit_structure</figcaption>
 </figure>
@@ -415,6 +416,34 @@
 P(Y=1|x) = \sigma(w_{wide}^T[x, \phi(x)] + w_{deep}^T
     \alpha^{l_f} + b)
 \]</span></p>
+<ul>
+<li>wide部分：<em>cross product transformation</em>
+<ul>
+<li>输入
+<ul>
+<li>已安装Apps</li>
+<li>impression Apps</li>
+<li>特征工程交叉特征</li>
+</ul></li>
+<li>优化器：带L1正则的FTRL</li>
+</ul></li>
+<li>Deep部分：左侧DNN
+<ul>
+<li>输入
+<ul>
+<li>类别特征embedding：32维</li>
+<li>稠密特征</li>
+<li>拼接：拼接后1200维 （多值类别应该需要将embedding向量平均、极大化）</li>
+</ul></li>
+<li>优化器：AdaGrad</li>
+<li>隐层结构
+<ul>
+<li>激活函数relu优于tanh</li>
+<li>3层隐层效果最佳</li>
+<li>隐层使用塔式结构</li>
+</ul></li>
+</ul></li>
+</ul>
 <h2 id="deepfm">DeepFM</h2>
 <p><em>DeepFM</em>：用FM替代<em>wide&amp;deep</em>中wide部分，提升其表达能力</p>
 <figure>
@@ -426,14 +455,85 @@ P(Y=1|x) = \sigma(w_{wide}^T[x, \phi(x)] + w_{deep}^T
 <li><em>FM Layer</em>：FM內积、求和层</li>
 </ul>
 </blockquote>
+<p><span class="math display">\[\begin{align*}
+y_{FM} &amp; = &lt;w, x&gt; + \sum_i \sum_j &lt;v_i, v_j&gt; x_i x_j + b \\
+\hat y_{DeepFM} &amp; = \sigma(y_{FM} + y_{DNN})
+\end{align*}\]</span></p>
 <ul>
-<li>相当于同时组合wide、二阶交叉、deep三部分结构，增强模型 表达能力</li>
+<li>特点（和Wide&amp;Deep关键区别）
+<ul>
+<li>wide部分为FM （deep&amp;wide中wide部分有特征交叉，但依靠特征工程实现）</li>
+<li>FM、DNN部分共享embedding层</li>
+</ul></li>
+<li>同时组合wide、二阶交叉、deep三部分结构，增强模型表达能力
+<ul>
+<li>FM负责一阶特征、二阶特征交叉</li>
+<li>DNN负责更高阶特征交叉、非线性</li>
+</ul></li>
 </ul>
-<h2 id="deepcross">Deep&amp;Cross</h2>
+<h3 id="实现">实现</h3>
+<ul>
+<li>DNN部分隐层
+<ul>
+<li>激活函数relu优于tanh</li>
+<li>3层隐层效果最佳</li>
+<li>神经元数目在200-400间为宜，略少于Wide&amp;Deep</li>
+<li>在总神经元数目固定下，constant结构最佳</li>
+</ul></li>
+<li>embedding层
+<ul>
+<li>实验中维度为10</li>
+</ul></li>
+</ul>
+<h2 id="deepcross-network">Deep&amp;Cross Network</h2>
 <p><em>Deep&amp;Cross</em>：用cross网络替代<em>wide&amp;deep</em>中wide部分，提升其 表达能力</p>
 <figure>
 <img src="/imgs/deep_and_cross_structure.png" alt="deep_and_cross_structure"><figcaption>deep_and_cross_structure</figcaption>
 </figure>
+<ul>
+<li>特点（和WDL、DeepFM区别）
+<ul>
+<li>使用交叉网络结构提取高阶交叉特征
+<ul>
+<li>无需特征工程（WDL）</li>
+<li>不局限于二阶交叉特征（DeepFM）</li>
+</ul></li>
+</ul></li>
+<li>交叉网络可以使用较少资源提取高阶交叉特征</li>
+</ul>
+<p><a href="https://arxiv.org/pdf/1708.05123.pdf" class="uri" target="_blank" rel="noopener">https://arxiv.org/pdf/1708.05123.pdf</a></p>
+<h3 id="交叉网络">交叉网络</h3>
+<p>交叉网络：以有效地方式应用显式特征交叉，由多个交叉层组成</p>
+<figure>
+<img src="/imgs/cross_network_cross_layer.png" alt="cross_network_cross_layer"><figcaption>cross_network_cross_layer</figcaption>
+</figure>
+<p><span class="math display">\[\begin{align*}
+x_{l+1} &amp; = f(x_l, w_l, b_l) + x_l \\
+&amp; = x_0 x_l^T w_l + b_l + x_l
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(x_l\)</span>：第<span class="math inline">\(l\)</span>交叉层输出</li>
+<li><span class="math inline">\(w_l, b_l\)</span>：第<span class="math inline">\(l\)</span>交叉层参数</li>
+</ul>
+</blockquote>
+<ul>
+<li>借鉴残差网络思想
+<ul>
+<li>交叉层完成特征交叉后，会再加上其输入</li>
+<li>则映射函数<span class="math inline">\(f(x_l, w_l, b_l)\)</span>即拟合残差</li>
+</ul></li>
+<li>特征高阶交叉
+<ul>
+<li>每层<span class="math inline">\(x_0 x_l^T\)</span>都是特征交叉</li>
+<li>交叉特征的阶数随深度<span class="math inline">\(l\)</span>增加而增加，最高阶为<span class="math inline">\(l+1\)</span></li>
+</ul></li>
+<li>复杂度（资源消耗）
+<ul>
+<li>随输入向量维度、深度、线性增加</li>
+<li>受益于<span class="math inline">\(x_l^T w\)</span>为标量，由结合律无需存储中间过程矩阵</li>
+</ul></li>
+</ul>
 <h2 id="nueral-factorization-machine">Nueral Factorization Machine</h2>
 <p><em>NFM</em>：用带二阶交互池化层的DNN替换FM中二阶交叉项，提升FM的 非线性表达能力</p>
 <p><span class="math display">\[\begin{align*}
@@ -621,6 +721,7 @@ p(x)  \frac 1 {1 + exp(-\frac {x - E[x]} {\sqrt{Var[x] + \epsilon}})}
 <ul>
 <li><em>Interest Extractor Layer</em>：使用GRU单元建模历史行为依赖 关系</li>
 </ul>
+<p>? 关系</p>
 
     </div>
 
@@ -639,8 +740,8 @@ p(x)  \frac 1 {1 + exp(-\frac {x - E[x]} {\sqrt{Var[x] + \epsilon}})}
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/ml_models/model_components/embedding/" rel="next" title="Embedding">
-                <i class="fa fa-chevron-left"></i> Embedding
+              <a href="/math_algebra/linear_algebra/matrix/" rel="next" title="矩阵">
+                <i class="fa fa-chevron-left"></i> 矩阵
               </a>
             
           </div>
@@ -648,8 +749,8 @@ p(x)  \frac 1 {1 + exp(-\frac {x - E[x]} {\sqrt{Var[x] + \epsilon}})}
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/math_mixin/constrained_optimization/proxmial_method/" rel="prev" title="Proximal Gredient Method">
-                Proximal Gredient Method <i class="fa fa-chevron-right"></i>
+              <a href="/math_mixin/unconstrained_optimization/coordinate_descent/" rel="prev" title="Coordinate Descent">
+                Coordinate Descent <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -703,7 +804,7 @@ p(x)  \frac 1 {1 + exp(-\frac {x - E[x]} {\sqrt{Var[x] + \epsilon}})}
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -832,7 +933,59 @@ p(x)  \frac 1 {1 + exp(-\frac {x - E[x]} {\sqrt{Var[x] + \epsilon}})}
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -961,7 +1114,115 @@ p(x)  \frac 1 {1 + exp(-\frac {x - E[x]} {\sqrt{Var[x] + \epsilon}})}
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1011,7 +1272,7 @@ p(x)  \frac 1 {1 + exp(-\frac {x - E[x]} {\sqrt{Var[x] + \epsilon}})}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习ctr"><span class="nav-number">1.</span> <span class="nav-text">深度学习CTR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-crossing"><span class="nav-number">2.</span> <span class="nav-text">Deep Crossing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#factorization-machine-based-neural-network"><span class="nav-number">3.</span> <span class="nav-text">Factorization Machine based Neural Network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#product-based-neural-network"><span class="nav-number">4.</span> <span class="nav-text">Product-based Neural Network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#widedeep"><span class="nav-number">5.</span> <span class="nav-text">Wide&amp;Deep</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑回归示例"><span class="nav-number">5.1.</span> <span class="nav-text">逻辑回归示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deepfm"><span class="nav-number">6.</span> <span class="nav-text">DeepFM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deepcross"><span class="nav-number">7.</span> <span class="nav-text">Deep&amp;Cross</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nueral-factorization-machine"><span class="nav-number">8.</span> <span class="nav-text">Nueral Factorization Machine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构"><span class="nav-number">8.1.</span> <span class="nav-text">模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#embedding-layer"><span class="nav-number">8.1.1.</span> <span class="nav-text">Embedding Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bi-interaction-layer"><span class="nav-number">8.1.2.</span> <span class="nav-text">Bi-Interaction Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hidden-layer"><span class="nav-number">8.1.3.</span> <span class="nav-text">Hidden Layer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attentional-factorization-machines"><span class="nav-number">9.</span> <span class="nav-text">Attentional Factorization Machines</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构-1"><span class="nav-number">9.1.</span> <span class="nav-text">模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pair-wise-interaction-layer"><span class="nav-number">9.1.1.</span> <span class="nav-text">Pair-Wise Interaction Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attention-based-pooling"><span class="nav-number">9.1.2.</span> <span class="nav-text">Attention-based Pooling</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-interest-network"><span class="nav-number">10.</span> <span class="nav-text">Deep Interest Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构-2"><span class="nav-number">10.1.</span> <span class="nav-text">模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#activation-unit"><span class="nav-number">10.1.1.</span> <span class="nav-text">activation unit</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型训练"><span class="nav-number">10.2.</span> <span class="nav-text">模型训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mini-batch-aware-regularization"><span class="nav-number">10.2.1.</span> <span class="nav-text">Mini-batch Aware Regularization</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data-adaptive-activation-function"><span class="nav-number">10.2.2.</span> <span class="nav-text">Data Adaptive Activation Function</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-interest-evolution-network"><span class="nav-number">11.</span> <span class="nav-text">Deep Interest Evolution Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构-3"><span class="nav-number">11.1.</span> <span class="nav-text">模型结构</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习ctr"><span class="nav-number">1.</span> <span class="nav-text">深度学习CTR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-crossing"><span class="nav-number">2.</span> <span class="nav-text">Deep Crossing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#factorization-machine-based-neural-network"><span class="nav-number">3.</span> <span class="nav-text">Factorization Machine based Neural Network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#product-based-neural-network"><span class="nav-number">4.</span> <span class="nav-text">Product-based Neural Network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#widedeep-network"><span class="nav-number">5.</span> <span class="nav-text">Wide&amp;Deep Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#google-app-store实现"><span class="nav-number">5.1.</span> <span class="nav-text">Google App Store实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deepfm"><span class="nav-number">6.</span> <span class="nav-text">DeepFM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">6.1.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deepcross-network"><span class="nav-number">7.</span> <span class="nav-text">Deep&amp;Cross Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉网络"><span class="nav-number">7.1.</span> <span class="nav-text">交叉网络</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nueral-factorization-machine"><span class="nav-number">8.</span> <span class="nav-text">Nueral Factorization Machine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构"><span class="nav-number">8.1.</span> <span class="nav-text">模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#embedding-layer"><span class="nav-number">8.1.1.</span> <span class="nav-text">Embedding Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bi-interaction-layer"><span class="nav-number">8.1.2.</span> <span class="nav-text">Bi-Interaction Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hidden-layer"><span class="nav-number">8.1.3.</span> <span class="nav-text">Hidden Layer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attentional-factorization-machines"><span class="nav-number">9.</span> <span class="nav-text">Attentional Factorization Machines</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构-1"><span class="nav-number">9.1.</span> <span class="nav-text">模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pair-wise-interaction-layer"><span class="nav-number">9.1.1.</span> <span class="nav-text">Pair-Wise Interaction Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attention-based-pooling"><span class="nav-number">9.1.2.</span> <span class="nav-text">Attention-based Pooling</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-interest-network"><span class="nav-number">10.</span> <span class="nav-text">Deep Interest Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构-2"><span class="nav-number">10.1.</span> <span class="nav-text">模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#activation-unit"><span class="nav-number">10.1.1.</span> <span class="nav-text">activation unit</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型训练"><span class="nav-number">10.2.</span> <span class="nav-text">模型训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mini-batch-aware-regularization"><span class="nav-number">10.2.1.</span> <span class="nav-text">Mini-batch Aware Regularization</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data-adaptive-activation-function"><span class="nav-number">10.2.2.</span> <span class="nav-text">Data Adaptive Activation Function</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-interest-evolution-network"><span class="nav-number">11.</span> <span class="nav-text">Deep Interest Evolution Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构-3"><span class="nav-number">11.1.</span> <span class="nav-text">模型结构</span></a></li></ol></li></ol></div>
             
 
           </div>

@@ -399,6 +399,26 @@
 <li><p>可以重定向到设备，在*nix系统中，设备也被视为文件 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"hello"</span> &gt; /dev/tty01</span></span><br></pre></td></tr></table></figure></p>
 <p>特别的设备<code>/dev/null</code>可以作为不需要输出的重定向目标</p></li>
 </ul>
+<h4 id="heredoc-format">HereDoc Format</h4>
+<p>HereDoc Format：特殊的重定向，指示shell从标准输入读取输入 直至遇到<strong>标记</strong>行（前后不能有空白符）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;CMD&gt; &lt;&lt; &lt;EOF&gt;</span><br><span class="line">here-doc</span><br><span class="line">&lt;EOF&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>EOF</code>：标记字符串，常用<code>EOF</code>、<code>STOP</code>等</li>
+</ul>
+</blockquote>
+<ul>
+<li>若标记中含有字符被quote（如被引号包括）
+<ul>
+<li>结束标记为去除quotation结果</li>
+<li><code>here-doc</code>中不执行参数扩展、命令替换、算数扩展</li>
+</ul></li>
+<li>若标记中没有quotation
+<ul>
+<li><code>here-doc</code>中执行参数扩展、命令替换、算数扩展</li>
+<li>此时<code>\</code>、<code>$</code>、反引号需要<code>\</code>转义</li>
+</ul></li>
+</ul>
 <h4 id="管道">管道</h4>
 <p><code>|</code>：将一个程序的标准输出发送到另一个程序的标准输入</p>
 <ul>
@@ -520,6 +540,11 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat README | while read -r line; do</span><br><span class="line">	echo $line</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
 <h4 id="shift"><code>shift</code></h4>
 <p><code>shift</code>：移除参数列表中头部部分参数，缺省移除1个</p>
+<blockquote>
+<ul>
+<li><code>shift</code>移除从<code>$1</code>开始，无法移除<code>$0</code></li>
+</ul>
+</blockquote>
 <h4 id="getopts"><code>getopts</code></h4>
 <p><code>getopts</code>：逐个读取解析单字符指示的参数</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function func ()&#123;</span><br><span class="line">	echo OPTIND: $OPTIND</span><br><span class="line">	while getopts ":a:B:cdef" opt; do</span><br><span class="line">	  case $opt in</span><br><span class="line">		a) echo "this is -a the arg is ! $OPTARG at $OPTIND" ;;</span><br><span class="line">		B) echo "this is -B the arg is ! $OPTARG at $OPTIND" ;;</span><br><span class="line">		c) echo "this is -c the arg is ! $OPTARG at $OPTIND" ;;</span><br><span class="line">		\?) echo "Invalid option: -$OPTARG" ;;</span><br><span class="line">	  esac</span><br><span class="line">	done</span><br><span class="line">	echo OPTIND: $OPTIND</span><br><span class="line">	echo $@</span><br><span class="line">	shift $(($OPTIND - 1))</span><br><span class="line">	echo $@</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">func -a 23 -B 1904-03-04 343 age</span><br></pre></td></tr></table></figure>
@@ -634,7 +659,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -763,7 +788,59 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -892,7 +969,115 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -942,7 +1127,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本执行"><span class="nav-number">1.</span> <span class="nav-text">脚本执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-number">1.1.</span> <span class="nav-text">#!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#种执行方式"><span class="nav-number">1.2.</span> <span class="nav-text">4种执行方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例"><span class="nav-number">1.2.1.</span> <span class="nav-text">例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结论"><span class="nav-number">1.2.2.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell环境"><span class="nav-number">2.</span> <span class="nav-text">Shell环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境变量"><span class="nav-number">2.1.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入输出"><span class="nav-number">2.2.</span> <span class="nav-text">输入输出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重定向"><span class="nav-number">2.2.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#管道"><span class="nav-number">2.2.2.</span> <span class="nav-text">管道</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell内置命令"><span class="nav-number">2.3.</span> <span class="nav-text">Shell内置命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#set"><span class="nav-number">2.3.1.</span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#let"><span class="nav-number">2.3.2.</span> <span class="nav-text">let</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#declare"><span class="nav-number">2.3.3.</span> <span class="nav-text">declare</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#read"><span class="nav-number">2.3.4.</span> <span class="nav-text">read</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#shift"><span class="nav-number">2.3.5.</span> <span class="nav-text">shift</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getopts"><span class="nav-number">2.3.6.</span> <span class="nav-text">getopts</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本执行"><span class="nav-number">1.</span> <span class="nav-text">脚本执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-number">1.1.</span> <span class="nav-text">#!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#种执行方式"><span class="nav-number">1.2.</span> <span class="nav-text">4种执行方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例"><span class="nav-number">1.2.1.</span> <span class="nav-text">例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结论"><span class="nav-number">1.2.2.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell环境"><span class="nav-number">2.</span> <span class="nav-text">Shell环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境变量"><span class="nav-number">2.1.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入输出"><span class="nav-number">2.2.</span> <span class="nav-text">输入输出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重定向"><span class="nav-number">2.2.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#heredoc-format"><span class="nav-number">2.2.2.</span> <span class="nav-text">HereDoc Format</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#管道"><span class="nav-number">2.2.3.</span> <span class="nav-text">管道</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell内置命令"><span class="nav-number">2.3.</span> <span class="nav-text">Shell内置命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#set"><span class="nav-number">2.3.1.</span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#let"><span class="nav-number">2.3.2.</span> <span class="nav-text">let</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#declare"><span class="nav-number">2.3.3.</span> <span class="nav-text">declare</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#read"><span class="nav-number">2.3.4.</span> <span class="nav-text">read</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#shift"><span class="nav-number">2.3.5.</span> <span class="nav-text">shift</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getopts"><span class="nav-number">2.3.6.</span> <span class="nav-text">getopts</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

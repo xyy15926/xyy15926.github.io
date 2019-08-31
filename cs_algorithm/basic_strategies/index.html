@@ -588,75 +588,126 @@
 <li>Hash（散列）</li>
 </ul>
 <h2 id="动态规划">动态规划</h2>
-<p><em>Dynamic Programming</em>用于解决由<strong>交叠</strong>子问题构成问题 #todo</p>
-<h3 id="步骤">步骤</h3>
-<h4 id="递推关系">递推关系</h4>
-<p>导出问题实例的递推关系，其中包含较小、且交叠子问题解</p>
+<p><em>Dynamic Programming</em>：记录、再利用子问题结果</p>
 <ul>
-<li><p>所以一般递推关系中往往会有<em>max</em>、<em>min</em>、<em>sum</em>等遍历比较 类型的运算，否则不会有交叠子问题</p></li>
-<li><p>事实上，一般动态规划就是用于求解<strong>离散</strong>最优化问题</p></li>
-<li><p>动态规划递推中包含一个重要思想<strong>有序组合</strong></p>
+<li>记录子问题解，试图避免不必要、重复子问题求解
 <ul>
-<li><p>考虑变量时，有序的<strong>剔除</strong>，一般而言是单向剔除，有些 变量需要考虑双向，视为两个有约束条件的独立变量 （最优二叉树）</p></li>
-<li><p>因为<em>最优解定理</em>，最优解由子问题最优解构成</p></li>
-<li><p>更直观的，因为只需要求解全集最优解，所以只需要考虑 <strong>部分有序子集</strong>，类似于<strong>矩阵可逆</strong>只需要判断 <strong>顺序主子式</strong></p></li>
+<li>否则就是普通递归，不能避免重复求解</li>
+<li>或者说动态规划就是<strong>普通递归+子问题解记录</strong></li>
+</ul></li>
+<li><p>适合解决的问题特点</p>
+<ul>
+<li><strong>离散</strong>最优化问题：如递推关系中包含<em>max</em>、<em>min</em>、 <em>sum</em>等，递推式中
+<ul>
+<li><strong>因变量</strong>待求解最优化问题</li>
+<li><strong>自变量</strong>则为问题中涉及的离散变量</li>
+</ul></li>
+<li><p><strong>交叠</strong>子问题构成复杂问题，需遍历比较</p></li>
+<li><p>问题具有<strong>最优子结构</strong>，由<em>最优解定理</em>，最优解由 子问题最优解构成</p></li>
+</ul></li>
+</ul>
+<h3 id="求解空间">求解空间</h3>
+<p>求解空间：问题涉及的两个、多个取离散值变量，根据递推关系考虑 <strong>离散变量待求解问题可能组合</strong></p>
+<ul>
+<li>离散变量包括
+<ul>
+<li>明显离散列表</li>
+<li><strong>因变量限制条件</strong></li>
+</ul></li>
+<li>可利用变量间限制条件组合因变量
+<ul>
+<li>默认各变量组合是笛卡尔积</li>
+<li>由于限制条件可以减少变量组合取值数量</li>
+</ul></li>
+<li>某变量可能为其他变量提供搜索空间
+<ul>
+<li>即其<strong>每个取值均需</strong>和其他变量组合、搜索</li>
+<li>此时可以不将其计入求解变量、动态规划表，而是遍历其 （如：找零问题中零钱）</li>
+</ul></li>
+</ul>
+<h3 id="递推式递推关系">递推式、递推关系</h3>
+<p>递推式、递推关系：将原问题分解为较小、交叠子问题的方法</p>
+<ul>
+<li><p>动态规划递推中包含重要思想<strong>有序组合</strong></p>
+<ul>
+<li><p>有序<strong>剔除遍历</strong>相关变量，一般单向剔除，有些变量需要 考虑双向，视为两个有约束条件的独立变量 （如：最优二叉树）</p></li>
+<li><p>因为只需要求解全集最优解，所以只需要考虑 <strong>部分有序子集</strong>，直观类比<strong>矩阵可逆</strong>只需要判断 <strong>顺序主子式</strong></p></li>
 </ul></li>
 <li><p>原问题解可能无法直接得到递推关系</p>
 <ul>
-<li><p>原始问题不是求数值解，应该寻找数值中间解构建递推关系 ，然后利用动态规划表得到最终解（最长子序列）</p></li>
-<li><p>原始问题是求<strong>宽松范围</strong>的解，即不要求解包含端点， 可以以<strong>各个元素分别作为端点</strong>的解构建递推关系，其中 最优者即为宽松范围解（最长子序列）</p></li>
+<li>原始问题非求数值解
+<ul>
+<li>应该寻找数值中间解构建递推关系，</li>
+<li>再利用动态规划表得到最终解（最长子序列）</li>
+</ul></li>
+<li>原始问题是求<strong>宽松范围解即解不要求包含断点</strong>的解
+<ul>
+<li>以<strong>各个元素分别作为端点</strong>的解构建递推关系</li>
+<li>以最优者即为宽松范围解（最长子序列）</li>
+</ul></li>
+</ul></li>
+<li>递推式中应优先考虑限制条件：减少搜索空间
+<ul>
+<li>单个自变量限制条件</li>
+<li><strong>两端都需要变化的变量视为两个独立、相互约束变量</strong></li>
 </ul></li>
 </ul>
-<h4 id="递推式">递推式</h4>
-<p>写出递推式表示递推关系</p>
+<h3 id="动态规划表">动态规划表</h3>
+<p>动态规划表：存储已求解交叠子问题解，相同问题查表避免重复求解</p>
 <ul>
-<li><p>递推式中<strong>因变量</strong>往往就是最优解</p></li>
-<li><p>递推式中<strong>自变量</strong>则为问题中涉及的<strong>列表</strong></p>
+<li>动态规划表结构
 <ul>
-<li><p>包括：明显离散列表、<strong>因变量限制条件</strong></p></li>
-<li><p>列表意味组合元素<strong>数量为1</strong>，若数量有限则展开，否则 其不是自变量</p></li>
-<li><p>各自变量是各自组合的笛卡尔积的关系</p></li>
+<li>n维结构化数据表（常用）
+<ul>
+<li>n为自变量数量（组合变量视为单个变量）</li>
+<li>每维对应某离散变量</li>
 </ul></li>
-<li><p>n维列表，自变量数量+n（多维自身已经组合）</p>
-<ul>
-<li>两端都需要变化的变量视为两个独立、相互约束变量</li>
+<li><strong>字典</strong>：适合自顶向下动态规划</li>
 </ul></li>
-<li><p>递推式限制条件包括：自变量限制条件</p></li>
-</ul>
-<h4 id="记录解">记录解</h4>
-<p>求出交叠子问题的解并记录在表中，避免重复求解</p>
+<li>求解问题时
 <ul>
-<li><p>否则就是普通递归，不能避免重复求解，或者说动态规划 就是<strong>普通递归+子问题解记录</strong></p></li>
-<li>对多维表，常常逐行、逐列填充（求解子问题），一般而言 <strong>先初始化者先填</strong>
-<ul>
-<li>先初始化行，则在初始化列过程中可以在循环中填充行</li>
-<li>先初始化列，则在初始化行过程中可以在循环中填充列</li>
+<li>将问题分解为交叠子问题</li>
+<li>先查动态规划表，尝试从表中得到问题解，否则求解问题， 记录于动态规划表</li>
+<li>并用于求解更大规模问题，直至原问题求解完成</li>
 </ul></li>
-</ul>
-<h4 id="原问题求解">原问题求解</h4>
-<p>从表中得到较小问题解，并用于求解更大规模问题，直至原问题求解 完成</p>
-<ul>
-<li>需要通过回溯得到问题最优解的构成</li>
 </ul>
 <h3 id="分类">分类</h3>
 <h4 id="自底向上经典">自底向上（经典）</h4>
-<p>需要求解给定问题所有较小子问题</p>
+<p>自底向上：求解给定问题所有较小子问题，最终得到的原始问题解</p>
 <ul>
-<li><p>计算用<strong>所有</strong>小问题解、填充表格</p>
+<li>计算用<strong>所有</strong>小问题解、填充动态规划表格
 <ul>
-<li>自底向上没有对问题整体的全局把握，只能全部求解</li>
+<li>常逐行、逐列填充动态表（求解子问题）</li>
+<li>一般<strong>先填充初始化变量对应维度（即位于内部循环）</strong>
+<ul>
+<li>先初始化行，在初始化列过程中可以在循环中填充行</li>
+<li>先初始化列，在初始化行过程中可以在循环中填充列</li>
+</ul></li>
 <li><strong>循环</strong>保证所需子问题已经求解完毕</li>
 </ul></li>
-<li><p>每个小问题只求解一次</p></li>
+<li>特点
+<ul>
+<li>自底向上没有对问题整体的全局把握，必须求解全部子问题</li>
+<li>无需递归栈空间</li>
+</ul></li>
 </ul>
 <h4 id="自顶向下">自顶向下</h4>
-<p>利用记忆功能，试图避免不必要的子问题求解</p>
+<p>自顶向下：整体把握原始问题，只计算对求解原问题的有必要子问题</p>
 <ul>
-<li>用自顶向下方式求解给定问题</li>
-<li>同时维护类似自底向上的动态规划所使用的表格
+<li>用自顶向下方式求解给定问题
 <ul>
-<li>初始化时所有单元格标记未被计算</li>
-<li>之后需要计算子问题解时，先检查相应单元格，然后决定 是否需要递归调用求解、记录</li>
+<li>先将问题分解子问题</li>
+<li>求解必要的子问题
+<ul>
+<li>先检查相应动态规划表中该问题是否已求解，</li>
+<li>否则求解子问题，记录解于动态规划表</li>
+</ul></li>
+<li>所有子问题求解完毕，回溯得到原问题解</li>
+</ul></li>
+<li>特点
+<ul>
+<li>整体把握问题整体，避免求解不必要子问题</li>
+<li>需要通过回溯（递归栈）得到问题最优解的构成</li>
 </ul></li>
 </ul>
 <h3 id="principle-of-optimality"><em>Principle of Optimality</em></h3>
@@ -944,8 +995,8 @@
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/cs_program/db_optimization/optimizer_physical/" rel="next" title="物理查询优化">
-                <i class="fa fa-chevron-left"></i> 物理查询优化
+              <a href="/cs_algorithm/data_structure/set/" rel="next" title="Set">
+                <i class="fa fa-chevron-left"></i> Set
               </a>
             
           </div>
@@ -1008,7 +1059,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1137,7 +1188,59 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1266,7 +1369,115 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1316,7 +1527,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#蛮力法"><span class="nav-number">1.</span> <span class="nav-text">蛮力法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例"><span class="nav-number">1.2.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#recursion"><span class="nav-number">2.</span> <span class="nav-text">Recursion</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#recursive-paradigm"><span class="nav-number">2.1.</span> <span class="nav-text">Recursive Paradigm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值问题"><span class="nav-number">2.2.</span> <span class="nav-text">返回值问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减治法"><span class="nav-number">3.</span> <span class="nav-text">减治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#decrease-by-constant"><span class="nav-number">3.1.</span> <span class="nav-text">Decrease-by-Constant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decrease-by-a-contant-factor"><span class="nav-number">3.2.</span> <span class="nav-text">Decrease-by-A-Contant-Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable-size-decrease"><span class="nav-number">3.3.</span> <span class="nav-text">Variable-Size-Decrease</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例-1"><span class="nav-number">3.4.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治法"><span class="nav-number">4.</span> <span class="nav-text">分治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#案例-2"><span class="nav-number">4.1.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变治法"><span class="nav-number">5.</span> <span class="nav-text">变治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#instance-simplification"><span class="nav-number">5.1.</span> <span class="nav-text">Instance Simplification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#representation-change"><span class="nav-number">5.2.</span> <span class="nav-text">Representation Change</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-reduction"><span class="nav-number">5.3.</span> <span class="nav-text">problem reduction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例"><span class="nav-number">5.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划"><span class="nav-number">6.</span> <span class="nav-text">动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#步骤"><span class="nav-number">6.1.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#递推关系"><span class="nav-number">6.1.1.</span> <span class="nav-text">递推关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#递推式"><span class="nav-number">6.1.2.</span> <span class="nav-text">递推式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#记录解"><span class="nav-number">6.1.3.</span> <span class="nav-text">记录解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原问题求解"><span class="nav-number">6.1.4.</span> <span class="nav-text">原问题求解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">6.2.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自底向上经典"><span class="nav-number">6.2.1.</span> <span class="nav-text">自底向上（经典）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自顶向下"><span class="nav-number">6.2.2.</span> <span class="nav-text">自顶向下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#principle-of-optimality"><span class="nav-number">6.3.</span> <span class="nav-text">Principle of Optimality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例-1"><span class="nav-number">6.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#贪婪技术"><span class="nav-number">7.</span> <span class="nav-text">贪婪技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">7.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正确性证明"><span class="nav-number">7.2.</span> <span class="nav-text">正确性证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拟阵"><span class="nav-number">7.3.</span> <span class="nav-text">拟阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例-2"><span class="nav-number">7.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回溯法"><span class="nav-number">8.</span> <span class="nav-text">回溯法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#适合问题"><span class="nav-number">8.1.</span> <span class="nav-text">适合问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态空间树"><span class="nav-number">8.2.</span> <span class="nav-text">状态空间树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">8.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#promising"><span class="nav-number">8.2.2.</span> <span class="nav-text">Promising</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#约束判断位置"><span class="nav-number">8.2.3.</span> <span class="nav-text">约束判断位置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法特点"><span class="nav-number">8.3.</span> <span class="nav-text">算法特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分支界限法"><span class="nav-number">9.</span> <span class="nav-text">分支界限法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#状态空间树-1"><span class="nav-number">9.1.</span> <span class="nav-text">状态空间树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#边界函数"><span class="nav-number">9.2.</span> <span class="nav-text">边界函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代策略"><span class="nav-number">10.</span> <span class="nav-text">迭代策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">10.1.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-hard近似算法"><span class="nav-number">11.</span> <span class="nav-text">NP-Hard近似算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#perfermance-ratio"><span class="nav-number">11.1.</span> <span class="nav-text">Perfermance Ratio</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#旅行商问题无有限近似比算法"><span class="nav-number">11.1.1.</span> <span class="nav-text">旅行商问题无有限近似比算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">11.2.</span> <span class="nav-text">说明</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#蛮力法"><span class="nav-number">1.</span> <span class="nav-text">蛮力法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例"><span class="nav-number">1.2.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#recursion"><span class="nav-number">2.</span> <span class="nav-text">Recursion</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#recursive-paradigm"><span class="nav-number">2.1.</span> <span class="nav-text">Recursive Paradigm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值问题"><span class="nav-number">2.2.</span> <span class="nav-text">返回值问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减治法"><span class="nav-number">3.</span> <span class="nav-text">减治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#decrease-by-constant"><span class="nav-number">3.1.</span> <span class="nav-text">Decrease-by-Constant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decrease-by-a-contant-factor"><span class="nav-number">3.2.</span> <span class="nav-text">Decrease-by-A-Contant-Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable-size-decrease"><span class="nav-number">3.3.</span> <span class="nav-text">Variable-Size-Decrease</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例-1"><span class="nav-number">3.4.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治法"><span class="nav-number">4.</span> <span class="nav-text">分治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#案例-2"><span class="nav-number">4.1.</span> <span class="nav-text">案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变治法"><span class="nav-number">5.</span> <span class="nav-text">变治法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#instance-simplification"><span class="nav-number">5.1.</span> <span class="nav-text">Instance Simplification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#representation-change"><span class="nav-number">5.2.</span> <span class="nav-text">Representation Change</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-reduction"><span class="nav-number">5.3.</span> <span class="nav-text">problem reduction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例"><span class="nav-number">5.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划"><span class="nav-number">6.</span> <span class="nav-text">动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#求解空间"><span class="nav-number">6.1.</span> <span class="nav-text">求解空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#递推式递推关系"><span class="nav-number">6.2.</span> <span class="nav-text">递推式、递推关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态规划表"><span class="nav-number">6.3.</span> <span class="nav-text">动态规划表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">6.4.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自底向上经典"><span class="nav-number">6.4.1.</span> <span class="nav-text">自底向上（经典）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自顶向下"><span class="nav-number">6.4.2.</span> <span class="nav-text">自顶向下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#principle-of-optimality"><span class="nav-number">6.5.</span> <span class="nav-text">Principle of Optimality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例-1"><span class="nav-number">6.6.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#贪婪技术"><span class="nav-number">7.</span> <span class="nav-text">贪婪技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">7.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正确性证明"><span class="nav-number">7.2.</span> <span class="nav-text">正确性证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拟阵"><span class="nav-number">7.3.</span> <span class="nav-text">拟阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典例-2"><span class="nav-number">7.4.</span> <span class="nav-text">典例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回溯法"><span class="nav-number">8.</span> <span class="nav-text">回溯法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#适合问题"><span class="nav-number">8.1.</span> <span class="nav-text">适合问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态空间树"><span class="nav-number">8.2.</span> <span class="nav-text">状态空间树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">8.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#promising"><span class="nav-number">8.2.2.</span> <span class="nav-text">Promising</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#约束判断位置"><span class="nav-number">8.2.3.</span> <span class="nav-text">约束判断位置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法特点"><span class="nav-number">8.3.</span> <span class="nav-text">算法特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分支界限法"><span class="nav-number">9.</span> <span class="nav-text">分支界限法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#状态空间树-1"><span class="nav-number">9.1.</span> <span class="nav-text">状态空间树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#边界函数"><span class="nav-number">9.2.</span> <span class="nav-text">边界函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代策略"><span class="nav-number">10.</span> <span class="nav-text">迭代策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">10.1.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-hard近似算法"><span class="nav-number">11.</span> <span class="nav-text">NP-Hard近似算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#perfermance-ratio"><span class="nav-number">11.1.</span> <span class="nav-text">Perfermance Ratio</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#旅行商问题无有限近似比算法"><span class="nav-number">11.1.1.</span> <span class="nav-text">旅行商问题无有限近似比算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">11.2.</span> <span class="nav-text">说明</span></a></li></ol></li></ol></div>
             
 
           </div>

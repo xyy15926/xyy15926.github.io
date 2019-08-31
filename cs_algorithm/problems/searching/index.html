@@ -392,51 +392,226 @@
 <li><p>但关键不是有序，而是<strong>减规模</strong>，即使顺序表不是完全有序， 信息足够减规模即可</p></li>
 </ul>
 <h3 id="折半查找二分查找">折半查找/二分查找</h3>
-<p>对<strong>有序数组</strong>，比较查找K和数组中间元素A[m]完成查找工作</p>
+<p>二分查找：利用数组的有序性，通过对查找区间中间元素进行判断， 缩小查找区间至一般大小</p>
 <ul>
-<li>如果：A[m] == K，查找结束</li>
-<li>若：K &lt; A[m]，对数组前半部分执行该操作</li>
-<li>若：K &gt; A[m]，对数组后半部分执行该操作</li>
-</ul>
-<blockquote>
+<li><p>依赖数据结构，需能够快速找到中间元素，如数组、二叉搜索树</p></li>
+<li><p>一般模板：比较中间元素和目标的大小关系、讨论</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">left, right = ...</span><br><span class="line"><span class="keyword">while</span> condition(search_space is <span class="keyword">not</span> <span class="literal">NULL</span>):</span><br><span class="line">	mid = (left + right) <span class="comment">// 2</span></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="comment">// do something</span></span><br><span class="line">	elif nums[mid] &gt; target:</span><br><span class="line">		<span class="comment">// do something</span></span><br><span class="line">	elif nums[mid] &lt; target:</span><br><span class="line">		<span class="comment">// do somthing</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>折半查找依赖数据结构能够快速找到中间元素，如数组、二叉 搜索树</li>
+<li>函数独立时，找到<code>target</code>可在循环内直接返回</li>
+<li>函数体嵌入其他部分时，为方便找到<code>target</code>应<code>break</code>， 此时涉及跳出循环时<code>target</code>可能存在的位置
+<ul>
+<li>找到<code>target</code>中途<code>break</code></li>
+<li>未找到<code>target</code>直到循环终止条件</li>
+</ul></li>
+</ul></li>
 </ul>
-</blockquote>
 <h4 id="基本版">基本版</h4>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchBase(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target)</span><br><span class="line">	<span class="comment">// 非递归折半查找基本版</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums[0..n-1]、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">0</span>, n<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> left &lt;= right:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> target = nums[mid]:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line">		elif target &lt; nums[mid]:</span><br><span class="line">			right = mid - <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			left  = mid + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchEndReturnV1(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	// 非递归折半查找基本版，不直接返回，方便嵌入</span><br><span class="line">	// 输入：升序数组nums[<span class="number">0.</span>.n<span class="number">-1</span>]、查找键target</span><br><span class="line">	// 输出：存在返回数组元素下标m，否则返回<span class="number">-1</span></span><br><span class="line">	left, right = <span class="number">0</span>, n<span class="number">-1</span></span><br><span class="line">	<span class="keyword">while</span> left &lt;= right:</span><br><span class="line">		mid = (left + right) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">elif</span> nums[mid] &lt; target:</span><br><span class="line">			left = mid+<span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid<span class="number">-1</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">assert</span>(mid == right == left<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 仅最后返回，方便嵌入，下同</span></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>输入判断：无需判断输入列表是否为空
+<ul>
+<li>终止条件保证不会进入，即不会越界</li>
+</ul></li>
+<li>初始条件：<code>left, right = 0, n-1</code>
+<ul>
+<li>左、右均未检查、需检查</li>
+<li>即代码中查找区间为<strong>闭区间</strong><span class="math inline">\([left, right]\)</span>，此时 搜索区间非空</li>
+</ul></li>
+<li>中点选择：<code>mid = (left + right) // 2</code>
+<ul>
+<li>向下取整</li>
+<li>对此版本无影响，<code>left</code>、<code>right</code>总是移动，不会死循环</li>
+</ul></li>
+<li>循环条件：<code>left &lt;= right</code>
+<ul>
+<li>搜索区间为闭区间，则相应检查条件为<code>left &lt;= right</code>， 否则有元素未被检查</li>
+<li>在循环内<code>left</code>、<code>right</code>可能重合</li>
+</ul></li>
+<li>更新方式：<code>left=mid+1, right=mid-1</code>
+<ul>
+<li>为保证搜索区间始终为闭区间，需剔除<code>mid</code></li>
+</ul></li>
+<li>终止情况：<code>right=left-1</code>、<code>mid=left/right</code>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环<code>left==right</code></li>
+<li>越界终止情况：左、右指针均剔除<code>mid</code>，两侧均可能越界
+<ul>
+<li><code>mid=right=n-1, left=n</code></li>
+<li><code>mid=left=0, right=-1</code></li>
+</ul></li>
+</ul></li>
+<li><code>target</code>位置
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code>
+<ul>
+<li><code>target</code>位于<code>[right, left]</code>间</li>
+<li><code>left=mid+1=right+1</code>表示小于<code>target</code>元素数量</li>
+</ul></li>
+</ul></li>
+</ul>
 <blockquote>
 <ul>
-<li>初始条件：<code>left = 0, right = n-1</code></li>
-<li><strong>终止情况</strong>：<code>left = right + 1</code></li>
-<li>指针移动：<code>left = mid+1, right= mid-1</code></li>
-<li>中点选择：<code>floor((l+r) / 2)</code> &gt; - 这个主要是考虑到整数除法的特性，以下均取<code>floor</code> &gt; - 对基本版本而言，<code>ceiling</code>、<code>floor</code>效果一样，对以下 版本的终止条件而言有区别</li>
+<li>需要和<strong>左右邻居（查找结束后）</strong>、<code>left</code>、<code>right</code>比较 情况下，容易考虑失误，不适合扩展使用</li>
 </ul>
 </blockquote>
+<h4 id="高级版1">高级版1</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchV2(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	left, right = <span class="number">0</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right:</span><br><span class="line">		mid = (left + right) <span class="comment">// 2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			left = mid+<span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		assert(mid<span class="number">-1</span> == left == right)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>关键特点</strong>
+<li>输入判断：无需判断输入列表是否为空
 <ul>
-<li>在循环内<code>left</code>、<code>right</code>可能重合</li>
-<li>需要和<strong>左右邻居</strong>、<code>left</code>、<code>right</code>比较情况下，容易 考虑失误</li>
-<li>不适合扩展使用</li>
+<li>终止条件保证不会进入，即不会越界</li>
 </ul></li>
-<li><p>终止情况：<code>left = right + 1</code></p>
+<li>初始条件：<code>left, right = 0, n</code>
 <ul>
-<li>若存在<code>target</code>，则就位于<code>mid</code>，即<strong>只需要检查mid</strong> 即可判断是否找值</li>
+<li>左未检查、需检查，右无需检查</li>
+<li>即代码中查找区间为<strong>左闭右开区间</strong><span class="math inline">\([left, right)\)</span></li>
 </ul></li>
-<li><p><code>target</code>位置</p>
+<li>中点选择：<code>mid = (left + right) // 2</code>
 <ul>
-<li>若不存在<code>target</code>，则<code>target</code>位于<code>(right, left)</code>之间</li>
-<li>循环终止后，<code>left=n</code>、<code>right=-1</code>有可能越界</li>
+<li>向下取整</li>
+<li>此处必须选择向下取整，否则<code>left=right-1</code>时进入死循环</li>
+<li>即：<strong>循环内检查所有元素，取整一侧指针必须移动</strong></li>
 </ul></li>
-<li><p>不需要后续处理</p>
+<li>循环条件：<code>left &lt; right</code>
 <ul>
-<li><strong>端点符合一般情况</strong></li>
-<li>每步移动指针都检查是否找到元素</li>
-<li>到达终止条件时，<strong>所有可能点都被检查</strong></li>
+<li>搜索区间为左闭右开区间，则检查条件为<code>left &lt; right</code>， 此时搜索区间非空</li>
+<li>在循环内<code>left</code>、<code>right</code>不会重合</li>
+</ul></li>
+<li>更新方式：<code>left=mid+1, right=mid</code>
+<ul>
+<li>为保证搜索区间始终为左闭右开区间
+<ul>
+<li>移动左指针时需剔除<code>mid</code></li>
+<li>移动右指针时无需剔除<code>mid</code></li>
+</ul></li>
+</ul></li>
+<li>终止情况：<code>right=left</code>、<code>mid=left/left-1</code>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环
+<ul>
+<li><code>left+1=mid=right-1</code></li>
+<li><code>left=mid=right-1</code></li>
+</ul></li>
+<li>越界终止情况：仅左指针剔除<code>mid</code>，仅可能右侧越界
+<ul>
+<li><code>left=right=n=mid+1</code></li>
+</ul></li>
+</ul></li>
+<li><code>target</code>位置
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code>
+<ul>
+<li><code>left=mid=right</code>：循环过程中<code>target</code>可能已不在 搜索区间中，最终位于<code>(mid-1, mid)</code></li>
+<li><code>mid+1=left=right</code>：<code>(mid, left)</code></li>
+<li><code>left</code>表示小于<code>target</code>元素数量</li>
+</ul></li>
 </ul></li>
 </ul>
-<h4 id="高级版1">高级版1</h4>
+<h4 id="高级版2">高级版2</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">BainarySearchEndReturnV3(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保持左右指针顺序、不重合</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	left, right = <span class="number">-1</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right:</span><br><span class="line">		mid = (left + right + <span class="number">1</span>) <span class="comment">// 2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			right = mid<span class="number">-1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			left = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>输入判断：无需判断输入列表是否为空
+<ul>
+<li>终止条件保证不会进入，即不会越界</li>
+</ul></li>
+<li>初始条件：<code>left, right = -1, n-1</code>
+<ul>
+<li>左无需检查，右未检查、需检查</li>
+<li>即代码中查找区间为<strong>左开右闭区间</strong><span class="math inline">\((left, right]\)</span></li>
+</ul></li>
+<li>中点选择：<code>mid = (left + right + 1) // 2</code>
+<ul>
+<li><strong>向上取整</strong></li>
+<li>此处必须选择向上取整，否则<code>left=right-1</code>时进入死循环 （或放宽循环条件，添加尾判断）</li>
+<li>即：<strong>循环内检查所有元素，取整一侧指针必须移动</strong></li>
+</ul></li>
+<li>循环条件：<code>left &lt; right</code>
+<ul>
+<li>搜索区间为左开右闭区间，则检查条件为<code>left &lt; right</code>， 此时搜索区间非空</li>
+<li>在循环内<code>left</code>、<code>right</code>不会重合</li>
+</ul></li>
+<li>更新方式：<code>left=mid, right=mid+1</code>
+<ul>
+<li>为保证搜索区间始终为左闭右开区间
+<ul>
+<li>移动右指针时需剔除<code>mid</code></li>
+<li>移动左指针时无需剔除<code>mid</code></li>
+</ul></li>
+</ul></li>
+<li>终止情况：<code>left=right</code>、<code>mid=left/left+1</code>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环
+<ul>
+<li><code>left+1=mid=right-1</code></li>
+<li><code>left+1=mid=right</code></li>
+</ul></li>
+<li>越界终止情况：仅右指针剔除<code>mid</code>，仅可能左侧越界
+<ul>
+<li><code>left=right=-1=mid-1</code></li>
+</ul></li>
+</ul></li>
+<li><code>target</code>位置
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code>
+<ul>
+<li><code>left=mid=right</code>：循环过程中<code>target</code>可能已不在 搜索区间中，最终位于<code>(right, right+1)</code></li>
+<li><code>mid+1=left=right</code>：<code>(left, right)</code></li>
+<li><code>left+1</code>表示小于<code>target</code>元素数量</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="高级版3">高级版3</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchEndReturnV2(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	// 折半查找，保持左右指针顺序、不重合</span><br><span class="line">	// 输入：升序数组nums、查找键target</span><br><span class="line">	// 输出：存在返回数组元素下标m，否则返回<span class="number">-1</span></span><br><span class="line">	left, right = <span class="number">-1</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right<span class="number">-1</span>:</span><br><span class="line">		mid = (left + right) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">elif</span> nums[mid] &lt; target:</span><br><span class="line">			left = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>输入判断：无需判断输入列表是否为空
+<ul>
+<li>终止条件保证不会进入，即不会越界</li>
+</ul></li>
+<li>初始条件：<code>left, right = -1, n</code>
+<ul>
+<li>左、右均无需检查</li>
+<li>即代码中查找区间为<strong>开区间</strong><span class="math inline">\((left, right)\)</span></li>
+</ul></li>
+<li>中点选择：<code>mid = (left + right) // 2</code>
+<ul>
+<li>向下取整、向上取整均可</li>
+</ul></li>
+<li>循环条件：<code>left &lt; right-1</code>
+<ul>
+<li>搜索区间为左开右闭区间，则检查条件为<code>left &lt; right-1</code>， 此时搜索区间非空</li>
+<li>在循环内<code>left</code>、<code>right</code>不会重合</li>
+</ul></li>
+<li>更新方式：<code>left=mid, right=mid</code>
+<ul>
+<li>循环终止条件足够宽泛，不会死循环</li>
+</ul></li>
+<li>终止情况：<code>left=right-1</code>、<code>mid=right/right-1</code>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环
+<ul>
+<li><code>left+1=mid=right-1</code></li>
+</ul></li>
+<li>越界终止情况：左右初始条件均越界，则左、右均可能越界
+<ul>
+<li><code>mid=left=n-1</code>、<code>right=n</code></li>
+<li><code>left=-1</code>、<code>mid=right=0</code></li>
+</ul></li>
+</ul></li>
+<li><code>target</code>位置
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code>
+<ul>
+<li><code>target</code>始终在搜索区间<code>(left, right)</code>内</li>
+<li>最终位于<code>(left, right)</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="高级版1-原">高级版1-原</h4>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchKeep1(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保持左右指针顺序、不重合</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">0</span>, n<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> left &lt; right - <span class="number">1</span>:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			right = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			left = mid</span><br><span class="line"></span><br><span class="line">	<span class="comment">// post-procesing</span></span><br><span class="line">	<span class="keyword">if</span> nums[left] == target:</span><br><span class="line">		<span class="keyword">return</span> left</span><br><span class="line">	<span class="keyword">if</span> nums[right] == target:</span><br><span class="line">		<span class="keyword">return</span> right</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
@@ -480,7 +655,7 @@
 <li><p>即这个处理是可以放在循环之前进行处理</p></li>
 </ul></li>
 </ul>
-<h4 id="高级版2">高级版2</h4>
+<h4 id="高级版2-原">高级版2-原</h4>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchKeep0(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保证左右指针不交错</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">0</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			left = mid + <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid</span><br><span class="line"></span><br><span class="line">	<span class="comment">// post-processing</span></span><br><span class="line">	<span class="keyword">if</span> left != len(nums) <span class="keyword">and</span> nums[left] == target:</span><br><span class="line">		<span class="keyword">return</span> left</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
@@ -511,8 +686,8 @@
 <li><p><strong>仅二分查找</strong>，甚至无需后处理</p></li>
 <li><p>判断<code>nums</code>长度在某些语言中也可以省略</p></li>
 </ul>
-<h4 id="高级版本3">高级版本3</h4>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchNoKeep(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保证左右指针不交错</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">-1</span>, n<span class="number">-1</span></span><br><span class="line">	<span class="keyword">while</span> left &lt; right - <span class="number">1</span>:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			left = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// post-processing</span></span><br><span class="line">	<span class="keyword">if</span> nums[right] == target:</span><br><span class="line">		<span class="keyword">return</span> right</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h4 id="高级版3-原">高级版3-原</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchNoKeep(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保证左右指针不交错</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">-1</span>, n<span class="number">-1</span></span><br><span class="line">	<span class="keyword">while</span> left &lt; right - <span class="number">1</span>:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			left = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// post-processing</span></span><br><span class="line">	<span class="keyword">if</span> right &gt;= <span class="number">0</span> <span class="keyword">and</span> nums[right] == target:</span><br><span class="line">		<span class="keyword">return</span> right</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
 <li>初始条件：<code>left = -1, right = n-1</code></li>
@@ -697,8 +872,8 @@ next[i] =
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/math_mixin/constrained_optimization/projection_method/" rel="next" title="Projected Gradient Descent">
-                <i class="fa fa-chevron-left"></i> Projected Gradient Descent
+              <a href="/ml_models/model_enhancement/stacking/" rel="next" title="Stacked Generalization">
+                <i class="fa fa-chevron-left"></i> Stacked Generalization
               </a>
             
           </div>
@@ -706,8 +881,8 @@ next[i] =
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/cs_algorithm/problems/combination/" rel="prev" title="组合问题">
-                组合问题 <i class="fa fa-chevron-right"></i>
+              <a href="/ml_specifications/rec_system/video_recsys/" rel="prev" title="视频推荐">
+                视频推荐 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -761,7 +936,7 @@ next[i] =
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -890,7 +1065,59 @@ next[i] =
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1019,7 +1246,115 @@ next[i] =
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1069,7 +1404,7 @@ next[i] =
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总述"><span class="nav-number">1.</span> <span class="nav-text">总述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#评价"><span class="nav-number">1.1.</span> <span class="nav-text">评价</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无序线性表查找"><span class="nav-number">2.</span> <span class="nav-text">无序线性表查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#顺序查找"><span class="nav-number">2.1.</span> <span class="nav-text">顺序查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">2.1.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#改进"><span class="nav-number">2.1.2.</span> <span class="nav-text">改进</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二叉查找树"><span class="nav-number">2.2.</span> <span class="nav-text">二叉查找树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点"><span class="nav-number">2.2.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预排序查找"><span class="nav-number">2.3.</span> <span class="nav-text">预排序查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">特点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#预排序检验唯一性"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">预排序检验唯一性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#预排序求众数"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">预排序求众数</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有序顺序表查找"><span class="nav-number">3.</span> <span class="nav-text">有序顺序表查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#折半查找二分查找"><span class="nav-number">3.1.</span> <span class="nav-text">折半查找/二分查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本版"><span class="nav-number">3.1.1.</span> <span class="nav-text">基本版</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版1"><span class="nav-number">3.1.2.</span> <span class="nav-text">高级版1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版2"><span class="nav-number">3.1.3.</span> <span class="nav-text">高级版2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版本3"><span class="nav-number">3.1.4.</span> <span class="nav-text">高级版本3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-2"><span class="nav-number">3.1.5.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插值查找"><span class="nav-number">3.2.</span> <span class="nav-text">插值查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-3"><span class="nav-number">3.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-3"><span class="nav-number">3.2.2.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子串匹配"><span class="nav-number">4.</span> <span class="nav-text">子串匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#蛮力字符串匹配"><span class="nav-number">4.1.</span> <span class="nav-text">蛮力字符串匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-4"><span class="nav-number">4.1.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-4"><span class="nav-number">4.1.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#horspool算法"><span class="nav-number">4.2.</span> <span class="nav-text">Horspool算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-5"><span class="nav-number">4.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-5"><span class="nav-number">4.2.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boyer-moore算法"><span class="nav-number">4.3.</span> <span class="nav-text">Boyer-Moore算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-6"><span class="nav-number">4.3.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-6"><span class="nav-number">4.3.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kmp算法"><span class="nav-number">4.4.</span> <span class="nav-text">KMP算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-7"><span class="nav-number">4.4.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-7"><span class="nav-number">4.4.2.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总述"><span class="nav-number">1.</span> <span class="nav-text">总述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#评价"><span class="nav-number">1.1.</span> <span class="nav-text">评价</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无序线性表查找"><span class="nav-number">2.</span> <span class="nav-text">无序线性表查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#顺序查找"><span class="nav-number">2.1.</span> <span class="nav-text">顺序查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">2.1.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#改进"><span class="nav-number">2.1.2.</span> <span class="nav-text">改进</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二叉查找树"><span class="nav-number">2.2.</span> <span class="nav-text">二叉查找树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点"><span class="nav-number">2.2.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预排序查找"><span class="nav-number">2.3.</span> <span class="nav-text">预排序查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">特点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#预排序检验唯一性"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">预排序检验唯一性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#预排序求众数"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">预排序求众数</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有序顺序表查找"><span class="nav-number">3.</span> <span class="nav-text">有序顺序表查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#折半查找二分查找"><span class="nav-number">3.1.</span> <span class="nav-text">折半查找/二分查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本版"><span class="nav-number">3.1.1.</span> <span class="nav-text">基本版</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版1"><span class="nav-number">3.1.2.</span> <span class="nav-text">高级版1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版2"><span class="nav-number">3.1.3.</span> <span class="nav-text">高级版2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版3"><span class="nav-number">3.1.4.</span> <span class="nav-text">高级版3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版1-原"><span class="nav-number">3.1.5.</span> <span class="nav-text">高级版1-原</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版2-原"><span class="nav-number">3.1.6.</span> <span class="nav-text">高级版2-原</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级版3-原"><span class="nav-number">3.1.7.</span> <span class="nav-text">高级版3-原</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-2"><span class="nav-number">3.1.8.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插值查找"><span class="nav-number">3.2.</span> <span class="nav-text">插值查找</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-3"><span class="nav-number">3.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-3"><span class="nav-number">3.2.2.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子串匹配"><span class="nav-number">4.</span> <span class="nav-text">子串匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#蛮力字符串匹配"><span class="nav-number">4.1.</span> <span class="nav-text">蛮力字符串匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-4"><span class="nav-number">4.1.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-4"><span class="nav-number">4.1.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#horspool算法"><span class="nav-number">4.2.</span> <span class="nav-text">Horspool算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-5"><span class="nav-number">4.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-5"><span class="nav-number">4.2.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boyer-moore算法"><span class="nav-number">4.3.</span> <span class="nav-text">Boyer-Moore算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-6"><span class="nav-number">4.3.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-6"><span class="nav-number">4.3.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kmp算法"><span class="nav-number">4.4.</span> <span class="nav-text">KMP算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法-7"><span class="nav-number">4.4.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点-7"><span class="nav-number">4.4.2.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

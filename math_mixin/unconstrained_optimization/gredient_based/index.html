@@ -58,7 +58,7 @@
 </script>
 
   <meta name="description" content="基于梯度算法">
-<meta name="keywords" content="最优化,无约束优化">
+<meta name="keywords" content="Optimization,Unconstrained,Newton&#39;s,Gradient Descent">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于梯度算法">
 <meta property="og:url" content="https://xyy15926.github.io/math_mixin/unconstrained_optimization/gredient_based/index.html">
@@ -301,14 +301,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/" itemprop="url" rel="index"><span itemprop="name">最优化</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Optimization/" itemprop="url" rel="index"><span itemprop="name">Optimization</span></a></span>
 
                 
                 
                   ，
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/最优化/无约束优化/" itemprop="url" rel="index"><span itemprop="name">无约束优化</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Optimization/Unconstrianed-Optimization/" itemprop="url" rel="index"><span itemprop="name">Unconstrianed Optimization</span></a></span>
 
                 
                 
@@ -332,8 +332,8 @@
         <h2 id="思想">思想</h2>
 <p>对目标函数<span class="math inline">\(f(x)\)</span>在<span class="math inline">\(x^{(1)}\)</span>进行展开</p>
 <p><span class="math display">\[
-f(x) = f(x^{(1)}) + \triangledown f(x^{(1)})(x - x^{(1)})+
-    \frac 1 2 \triangledown^2 f(x^{(1)})(x - x^{(1)})^2 +
+f(x) = f(x^{(1)}) + \nabla f(x^{(1)})(x - x^{(1)})+
+    \frac 1 2 \nabla^2 f(x^{(1)})(x - x^{(1)})^2 +
     o((x - x^{(1)})^2)
 \]</span></p>
 <blockquote>
@@ -345,8 +345,8 @@ f(x) = f(x^{(1)}) + \triangledown f(x^{(1)})(x - x^{(1)})+
 <ul>
 <li>利用近似函数求解元素问题极小值
 <ul>
-<li>对最速下降法，线性函数无极值，需要确定步长、迭代</li>
-<li>对Newton法，二次函数有极值，直接求导算出极值、迭代</li>
+<li>最速下降法：<strong>线性函数无极值，需要确定步长、迭代</strong></li>
+<li>Newton法：<strong>二次函数有极值，直接求导算出极值、迭代</strong></li>
 </ul></li>
 <li>最速下降法
 <ul>
@@ -362,9 +362,9 @@ f(x) = f(x^{(1)}) + \triangledown f(x^{(1)})(x - x^{(1)})+
 <h2 id="最速下降算法">最速下降算法</h2>
 <h3 id="思想-1">思想</h3>
 <ul>
-<li><p>设<span class="math inline">\(x=x(t)\)</span>为最优点x以负梯度方向经过的曲线，则有</p>
+<li><p>设<span class="math inline">\(x=x(t)\)</span>为最优点<span class="math inline">\(x\)</span>从初始点、沿负梯度方向经过的曲线， 则有</p>
 <p><span class="math display">\[\left \{ \begin{array}{l}
-&amp; \frac {dx(t)} {dt} = -\triangledown f(x(t)) \\
+&amp; \frac {dx(t)} {dt} = -\nabla f(x(t)) \\
 &amp; x(t_1) = x^{(1)}
 \end{array} \right.\]</span></p>
 <blockquote>
@@ -383,12 +383,12 @@ f(x) = f(x^{(1)}) + \triangledown f(x^{(1)})(x - x^{(1)})+
 <blockquote>
 <ul>
 <li>搜索方向最速下降方向：负梯度方向</li>
-<li>终止准则：<span class="math inline">\(\triangledown f(x^{(k)})=0\)</span></li>
+<li>终止准则：<span class="math inline">\(\nabla f(x^{(k)})=0\)</span></li>
 </ul>
 </blockquote>
 <ol type="1">
 <li><p>取初始点<span class="math inline">\(x^{(1)}\)</span>，置k=1</p></li>
-<li><p>若<span class="math inline">\(\triangledown f(x^{(k)})=0\)</span>，则停止计算，得到最优解， 否则置 <span class="math display">\[d^{(k)} = -\triangledown f(x^{(k)})\]</span> 以负梯度作为前进方向</p></li>
+<li><p>若<span class="math inline">\(\nabla f(x^{(k)})=0\)</span>，则停止计算，得到最优解， 否则置 <span class="math display">\[d^{(k)} = -\nabla f(x^{(k)})\]</span> 以负梯度作为前进方向</p></li>
 <li><p>一维搜索，求解一维问题 <span class="math display">\[
 \arg\min_{\alpha} \phi(\alpha) =
     f(x^{(k)} + \alpha d^{(k)})
@@ -406,17 +406,17 @@ x^{(k+1)} = x^{(k)} + \alpha_k d^{(k)}
 <h3 id="思想-2">思想</h3>
 <ul>
 <li><p>若<span class="math inline">\(x^{ * }\)</span>是无约束问题局部解，则有</p>
-<p><span class="math display">\[\triangledown f(x^{ * }) = 0\]</span></p>
+<p><span class="math display">\[\nabla f(x^{ * }) = 0\]</span></p>
 <p>可求解此问题，得到无约束问题最优解</p></li>
 <li><p>原始问题是非线性，考虑求解其线性逼近，在初始点<span class="math inline">\(x^{(1)}\)</span> 处泰勒展开</p>
 <p><span class="math display">\[
-\triangledown f(x) \approx \triangledown f(x^{(1)})
-    + \triangledown^2 f(x^{(1)})(x - x^{(1)})
+\nabla f(x) \approx \nabla f(x^{(1)})
+    + \nabla^2 f(x^{(1)})(x - x^{(1)})
 \]</span></p>
 <p>解得</p>
 <p><span class="math display">\[
-x^{(2)} = x^{(1)} - (\triangledown^2 f(x^{(1)}))^{-1}
-    \triangledown f(x^{(1)})
+x^{(2)} = x^{(1)} - (\nabla^2 f(x^{(1)}))^{-1}
+    \nabla f(x^{(1)})
 \]</span></p>
 <p>作为<span class="math inline">\(x^{ * }\)</span>的第二次近似</p></li>
 <li><p>不断迭代，得到如下序列</p>
@@ -426,7 +426,7 @@ x^{(k+1)} = x^{(k)} + d^{(k)}
 <blockquote>
 <ul>
 <li><span class="math inline">\(d^{(k)}\)</span>：Newton方向，是满足以下方程组解 <span class="math display">\[
-\triangledown^2 f(x^{(k)}) d = -\triangledown
+\nabla^2 f(x^{(k)}) d = -\nabla
 f(x^{(k)}
 \]</span></li>
 </ul>
@@ -435,9 +435,9 @@ f(x^{(k)}
 <h3 id="算法-1">算法</h3>
 <ol type="1">
 <li><p>初始点<span class="math inline">\(x^{(1)}\)</span>、精度要求<span class="math inline">\(\epsilon\)</span>，置k=1</p></li>
-<li><p>若<span class="math inline">\(\|\triangledown f(x^{(k)})\| \leq \epsilon\)</span>，停止计算 ，得到最优解<span class="math inline">\(x^{(k)}\)</span>，否则求解</p>
+<li><p>若<span class="math inline">\(\|\nabla f(x^{(k)})\| \leq \epsilon\)</span>，停止计算 ，得到最优解<span class="math inline">\(x^{(k)}\)</span>，否则求解</p>
 <p><span class="math display">\[
-\triangledown^2 f(x^{(k)}) d = -\triangledown
+\nabla^2 f(x^{(k)}) d = -\nabla
     f(x^{(k)}
 \]</span></p>
 <p>得到<span class="math inline">\(d^{(k)}\)</span></p></li>
@@ -472,9 +472,9 @@ f(x^{(k)}
 <h3 id="算法-2">算法</h3>
 <ol type="1">
 <li><p>初始点<span class="math inline">\(x^{(1)}\)</span>、精度要求<span class="math inline">\(\epsilon\)</span>，置k=1</p></li>
-<li><p>若<span class="math inline">\(\|\triangledown f(x^{(k)})\| \leq \epsilon\)</span>，停止计算 ，得到最优解<span class="math inline">\(x^{(k)}\)</span>，否则求解</p>
+<li><p>若<span class="math inline">\(\|\nabla f(x^{(k)})\| \leq \epsilon\)</span>，停止计算 ，得到最优解<span class="math inline">\(x^{(k)}\)</span>，否则求解</p>
 <p><span class="math display">\[
-\triangledown^2 f(x^{(k)}) d = -\triangledown
+\nabla^2 f(x^{(k)}) d = -\nabla
     f(x^{(k)}
 \]</span></p>
 <p>得到<span class="math inline">\(d^{(k)}\)</span></p></li>
@@ -494,11 +494,11 @@ f(x^{(k)}
 <h3 id="结合最速下降方向">结合最速下降方向</h3>
 <p>将Newton方向和最速下降方向结合</p>
 <ul>
-<li><p>设<span class="math inline">\(\theta_k\)</span>是<span class="math inline">\(d_N^{(k)}, -\triangledown f(x^{(k)})\)</span>之间 夹角，显然希望<span class="math inline">\(\theta &lt; \frac \pi 2\)</span></p></li>
+<li><p>设<span class="math inline">\(\theta_k\)</span>是<span class="math inline">\(d_N^{(k)}, -\nabla f(x^{(k)})\)</span>之间 夹角，显然希望<span class="math inline">\(\theta &lt; \frac \pi 2\)</span></p></li>
 <li><p>则置限制条件<span class="math inline">\(\eta\)</span>，取迭代方向</p>
 <p><span class="math display">\[d^{(k)} = \left \{ \begin{array}{l}
 d_N^{(k)}, &amp; cos\theta_k \geq \eta \\
--\triangledown f(x^{(k)}), &amp; 其他
+-\nabla f(x^{(k)}), &amp; 其他
 \end{array} \right.\]</span></p></li>
 </ul>
 <h3 id="negative-curvature"><em>Negative Curvature</em></h3>
@@ -507,25 +507,25 @@ d_N^{(k)}, &amp; cos\theta_k \geq \eta \\
 <li><p>Hesse矩阵非正定时，一定存在负特征值、相应特征向量<span class="math inline">\(u\)</span></p></li>
 <li><p>可以取负曲率下降方向</p>
 <p><span class="math display">\[
-d^{(k)} = -sign(u^T \triangledown f(x^{(k)})) u
+d^{(k)} = -sign(u^T \nabla f(x^{(k)})) u
 \]</span></p></li>
 </ul>
 <blockquote>
 <ul>
 <li><span class="math inline">\(x^{(k)}\)</span>处负曲率方向<span class="math inline">\(d^{(k)}\)</span>满足 <span class="math display">\[
-d^{(k)T} \triangledown^2 f(x^{(k)}) d^{(k)} &lt; 0
+d^{(k)T} \nabla^2 f(x^{(k)}) d^{(k)} &lt; 0
 \]</span></li>
 </ul>
 </blockquote>
 <h3 id="修正hesse矩阵">修正Hesse矩阵</h3>
 <p>取<span class="math inline">\(d^{(k)}\)</span>为以下方程的解</p>
 <p><span class="math display">\[
-(\triangledown^2 f(x^{(k)}) + v_k I) d =
-    -\triangledown f(x^{k})
+(\nabla^2 f(x^{(k)}) + v_k I) d =
+    -\nabla f(x^{k})
 \]</span></p>
 <blockquote>
 <ul>
-<li><span class="math inline">\(v_k\)</span>：大于<span class="math inline">\(\triangledown^2 f(x^{(k)})\)</span>最大负特征值 绝对值</li>
+<li><span class="math inline">\(v_k\)</span>：大于<span class="math inline">\(\nabla^2 f(x^{(k)})\)</span>最大负特征值 绝对值</li>
 </ul>
 </blockquote>
 
@@ -539,9 +539,13 @@ d^{(k)T} \triangledown^2 f(x^{(k)}) d^{(k)} &lt; 0
           
         
         <div class="post-tags">
-            <a href="/tags/最优化/" rel="tag"># 最优化</a>
+            <a href="/tags/Optimization/" rel="tag"># Optimization</a>
           
-            <a href="/tags/无约束优化/" rel="tag"># 无约束优化</a>
+            <a href="/tags/Unconstrained/" rel="tag"># Unconstrained</a>
+          
+            <a href="/tags/Newton-s/" rel="tag"># Newton's</a>
+          
+            <a href="/tags/Gradient-Descent/" rel="tag"># Gradient Descent</a>
           
         </div>
         <div class="post-nav">
@@ -555,8 +559,8 @@ d^{(k)T} \triangledown^2 f(x^{(k)}) d^{(k)} &lt; 0
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/cs_algorithm/data_structure/tree_high_dimension/" rel="prev" title="高维检索树">
-                高维检索树 <i class="fa fa-chevron-right"></i>
+              <a href="/cs_algorithm/data_structure/tree_derived/" rel="prev" title="二叉树衍生">
+                二叉树衍生 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -610,7 +614,7 @@ d^{(k)T} \triangledown^2 f(x^{(k)}) d^{(k)} &lt; 0
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -739,7 +743,59 @@ d^{(k)T} \triangledown^2 f(x^{(k)}) d^{(k)} &lt; 0
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -868,7 +924,115 @@ d^{(k)T} \triangledown^2 f(x^{(k)}) d^{(k)} &lt; 0
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>

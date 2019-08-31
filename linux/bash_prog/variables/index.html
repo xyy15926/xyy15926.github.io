@@ -393,9 +393,21 @@
 </ul></li>
 </ul>
 <h3 id="shell变量">Shell变量</h3>
-<p>由shell程序设置的特殊变量，包括环境变量、局部变量，保证shell 的正常运行</p>
+<p>Shell变量：shell程序设置的特殊变量，包括环境变量、局部变量， 保证shell的正常运行</p>
 <ul>
-<li><code>$0, $1,..., $9</code>：向脚本传递的位置参数</li>
+<li><code>$0</code>：shell执行脚本名
+<ul>
+<li>交互式bash（即普通终端中）该参数为<code>-bash</code>
+<ul>
+<li>则<code>source</code>执行脚本时，该参数可能非预期</li>
+</ul></li>
+<li>以下shell变量均不考虑<code>$0</code>，如
+<ul>
+<li>函数中<code>$0</code>也是脚本名</li>
+<li><code>shift</code>无法跳过该参数</li>
+</ul></li>
+</ul></li>
+<li><code>$1,..., $9</code>：向脚本传递的位置参数</li>
 <li><code>$@</code>：脚本、函数参数列表</li>
 <li><code>$*</code>：脚本、函数参数字符串</li>
 <li><code>$#</code>：脚本、函数参数数量</li>
@@ -431,8 +443,16 @@
 <ul>
 <li><code>${&lt;var_name&gt;:n[:m]}</code>：从第<code>n</code>开始<code>m</code>个字符
 <ul>
-<li><code>n</code>从0开始</li>
-<li><code>m</code>缺省表示到末尾</li>
+<li><code>n</code>、<code>m</code>非负值
+<ul>
+<li><code>n</code>：从0开始的<strong>下标起始</strong></li>
+<li><code>m</code>：<strong>切片长度</strong>，<strong>缺省表示到末尾</strong></li>
+</ul></li>
+<li><code>n</code>、<code>m</code>使用<code>0-</code>负值表示
+<ul>
+<li><code>n</code>：从0开始的负向<strong>下标起始</strong></li>
+<li><code>m</code>：从0开始的负向<strong>下标终止</strong></li>
+</ul></li>
 </ul></li>
 </ul>
 <table>
@@ -451,13 +471,28 @@
 </tr>
 <tr class="even">
 <td><code>${file:5:5}</code></td>
-<td>提取第五个字符开始的5个字符</td>
+<td>提取第5个字符开始的5个字符</td>
 <td><code>/dir2</code></td>
 </tr>
 <tr class="odd">
 <td><code>${file:5}</code></td>
 <td>提取第5个字符开始至末尾</td>
 <td><code>/dir2...</code></td>
+</tr>
+<tr class="even">
+<td><code>${file:0-5}</code></td>
+<td>反向计算下标</td>
+<td><code>t.bak</code></td>
+</tr>
+<tr class="odd">
+<td><code>${file:0-5:0-1}</code></td>
+<td>反向计算下标</td>
+<td><code>t.ba</code></td>
+</tr>
+<tr class="even">
+<td><code>${file:5:0-2}</code></td>
+<td>提取第5个字符开始至<code>-2</code>下标处</td>
+<td><code>/dir2.../t.b</code></td>
 </tr>
 </tbody>
 </table>
@@ -642,6 +677,11 @@
 <li><p>使用<code>=</code>比较变量是否为某字符串时，其中在<strong>两侧添加字符</strong> 保证<code>=</code>不为空值，否则若<code>$test</code>为空值，表达式报错</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if [[ "$text"x = "text"x ]]; then</span><br><span class="line">	command</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></li>
 </ul>
+<blockquote>
+<ul>
+<li>比较变量时要在两侧加上双引号<code>&quot;&quot;</code>，否则可能报错、结果不 符合预期</li>
+</ul>
+</blockquote>
 <h2 id="数组">数组</h2>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> A=(a b c def)</span></span><br></pre></td></tr></table></figure>
 <h3 id="取值">取值</h3>
@@ -838,7 +878,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -967,7 +1007,59 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1096,7 +1188,115 @@
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>

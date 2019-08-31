@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="TensorFlow中Graph、Session、Eager Execution">
+<meta name="keywords" content="Python,TensorFlow,Machine Learning,Execution Model">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TensorFlow执行">
+<meta property="og:url" content="https://xyy15926.github.io/cs_python/tensorflow/tf_execution/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="TensorFlow中Graph、Session、Eager Execution">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-19T09:09:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TensorFlow执行">
+<meta name="twitter:description" content="TensorFlow中Graph、Session、Eager Execution">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/cs_python/tensorflow/tf_execution/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TensorFlow执行 | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/cs_python/tensorflow/tf_execution/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">TensorFlow执行
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-19 17:09:00" itemprop="dateCreated datePublished" datetime="2019-08-19T17:09:00+08:00">2019-08-19</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/TensorFlow/" itemprop="url" rel="index"><span itemprop="name">TensorFlow</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">TensorFlow中Graph、Session、Eager Execution</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="session">Session</h2>
+<p><em>Session</em>：TF中OPs对象执行、Tensor对象计算的封装环境</p>
+<ul>
+<li>Session管理图、OPs
+<ul>
+<li>所有图必须Session中执行</li>
+<li>将图中OPs、其执行方法分发到CPU、GPU、TPU等设备上</li>
+<li>为当前变量值分配内存</li>
+</ul></li>
+<li>Session只执行<em>Data/Tensor Flow</em>中OPs，忽略不相关节点
+<ul>
+<li>即通往<code>fetches</code>的flow中的<strong>OPs构成子图</strong>才会被计算</li>
+</ul></li>
+<li>各Session中各值独立维护，不会相互影响</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Session</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,</span></span></span><br><span class="line"><span class="function"><span class="params">		target=str,</span></span></span><br><span class="line"><span class="function"><span class="params">		graph=None/tf.Graph,</span></span></span><br><span class="line"><span class="function"><span class="params">		config=None/tf.ConfigProto)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">		# 获取<span class="title">Session</span>中载入图</span></span><br><span class="line"><span class="function">		<span class="title">self</span>.<span class="title">graph</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	# 关闭会话，释放资源</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">close</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 支持上下文语法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__enter__</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 执行TensorFlow中节点，获取`fetches`中节点值</span></span><br><span class="line">	<span class="comment"># 返回值若为Tensor</span></span><br><span class="line">		<span class="comment"># python中：以`np.ndarray`返回</span></span><br><span class="line">		<span class="comment"># C++/C中：以`tensorflow:Tensor`返回</span></span><br><span class="line">	<span class="comment"># 可直接调用`.eval()`获得单个OP值</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self,</span></span></span><br><span class="line"><span class="function"><span class="params">		fetches=tf.OPs/[tf.OPs],</span></span></span><br><span class="line"><span class="function"><span class="params">		feed_dict=None/dict,</span></span></span><br><span class="line"><span class="function"><span class="params">		options=None,</span></span></span><br><span class="line"><span class="function"><span class="params">		run_metadata=None)</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="tf.interactivesession"><code>tf.InteractiveSession</code></h3>
+<p><code>tf.InteractiveSession</code>：开启交互式会话</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 开启交互式Session</span></span><br><span class="line">sess = tf.InteractiveSession()</span><br><span class="line">a = tf.constant(<span class="number">5.0</span>)</span><br><span class="line">b = tf.constant(<span class="number">6.0</span>)</span><br><span class="line">c = a * b</span><br><span class="line">x = tf.Variable([<span class="number">1.0</span>, <span class="number">2.0</span>])</span><br><span class="line"> <span class="comment"># 无需显式在`sess.run`中执行</span></span><br><span class="line"> <span class="comment"># 直接调用`OPs.eval/run()`方法得到结果</span></span><br><span class="line">x.initializer.run()</span><br><span class="line">print(c.eval())</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<h3 id="session执行">Session执行</h3>
+<ul>
+<li><p>Fetch机制：<code>sess.run()</code>执行图时，传入需<strong>取回</strong>的结果， 取回操作输出内容</p></li>
+<li><p>Feed机制：通过<code>feed_dict</code>参数，使用自定义tensor值替代图 中任意feeable OPs的输出</p>
+<ul>
+<li><code>tf.placeholder()</code>表示创建占位符，执行Graph时必须 使用tensor替代</li>
+<li><code>feed_dict</code>只是函数参数，只在调用它的方法内有效， 方法执行完毕则消失</li>
+</ul></li>
+<li><p>可以通过<code>feed_dict</code> feed所有feedable tensor，placeholder 只是指明必须给某些提供值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = tf.add(<span class="number">2</span>, <span class="number">5</span>)</span><br><span class="line">b = tf.multiply(a, <span class="number">3</span>)</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	sess.run(b, feed_dict=&#123;a: <span class="number">15</span>&#125;)			<span class="comment"># 45</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="config参数选项"><code>config</code>参数选项</h3>
+<ul>
+<li><code>log_device_placement</code>：打印每个操作所用设备</li>
+<li><code>allow_soft_placement</code>：允许不在GPU上执行操作自动迁移到 CPU上执行</li>
+<li><code>gpu_options</code>
+<ul>
+<li><code>allow_growth</code>：按需分配显存</li>
+<li><code>per_process_gpu_memory_fraction</code>：指定每个GPU进程 使用显存比例（无法对单个GPU分别设置）</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>具体配置参见<code>tf.ConfigProto</code></li>
+</ul>
+</blockquote>
+<h2 id="graph">Graph</h2>
+<p><em>Graph</em>：表示TF中计算任务，</p>
+<ul>
+<li><em>operation/node</em>：Graph中节点，包括：<em>operator</em>、 <em>variable</em>、<em>constant</em>
+<ul>
+<li>获取一个、多个Tensor执行计算、产生、返回tensor</li>
+<li>不能无法对其值直接进行访问、比较、操作</li>
+<li>图中节点可以命名，TF会自动给未命名节点命名</li>
+</ul></li>
+<li><em>tensor</em>：Graph中边，n维数组
+<ul>
+<li>TF中所有对象都是Operators</li>
+<li>tensor是OPs执行结果，在图中传递/流动</li>
+</ul></li>
+<li>图计算模型优势
+<ul>
+<li>优化能力强、节省计算资源
+<ul>
+<li>缓冲自动重用</li>
+<li>常量折叠，只计算取得目标值过程中必须计算的值</li>
+<li>方便并行化</li>
+<li>自动权衡计算、存储效率</li>
+</ul></li>
+<li>易于部署
+<ul>
+<li>可被割成子图（即极大连通分量），便于自动区分</li>
+<li>子图可以分发到不同的设备上分布式执行，即模型并行</li>
+<li>许多通用ML模型是通过有向图教学、可视化的</li>
+</ul></li>
+</ul></li>
+<li>图计算模型劣势
+<ul>
+<li>难以debug
+<ul>
+<li>图定义之后执行才会报错</li>
+<li>无法通过pdb、打印状态debug</li>
+</ul></li>
+<li>语法繁复</li>
+</ul></li>
+</ul>
+<h3 id="构建图">构建图</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 将当前图作为默认图</span></span><br><span class="line">	<span class="comment"># 支持上下文语法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">as_default</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 强制OPs依赖关系（图中未反映），即优先执行指定OPs</span></span><br><span class="line">	<span class="comment"># 支持上下文语法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">as_default</span><span class="params">(self)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">control_dependencies</span><span class="params">(self,</span></span></span><br><span class="line"><span class="function"><span class="params">		?ops=[tf.OPs])</span></span></span><br><span class="line"><span class="function">		<span class="title">pass</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	# 以<span class="title">ProtoBuf</span>格式展示<span class="title">Graph</span></span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">as_graph_def</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 判断图中节点是否可以被feed</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">is_feedable</span><span class="params">(self,</span></span></span><br><span class="line"><span class="function"><span class="params">		?op=tf.OPs)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以通过<code>tf.Graph</code>创建新图，但最好在是在一张图中使用多个 不相连的子图，而不是多张图
+<ul>
+<li>充分性：Session执行图时忽略不必要的OPs</li>
+<li>必要性
+<ul>
+<li>多张图需要多个会话，每张图执行时默认尝试使用所有 可能资源</li>
+<li>不能通过python/numpy在图间传递数据（分布式系统）</li>
+</ul></li>
+</ul></li>
+<li>初始化即包含默认图，OP构造器默认为其增加节点
+<ul>
+<li>通过<code>tf.get_default_graph()</code>获取</li>
+</ul></li>
+</ul>
+<h3 id="图相关方法">图相关方法</h3>
+<ul>
+<li><p>获取TF初始化的默认图</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">get_default_graph</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="命名空间">命名空间</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 均支持、利用上下文语法，将OPs定义于其下</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">name_scope</span><span class="params">(name<span class="params">(str)</span>)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">variable_scope</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	name<span class="params">(str)</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	reuse=tf.AUTO_REUSE</span></span></span><br><span class="line"><span class="function"><span class="params">)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>tf.name_scope</code>：将变量分组
+<ul>
+<li>只是将变量打包，不影响变量的重用、可见性等</li>
+<li>方便管理、查看graph</li>
+</ul></li>
+<li><code>tf.variable_scope</code>：
+<ul>
+<li>对变量有控制能力
+<ul>
+<li>可设置变量重用性</li>
+<li>变量可见性局限于该<em>variable scope</em>内，即不同 variable scope间可以有完全同名变量 （未被TF添加顺序后缀）</li>
+</ul></li>
+<li>会隐式创建<em>name scope</em></li>
+<li>大部分情况是用于实现变量共享</li>
+</ul></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fully_connected</span><span class="params">(x, output_dim, scope)</span>:</span></span><br><span class="line">	<span class="comment"># 设置variable scope中变量自动重用</span></span><br><span class="line">	<span class="comment"># 或者调用`scope.reuse_variables()`声明变量可重用</span></span><br><span class="line">	<span class="keyword">with</span> tf.variable_scope(scope, reuse=tf.AUTO_REUSE) <span class="keyword">as</span> scope:</span><br><span class="line">		<span class="comment"># 在当前variable scope中获取、创建变量</span></span><br><span class="line">		w = tf.get_variable(<span class="string">"weights"</span>, [x.shape[<span class="number">1</span>]], output_dim,</span><br><span class="line">							initializer=tf.random_normal_initializer())</span><br><span class="line">		b = tf.get_variable(<span class="string">"biases"</span>, [output_dim],</span><br><span class="line">							initializer=tf.constant_initizer(<span class="number">0.0</span>))</span><br><span class="line">		<span class="keyword">return</span> tf.matmul(x, w) + b</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_hidden_layers</span><span class="params">(x)</span>:</span></span><br><span class="line">	h1 = fully_connected(x, <span class="number">50</span>, <span class="string">"h1"</span>)</span><br><span class="line">	h2 =-fully_connected(h1, <span class="number">10</span>, <span class="string">"h2"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.variable_scope(<span class="string">"two_layers"</span>) <span class="keyword">as</span> scope:</span><br><span class="line">	logits1 = two_hidden_layers(x1)</span><br><span class="line">	logits2 = two_hidden_layers(x2)</span><br></pre></td></tr></table></figure>
+<h3 id="lazy-loading">Lazy Loading</h3>
+<p><em>Lazy Loading</em>：推迟声明/初始化OP对象至载入图时 （不是指TF的延迟计算，是个人代码结构问题，虽然是TF延迟图计算 模型的结果）</p>
+<ul>
+<li><p>延迟加载容易导致向图中添加大量重复节点，影响图的载入、 传递</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x = tf.Variable(<span class="number">10</span>, name=<span class="string">'x'</span>)</span><br><span class="line">y = tf.Variable(<span class="number">20</span>, name=<span class="string">'y'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	sess.run(tf.global_variables_initializer())</span><br><span class="line">	writer = tf.summary.FileWriter(<span class="string">'graphs/lazy_loading'</span>, sess.graph)</span><br><span class="line">	<span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">		<span class="comment"># 延迟加载节点，每次执行都会添加`tf.add`OP</span></span><br><span class="line">		sess.run(tf.add(x, y))</span><br><span class="line">	print(tf.get_default_graph().as_graph_def())</span><br><span class="line">	writer.close()</span><br></pre></td></tr></table></figure></li>
+<li>解决方案
+<ul>
+<li>总是把（图的搭建）OPs的定义、执行分开</li>
+<li>python利用<code>@property</code>装饰器，使用<strong>单例模式函数</strong> 封装变量控制，保证仅首次调用函数时才创建OP</li>
+</ul></li>
+</ul>
+<h2 id="eager-execution">Eager Execution</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> tensorflow.contrib.eager <span class="keyword">as</span> tfe</span><br><span class="line"> <span class="comment"># 启用TF eager execution</span></span><br><span class="line">tfe.enable_eager_execution()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优势
+<ul>
+<li>支持python debug工具</li>
+<li>提供实时报错</li>
+<li>支持python数据结构</li>
+<li><p>支持pythonic的控制流</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i = tf.constant(<span class="number">0</span>)</span><br><span class="line">whlile i &lt; <span class="number">1000</span>:</span><br><span class="line">	i = tf.add(i, <span class="number">1</span>)</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li>eager execution开启后
+<ul>
+<li>tensors行为类似<code>np.ndarray</code></li>
+<li>大部分API和未开启同样工作，倾向于使用
+<ul>
+<li><code>tfe.Variable</code></li>
+<li><code>tf.contrib.summary</code></li>
+<li><code>tfe.Iterator</code></li>
+<li><code>tfe.py_func</code></li>
+<li>面向对象的layers</li>
+<li>需要自行管理变量存储</li>
+</ul></li>
+</ul></li>
+<li>eager execution和graph大部分兼容
+<ul>
+<li>checkpoint兼容</li>
+<li>代码可以同时用于python过程、构建图</li>
+<li>可使用<code>@tfe.function</code>将计算编译为图</li>
+</ul></li>
+</ul>
+<h3 id="示例">示例</h3>
+<ul>
+<li><p>placeholder、sessions</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 普通TF</span></span><br><span class="line">x = tf.placholder(tf.float32, shape=[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">m = tf.matmul(x, x)</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	m_out = sess.run(m, feed_dict=&#123;x: [[<span class="number">2.</span>]]&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Eager Execution</span></span><br><span class="line">x = [[<span class="number">2.</span>]]</span><br><span class="line">m = tf.matmul(x, x)</span><br></pre></td></tr></table></figure></li>
+<li><p>Lazy loading</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random_uniform([<span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(x.shape[<span class="number">0</span>]):</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> range(x.shape[<span class="number">1</span>]):</span><br><span class="line">		<span class="comment"># 不会添加多个节点</span></span><br><span class="line">		print(x[i, j])</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="device">Device</h2>
+<h3 id="设备标识">设备标识</h3>
+<ul>
+<li>设备标识：设备使用字符串进行标识
+<ul>
+<li><code>/cpu:0</code>：所有CPU都以此作为名称</li>
+<li><code>/gpu:0</code>：第一个GPU，如果有</li>
+<li><code>/gpu:1</code>：第二个GPU</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为计算指定硬件资源</span></span><br><span class="line"><span class="keyword">with</span> tf.device(<span class="string">"/gpu:2"</span>):</span><br><span class="line">	a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>], name=<span class="string">"a"</span>)</span><br><span class="line">	b = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>], name=<span class="string">"b"</span>)</span><br><span class="line">	c = tf.multiply(a, b)</span><br><span class="line">	<span class="comment"># creates a graph</span></span><br></pre></td></tr></table></figure></li>
+<li>环境变量：python中既可以修改<code>os.environ</code>，也可以直接设置 中设置环境变量
+<ul>
+<li><code>CUDA_VISIBLE_DEVICES</code>：可被使用的GPU id</li>
+</ul></li>
+</ul>
+<h3 id="设备执行">设备执行</h3>
+<p>设备执行：TF将图形定义转换成分布式执行的操作以充分利用计算 资源</p>
+<ul>
+<li><p>TF默认自动检测硬件配置，尽可能使用找到首个GPU执行操作</p></li>
+<li>TF会默认占用所有GPU及每个GPU的所有显存（可配置）
+<ul>
+<li>但只有一个GPU参与计算，其他GPU默认不参与计算（显存 仍然被占用），需要明确将OPs指派给其执行</li>
+<li>指派GPU数量需通过设置环境变量实现</li>
+<li>控制显存占用需设置Session <code>config</code>参数</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>注意：有些操作不能再GPU上完成，手动指派计算设备需要注意</li>
+</ul>
+</blockquote>
+<h2 id="tf.configproto"><code>tf.ConfigProto</code></h2>
+<ul>
+<li><p>Session参数配置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># `tf.ConfigProto`配置方法</span></span><br><span class="line">conf = tf.ConfigProto(log_device_placement=<span class="literal">True</span>)</span><br><span class="line">conf.gpu_options.allow_growth=<span class="literal">True</span></span><br><span class="line">sess = tf.Session(config=conf)</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/TensorFlow/" rel="tag"># TensorFlow</a>
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Execution-Model/" rel="tag"># Execution Model</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/tools/spark/spark_rdd/" rel="next" title="Resilient Distributed Dataset">
+                <i class="fa fa-chevron-left"></i> Resilient Distributed Dataset
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/cs_python/tensorflow/tf_train/" rel="prev" title="TensorFlow训练">
+                TensorFlow训练 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#session"><span class="nav-number">1.</span> <span class="nav-text">Session</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tf.interactivesession"><span class="nav-number">1.1.</span> <span class="nav-text">tf.InteractiveSession</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#session执行"><span class="nav-number">1.2.</span> <span class="nav-text">Session执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#config参数选项"><span class="nav-number">1.3.</span> <span class="nav-text">config参数选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#graph"><span class="nav-number">2.</span> <span class="nav-text">Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建图"><span class="nav-number">2.1.</span> <span class="nav-text">构建图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图相关方法"><span class="nav-number">2.2.</span> <span class="nav-text">图相关方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命名空间"><span class="nav-number">2.3.</span> <span class="nav-text">命名空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lazy-loading"><span class="nav-number">2.4.</span> <span class="nav-text">Lazy Loading</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eager-execution"><span class="nav-number">3.</span> <span class="nav-text">Eager Execution</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.1.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#device"><span class="nav-number">4.</span> <span class="nav-text">Device</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设备标识"><span class="nav-number">4.1.</span> <span class="nav-text">设备标识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设备执行"><span class="nav-number">4.2.</span> <span class="nav-text">设备执行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tf.configproto"><span class="nav-number">5.</span> <span class="nav-text">tf.ConfigProto</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -446,55 +446,6 @@ e_{test} = \frac 1 {N^{&#39;}} \sum_{i=1}^{N^{&#39;}}
 <li>数据：调整、变换、扩展训练数据，让其展现更多、更有用 的信息</li>
 </ul></li>
 </ul>
-<h2 id="generalization-ability"><em>Generalization Ability</em></h2>
-<p>泛化能力：方法学习到的模型对未知数据的预测能力</p>
-<ul>
-<li><p>是学习方法本质上重要的性质</p></li>
-<li><p>测试误差衡量学习方法的泛化能力不可靠，其依赖于测试集， 而测试集有限</p></li>
-<li><p><em>generalization error</em>：泛化误差，即模型（期望）风险函数</p>
-<ul>
-<li>反映了学习方法的泛化能力</li>
-<li>进一步发，学习方法的泛化能力往往是通过研究泛化误差的 概率上界进行</li>
-</ul></li>
-</ul>
-<h3 id="generalization-error-bound"><em>Generalization Error Bound</em></h3>
-<p>泛化误差上界：泛化误差的<strong>概率</strong>上界</p>
-<ul>
-<li>是样本容量函数，样本容量增加时，泛化上界趋于0</li>
-<li>是假设空间容量函数，假设空间容量越大，模型越难学习，泛化 误差上界越大</li>
-</ul>
-<h3 id="二分类问题">二分类问题</h3>
-<p>定理：对二分类问题，假设空间为有限个函数的集合 <span class="math inline">\(F={f_1, f_2, \cdots, f_d}\)</span>时，对任意函数<span class="math inline">\(f \in F\)</span>，至少 以概率<span class="math inline">\(1 - \sigma\)</span>，以下不等式成立</p>
-<p><span class="math display">\[
-R(f) \leqslant \hat{R(f)} + \epsilon(d, N, \sigma)
-\]</span></p>
-<blockquote>
-<ul>
-<li><span class="math inline">\(\hat{R(f)}\)</span>：训练误差，则训练误差小其泛化误差（上界） 也较小（决定性基底，用经验估计期望）</li>
-<li><span class="math inline">\(\epsilon(d, N, \sigma) = \sqrt {\frac 1 {2N} (logd + log \frac 1 {\sigma})}\)</span> ：是样本量<span class="math inline">\(N\)</span>递减函数、假设空间容量<span class="math inline">\(d\)</span>的递增函数 （在给定把握<span class="math inline">\(1-\sigma\)</span>下，用经验估计期望的波动）</li>
-<li>不等式右端即为左端泛化误差<span class="math inline">\(R(f)\)</span>上界</li>
-</ul>
-</blockquote>
-<ul>
-<li><p><span class="math inline">\(\hat{R(f)}\)</span>是N个独立随机变量<span class="math inline">\(L(Y, f(X))\)</span>的样本均值， <span class="math inline">\(R_(f)\)</span>是N个独立随机变量<span class="math inline">\(L(Y, f(X))\)</span>期望</p></li>
-<li><p>若损失函数值取值于<span class="math inline">\([0,1]\)</span>，由Hoeffding不等式 <span class="math display">\[
-P(R(f) - \hat{R(f)} \geqslant \epsilon) \geqslant
-    exp(-2N\epsilon^2)
-\]</span></p></li>
-<li><p>假设空间<span class="math inline">\(F\)</span>为有限集，有 <span class="math display">\[
-\begin{align*}
-P(\exists f \in F: R(f) - \hat{R(f)} \geq \epsilon) &amp; =
-    P(\bigcup_{f \in F} \{R(f) - \hat{R(f)} \geq \epsilon\}) \\
-&amp; \leq \sum_{f \in F} P(R(f) - \hat{R(f)} \geq \epsilon) \\
-&amp; \leq dexp(-2N\epsilon^2)
-\end{align*}
-\]</span></p></li>
-<li><p>即<span class="math inline">\(\forall f \in F\)</span>，有 <span class="math display">\[
-P(R(f) - \hat{R(f)} &lt; \epsilon) \geq 1 -
-    dexp(-2N\epsilon^2)
-\]</span></p></li>
-<li><p>令<span class="math inline">\(\sigma = dexp(-2N\epsilon^2)\)</span>，得证</p></li>
-</ul>
 <h2 id="classificationtagging"><em>Classification</em>/<em>Tagging</em></h2>
 <ul>
 <li>分类问题：输出变量<span class="math inline">\(Y\)</span>为有限个离散变量</li>
@@ -588,13 +539,18 @@ FPR = \frac {FP} {FP+TN}
 <li><em>=0.5</em>：同随机预测，无价值</li>
 <li><em>0~0.5</em>：差于随机预测，但是可以反向取预测值</li>
 </ul></li>
-<li>计算AUC方法
+</ul>
+<h4 id="auc计算">AUC计算</h4>
 <ul>
-<li><p>绘制ROC曲线，计算曲线下面积</p></li>
+<li>绘制ROC曲线，计算曲线下面积
+<ul>
+<li>给定一系列阈值（一般为样本数量），分别计算TPR、FPR</li>
+<li>根据TPR、FPR计算AUC</li>
+</ul></li>
 <li><p>正负样本分别配对，计算正样本预测概率大于负样本比例</p>
 <p><span class="math display">\[\begin{align*}
 auc &amp; = \frac {\sum I(P_P &gt; P_N)} {M * N} \\
-I(P_P, P_N) = \left \{ begin{array}{l}
+I(P_P, P_N) &amp; = \left \{ \begin{array}{l}
     1, &amp; P_P &gt; P_N, \\
     0.5, &amp; P_P = P_N, \\
     0, &amp; P_P &lt; P_N
@@ -605,7 +561,7 @@ I(P_P, P_N) = \left \{ begin{array}{l}
 <li><span class="math inline">\(M, N\)</span>：正、负样本数量</li>
 </ul>
 </blockquote></li>
-<li><p>Wilcoxon-Mann-Witney检验（即分别配对简化）</p>
+<li><p>Mann-Witney U检验（即分别配对简化）</p>
 <p><span class="math display">\[
 auc = \frac {\sum_{i \in Pos} rank(i) - 
     \frac {M * (M+1)} 2} {M * N}
@@ -616,8 +572,61 @@ auc = \frac {\sum_{i \in Pos} rank(i) -
 <li><span class="math inline">\(rank(i)\)</span>：样本<span class="math inline">\(i\)</span>的按正样本概率排序的秩 （对正样本概率值相同样本，应将秩加和求平均保证 其秩相等）</li>
 </ul>
 </blockquote></li>
+</ul>
+<h4 id="加权auc">加权AUC</h4>
+<p>WAUC：给<strong>每个样本</strong>赋权，计算统计量时考虑样本权重</p>
+<ul>
+<li><p>FPR、TPR绘图</p>
+<p><span class="math display">\[\begin{align*}
+WTPR &amp; = \frac {\sum_{i \in Pos} w_i I(\hat y_i=1)}
+    {\sum_{i \in Pos} w_i} \\
+WFPR &amp; = \frac {\sum_{j \in Neg} w_j I(\hat y_j=1)}
+    {\sum_{j \in Neg} w_j}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(WTPR, WFPR\)</span>：加权TPR、加权FPR</li>
+<li><span class="math inline">\(\hat y_i\)</span>：样本预测类别</li>
+<li><span class="math inline">\(w_i\)</span>：样本权重</li>
+</ul>
+</blockquote></li>
+<li><p>Mann-Witney U检验：考虑其意义，带入权重即可得</p>
+<p><span class="math display">\[\begin{align*}
+auc = \frac {\sum_{i \in Pos} w_i * rank(i) -
+    \sum_{i \in Pos} w_i * rank_{pos}(i)}
+    {\sum_{i \in Pos} w_i * \sum_{j \in Neg} w_j}
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(rank_{pos}(i)\)</span>：正样本内部排序，样本<span class="math inline">\(i\)</span>秩</li>
+<li><span class="math inline">\(Neg\)</span>：负样本集合</li>
+</ul>
+</blockquote></li>
+</ul>
+<h4 id="多分类auc">多分类AUC</h4>
+<ul>
+<li><em>micro</em>：所有类别统一考虑，将每个类别均视为样本标签
+<ul>
+<li>将n个样本的m个分类器共n * m个得分展平</li>
+<li>将n个样本的m维one-hot标签展平，即其中有n个正样本、 n * (m-1)个负样本</li>
+<li>使用以上预测得分、标签计算auc</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># one-vs-rest分类器得分</span></span><br><span class="line">y_score = classifer.transform(X_test)</span><br><span class="line"><span class="comment"># 展平后计算fpr、tpr</span></span><br><span class="line">fpr_micro, tpr_micro, threshhold_micro = \</span><br><span class="line">	skilearn.metrics.roc_curve(y_test.ravel(), y_score.ravel())</span><br><span class="line"><span class="comment"># 利用fpr、tpr计算auc</span></span><br><span class="line">auc_micro = skilearn.metrics.auc(fpr_micro, tpr_micro)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价于直接调用</span></span><br><span class="line">auc_micro = skilearn.metrics.roc_auc_score(y_test, y_score,</span><br><span class="line">											average=<span class="string">"micro"</span>)</span><br></pre></td></tr></table></figure></li>
+<li><em>macro</em>：对各类别，分别以计算roc曲线（即fpr、tpr），计算 平均roc曲线得到auc
+<ul>
+<li>对各类别分别计算fpr、tpr，共m组fpr、tpr</li>
+<li>平均合并fpr、tpr，计算auc
+<ul>
+<li><p>方法1：合并fpr、去除重复值，使用m组fpr、tpr分别 求合并后fpr插值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分别计算各类别fpr、tpr</span></span><br><span class="line">fprs, tprs = [<span class="number">0</span>] * n_classes, [<span class="number">0</span>] * n_classes</span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> range(n_classes):</span><br><span class="line">	fprs[idx], tprs[idx], _ = sklearn.metrics.ruc_curve(</span><br><span class="line">		y_test[:, i], y_score[:, i])</span><br><span class="line"><span class="comment"># 合并fpr</span></span><br><span class="line">all_fpr = np.unique(np.concatenate(fprs))</span><br><span class="line">mean_tpr = np.zeros_like(all_fpr)</span><br><span class="line"><span class="comment"># 计算合并后fpr插值</span></span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> range(n_classes):</span><br><span class="line">	mean_tpr += scipy.interp(all_fpr, fpr[idx], tpr[idx])</span><br><span class="line">mean_tpr /= n_classes</span><br><span class="line">auc_macro = sklearn.metrics.auc(all_fpr, mean_tpr)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 但是和以下结果不同</span></span><br><span class="line">auc_macro = sklearn.metrics.roc_auc_score(fprs)</span><br></pre></td></tr></table></figure></li>
+</ul></li>
 </ul></li>
 </ul>
+<blockquote>
+<ul>
+<li>以上分类器均为<em>one-vs-rest</em>分类器，m个类别则m个分类器、 每个样本m个得分</li>
+</ul>
+</blockquote>
 <h3 id="accuracy"><em>Accuracy</em></h3>
 <p>准确率、误分率：评价分类器性能一般指标</p>
 <p><span class="math display">\[\begin{align*}
@@ -723,8 +732,8 @@ C_p &amp; = \frac {SSE} {\hat {\sigma^2}} - n + 2p
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/cs_java/scala/entity_components/" rel="next" title="Scala基本实体">
-                <i class="fa fa-chevron-left"></i> Scala基本实体
+              <a href="/cs_java/scala/diy_components/" rel="next" title="Scala自定义实体">
+                <i class="fa fa-chevron-left"></i> Scala自定义实体
               </a>
             
           </div>
@@ -732,8 +741,8 @@ C_p &amp; = \frac {SSE} {\hat {\sigma^2}} - n + 2p
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/tools/spark/spark_rdd/" rel="prev" title="Resilient Distributed Dataset">
-                Resilient Distributed Dataset <i class="fa fa-chevron-right"></i>
+              <a href="/tools/spark/spark_core/" rel="prev" title="Spark Core">
+                Spark Core <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -787,7 +796,7 @@ C_p &amp; = \frac {SSE} {\hat {\sigma^2}} - n + 2p
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">350</span>
+          <span class="site-state-item-count">359</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -916,7 +925,59 @@ C_p &amp; = \frac {SSE} {\hat {\sigma^2}} - n + 2p
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1045,7 +1106,115 @@ C_p &amp; = \frac {SSE} {\hat {\sigma^2}} - n + 2p
         
           
         
-        <span class="site-state-item-count">57</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1095,7 +1264,7 @@ C_p &amp; = \frac {SSE} {\hat {\sigma^2}} - n + 2p
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#评估方向"><span class="nav-number">1.</span> <span class="nav-text">评估方向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型误差"><span class="nav-number">1.1.</span> <span class="nav-text">模型误差</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#training-error"><span class="nav-number">1.1.1.</span> <span class="nav-text">Training Error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#test-error"><span class="nav-number">1.1.2.</span> <span class="nav-text">Test Error</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型复杂度"><span class="nav-number">1.2.</span> <span class="nav-text">模型复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#over-fitting"><span class="nav-number">1.2.1.</span> <span class="nav-text">Over-Fitting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法"><span class="nav-number">1.2.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型信息来源"><span class="nav-number">1.3.</span> <span class="nav-text">模型信息来源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generalization-ability"><span class="nav-number">2.</span> <span class="nav-text">Generalization Ability</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#generalization-error-bound"><span class="nav-number">2.1.</span> <span class="nav-text">Generalization Error Bound</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二分类问题"><span class="nav-number">2.2.</span> <span class="nav-text">二分类问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#classificationtagging"><span class="nav-number">3.</span> <span class="nav-text">Classification/Tagging</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵"><span class="nav-number">3.1.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f-measure"><span class="nav-number">3.2.</span> <span class="nav-text">F-Measure</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#f1值"><span class="nav-number">3.2.1.</span> <span class="nav-text">F1值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#recevier-operating-characteristic-curve"><span class="nav-number">3.3.</span> <span class="nav-text">Recevier Operating Characteristic Curve</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#area-under-curve"><span class="nav-number">3.4.</span> <span class="nav-text">Area Under Curve</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#accuracy"><span class="nav-number">3.5.</span> <span class="nav-text">Accuracy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#regression"><span class="nav-number">4.</span> <span class="nav-text">Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方差"><span class="nav-number">4.1.</span> <span class="nav-text">方差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#均方误差偏差"><span class="nav-number">4.2.</span> <span class="nav-text">均方误差（偏差）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#r2"><span class="nav-number">4.3.</span> <span class="nav-text">\(R^2\)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#akaike-information-criterion"><span class="nav-number">4.4.</span> <span class="nav-text">Akaike Information Criterion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bayesian-information-criterion"><span class="nav-number">4.5.</span> <span class="nav-text">Bayesian Information Criterion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c_p"><span class="nav-number">4.6.</span> <span class="nav-text">\(C_p\)</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#评估方向"><span class="nav-number">1.</span> <span class="nav-text">评估方向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型误差"><span class="nav-number">1.1.</span> <span class="nav-text">模型误差</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#training-error"><span class="nav-number">1.1.1.</span> <span class="nav-text">Training Error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#test-error"><span class="nav-number">1.1.2.</span> <span class="nav-text">Test Error</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型复杂度"><span class="nav-number">1.2.</span> <span class="nav-text">模型复杂度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#over-fitting"><span class="nav-number">1.2.1.</span> <span class="nav-text">Over-Fitting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法"><span class="nav-number">1.2.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型信息来源"><span class="nav-number">1.3.</span> <span class="nav-text">模型信息来源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#classificationtagging"><span class="nav-number">2.</span> <span class="nav-text">Classification/Tagging</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵"><span class="nav-number">2.1.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f-measure"><span class="nav-number">2.2.</span> <span class="nav-text">F-Measure</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#f1值"><span class="nav-number">2.2.1.</span> <span class="nav-text">F1值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#recevier-operating-characteristic-curve"><span class="nav-number">2.3.</span> <span class="nav-text">Recevier Operating Characteristic Curve</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#area-under-curve"><span class="nav-number">2.4.</span> <span class="nav-text">Area Under Curve</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#auc计算"><span class="nav-number">2.4.1.</span> <span class="nav-text">AUC计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加权auc"><span class="nav-number">2.4.2.</span> <span class="nav-text">加权AUC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多分类auc"><span class="nav-number">2.4.3.</span> <span class="nav-text">多分类AUC</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#accuracy"><span class="nav-number">2.5.</span> <span class="nav-text">Accuracy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#regression"><span class="nav-number">3.</span> <span class="nav-text">Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方差"><span class="nav-number">3.1.</span> <span class="nav-text">方差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#均方误差偏差"><span class="nav-number">3.2.</span> <span class="nav-text">均方误差（偏差）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#r2"><span class="nav-number">3.3.</span> <span class="nav-text">\(R^2\)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#akaike-information-criterion"><span class="nav-number">3.4.</span> <span class="nav-text">Akaike Information Criterion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bayesian-information-criterion"><span class="nav-number">3.5.</span> <span class="nav-text">Bayesian Information Criterion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c_p"><span class="nav-number">3.6.</span> <span class="nav-text">\(C_p\)</span></a></li></ol></li></ol></div>
             
 
           </div>

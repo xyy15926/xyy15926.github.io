@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="AdaBoost, AdaBoost.M1, AdaBoost.M2">
+<meta name="keywords" content="Machine Learning,Model,Boosting,Model Enhencement,AdaBoost">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AdaBoost">
+<meta property="og:url" content="https://xyy15926.github.io/ml_models/model_enhancement/adaboost/index.html">
+<meta property="og:site_name" content="XYY15926&#39;s Blog">
+<meta property="og:description" content="AdaBoost, AdaBoost.M1, AdaBoost.M2">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/adaboost_steps.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/adaboostm1_steps.png">
+<meta property="og:image" content="https://xyy15926.github.io/imgs/adaboostm2_steps.png">
+<meta property="og:updated_time" content="2019-07-20T16:46:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AdaBoost">
+<meta name="twitter:description" content="AdaBoost, AdaBoost.M1, AdaBoost.M2">
+<meta name="twitter:image" content="https://xyy15926.github.io/imgs/adaboost_steps.png">
+  <link rel="alternate" href="/atom.xml" title="XYY15926's Blog" type="application/atom+xml">
+  <link rel="canonical" href="https://xyy15926.github.io/ml_models/model_enhancement/adaboost/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>AdaBoost | XYY15926's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">XYY15926's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Just Proxy</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://xyy15926.github.io/ml_models/model_enhancement/adaboost/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xyy15926">
+      <meta itemprop="description" content="Notes about everything">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XYY15926's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">AdaBoost
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-21 00:46:35" itemprop="dateCreated datePublished" datetime="2019-07-21T00:46:35+08:00">2019-07-21</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ML-Model/" itemprop="url" rel="index"><span itemprop="name">ML Model</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ML-Model/Model-Enhencement/" itemprop="url" rel="index"><span itemprop="name">Model Enhencement</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+            <div class="post-description">AdaBoost, AdaBoost.M1, AdaBoost.M2</div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="adaboost">AdaBoost</h2>
+<p>通过改变训练样本权重，学习多个分类器，并将分类器进行线性 组合，提高分类性能</p>
+<ul>
+<li>对离群点、奇异点敏感</li>
+<li>对过拟合不敏感</li>
+</ul>
+<h3 id="boosting实现">Boosting实现</h3>
+<blockquote>
+<ul>
+<li>改变训练数据权值或概率分布：提高分类错误样本权值、降低 分类正确样本权值</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>弱分类器组合：加权多数表决，即加大分类误差率小的弱分类器 权值，使其在表决中起更大作用；减小分类误差率大的弱分类器 权值，使其在表决中起更小作用</li>
+</ul>
+</blockquote>
+<h3 id="步骤">步骤</h3>
+<figure>
+<img src="/imgs/adaboost_steps.png" alt="adaboost_steps"><figcaption>adaboost_steps</figcaption>
+</figure>
+<blockquote>
+<ul>
+<li>输入：训练数据集<span class="math inline">\(T=\{(x_1, y_1), \cdots, (x_N, y_N)\}\)</span>， 弱分类器算法<span class="math inline">\(G(x)\)</span> &gt; - <span class="math inline">\(x_i \in \mathcal{X \subset R^n}\)</span> &gt; - <span class="math inline">\(y_i \in \mathcal{Y} = \{-1, +1 \}\)</span></li>
+<li>输出：最终分类器<span class="math inline">\(G(x)\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>初始化训练数据权值分布： <span class="math inline">\(D_1=(w_{11}, \cdots, w_{1N}), w_{1i}=\frac 1 N\)</span></p></li>
+<li><p>对<span class="math inline">\(m=1,2,\cdots,M\)</span>（即训练M个弱分类器）</p>
+<ul>
+<li><p>使用具有<strong>权值分布</strong><span class="math inline">\(D_m\)</span>的训练数据学习，得到基本 分类器</p>
+<p><span class="math display">\[
+G_m(x):\mathcal{X} \rightarrow \{-1, +1\}
+\]</span></p></li>
+<li><p>计算<span class="math inline">\(G_m(x)\)</span>在训练数据集上的<strong>分类误差率</strong></p>
+<p><span class="math display">\[\begin{align*}
+e_m &amp; = P(G_m(x_i)) \neq y_i) \\
+    &amp; = \sum_{i=1}^N w_{mi}I(G_m(x_i) \neq y_i) \\
+    &amp; = \sum_{G_m(x_i) \neq y_i} w_{mi}
+\end{align*}\]</span></p></li>
+<li><p>计算<span class="math inline">\(G_m(x)\)</span>组合为最终分类器时权重</p>
+<p><span class="math display">\[
+\alpha = \frac 1 2 log \frac {1-e_m} {e_m}
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\alpha_m\)</span>表示就简单分类器<span class="math inline">\(G_m(x)\)</span>在最终分类器中 的重要性，随<span class="math inline">\(e_m\)</span>减小而增加 （弱分类器保证<span class="math inline">\(e_m \leq 1/2\)</span>）</li>
+</ul>
+</blockquote></li>
+<li><p>更新训练集权值分布 <span class="math display">\[\begin{align*}
+D_{m+1} &amp; = (w_{m+1,1}, \cdots, w_{m+1,N}) \\
+w_{m+1,i} &amp; = \frac {w_{mi}} {Z_m}
+    exp(-\alpha y_i G_m(x_i)) = \left \{
+    \begin{array}{l}
+        \frac {w_mi} {Z_m} e^{-\alpha_m},
+            &amp; G_m(x_i) = y_i \\
+        \frac {w_mi} {Z_m} e^{\alpha_m},
+            &amp; G_m(x_i) \neq y_i \\
+    \end{array} \right. \\
+Z_m &amp; = \sum_{i=1}^N w_{mi} exp(-\alpha_m y_i G_m(x_i))
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(Z_m\)</span>：规范化因子，是第m轮调整后的权值之和，其 使得<span class="math inline">\(D_{m+1}\)</span>成为概率分布</li>
+<li>误分类样本权值相当于被放大 <span class="math inline">\(e^{2\alpha_m} = \frac {e_m} {1 - e_m}\)</span>倍</li>
+</ul>
+</blockquote></li>
+</ul></li>
+<li><p>构建基本分类器线性组合 <span class="math display">\[
+f(x) = \sum_{m=1}^M \alpha_m G_m(x)
+\]</span> 得到最终分类器 <span class="math display">\[
+G(x) = sign(f(x)) = sign(\sum_{m=1}^M \alpha_m G_m(x))
+\]</span></p>
+<blockquote>
+<ul>
+<li>这里<span class="math inline">\(\alpha_m\)</span>没有规范化，和不为1，规范化没有必要</li>
+<li><span class="math inline">\(f(x)\)</span>符号决定分类预测结果，绝对值大小表示分类确信度</li>
+</ul>
+</blockquote></li>
+</ul>
+<blockquote>
+<ul>
+<li>AdaBoost中分类器学习和之后的分类误差率“无关”，基分类器 学习算法中的loss不是分类误差率，可以是其他loss，只是需要 考虑训练数据的权值分布 &gt; - 好像基学习器的loss就要是和集成部分调权的loss一致 #todo &gt; - <strong>按权值分布有放回的抽样</strong>，在抽样集上进行训练 &gt; - 各样本loss按权重加权，类似分类误差率中加权</li>
+</ul>
+</blockquote>
+<h3 id="训练误差边界">训练误差边界</h3>
+<p>AdaBoost算法最终分类器的训练误差边界为</p>
+<p><span class="math display">\[
+\frac 1 N \sum_{i=1}^N I(G(x_i) \neq y_i) \leq
+    \frac 1 N \sum_i exp(-y_if(x_i)) = \prod_m Z_m
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(G(x_i) \neq y_i\)</span>时，<span class="math inline">\(y_if(x_i)&lt;0\)</span>，所以 <span class="math inline">\(exp(-y_i f(x_i)) \geq 1\)</span>，则不等式部分可证</p></li>
+<li><p><span class="math display">\[\begin{align*}
+\frac 1 N \sum_i exp(-y_i f(x_i))
+    &amp; = \frac 1 N \sum_i exp(-\sum_{m=1}^M
+        \alpha_m y_i G_m(x_i)) \\
+    &amp; = \sum_i (w_{1,i} \prod_{m=1}^M
+        exp(-\alpha_m y_i G_m(x_i))) \\
+    &amp; = \sum_i (Z_1 w_{2,i} \prod_{m=2}^M
+        exp(-\alpha_m y_i G_m(x_i))) \\
+    &amp; = \prod_{m=1}^M Z_i \sum_i w_{M+1,i} \\
+    &amp; = \prod_{m=1}^M Z_i
+\end{align*}\]</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>AdaBoost训练误差边界性质的关键：权重调整与基本分类器权重 调整<strong>共系数</strong>（形式不完全一样）</li>
+<li>这也是AdaBoost权重调整设计的依据，方便给出误差上界</li>
+</ul>
+</blockquote>
+<h4 id="二分类训练误差边界">二分类训练误差边界</h4>
+<p><span class="math display">\[
+\prod_{m=1}^M Z_m = \prod_{m=1}^M (2\sqrt{e_m(1-e_m)})
+    = \prod_{m=1}^M \sqrt{(1-4\gamma_m^2)}
+    \leq exp(-2\sum_{m=1}^M \gamma_m^2)
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\gamma_m = \frac 1 2 - e_m\)</span></li>
+</ul>
+</blockquote>
+<ul>
+<li><p><span class="math display">\[\begin{align*}
+Z_m &amp; = \sum_{i=1}^N w_{m,i} exp(-\alpha y_i G_m(x_i)) \\
+    &amp; = \sum_{y_i = G_m(x_i)} w_{m,i}e^{-\alpha_m} +
+        \sum_{y_i \neq G_m(x_i)} w_{m,i}e^{\alpha_m} \\
+    &amp; = (1-e_m)e^{-\alpha_m} + e_m e^{\alpha_m} \\
+    &amp; = 2\sqrt{e_m(1-e_m)} \\
+    &amp; = \sqrt{1-4\gamma^2}
+\end{align*}\]</span></p></li>
+<li><p>由<span class="math inline">\(\forall x \in [0, 0.5], e^{-x} &gt; \sqrt{1-2x}\)</span>可得， <span class="math inline">\(\sqrt{1-4\gamma_m^2} \leq exp(-2\gamma_m^2)\)</span></p></li>
+</ul>
+<blockquote>
+<ul>
+<li>二分类AdaBoost误差边界性质的关键：<span class="math inline">\(\alpha\)</span>的取值，也是 前向分步算法（损失函数）要求</li>
+<li>若存<span class="math inline">\(\gamma &gt; 0\)</span>，对所有m有<span class="math inline">\(\gamma_m \geq \gamma\)</span>，则 <span class="math display">\[
+\frac 1 N \sum_{i=1}^N I(G(x_i) \neq y_i) \neq
+exp(-2M\gamma^2)
+\]</span> 即AdaBoost的训练误差是<strong>指数下降</strong>的</li>
+<li>分类器下界<span class="math inline">\(\gamma\)</span>可以未知，AdaBoost能适应弱分类器各自 训练误差率，所以称为<em>adptive</em></li>
+</ul>
+</blockquote>
+<h2 id="adaboost.m1"><em>Adaboost.M1</em></h2>
+<p>Adaboost.M1是原版AdaBoost的多分类升级版，基本思想同Adaboost</p>
+<h3 id="boosting实现-1">Boosting实现</h3>
+<ul>
+<li><p>基分类器组合方式</p>
+<ul>
+<li>仍然是加权投票，且投票权重同Adaboost</li>
+<li>出于多分类考虑，没有使用<code>sign</code>符号函数</li>
+</ul></li>
+<li><p>改变训练数据权值或概率分布：和Adaboost形式稍有不同，但 相对的错误分类样本提升比率完全相同</p>
+<ul>
+<li>被上个分类器错误分类样本，权值保持不变</li>
+<li>被上个分类器正确分类样本，权值缩小比例是Adaboost平方</li>
+</ul></li>
+</ul>
+<h3 id="步骤-1">步骤</h3>
+<ul>
+<li>输入
+<ul>
+<li>训练集：<span class="math inline">\(T={x_i, y_i}, i=1,\cdots,N; y_i \in C, C=\{c_1, \cdots, c_m\}\)</span></li>
+<li>训练轮数：T</li>
+<li>弱学习器：I</li>
+</ul></li>
+<li><p>输出：提升分类器 <span class="math display">\[
+H(x) = \arg\max_{y \in C} \sum_{m=1}^M
+    ln(\frac 1 {\beta_m}) [h_m(x) = y]
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(h_t, h_t(x) \in C\)</span>：分类器</li>
+<li><span class="math inline">\(\beta_t\)</span>：分类器权重</li>
+</ul>
+</blockquote></li>
+</ul>
+<figure>
+<img src="/imgs/adaboostm1_steps.png" alt="adaboostm1_steps"><figcaption>adaboostm1_steps</figcaption>
+</figure>
+<h3 id="误分率上界">误分率上界</h3>
+<blockquote>
+<ul>
+<li>对弱学习算法产生的伪损失<span class="math inline">\(\epsilon_1,\cdots,\epsilon_t\)</span>， 记<span class="math inline">\(\gamma_t = 1/2 \epsilon_t\)</span>，最终分类器<span class="math inline">\(h_{fin}\)</span>误分率 上界有 <span class="math display">\[
+\frac 1 N |\{i: h_{fin}(x_i) \neq y_i \}| \leq
+\prod_{t-1}^T \sqrt {1-4\gamma^2} \leq
+exp(-2 \sum_{t-1}^T \gamma^2)
+\]</span></li>
+</ul>
+</blockquote>
+<h3 id="特点">特点</h3>
+<p>Adaboost.M1和Adaboost基本上没有区别</p>
+<ul>
+<li>类别数目为2的Adaboost.M1就是Adaboost</li>
+<li>同样无法处理对误分率高于0.5的情况，甚至在多分类场合， 误分率小于0.5更加难以满足</li>
+<li>理论误分率上界和Adaboost相同</li>
+</ul>
+<h2 id="adaboost.m2"><em>Adaboost.M2</em></h2>
+<p>AdaboostM2是AdaboostM1的进阶版，更多的利用了基分类器信息</p>
+<ul>
+<li>要求基学习器能够输出更多信息：输出对样本分别属于各类别 的置信度向量，而不仅仅是最终标签</li>
+<li>要求基分类器更加精细衡量错误：使用伪损失代替误分率 作为损失函数</li>
+</ul>
+<h3 id="psuedo-loss"><em>Psuedo-Loss</em></h3>
+<p><span class="math display">\[\begin{align*}
+L &amp; = \frac 1 2 \sum_{(i,y) \in B} D_{i,y}
+    (1 - h(x_i, y_i) + h(x_i, y)) \\
+&amp; = \frac 1 2 \sum_{i=1}^N D_i (1 - h(x_i, y_i) +
+    \sum_{y \neq y_i} (w_{i,y} h(x_i, y)))
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(D\)</span>：权重分布（行和为1，但不满足列和为1） &gt; - <span class="math inline">\(D_{i,y}\)</span>：个体<span class="math inline">\(x_i\)</span>中错误标签<span class="math inline">\(y\)</span>的权重，代表从个体 <span class="math inline">\(x_i\)</span>中识别出错误标签<span class="math inline">\(y\)</span>的重要性</li>
+<li><span class="math inline">\(B = \{(i, y)|y \neq y_i, i=1,2,\cdots,N \}\)</span></li>
+<li><span class="math inline">\(w\)</span>：个体各错误标签权重边际分布</li>
+<li><span class="math inline">\(h(x, y)\)</span>：模型<span class="math inline">\(h\)</span>预测样本<span class="math inline">\(x\)</span>为<span class="math inline">\(y\)</span>的置信度 &gt; - <span class="math inline">\(h(x_i,y_i)\)</span>：预测正确的置信度 &gt; - <span class="math inline">\(h(x_i,y), y \neq y_i\)</span>：预测<span class="math inline">\(x_i\)</span>为错误分类<span class="math inline">\(y\)</span>置信度</li>
+</ul>
+</blockquote>
+<ul>
+<li>伪损失函数同时考虑了样本和<strong>标签</strong>的权重分布</li>
+<li>通过改变此分布，能够更明确的关注难以预测的个体标签， 而不仅仅个体</li>
+</ul>
+<h3 id="boosting实现-2">Boosting实现</h3>
+<ul>
+<li><p>改变数据权值或者概率分布</p>
+<ul>
+<li>使用<em>psuedo-loss</em>替代误分率，以此为导向改变权值</li>
+<li>对多分类每个错误分类概率分别计算错误占比，在此基础上 分别计算</li>
+</ul></li>
+<li><p>基分类器组合方式：同Adaboost.M1</p></li>
+</ul>
+<h3 id="步骤-2">步骤</h3>
+<figure>
+<img src="/imgs/adaboostm2_steps.png" alt="adaboostm2_steps"><figcaption>adaboostm2_steps</figcaption>
+</figure>
+<h3 id="训练误差上界">训练误差上界</h3>
+<blockquote>
+<ul>
+<li>对弱学习算法产生的伪损失<span class="math inline">\(\epsilon_1,\cdots,\epsilon_t\)</span>， 记<span class="math inline">\(\gamma_t = 1/2 \epsilon_t\)</span>，最终分类器<span class="math inline">\(h_{fin}\)</span>误分率 上界有</li>
+</ul>
+</blockquote>
+<p><span class="math display">\[
+\frac 1 N |\{i: h_{fn}(x_i) \neq y_i \}| \leq
+    (M-1) \prod_{t-1}^T \sqrt {1-4\gamma^2} \leq
+    (M-1) exp(-2 \sum_{t-1}^T \gamma^2)
+\]</span></p>
+<h3 id="特点-1">特点</h3>
+<ul>
+<li><p>基于伪损失的Adaboost.M2能够提升稍微好于随机预测的分类器</p></li>
+<li>Adaboosting.M2能够较好的解决基分类器对噪声的敏感性，但是 仍然距离理论最优<em>Bayes Error</em>有较大差距，额外误差主要 来自于
+<ul>
+<li>训练数据</li>
+<li>过拟合</li>
+<li>泛化能力</li>
+</ul></li>
+<li><p>控制权值可以有效的提升算法，减小最小训练误差、过拟合 、泛化能力</p>
+<ul>
+<li>如对权值使用原始样本比例作为先验加权</li>
+</ul></li>
+<li><p>其分类结果不差于AdaBoost.M1（在某些基分类器、数据集下）</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Model/" rel="tag"># Model</a>
+          
+            <a href="/tags/Boosting/" rel="tag"># Boosting</a>
+          
+            <a href="/tags/Model-Enhencement/" rel="tag"># Model Enhencement</a>
+          
+            <a href="/tags/AdaBoost/" rel="tag"># AdaBoost</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/math_mixin/problems/unconstrained_specials/" rel="next" title="无约束优化特殊问题">
+                <i class="fa fa-chevron-left"></i> 无约束优化特殊问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/math_mixin/unconstrained_optimization/unconstrained_specials/" rel="prev" title="无约束优化特殊问题">
+                无约束优化特殊问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xyy15926</p>
+  <div class="site-description motion-element" itemprop="description">Notes about everything</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">359</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/xyy15926" title="GitHub &rarr; https://github.com/xyy15926" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:xyy15926@gmail.com" title="E-Mail &rarr; mailto:xyy15926@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#adaboost"><span class="nav-number">1.</span> <span class="nav-text">AdaBoost</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#boosting实现"><span class="nav-number">1.1.</span> <span class="nav-text">Boosting实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#步骤"><span class="nav-number">1.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练误差边界"><span class="nav-number">1.3.</span> <span class="nav-text">训练误差边界</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#二分类训练误差边界"><span class="nav-number">1.3.1.</span> <span class="nav-text">二分类训练误差边界</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adaboost.m1"><span class="nav-number">2.</span> <span class="nav-text">Adaboost.M1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#boosting实现-1"><span class="nav-number">2.1.</span> <span class="nav-text">Boosting实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#步骤-1"><span class="nav-number">2.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#误分率上界"><span class="nav-number">2.3.</span> <span class="nav-text">误分率上界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">2.4.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adaboost.m2"><span class="nav-number">3.</span> <span class="nav-text">Adaboost.M2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#psuedo-loss"><span class="nav-number">3.1.</span> <span class="nav-text">Psuedo-Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boosting实现-2"><span class="nav-number">3.2.</span> <span class="nav-text">Boosting实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#步骤-2"><span class="nav-number">3.3.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练误差上界"><span class="nav-number">3.4.</span> <span class="nav-text">训练误差上界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">3.5.</span> <span class="nav-text">特点</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xyy15926</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
