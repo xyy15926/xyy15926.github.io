@@ -358,7 +358,19 @@
 <h3 id="cal"><code>cal</code></h3>
 <p>显示日历信息</p>
 <h3 id="date"><code>date</code></h3>
-<p>显示、设置系统日期时间</p>
+<p><code>date</code>：显示、设置系统日期时间</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">date -d &lt;time&gt; "+&lt;format&gt;"</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>-d</code>：指定时间，缺省今天</li>
+<li><code>+</code>：指定输出格式
+<ul>
+<li><code>%Y-%m-%d %h-%M-%S</code>：年月日时（24时）分秒</li>
+<li><code>%a/%A</code>：星期缩写、完整</li>
+<li><code>%b/%B</code>：月份缩写、完整</li>
+<li><code>%D</code>：<code>MM/DD/YY</code></li>
+<li><code>%F</code>：<code>YYYY-MM-DD</code></li>
+</ul></li>
+</ul>
 <h3 id="hwclock"><code>hwclock</code></h3>
 <p>查看、设置硬件时钟</p>
 <h3 id="clockdiff"><code>clockdiff</code></h3>
@@ -402,16 +414,21 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rpm2cpio rpm_pkg | cpio -div</span><br></pre></td></tr></table></figure>
 <h2 id="远程连接服务器">远程连接服务器</h2>
 <h3 id="ssh"><code>ssh</code></h3>
-<p>ssh登陆服务器</p>
+<p><code>ssh</code>：ssh登陆服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh &lt;user_name&gt;@&lt;host&gt; [-p &lt;port&gt;] [-i &lt;private_key&gt;]</span><br><span class="line">	[-F &lt;config_file&gt;]</span><br></pre></td></tr></table></figure>
 <ul>
-<li><code>$ ssh user_name@host</code></li>
-<li>可以使用<code>~/.ssh/config</code>配置文件简化登陆</li>
+<li><code>-F</code>：指定配置文件，简化命令，缺省<code>~/.ssh/config</code>
+<ul>
+<li>有时会覆盖其余配置，可以指定<code>-F /dev/null</code>避免</li>
+</ul></li>
+<li><code>-p</code>：指定端口</li>
+<li><code>-i</code>：指定使用的私钥</li>
 </ul>
 <h3 id="scp"><code>scp</code></h3>
-<p>secure cp，安全传输（cp）文件</p>
+<p><code>scp</code>：secure cp，安全传输（cp）文件</p>
 <ul>
-<li><p>本机到远程 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> scp /path/to/file user_name@host:/path/to/dest</span><br></pre></td></tr></table></figure></p></li>
-<li><p>远程到本机 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> scp user_name@host:/path/to/file /path/to/dest</span><br></pre></td></tr></table></figure></p>
+<li><p>本机到远程 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> scp /path/to/file user_name@host:/path/to/dest</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>远程到本机 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> scp user_name@host:/path/to/file /path/to/dest</span></span><br></pre></td></tr></table></figure></p>
 <ul>
 <li>这个命令应该在本机上使用，不是ssh环境下</li>
 <li>ssh环境下使用命令表示在远程主机上操作</li>
@@ -429,7 +446,7 @@
 <p>添加密钥给<code>ssh-agent</code>（避免每次输入密码？）</p>
 <h3 id="etcinit.dsshd"><code>/etc/init.d/sshd</code></h3>
 <p>ssh连接的服务器守护程序（进程）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> sudo systemctl start sshd</span><br><span class="line"><span class="meta">	#</span> 使用`systemctl`启动</span><br><span class="line"><span class="meta">$</span> /etc/init.d/sshd restart</span><br><span class="line"><span class="meta">	#</span> 直接启动进程</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start sshd</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 使用`systemctl`启动</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> /etc/init.d/sshd restart</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 直接启动进程</span></span><br></pre></td></tr></table></figure>
 <h3 id="rsync"><code>rsync</code></h3>
 <p>实现本地主机、远程主机的文本双向同步</p>
 <h4 id="同步两种模式">同步两种模式</h4>
@@ -449,12 +466,12 @@
 </ul>
 <h4 id="工作方式">工作方式</h4>
 <ul>
-<li><p>本地文件系统同步：本质是管道通信 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> rsync [option..] src... [dest]</span><br></pre></td></tr></table></figure></p></li>
-<li><p>本地主机使用远程shell和远程主机通信 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> rsync [option...] [user@]host:src... [dest]</span><br><span class="line"><span class="meta">$</span> rsync [option...] src... [user@]host:dest</span><br></pre></td></tr></table></figure></p>
+<li><p>本地文件系统同步：本质是管道通信 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rsync [option..] src... [dest]</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>本地主机使用远程shell和远程主机通信 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rsync [option...] [user@]host:src... [dest]</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> rsync [option...] src... [user@]host:dest</span></span><br></pre></td></tr></table></figure></p>
 <ul>
 <li>本质上是管道通信</li>
 </ul></li>
-<li><p>本地主机通过socket连接远程主机的rsync <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> rsync [option...] rsync://[user@]host[:port]/src... dest</span><br><span class="line"><span class="meta">$</span> rsync [option...] [user@]host::src... [dest]</span><br><span class="line"><span class="meta">$</span> rsync [option...] src... rsync://[user@]host[:port]/dest</span><br><span class="line"><span class="meta">$</span> rsync [option...] src... [user@]host::dest</span><br></pre></td></tr></table></figure></p>
+<li><p>本地主机通过socket连接远程主机的rsync <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rsync [option...] rsync://[user@]host[:port]/src... dest</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> rsync [option...] [user@]host::src... [dest]</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> rsync [option...] src... rsync://[user@]host[:port]/dest</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> rsync [option...] src... [user@]host::dest</span></span><br></pre></td></tr></table></figure></p>
 <ul>
 <li>需要远主机运行rsync服务监听端口，等待客户端连接</li>
 </ul></li>
@@ -496,7 +513,7 @@
 <li>网络带宽高于磁盘带宽时，此选项更高效</li>
 </ul></li>
 <li><p><code>R</code>/<code>--relative</code>：使用相对路径，即在目标中创建源中指定 的相对路径</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> rsync -R -r /var/./log/anaconda /tmp</span><br><span class="line"><span class="meta">	#</span> 将会在目标创建`/tmp/log/anaconda`</span><br><span class="line"><span class="meta">	#</span> `.`是将绝对路径转换为相对路径，其后的路径才会创建</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rsync -R -r /var/./<span class="built_in">log</span>/anaconda /tmp</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 将会在目标创建`/tmp/<span class="built_in">log</span>/anaconda`</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> `.`是将绝对路径转换为相对路径，其后的路径才会创建</span></span><br></pre></td></tr></table></figure></li>
 <li><code>--delete</code>：以源为主，对DEST进行同步，多删、少补</li>
 <li><code>-b</code>/<code>--backup</code>：对目标上已经存在文件做备份的
 <ul>
@@ -513,7 +530,7 @@
 <li>可以从中读取密码文件实现非交互式</li>
 <li>是rsync模块认证密码，不是shell认证密码</li>
 </ul></li>
-<li><p><code>-e</code>：指定所需要的远程shell程序，默认ssh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> rsync -e "ssh -p 22 -o StrictHostKeyChecking=no" /etc/fstab</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>-e</code>：指定所需要的远程shell程序，默认ssh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rsync -e <span class="string">"ssh -p 22 -o StrictHostKeyChecking=no"</span> /etc/fstab</span></span><br></pre></td></tr></table></figure></p></li>
 <li><p><code>--rsh</code>：使用rsync deamon进行同步</p></li>
 </ul>
 <h5 id="检查模式选项">检查模式选项</h5>
@@ -609,8 +626,8 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/linux/shell/sed/" rel="prev" title="Linux文本工具">
-                Linux文本工具 <i class="fa fa-chevron-right"></i>
+              <a href="/linux/shell/cmd_sysctl/" rel="prev" title="系统级查看、设置">
+                系统级查看、设置 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -664,7 +681,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">358</span>
+          <span class="site-state-item-count">361</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -845,7 +862,9 @@
         
           
         
-        <span class="site-state-item-count">83</span>
+          
+        
+        <span class="site-state-item-count">84</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1084,7 +1103,23 @@
         
           
         
-        <span class="site-state-item-count">112</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">120</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>

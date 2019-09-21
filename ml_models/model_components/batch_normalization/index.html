@@ -329,7 +329,46 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="batch-normalization">Batch Normalization</h2>
+        <h2 id="internal-covariate-shift">Internal Covariate Shift</h2>
+<p><em>ICS</em>：由于网络参数变化，引起内部节点（输入）数据分布发生 变化的过程</p>
+<ul>
+<li>网络中层与层之间高度耦合，具有强关联性
+<ul>
+<li>网络中任意层都可以视为单独网络</li>
+<li>上层输入可视为作为当前层外部输入</li>
+</ul></li>
+<li>随训练进行，网络中参数不断发生改变
+<ul>
+<li>任意层中参数变化会导致之后层输入发生改变</li>
+<li>高层需要不断适应输入分布的改变，即其输入分布性质影响 该层训练</li>
+<li>由此导致模型训练困难</li>
+</ul></li>
+</ul>
+<h3 id="负面影响">负面影响</h3>
+<ul>
+<li><p>上层网络需要不断调整输入适应数据分布变换，降低网络学习 效率</p></li>
+<li>输入数据量级不稳定、各维度数据量级差距不稳定
+<ul>
+<li>降低学习效率
+<ul>
+<li>小量级维度参数要求更小的学习率</li>
+<li>否则参数可能在最优解附近反复波动</li>
+</ul></li>
+<li>容易出现梯度消失，难以训练饱和非线性模型
+<ul>
+<li>大量级维度训练过程中容易陷入梯度饱和区，参数更新 速度慢，减缓网络收敛速度</li>
+<li>训练过程中参数更新更有可能使得输入移向激活函数 饱和区</li>
+<li>且该效应随着网络深度加深被进一步放大</li>
+</ul></li>
+<li>参数初始化需要更复杂考虑</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>还可以使用非饱和激活函数ReLU等避免陷入梯度饱和区</li>
+</ul>
+</blockquote>
+<h2 id="batch-normalization">Batch Normalization</h2>
 <p><em>Batch Normalization</em>：规范化batch数据，使样本<strong>各维度</strong> 标准化，即均值为0、方差为1</p>
 <p><span class="math display">\[\begin{align*}
 \y &amp; = BN_{\gamma, \beta}(z) = \gamma \odot \hat z + \beta \\
@@ -347,7 +386,25 @@
 </ul>
 </blockquote>
 <ul>
-<li><p>预测过程中各参数（包括均值、方差）为定值，BN仅仅对数据 做了线性变换</p></li>
+<li>BN可以视为<em>whitening</em>的简化
+<ul>
+<li>简化计算过程：避免过高的运算代价、时间</li>
+<li>保留数据信息：未改变网络每层各特征之间相关性</li>
+</ul></li>
+<li>BN层引入可学习参数<span class="math inline">\(\gamma, \beta\)</span>以恢复数据表达能力
+<ul>
+<li>Normalization操作缓解了ICS问题，使得每层输入稳定 ，也导致数据表达能力的缺失</li>
+<li>输入分布均值为0、方差为1时，经过sigmoid、tanh激活 函数时，容易陷入其线性区域</li>
+<li><span class="math inline">\(\gamma = \sqrt {Var(z)}, \beta = E(z)\)</span>时为等价变换 ，并保留原始输入特征分布信息</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Whitening</em>：白化，对输入数据变换使得各特征同均值、 同方向、不相关，可以分为PCA白化、ZCA白化</li>
+</ul>
+</blockquote>
+<h3 id="训练">训练</h3>
+<ul>
 <li><p>规范化在每个神经元内部非线性激活前<span class="math inline">\(z=Wu\)</span>进行，而不是 [也]在上一层输出<span class="math inline">\(u\)</span>上进行，即包含BN最终为</p>
 <p><span class="math display">\[
 z = act(BN(Wu))
@@ -355,7 +412,7 @@ z = act(BN(Wu))
 <blockquote>
 <ul>
 <li><span class="math inline">\(act\)</span>：激活函数</li>
-<li>偏置<span class="math inline">\(b\)</span>可以被省略</li>
+<li>偏置<span class="math inline">\(b\)</span>：可以被省略，BN中减去均值</li>
 </ul>
 </blockquote>
 <ul>
@@ -363,38 +420,41 @@ z = act(BN(Wu))
 <li>而<span class="math inline">\(u\)</span>两次正则化无必要</li>
 <li><span class="math inline">\(z=Wu\)</span>分布更可能对称、稠密、类似高斯分布</li>
 </ul></li>
+<li>以batch统计量作为整体训练样本均值、方差估计
+<ul>
+<li>每层均需存储均值、方差的移动平均统计量用于测试时 归一化测试数据</li>
+</ul></li>
 <li><p>对卷积操作，考虑卷积特性，不是只为激活函数（即卷积核） 学习<span class="math inline">\(\gamma, \beta\)</span>，而是为每个<em>feature map</em>学习 （即每个卷积核、对每个特征图层分别学习）</p></li>
 </ul>
-<blockquote>
+<h3 id="预测">预测</h3>
 <ul>
-<li>BN可以视为<em>whitening</em>的简化，避免过高的运算代价、时间</li>
-</ul>
-</blockquote>
-<h3 id="背景">背景</h3>
-<blockquote>
+<li><p>预测过程中各参数（包括均值、方差）为定值，BN仅仅对数据 做了线性变换</p>
 <ul>
-<li><em>internal covariate shift</em>：网络各层输入分布随前一层参数 在训练过程中不断改变</li>
-</ul>
-</blockquote>
-<ul>
-<li><p>网络中任意层都可以视为单独网络，则输入数据的分布性质对 训练影响同样适用该层</p></li>
-<li>考虑随机网络之前参数变化，输入数据分布可能对训练有负影响
-<ul>
-<li>降低学习效率：要求更小的学习率</li>
-<li>参数初始化需要更复杂</li>
-<li>难以训练饱和非线性模型</li>
+<li><p>使用训练总体的无偏统计量对测试数据归一化 （训练时存储）</p>
+<p><span class="math display">\[\begin{align*}
+\mu_{test} &amp; = E(\mu_{batch}) \\
+\sigma^2_{test} = \frac m {m-1} E(\sigma^2_{batch})
+\end{align*}\]</span></p></li>
+<li><p>还可以使用样本指数加权平均统计量</p></li>
 </ul></li>
 </ul>
 <h3 id="用途">用途</h3>
 <blockquote>
 <ul>
-<li>BN通过规范化输入数据各维度分布减少<em>ICS</em></li>
+<li>BN通过规范化输入数据各维度分布减少<em>ICS</em>，使得网络中每层 输入数据分布相对稳定</li>
 </ul>
 </blockquote>
 <ul>
-<li><p>同时解耦梯度对参数值、初始值的依赖，利用梯度传播， 允许使用更大的学习率提高学习效率</p></li>
-<li><p>有正则化作用，提高模型泛化性能，减少对Dropout的需求</p></li>
-<li><p>允许使用饱和非线性激活函数，而不至于停滞在饱和处</p>
+<li>实现网络层与层之间的解耦
+<ul>
+<li>方便迁移学习</li>
+<li>加速模型学习速度：后层网络无需不断适应输入分布变化， 利于提高神经网络学习速度</li>
+</ul></li>
+<li>降低模型对网络超参数、初始值敏感度，使得网络学习更加稳定
+<ul>
+<li>简化调参过程</li>
+<li>允许使用更大的学习率提高学习效率</li>
+</ul>
 <p><span class="math display">\[\begin{align*}
 BN(Wu) &amp; = BN((aW)u) \\
 \frac {\partial BN(aWu)} {\partial u} &amp; = \frac
@@ -411,7 +471,38 @@ BN(Wu) &amp; = BN((aW)u) \\
 <li>激活函数函数输入不受权重<span class="math inline">\(W\)</span>放缩影响</li>
 <li>梯度反向传播更稳定，权重<span class="math inline">\(W\)</span>的Jacobian矩阵将包含接近 1的奇异值，保持梯度稳定反向传播</li>
 </ul></li>
-<li><p>方便模型迁移</p></li>
+<li><p>允许网络使用饱和激活函数（sigmoid、tanh等），而不至于 停滞在饱和处，缓解梯度消失问题</p>
+<ul>
+<li>深度网络的复杂性容易使得网络变化积累到上层网络中， 导致模型容易进入激活函数梯度饱和区</li>
+</ul></li>
+<li>有正则化作用，提高模型泛化性能，减少对Dropout的需求
+<ul>
+<li>不同batch均值、方差有所不同，为网络学习过程增加随机 噪声</li>
+<li>与Dropout关闭神经元给网络带来噪声类似，一定程度上 有正则化效果</li>
+</ul></li>
+</ul>
+<h2 id="layer-normalization">Layer Normalization</h2>
+<p>层归一化：假设非线性激活前的输入随机变量分布接近，可以直接 基于每层所有非线性激活前输入估计均值、方差</p>
+<p><span class="math display">\[\begin{align*}
+\mu^l &amp; = \frac 1 H \sum_{i=1}^H h_i^l \\
+\sigma^l &amp;= \sqrt {\frac 1 H \sum_{i=1}^H (h_i^l - \mu^l)^2} \\
+h^l &amp; = W^l x^{l-1} + b^l \\
+LN(h^l) &amp; = \frac {g^l} {\sigma^l} \odot (h^l - \mu^l) + b^l \\
+x^l &amp; = g(LN(h^l))
+\end{align*}\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(h^l\)</span>：第<span class="math inline">\(l\)</span>隐层激活前值</li>
+<li><span class="math inline">\(\mu^l, \sigma^l\)</span>：第<span class="math inline">\(l\)</span>隐层对应LN均值、方差 （标量，是同层神经元激活前值统计量）</li>
+</ul>
+</blockquote>
+<ul>
+<li>相对于BN，其适应范围更广
+<ul>
+<li>循环神经网络中，BN无法处理长于训练序列的测试序列</li>
+<li>BN无法应用到在线学习、超大分布式模型任务，此时训练 batch较小，计算的均值、方差无法有效代表训练总体</li>
+</ul></li>
+<li>LN假设非线性激活前输入随机变量分布接近，而CNN网络中图像 边缘对应kernel大量隐藏单元未被激活，假设不成立，所以 CNN网络中LN效果没有BN效果好</li>
 </ul>
 
     </div>
@@ -431,8 +522,8 @@ BN(Wu) &amp; = BN((aW)u) \\
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/ml_models/model_components/dropout/" rel="next" title="Dropout">
-                <i class="fa fa-chevron-left"></i> Dropout
+              <a href="/ml_specifications/rec_system/ctr_stacking_models/" rel="next" title="CTR Stacking Models">
+                <i class="fa fa-chevron-left"></i> CTR Stacking Models
               </a>
             
           </div>
@@ -440,8 +531,8 @@ BN(Wu) &amp; = BN((aW)u) \\
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/ml_models/model_components/embedding/" rel="prev" title="Embedding">
-                Embedding <i class="fa fa-chevron-right"></i>
+              <a href="/ml_models/linear_models/factorization_machine/" rel="prev" title="Factorization Machines">
+                Factorization Machines <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -495,7 +586,7 @@ BN(Wu) &amp; = BN((aW)u) \\
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">358</span>
+          <span class="site-state-item-count">361</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -676,7 +767,9 @@ BN(Wu) &amp; = BN((aW)u) \\
         
           
         
-        <span class="site-state-item-count">83</span>
+          
+        
+        <span class="site-state-item-count">84</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -915,7 +1008,23 @@ BN(Wu) &amp; = BN((aW)u) \\
         
           
         
-        <span class="site-state-item-count">112</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">120</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -965,7 +1074,7 @@ BN(Wu) &amp; = BN((aW)u) \\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#batch-normalization"><span class="nav-number">1.</span> <span class="nav-text">Batch Normalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用途"><span class="nav-number">1.2.</span> <span class="nav-text">用途</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#internal-covariate-shift"><span class="nav-number">1.</span> <span class="nav-text">Internal Covariate Shift</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#负面影响"><span class="nav-number">1.1.</span> <span class="nav-text">负面影响</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#batch-normalization"><span class="nav-number">2.</span> <span class="nav-text">Batch Normalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#训练"><span class="nav-number">2.1.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测"><span class="nav-number">2.2.</span> <span class="nav-text">预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用途"><span class="nav-number">2.3.</span> <span class="nav-text">用途</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#layer-normalization"><span class="nav-number">3.</span> <span class="nav-text">Layer Normalization</span></a></li></ol></div>
             
 
           </div>

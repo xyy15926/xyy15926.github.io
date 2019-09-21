@@ -323,7 +323,7 @@
 
       
         <h2 id="指数类">指数类</h2>
-<h2 id="sigmoid">Sigmoid</h2>
+<h3 id="sigmoid">Sigmoid</h3>
 <p>将实数映射到(0, 1)区间</p>
 <p><span class="math display">\[
 sigmoid(z) = \frac 1 {1+e^{-z}}
@@ -417,26 +417,6 @@ tanh(z) &amp; = \frac {sinhz} {coshz} \\
 <li><span class="math inline">\(\frac{\partial tanh(z)}{\partial z} = (1 - tanh(z))^2\)</span> ：非常类似普通正切函数，可以简化梯度计算</li>
 </ul>
 </blockquote>
-<h2 id="线性指数类">线性指数类</h2>
-<h3 id="elu">Elu</h3>
-<p>线性指数</p>
-<p><span class="math display">\[
-elu(z, \alpha) =
-\left \{ \begin{array} {l}
-    z &amp; z &gt; 0 \\
-    \alpha (e^z - 1) &amp; x \leqslant 0 \\
-\end{array} \right.
-\]</span></p>
-<h3 id="selu">Selu</h3>
-<p>可伸缩指数线性激活：可以两个连续层之间保留输入均值、方差</p>
-<ul>
-<li>正确初始化权重：<code>lecun_normal</code>初始化</li>
-<li>输入数量足够大：<code>AlphaDropout</code></li>
-<li>选择合适的<span class="math inline">\(\alpha, scale\)</span>值</li>
-</ul>
-<p><span class="math display">\[
-selu(z) = scale * elu(z, \alpha)
-\]</span></p>
 <h2 id="线性类">线性类</h2>
 <h3 id="softsign">Softsign</h3>
 <p><span class="math display">\[
@@ -460,8 +440,16 @@ relu(z, \alpha, max) = \left \{ \begin {array} {l}
     max &amp; z \geq max \\
 \end {array} \right.
 \]</span></p>
-<h3 id="prelu">PReLU</h3>
-<p><em>Parametric ReLU</em>：参数化的修正线性</p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\alpha\)</span>：超参，建议取0.01</li>
+</ul>
+</blockquote>
+<ul>
+<li>解决了<span class="math inline">\(z &lt; 0\)</span>时进入死区问题，同时保留了ReLU的非线性特性</li>
+</ul>
+<h3 id="parametric-relu">Parametric ReLU</h3>
+<p><em>PReLU</em>：参数化的修正线性</p>
 <p><span class="math display">\[
 prelu(z) = \left \{ \begin{array} {l}
     \alpha z &amp; z &lt; 0 \\
@@ -470,7 +458,7 @@ prelu(z) = \left \{ \begin{array} {l}
 \]</span></p>
 <blockquote>
 <ul>
-<li><em><span class="math inline">\(\alpha\)</span></em>：自学习参数（向量），需要给出权重初始化方法 （正则化方法、约束）</li>
+<li><span class="math inline">\(\alpha\)</span>：自学习参数（向量），初始值常设置为0.25，通过 momentum方法更新</li>
 </ul>
 </blockquote>
 <h3 id="threshholdrelu">ThreshholdReLU</h3>
@@ -483,6 +471,44 @@ threshhold_relu(z, theta)= \left \{ \begin{array} {l}
 \]</span></p>
 <h3 id="linear">Linear</h3>
 <p>线性激活函数：不做任何改变</p>
+<h2 id="线性指数类">线性指数类</h2>
+<h3 id="exponential-linear-unit">Exponential Linear Unit</h3>
+<p><em>Elu</em>：线性指数</p>
+<p><span class="math display">\[
+elu(z, \alpha) =
+\left \{ \begin{array} {l}
+    z &amp; z &gt; 0 \\
+    \alpha (e^z - 1) &amp; x \leqslant 0 \\
+\end{array} \right.
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(\alpha\)</span>：超参</li>
+</ul>
+</blockquote>
+<ul>
+<li><span class="math inline">\(x \leq 0\)</span>时，<span class="math inline">\(f(x)\)</span>随<span class="math inline">\(x\)</span>变小而饱和
+<ul>
+<li>ELU对输入中存在的特性进行了表示，对缺失特性未作定量 表示</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>网络深度超超过5层时，ELU相较ReLU、LReLU学习速度更快、 泛化能力更好</li>
+</ul>
+</blockquote>
+<h3 id="gausssion-error-liear-unit">Gausssion Error Liear Unit</h3>
+<p>GELU：ReLU的可导版本</p>
+<h3 id="selu">Selu</h3>
+<p>可伸缩指数线性激活：可以两个连续层之间保留输入均值、方差</p>
+<ul>
+<li>正确初始化权重：<code>lecun_normal</code>初始化</li>
+<li>输入数量足够大：<code>AlphaDropout</code></li>
+<li>选择合适的<span class="math inline">\(\alpha, scale\)</span>值</li>
+</ul>
+<p><span class="math display">\[
+selu(z) = scale * elu(z, \alpha)
+\]</span></p>
 <h2 id="梯度消失">梯度消失</h2>
 <p>激活函数导数太小（<span class="math inline">\(&lt;1\)</span>），压缩<strong>误差（梯度）</strong>变化</p>
 
@@ -501,8 +527,8 @@ threshhold_relu(z, theta)= \left \{ \begin{array} {l}
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/ml_models/model_components/sys2sys/" rel="next" title="Seq2Seq">
-                <i class="fa fa-chevron-left"></i> Seq2Seq
+              <a href="/math_mixin/unconstrained_optimization/coordinate_descent/" rel="next" title="Coordinate Descent">
+                <i class="fa fa-chevron-left"></i> Coordinate Descent
               </a>
             
           </div>
@@ -510,8 +536,8 @@ threshhold_relu(z, theta)= \left \{ \begin{array} {l}
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/ml_models/model_components/recurrent/" rel="prev" title="Recurrent Neural Network">
-                Recurrent Neural Network <i class="fa fa-chevron-right"></i>
+              <a href="/linux/inst_set/centos_setting/" rel="prev" title="CentOS7常用配置">
+                CentOS7常用配置 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -565,7 +591,7 @@ threshhold_relu(z, theta)= \left \{ \begin{array} {l}
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">358</span>
+          <span class="site-state-item-count">361</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -746,7 +772,9 @@ threshhold_relu(z, theta)= \left \{ \begin{array} {l}
         
           
         
-        <span class="site-state-item-count">83</span>
+          
+        
+        <span class="site-state-item-count">84</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -985,7 +1013,23 @@ threshhold_relu(z, theta)= \left \{ \begin{array} {l}
         
           
         
-        <span class="site-state-item-count">112</span>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">120</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1035,7 +1079,7 @@ threshhold_relu(z, theta)= \left \{ \begin{array} {l}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#指数类"><span class="nav-number">1.</span> <span class="nav-text">指数类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sigmoid"><span class="nav-number">2.</span> <span class="nav-text">Sigmoid</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hard_sigmoid"><span class="nav-number">2.1.</span> <span class="nav-text">Hard_Sigmoid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softmax"><span class="nav-number">2.2.</span> <span class="nav-text">Softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softplus"><span class="nav-number">2.3.</span> <span class="nav-text">Softplus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tanh"><span class="nav-number">2.4.</span> <span class="nav-text">Tanh</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性指数类"><span class="nav-number">3.</span> <span class="nav-text">线性指数类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#elu"><span class="nav-number">3.1.</span> <span class="nav-text">Elu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#selu"><span class="nav-number">3.2.</span> <span class="nav-text">Selu</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性类"><span class="nav-number">4.</span> <span class="nav-text">线性类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#softsign"><span class="nav-number">4.1.</span> <span class="nav-text">Softsign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#relu"><span class="nav-number">4.2.</span> <span class="nav-text">ReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leakyrelu"><span class="nav-number">4.3.</span> <span class="nav-text">LeakyReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prelu"><span class="nav-number">4.4.</span> <span class="nav-text">PReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#threshholdrelu"><span class="nav-number">4.5.</span> <span class="nav-text">ThreshholdReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linear"><span class="nav-number">4.6.</span> <span class="nav-text">Linear</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度消失"><span class="nav-number">5.</span> <span class="nav-text">梯度消失</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#指数类"><span class="nav-number">1.</span> <span class="nav-text">指数类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid"><span class="nav-number">1.1.</span> <span class="nav-text">Sigmoid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hard_sigmoid"><span class="nav-number">1.2.</span> <span class="nav-text">Hard_Sigmoid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softmax"><span class="nav-number">1.3.</span> <span class="nav-text">Softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softplus"><span class="nav-number">1.4.</span> <span class="nav-text">Softplus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tanh"><span class="nav-number">1.5.</span> <span class="nav-text">Tanh</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性类"><span class="nav-number">2.</span> <span class="nav-text">线性类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#softsign"><span class="nav-number">2.1.</span> <span class="nav-text">Softsign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#relu"><span class="nav-number">2.2.</span> <span class="nav-text">ReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leakyrelu"><span class="nav-number">2.3.</span> <span class="nav-text">LeakyReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parametric-relu"><span class="nav-number">2.4.</span> <span class="nav-text">Parametric ReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#threshholdrelu"><span class="nav-number">2.5.</span> <span class="nav-text">ThreshholdReLU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linear"><span class="nav-number">2.6.</span> <span class="nav-text">Linear</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性指数类"><span class="nav-number">3.</span> <span class="nav-text">线性指数类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#exponential-linear-unit"><span class="nav-number">3.1.</span> <span class="nav-text">Exponential Linear Unit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gausssion-error-liear-unit"><span class="nav-number">3.2.</span> <span class="nav-text">Gausssion Error Liear Unit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#selu"><span class="nav-number">3.3.</span> <span class="nav-text">Selu</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度消失"><span class="nav-number">4.</span> <span class="nav-text">梯度消失</span></a></li></ol></div>
             
 
           </div>
