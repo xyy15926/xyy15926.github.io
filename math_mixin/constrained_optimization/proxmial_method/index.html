@@ -372,12 +372,12 @@ M_{\gamma, f}(x) &amp; = prox_{\gamma, f}(x) \\
 </ul>
 <h3 id="近端算子求解">近端算子求解</h3>
 <ul>
-<li><p>对一般凸函数<span class="math inline">\(f(x)\)</span>，通常使用次梯度进行的优化，其近端算子 解为</p>
+<li><p>对一般凸<span class="math inline">\(f(x)\)</span>，通常使用次梯度进行优化，其近端算子解为 （即解变动方向<span class="math inline">\(p-x\)</span>为负次梯度方向）</p>
 <p><span class="math display">\[
 p = prox_f(x) \Leftrightarrow x - p \in \partial f(p)
     \quad (\forall (x,p) \in R^N * R^N)
 \]</span></p></li>
-<li><p>对光滑凸函数<span class="math inline">\(f\)</span>，上述等式对其近端算子约简为</p>
+<li><p>对光滑凸函数<span class="math inline">\(f\)</span>，上述等式对其近端算子约简为 （即解变动方向<span class="math inline">\(p-x\)</span>为负梯度方向）</p>
 <p><span class="math display">\[
 p = prox_f(x) \Leftrightarrow x-p = \bigtriangledown f(p)
 \]</span></p></li>
@@ -489,7 +489,7 @@ x^{(k+1)} = P_{C_1}P_{C_2} \cdots P_{C_n}x_k
 </ul>
 </blockquote>
 <h2 id="proximal-gradient-method"><em>Proximal Gradient Method</em></h2>
-<p>目标函数</p>
+<p>近端算法：分两步分别优化可微凸<span class="math inline">\(F(x)\)</span>、凸<span class="math inline">\(R(x)\)</span>，近似优化目标 函数整体，不断迭代直至收敛</p>
 <p><span class="math display">\[
 \min_{x \in \mathcal{H}}F(x) + R(x)
 \]</span></p>
@@ -501,6 +501,17 @@ x^{(k+1)} = P_{C_1}P_{C_2} \cdots P_{C_n}x_k
 <li><span class="math inline">\(\mathcal{H}\)</span>：目标函数定义域集合，如：希尔伯特空间</li>
 </ul>
 </blockquote>
+<ul>
+<li><p><em>gredient step</em>：从<span class="math inline">\(x^{(k)}\)</span>处沿<span class="math inline">\(F(x)\)</span>负梯度方向微小移动 达到<span class="math inline">\(x^{(k.5)}\)</span></p>
+<p><span class="math display">\[
+x^{(k.5)} = x^{(k)} - \gamma \nabla F(x^{(k)})
+\]</span></p></li>
+<li><p><em>proximal operator step</em>：在<span class="math inline">\(x^{(k.5)}\)</span>处应用<span class="math inline">\(R(x)\)</span>近端 算子，即寻找<span class="math inline">\(x^{(k.5)}\)</span>附近且使得<span class="math inline">\(R(x)\)</span>较小点</p>
+<p><span class="math display">\[
+x^{(k+1)} = prox_{\gamma R}(x^{(k.5)})
+\]</span></p></li>
+</ul>
+<h3 id="目标函数推导">目标函数推导</h3>
 <p><span class="math display">\[\begin{align*}
 prox_{\gamma R}(x - \gamma \nabla F(x)) &amp; = \arg\min_u
     (R(u) + \frac 1 {2\gamma} \|u - x + \gamma \nabla F(x)\|_2^2) \\
@@ -513,7 +524,7 @@ prox_{\gamma R}(x - \gamma \nabla F(x)) &amp; = \arg\min_u
 <blockquote>
 <ul>
 <li><span class="math inline">\(\frac {\gamma} 2 \|\nabla F(x)\|_2^2, F(x)\)</span>：与<span class="math inline">\(u\)</span>无关 ，相互替换不影响极值</li>
-<li><span class="math inline">\(0 &lt; \gamma \geq \frac 1 L\)</span>：保证最后反向泰勒展开成立</li>
+<li><span class="math inline">\(0 &lt; \gamma \leq \frac 1 L\)</span>：保证最后反向泰勒展开成立</li>
 </ul>
 </blockquote>
 <ul>
@@ -522,35 +533,17 @@ prox_{\gamma R}(x - \gamma \nabla F(x)) &amp; = \arg\min_u
 <li>近端算法中距离微调项部分可加法分离</li>
 <li>若<span class="math inline">\(R(x)\)</span>部分也可分离，则整个目标函数可以分离，可以 <strong>拆分为多个一元函数分别求极值</strong></li>
 </ul></li>
-<li><p>考虑泰勒展开是局部性质，<span class="math inline">\(u\)</span>作为极小值只能保证在<span class="math inline">\(x\)</span>附近 领域成立</p>
-<ul>
-<li><p>可直接将近端算子解作为下个迭代点</p>
+<li><p>考虑泰勒展开是局部性质，<span class="math inline">\(u\)</span>作为极小值点只能保证在<span class="math inline">\(x\)</span>附近 领域成立，可将近端算子解作为下个迭代点</p>
 <p><span class="math display">\[
 x^{(k+1)} = prox_{\gamma R}(x^{(k)} - \gamma \nabla
     F(x^{(k)}))
-\]</span></p>
-<ul>
-<li><em>gredient step</em>： <span class="math inline">\(x^{(k.5)} = x^{(k)} - \gamma \nabla F(x^{(k)})\)</span></li>
-<li><em>proximal operator step</em>： <span class="math inline">\(x^{(k+1)} = prox_{\gamma R}(x^{(k.5)})\)</span></li>
-</ul></li>
-<li><p><span class="math inline">\(L\)</span>已知时，可直接确定<span class="math inline">\(\gamma \in (0, \frac 1 L]\)</span>， 否则可迭代搜索<span class="math inline">\(\gamma := \gamma \beta,\beta &lt; 1\)</span>， 直至</p>
-<p><span class="math display">\[
-F(x - PG_{\gamma R}(x)) \leq F(x) - \nabla F(x) PG_{\gamma R}(x)
-    + \frac 1 2 \|PG_{\gamma R}(x)\|_2^2
-\]</span></p>
-<blockquote>
-<ul>
-<li><span class="math inline">\(PG_{\gamma R}(x)=x-prox_{\gamma R}(x-\gamma \nabla F(x))\)</span></li>
-<li>直接根据下述利普希茨条件须求Hasse矩阵，计算量较大</li>
-</ul>
-</blockquote></li>
-<li><p>迭代终止条件为</p>
+\]</span></p></li>
+<li><p>迭代终止条件即</p>
 <p><span class="math display">\[
 \hat x = prox_{\gamma R}(\hat x - \gamma \nabla F(\hat x))
 \]</span></p></li>
-</ul></li>
 </ul>
-<h3 id="二阶近似证明">二阶近似证明</h3>
+<h4 id="二阶近似证明">二阶近似证明</h4>
 <p><span class="math display">\[\begin{align*}
 F(u) &amp; = F(x) + \nabla F(x)^T (u - x) + \frac 1 2
     (u - x)^T \nabla^2 F(\zeta)(u - x) \\
@@ -563,6 +556,21 @@ F(u) &amp; = F(x) + \nabla F(x)^T (u - x) + \frac 1 2
 <li><span class="math inline">\(\|\nabla F(u) - \nabla F(x)\|_2 \leq L \|u-x\|_2\)</span>： <span class="math inline">\(\nabla F(x)\)</span>利普希茨连续性质</li>
 </ul>
 </blockquote>
+<h3 id="参数确定">参数确定</h3>
+<ul>
+<li><p><span class="math inline">\(L\)</span>已知时，可直接确定<span class="math inline">\(\gamma \in (0, \frac 1 L]\)</span>，</p></li>
+<li><p>否则可线性迭代搜索<span class="math inline">\(\gamma := \beta \gamma,\beta &lt; 1\)</span>， 直至</p>
+<p><span class="math display">\[
+F(x - PG_{\gamma R}(x)) \leq F(x) - \nabla F(x) PG_{\gamma R}(x)
+    + \frac 1 2 \|PG_{\gamma R}(x)\|_2^2
+\]</span></p>
+<blockquote>
+<ul>
+<li><span class="math inline">\(PG_{\gamma R}(x)=x-prox_{\gamma R}(x-\gamma \nabla F(x))\)</span></li>
+<li>直接根据下述利普希茨条件须求Hasse矩阵，计算量较大</li>
+</ul>
+</blockquote></li>
+</ul>
 <h3 id="反向推导">反向推导</h3>
 <ul>
 <li><p>对<span class="math inline">\(F(x)+R(x)\)</span>在<span class="math inline">\(x_0\)</span>附近作泰勒展开</p>
@@ -644,8 +652,8 @@ prox_{\gamma, f}(x) = \arg\min_u (f(u) + \mu(u) - \mu(x) +
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/ml_models/model_components/long_short_term_memory/" rel="next" title="Long Short Term Memory">
-                <i class="fa fa-chevron-left"></i> Long Short Term Memory
+              <a href="/math_algebra/linear_algebra/matrix_determinant/" rel="next" title="Matrix Determinant">
+                <i class="fa fa-chevron-left"></i> Matrix Determinant
               </a>
             
           </div>
@@ -653,8 +661,8 @@ prox_{\gamma, f}(x) = \arg\min_u (f(u) + \mu(u) - \mu(x) +
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/math_algebra/linear_algebra/matrix_decomposition/" rel="prev" title="Matrix Decomposition">
-                Matrix Decomposition <i class="fa fa-chevron-right"></i>
+              <a href="/ml_models/linear_models/factorization_machine/" rel="prev" title="Factorization Machines">
+                Factorization Machines <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -708,7 +716,7 @@ prox_{\gamma, f}(x) = \arg\min_u (f(u) + \mu(u) - \mu(x) +
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">361</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1146,7 +1154,9 @@ prox_{\gamma, f}(x) = \arg\min_u (f(u) + \mu(u) - \mu(x) +
         
           
         
-        <span class="site-state-item-count">120</span>
+          
+        
+        <span class="site-state-item-count">121</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1196,7 +1206,7 @@ prox_{\gamma, f}(x) = \arg\min_u (f(u) + \mu(u) - \mu(x) +
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#proximal-operator"><span class="nav-number">1.</span> <span class="nav-text">Proximal Operator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#moreau-envolop"><span class="nav-number">1.1.</span> <span class="nav-text">Moreau Envolop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#近端算子求解"><span class="nav-number">1.2.</span> <span class="nav-text">近端算子求解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性质"><span class="nav-number">1.3.</span> <span class="nav-text">性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分离函数"><span class="nav-number">1.3.1.</span> <span class="nav-text">分离函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#仿射函数分解"><span class="nav-number">1.3.2.</span> <span class="nav-text">仿射函数分解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第一投影定理"><span class="nav-number">1.3.3.</span> <span class="nav-text">第一投影定理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二临近定理"><span class="nav-number">1.3.4.</span> <span class="nav-text">第二临近定理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#moreau-decomposition"><span class="nav-number">1.3.5.</span> <span class="nav-text">Moreau Decomposition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最小值"><span class="nav-number">1.3.6.</span> <span class="nav-text">最小值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例"><span class="nav-number">1.4.</span> <span class="nav-text">例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#projection-operator"><span class="nav-number">1.4.1.</span> <span class="nav-text">Projection Operator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#alternating-projection-method"><span class="nav-number">1.4.2.</span> <span class="nav-text">Alternating Projection Method</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proximal-gradient-method"><span class="nav-number">2.</span> <span class="nav-text">Proximal Gradient Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#二阶近似证明"><span class="nav-number">2.1.</span> <span class="nav-text">二阶近似证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向推导"><span class="nav-number">2.2.</span> <span class="nav-text">反向推导</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#近端算法推广"><span class="nav-number">3.</span> <span class="nav-text">近端算法推广</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题推广"><span class="nav-number">3.1.</span> <span class="nav-text">问题推广</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算子推广"><span class="nav-number">3.2.</span> <span class="nav-text">算子推广</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#proximal-operator"><span class="nav-number">1.</span> <span class="nav-text">Proximal Operator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#moreau-envolop"><span class="nav-number">1.1.</span> <span class="nav-text">Moreau Envolop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#近端算子求解"><span class="nav-number">1.2.</span> <span class="nav-text">近端算子求解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性质"><span class="nav-number">1.3.</span> <span class="nav-text">性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分离函数"><span class="nav-number">1.3.1.</span> <span class="nav-text">分离函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#仿射函数分解"><span class="nav-number">1.3.2.</span> <span class="nav-text">仿射函数分解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第一投影定理"><span class="nav-number">1.3.3.</span> <span class="nav-text">第一投影定理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二临近定理"><span class="nav-number">1.3.4.</span> <span class="nav-text">第二临近定理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#moreau-decomposition"><span class="nav-number">1.3.5.</span> <span class="nav-text">Moreau Decomposition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最小值"><span class="nav-number">1.3.6.</span> <span class="nav-text">最小值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例"><span class="nav-number">1.4.</span> <span class="nav-text">例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#projection-operator"><span class="nav-number">1.4.1.</span> <span class="nav-text">Projection Operator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#alternating-projection-method"><span class="nav-number">1.4.2.</span> <span class="nav-text">Alternating Projection Method</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proximal-gradient-method"><span class="nav-number">2.</span> <span class="nav-text">Proximal Gradient Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标函数推导"><span class="nav-number">2.1.</span> <span class="nav-text">目标函数推导</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#二阶近似证明"><span class="nav-number">2.1.1.</span> <span class="nav-text">二阶近似证明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数确定"><span class="nav-number">2.2.</span> <span class="nav-text">参数确定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向推导"><span class="nav-number">2.3.</span> <span class="nav-text">反向推导</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#近端算法推广"><span class="nav-number">3.</span> <span class="nav-text">近端算法推广</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题推广"><span class="nav-number">3.1.</span> <span class="nav-text">问题推广</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算子推广"><span class="nav-number">3.2.</span> <span class="nav-text">算子推广</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1214,7 +1224,7 @@ prox_{\gamma, f}(x) = \arg\min_u (f(u) + \mu(u) - \mu(x) +
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2019 – <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

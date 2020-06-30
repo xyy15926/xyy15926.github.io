@@ -345,8 +345,8 @@
 
       
         <h2 id="矩阵求导矩阵微分">矩阵求导/矩阵微分</h2>
-<p>矩阵求导：在矩阵空间的多元微积分</p>
 <h3 id="layout-conventions"><em>Layout Conventions</em></h3>
+<p>矩阵求导：在矩阵空间的多元微积分</p>
 <blockquote>
 <ul>
 <li><em>numerator layout</em>：分子布局，微分分子的维数决定微分结果 的高维度结构（行优先，如：微分矩阵行数等于分子维数）</li>
@@ -355,8 +355,8 @@
 </blockquote>
 <ul>
 <li>两种布局方式相差转置</li>
-<li>与微分分子、分母为行、或列向量无关</li>
-<li>以上布局模式是指<strong>简单单因子微分</strong>时布局模式，复合多因子 应使用维度分析考虑 （若严格按照计算规则，结果应该满足布局）</li>
+<li>与微分分子、分母为行、或列向量无关 （即当微分分子、分母为向量时，行、列向量结果相同，只与 维度有关）</li>
+<li>此布局模式仅讨论<strong>简单单因子微分</strong>时布局模式，复合多因子 应使用<strong>维度分析</strong>考虑 （即若严格按照计算规则，结果应该满足布局）</li>
 </ul>
 <figure>
 <img src="/imgs/matrix_derivative_results.png" alt="matrix_derivative_results"><figcaption>matrix_derivative_results</figcaption>
@@ -366,6 +366,39 @@
 <li>数分中Jaccobi行列式采用分子布局，以下默认为分子布局</li>
 </ul>
 </blockquote>
+<h3 id="维度分析">维度分析</h3>
+<p>维度分析：对求导结果的维度进行分析，得到矩阵微分结果</p>
+<ul>
+<li>维度一般化：将向量、矩阵<strong>维度置不同值</strong>，便于考虑转置</li>
+<li>拆分有关因子：利用<strong>求导乘法公式</strong>（一般标量求导）拆分 因子，分别考虑各因子微分结果</li>
+<li>变换微分因子、剩余因子（可能有左右两组），以满足矩阵运算 维度要求
+<ul>
+<li>微分因子：<strong>按布局模式考虑维度、不转置</strong></li>
+<li>剩余因子：为满足最终结果符合维度布局，考虑转置</li>
+<li>若维度一般化也无法唯一确定剩余因子形式，再考虑行、列 內积对应关系</li>
+</ul></li>
+</ul>
+<blockquote>
+<ul>
+<li>考虑到矩阵乘法定义（左乘矩阵行数为乘法结果行数），则在 分子布局（分子行优先），简单微分中若微分因子为右乘矩阵、 剩余因子为左乘矩阵，则类似标量<strong>系数在前</strong>求微分，否则 结果需转置</li>
+</ul>
+</blockquote>
+<h4 id="例">例</h4>
+<ul>
+<li><p>考虑<span class="math inline">\(\frac {\partial x^T A x} {\partial x}\)</span>，其中 <span class="math inline">\(A \in R^{n*n}, x \in R^n\)</span></p></li>
+<li><p>维度一般化：<span class="math inline">\(\frac {\partial u^T A v} {\partial x}\)</span>， 其中<span class="math inline">\(A \in R^{a * b}, x \in R^n\)</span></p></li>
+<li><p>拆分有关因子，变换微分、剩余因子</p>
+<p><span class="math display">\[\begin{align*}
+\frac {\partial (u^T A) v} {\partial x} &amp; = u^T A \frac
+    {\partial v} {\partial x} \\
+\frac {\partial u^T (A v)} {\partial x} &amp; = v^T A^T \frac
+    {\partial u} {\partial x}
+\end{align*}\]</span></p></li>
+<li><p>则有</p>
+<p><span class="math display">\[
+\frac {\partial x^T A x} {\partial x} = x^T (A^T + A)
+\]</span></p></li>
+</ul>
 <h2 id="关于标量导数">关于标量导数</h2>
 <h3 id="标量对标量">标量对标量</h3>
 <p>标量<span class="math inline">\(y\)</span>对标量<span class="math inline">\(x\)</span>求导：<span class="math inline">\(\frac {\partial y} {\partial x}\)</span></p>
@@ -452,34 +485,6 @@
 <figure>
 <img src="/imgs/matrix_derivative_differential_conversion.png" alt="matrix_derivative_differential_conversion"><figcaption>matrix_derivative_differential_conversion</figcaption>
 </figure>
-<h2 id="维度分析">维度分析</h2>
-<p>维度分析：对求导结果的维度进行分析，得到矩阵微分结果</p>
-<ul>
-<li>维度一般化：将向量、矩阵<strong>维度置不同值</strong>，便于考虑转置</li>
-<li>拆分有关因子：利用<strong>求导乘法公式</strong>分别考虑因子微分结果</li>
-<li>变换微分因子、剩余因子（可能有左右两组）满足矩阵运算维度 要求
-<ul>
-<li>微分因子<strong>按布局模式考虑维度、不转置</strong></li>
-<li>有时维度一般化也无法唯一确定剩余因子形式，考虑行、列 內积对应关系</li>
-</ul></li>
-</ul>
-<h3 id="例">例</h3>
-<ul>
-<li><p>考虑<span class="math inline">\(\frac {\partial x^T A x} {\partial x}\)</span>，其中 <span class="math inline">\(A \in R^{n*n}, x \in R^n\)</span></p></li>
-<li><p>维度一般化：<span class="math inline">\(\frac {\partial u^T A v} {\partial x}\)</span>， 其中<span class="math inline">\(A \in R^{a * b}, x \in R^n\)</span></p></li>
-<li><p>拆分有关因子</p>
-<p><span class="math display">\[\begin{align*}
-\frac {\partial (u^T A) v} {\partial x} &amp; = u^T A \frac
-    {\partial v} {\partial x} \\
-\frac {\partial u^T (A v)} {\partial x} &amp; = v^T A^T \frac
-    {\partial u} {\partial x}
-\end{align*}\]</span></p></li>
-<li><p>则有</p>
-<p><span class="math display">\[
-\frac {\partial x^T A x} {\partial x} = x^T (A^T + A)
-\]</span></p></li>
-</ul>
-<p>A^T + A) $$</p>
 
     </div>
 
@@ -498,8 +503,8 @@
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/math_algebra/linear_algebra/matrix_determinant/" rel="next" title="Matrix Determinant">
-                <i class="fa fa-chevron-left"></i> Matrix Determinant
+              <a href="/math_algebra/linear_algebra/vector/" rel="next" title="Vector">
+                <i class="fa fa-chevron-left"></i> Vector
               </a>
             
           </div>
@@ -507,8 +512,8 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/ml_models/model_components/attention/" rel="prev" title="Attention Machanism">
-                Attention Machanism <i class="fa fa-chevron-right"></i>
+              <a href="/math_algebra/linear_algebra/matrix_determinant/" rel="prev" title="Matrix Determinant">
+                Matrix Determinant <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -562,7 +567,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">361</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1000,7 +1005,9 @@
         
           
         
-        <span class="site-state-item-count">120</span>
+          
+        
+        <span class="site-state-item-count">121</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1050,7 +1057,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵求导矩阵微分"><span class="nav-number">1.</span> <span class="nav-text">矩阵求导/矩阵微分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#layout-conventions"><span class="nav-number">1.1.</span> <span class="nav-text">Layout Conventions</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于标量导数"><span class="nav-number">2.</span> <span class="nav-text">关于标量导数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标量对标量"><span class="nav-number">2.1.</span> <span class="nav-text">标量对标量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#向量对标量"><span class="nav-number">2.2.</span> <span class="nav-text">向量对标量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#矩阵对标量"><span class="nav-number">2.3.</span> <span class="nav-text">矩阵对标量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于向量导数"><span class="nav-number">3.</span> <span class="nav-text">关于向量导数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标量对向量"><span class="nav-number">3.1.</span> <span class="nav-text">标量对向量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#向量对向量"><span class="nav-number">3.2.</span> <span class="nav-text">向量对向量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于矩阵导数"><span class="nav-number">4.</span> <span class="nav-text">关于矩阵导数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标量对矩阵求导"><span class="nav-number">4.1.</span> <span class="nav-text">标量对矩阵求导</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微分"><span class="nav-number">5.</span> <span class="nav-text">微分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#微分形式"><span class="nav-number">5.1.</span> <span class="nav-text">微分形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导数微分转换"><span class="nav-number">5.2.</span> <span class="nav-text">导数、微分转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#维度分析"><span class="nav-number">6.</span> <span class="nav-text">维度分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例"><span class="nav-number">6.1.</span> <span class="nav-text">例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵求导矩阵微分"><span class="nav-number">1.</span> <span class="nav-text">矩阵求导/矩阵微分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#layout-conventions"><span class="nav-number">1.1.</span> <span class="nav-text">Layout Conventions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#维度分析"><span class="nav-number">1.2.</span> <span class="nav-text">维度分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例"><span class="nav-number">1.2.1.</span> <span class="nav-text">例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于标量导数"><span class="nav-number">2.</span> <span class="nav-text">关于标量导数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标量对标量"><span class="nav-number">2.1.</span> <span class="nav-text">标量对标量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#向量对标量"><span class="nav-number">2.2.</span> <span class="nav-text">向量对标量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#矩阵对标量"><span class="nav-number">2.3.</span> <span class="nav-text">矩阵对标量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于向量导数"><span class="nav-number">3.</span> <span class="nav-text">关于向量导数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标量对向量"><span class="nav-number">3.1.</span> <span class="nav-text">标量对向量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#向量对向量"><span class="nav-number">3.2.</span> <span class="nav-text">向量对向量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于矩阵导数"><span class="nav-number">4.</span> <span class="nav-text">关于矩阵导数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标量对矩阵求导"><span class="nav-number">4.1.</span> <span class="nav-text">标量对矩阵求导</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微分"><span class="nav-number">5.</span> <span class="nav-text">微分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#微分形式"><span class="nav-number">5.1.</span> <span class="nav-text">微分形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导数微分转换"><span class="nav-number">5.2.</span> <span class="nav-text">导数、微分转换</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1068,7 +1075,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2019 – <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

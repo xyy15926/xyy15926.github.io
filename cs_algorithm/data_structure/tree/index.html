@@ -629,7 +629,10 @@ n_0 = n_2 + 1
 <ul>
 <li><p>先序遍历</p>
 <ul>
-<li><p>深度优先入栈：左子树优先入栈</p>
+<li>深度优先入栈：左子树优先入栈
+<ul>
+<li>节点先访问后入栈，栈内存已访问节点</li>
+</ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">PreOrder(T):</span><br><span class="line">	s = InitStack()</span><br><span class="line">	cur = T</span><br><span class="line">	<span class="keyword">while</span> s.not_empty() <span class="keyword">or</span> cur:</span><br><span class="line">		<span class="keyword">while</span> cur:</span><br><span class="line">			visit(cur)</span><br><span class="line">			s.push_back(cur)</span><br><span class="line">			cur = cur.left</span><br><span class="line">		cur = s.pop()</span><br><span class="line">		cur = cur.right</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等价写法，仅使用`if`利用外层循环</span></span><br><span class="line">PreOrder(T):</span><br><span class="line">	s = InitStack()</span><br><span class="line">	cur = T</span><br><span class="line">	<span class="keyword">while</span> s.not_empty() <span class="keyword">or</span> cur:</span><br><span class="line">		<span class="keyword">if</span> cur:</span><br><span class="line">			visit(cur)</span><br><span class="line">			s.push_back(cur)</span><br><span class="line">			cur = cur.left</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			cur = s.pop()</span><br><span class="line">			cur = cur.right</span><br></pre></td></tr></table></figure>
 <ul>
 <li>基于对遍历性质的考虑</li>
@@ -640,14 +643,21 @@ n_0 = n_2 + 1
 </ul></li>
 <li><p>中序遍历</p>
 <ul>
-<li><p>深度优先入栈</p>
+<li>深度优先入栈
+<ul>
+<li>节点先入栈后访问，栈内存未访问节点</li>
+</ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">InOrder(T):</span><br><span class="line">	s = InitStack()</span><br><span class="line">	cur = T</span><br><span class="line">	<span class="keyword">while</span> s.not_empty() <span class="keyword">or</span> cur:</span><br><span class="line">		<span class="keyword">while</span> cur:</span><br><span class="line">			s.push_back(cur)</span><br><span class="line">			cur = cur.left</span><br><span class="line">		cur = s.pop()</span><br><span class="line">		visit(cur)</span><br><span class="line">		cur = cur.right</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等价写法，仅使用`if`利用外层循环</span></span><br><span class="line">InOrder(T):</span><br><span class="line">	s = InitStack()</span><br><span class="line">	cur = T</span><br><span class="line">	<span class="keyword">while</span> s.not_empty() <span class="keyword">or</span> cur:</span><br><span class="line">		<span class="keyword">if</span> cur:</span><br><span class="line">			s.push_back(cur)</span><br><span class="line">			cur = cur.left</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			cur = s.pop()</span><br><span class="line">			visit(cur)</span><br><span class="line">			cur = cur.right</span><br></pre></td></tr></table></figure></li>
 </ul></li>
 <li><p>后序：需要标记当前节点左、右子树是否被访问</p>
 <ul>
-<li><p>记录最后一次访问节点</p>
+<li>深度优先入栈
+<ul>
+<li>节点先入栈后访问，栈内存未访问节点</li>
+<li>记录最后一次访问节点，判断右子树是否被访问 （若右子树被访问，右子节点必然是上个被访问节点）</li>
+</ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PostOrder(T):</span><br><span class="line">	s = InitStack()</span><br><span class="line">	cur = T</span><br><span class="line">	last = <span class="literal">NULL</span></span><br><span class="line">	<span class="keyword">while</span> s.not_empty() <span class="keyword">or</span> cur:</span><br><span class="line">		<span class="keyword">while</span> cur:</span><br><span class="line">			s.push_back(cur)</span><br><span class="line">			cur = cur.left</span><br><span class="line">		cur = s.top()</span><br><span class="line">		<span class="comment">// 检查右子树是否被访问过</span></span><br><span class="line">		<span class="keyword">if</span> cur.right == <span class="literal">NULL</span> <span class="keyword">or</span> cur.right == last:</span><br><span class="line">			visit(cur)</span><br><span class="line">			last = s.pop()	<span class="comment">// 此时再弹出`cur`</span></span><br><span class="line">			cur = <span class="literal">NULL</span>		<span class="comment">// 置`cur`为`NULL`，否则</span></span><br><span class="line">							<span class="comment">// 再次访问左子树，死循环</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			cur = cur.right</span><br></pre></td></tr></table></figure></li>
-<li><p>或者为每个节点附设标志位</p></li>
+<li>或者为每个节点附设标志位</li>
 </ul></li>
 </ul>
 <h4 id="层次遍历">层次遍历</h4>
@@ -703,8 +713,8 @@ b_n = \frac 1 {n+1} \frac {(2n)!} {n!n!} =
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/cs_algorithm/data_structure/hash_table/" rel="next" title="Hashing">
-                <i class="fa fa-chevron-left"></i> Hashing
+              <a href="/cs_algorithm/specification/searching_high_dimensional/" rel="next" title="高维数据检索方法">
+                <i class="fa fa-chevron-left"></i> 高维数据检索方法
               </a>
             
           </div>
@@ -712,8 +722,8 @@ b_n = \frac 1 {n+1} \frac {(2n)!} {n!n!} =
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/cs_algorithm/data_structure/tree_high_dimension/" rel="prev" title="高维检索树">
-                高维检索树 <i class="fa fa-chevron-right"></i>
+              <a href="/cs_algorithm/data_structure/tree_search/" rel="prev" title="查找/搜索树">
+                查找/搜索树 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -767,7 +777,7 @@ b_n = \frac 1 {n+1} \frac {(2n)!} {n!n!} =
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">361</span>
+          <span class="site-state-item-count">362</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1205,7 +1215,9 @@ b_n = \frac 1 {n+1} \frac {(2n)!} {n!n!} =
         
           
         
-        <span class="site-state-item-count">120</span>
+          
+        
+        <span class="site-state-item-count">121</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1273,7 +1285,7 @@ b_n = \frac 1 {n+1} \frac {(2n)!} {n!n!} =
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2019 – <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
