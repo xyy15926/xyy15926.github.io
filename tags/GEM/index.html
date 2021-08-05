@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: GEM - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">GEM</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:26:35.000Z" title="7/13/2019, 11:26:35 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:09:43.000Z" title="7/16/2021, 4:09:43 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Unsupervised-Model/">Unsupervised Model</a></span><span class="level-item">25 minutes read (About 3774 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Unsupervised-Model/expectation_maximization.html">EM算法</a></h1><div class="content"><h2 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h2><p><em>expectation maximization algorithm</em>：含有隐变量的概率模型
+参数的极大似然估计法、极大后验概率估计法</p>
+<ul>
+<li><p>模型含有<em>latent variable</em>（潜在变量）、<em>hidden variable</em>
+（隐变量）似然函数将没有解析解</p>
+</li>
+<li><p>所以EM算法需要迭代求解，每次迭代由两步组成</p>
+<ul>
+<li>E步：求期望expectation</li>
+<li>M步：求极大maximization</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>模型变量都是<em>observable variable</em>、给定数据情况下，可以
+  直接使用极大似然估计、贝叶斯估计</li>
+</ul>
+</blockquote>
+<h2 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h2><p>对含有隐变量的概率模型，目标是极大化观测数据（不完全数据）
+$Y$关于参数$\theta$的对数似然函数，即极大化</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta) & = log P(Y|\theta) \\
+& = log \sum_Z P(Y, Z|\theta) \\
+& = log \left(\sum_Z P(Y|Z,\theta) P(Z|\theta) \right)
+\end{align*}</script><blockquote>
+<ul>
+<li>$Y$：观测变量数据</li>
+<li>$Z$：隐随机变量数据（未知）</li>
+<li>$Y,Z$合在一起称为完全数据</li>
+<li>$P(Y,Z|\theta)$：联合分布</li>
+<li>$P(Z|Y,\theta)$：条件分布</li>
+</ul>
+</blockquote>
+<ul>
+<li>但是极大化目标函数中包括未观测数据$Z$、求和（积分）的
+对数，直接求极大化非常困难</li>
+<li>EM算法通过<strong>迭代</strong>逐步近似极大化$L(\theta)$</li>
+</ul>
+<h3 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h3><ul>
+<li><p>假设第i次迭代后$\theta$的估计值是$\theta^{(i)}$，希望
+新估计值$\theta$能使$L(\theta)$增加，并逐步增加到极大值
+，考虑两者之差</p>
+<script type="math/tex; mode=display">
+L(\theta) - L(\theta^{(i)}) = log (\sum_Z P(Y|Z,\theta)
+   P(Z|\theta)) - log P(Y|\theta^{(i)})</script></li>
+<li><p>利用Jensen不等式有</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta) - L(|\theta^{(i)}) & = log(\sum_Z P(Y|Z,
+   \theta^{(i)}) \frac {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Y|Z,\theta^{(i)})}) - log P(Y|\theta^{(i)}) \\
+& \geq \sum_Z P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)} {P(Z|Y,\theta^{(i)})}
+   - log P(Y|\theta^{(i)}) \\
+& = \sum_z P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}
+\end{align*}</script></li>
+<li><p>令</p>
+<script type="math/tex; mode=display">
+B(\theta, \theta^{(i)}) = L(\theta^{(i)}) + \sum_Z
+   P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}</script><p>则$B(\theta, \theta^{(i)})$是$L(\theta)$的一个下界，即</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta) & \geq B(\theta, \theta^{(i)}) \\
+\end{align*}</script><p>并根据$B(\theta, \theta^{(i)})$定义有</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta^{(i)}) = B(\theta^{(i)}, \theta^{(i)})
+\end{align*}</script></li>
+<li><p>则任意$\theta$满足
+$B(\theta,\theta^{(i)}) &gt; B(\theta^{(i)},\theta^{(i)})$
+，将满足$L(\theta) &gt; L(\theta^{(i)})$，应选择
+$\theta^{(i+1)}$使得$B(\theta,\theta^{(i)})$达到极大</p>
+<script type="math/tex; mode=display">\begin{align*}
+\theta^{(i+1)} & = \arg\max_{\theta}
+   B(\theta,\theta^{(i)}) \\
+& = \arg\max_{\theta} L(\theta^{(i)}) + \sum_Z
+   P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})} \\
+& = \arg\max_{\theta} (\sum_Z P(Z|Y,\theta^{(i)})
+   log(P(Y|Z,\theta)P(Z|\theta))) \\
+& = \arg\max_{\theta} (\sum_Z P(Z|Y,\theta^{(i)})
+   log P(Y,Z|\theta)) \\
+& = \arg\max_{\theta} Q(\theta, \theta^{(i)})
+\end{align*}</script><blockquote>
+<ul>
+<li>和$\theta$无关的常数项全部舍去</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>$Q(\theta, \theta^{(i)})$：Q函数，完全数据的对数似然函数
+  $logP(Y,Z|\theta)$，关于在给定观测$Y$和当前参数
+  $\theta^{(i)}$下，对未观测数据Z的条件概率分布
+  $P(Z|Y,\theta^{(i)})$<script type="math/tex; mode=display">
+  Q(\theta, \theta^{(i)}) = E_z
+      [logP(Y,Z|\theta)|Y,\theta^{(i)}]</script></li>
+</ul>
+</blockquote>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ol>
+<li><p>选择参数初值$\theta^{0}$，开始迭代</p>
+</li>
+<li><p>E步：记$\theta^{(i)}$为第$i$迭代时，参数$\theta$的估计值
+，在第$i+1$步迭代的E步时，计算Q函数
+$Q(\theta, \theta^{(i)})$</p>
+</li>
+<li><p>M步：求使得Q函数极大化$\theta$作为第$i+1$次估计值
+$\theta^{(i+1)}$</p>
+<script type="math/tex; mode=display">
+\theta^{(i+1)} = \arg\max_{\theta} Q(\theta, \theta^{(i)})</script></li>
+<li><p>重复E步、M步直到待估参数收敛</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li><p>算法初值可以任意选择，但EM算法对初值敏感</p>
+</li>
+<li><p>E步：参数值估计缺失值分布，计算Q函数（似然函数）</p>
+</li>
+<li><p>M步：Q函数取极大得新参数估计值</p>
+</li>
+<li><p>收敛条件一般是对较小正数$\epsilon$，满足
+  $|\theta^{(i+1)} - \theta^{(i)}| &lt; \epsilon$或
+  $|Q(\theta^{(i+1)},\theta^{(i)}) - Q(\theta^{(i)},\theta^{(i)})| &lt; \epsilon$</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="EM算法特点"><a href="#EM算法特点" class="headerlink" title="EM算法特点"></a>EM算法特点</h3><h4 id="EM算法优点"><a href="#EM算法优点" class="headerlink" title="EM算法优点"></a>EM算法优点</h4><ul>
+<li>EM算法可以用于估计含有隐变量的模型参数</li>
+<li>非常简单，稳定上升的步骤能非常可靠的找到最优估计值</li>
+<li>应用广泛，能应用在多个领域中<ul>
+<li>生成模型的非监督学习</li>
+</ul>
+</li>
+</ul>
+<h4 id="EM算法缺点"><a href="#EM算法缺点" class="headerlink" title="EM算法缺点"></a>EM算法缺点</h4><ul>
+<li>EM算法计算复杂、受外较慢，不适合高维数据、大规模数据集</li>
+<li>参数估计结果依赖初值，不够稳定，不能保证找到全局最优解</li>
+</ul>
+<h3 id="算法收敛性"><a href="#算法收敛性" class="headerlink" title="算法收敛性"></a>算法收敛性</h3><h4 id="定理1"><a href="#定理1" class="headerlink" title="定理1"></a>定理1</h4><blockquote>
+<ul>
+<li>设$P(Y|\theta)$为观测数据的似然函数，$\theta^{(i)}$为
+  EM算法得到的参数估计序列，$P(Y|\theta^{(i)}),i=1,2,…$
+  为对应的似然函数序列，则$P(Y|\theta^{(i)})$是单调递增的<script type="math/tex; mode=display">
+  P(Y|\theta^{(i+1)}) \geq P(Y|\theta^{(i)})</script></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由条件概率</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(Y|\theta) & = \frac {P(Y,Z|\theta)} {P(Z|Y,\theta)} \\
+logP(Y|\theta) & = logP(Y,Z|\theta) - logP(Z|Y,\theta)
+\end{align*}</script></li>
+</ul>
+<ul>
+<li><p>则对数似然函数有</p>
+<script type="math/tex; mode=display">
+logP(Y|\theta) = Q(\theta, \theta^{(i)}) -
+   H(\theta, \theta^{(i)})</script><blockquote>
+<ul>
+<li>$H(\theta, \theta^{(i)}) = \sum_Z log P(Z|Y,\theta) P(Z|Y,\theta)$</li>
+<li>$Q(\theta, \theta^{(i)})$：前述Q函数</li>
+<li>$logP(Y|\theta)$和$Z$无关，可以直接提出</li>
+</ul>
+</blockquote>
+</li>
+<li><p>分别取$\theta^{(i+1)}, \theta^{(i)}$带入，做差</p>
+<script type="math/tex; mode=display">
+logP(Y|\theta^{(i+1)}) - logP(Y|\theta^{(i)}) =
+   [Q(\theta^{(i+1)}, \theta^{(i)}) - 
+   Q(\theta^{(i)}, \theta^{(i)}] -
+   [H(\theta^{(i+1)}, \theta^{(i)}) -
+   H(\theta^{(i)}, \theta^{(i)})]</script><ul>
+<li><p>$\theta^{(i+1)}$使得$Q(\theta, \theta^{(i)})$取极大</p>
+</li>
+<li><p>又有</p>
+<script type="math/tex; mode=display">\begin{align*}
+& H(\theta^{(i+1)}, \theta^{(i)}) -
+  H(\theta^{(i)}, \theta^{(i)}) \\
+= & \sum_Z (log \frac {P(Z|Y,\theta^{(i+1)})}
+  {P(Z|Y,\theta^{(I)})}) P(Z|Y,\theta^{(i)}) \\
+\leq & log (\sum_Z \frac {P(Z|Y,\theta^{(i+1)})}
+  {P(Z|Y,\theta^{(I)})} P(Z|Y,\theta^{(i)})) \\
+= & log \sum_Z P(Z|Y,\theta^{(i+1)}) = 0
+\end{align*}</script></li>
+</ul>
+</li>
+</ul>
+<h4 id="定理2"><a href="#定理2" class="headerlink" title="定理2"></a>定理2</h4><blockquote>
+<ul>
+<li>设$L(\theta)=log P(Y|\theta)$为观测数据的对数似然函数，
+  $\theta^{(i)},i=1,2,…$为EM算法得到的参数估计序列，
+  $L(\theta^{(i)}),i=1,2,…$为对应的对数似然函数序列<blockquote>
+<ul>
+<li>若$P(Y|\theta)$有上界，则$L(\theta^{(i)})$收敛到某
+ 定值$L^{*}$</li>
+<li>Q函数$Q(\theta, \theta^{‘})$与$L(\theta)$满足一定
+ 条件的情况下，由EM算法得到的参数估计序列
+ $\theta^{(i)}$的收敛值$\theta^{*}$是$L(\theta)$的
+ 稳定点</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>结论1由序列单调、有界显然</li>
+</ul>
+<blockquote>
+<ul>
+<li>Q函数$Q(\theta, \theta^{‘})$与$L(\theta)$的条件在大多数
+  情况下是满足的</li>
+<li>EM算法收敛性包含对数似然序列$L(\theta^{(i)})$、参数估计
+  序列$\theta^{(i)}$的收敛性，前者不蕴含后者</li>
+<li>此定理只能保证参数估计序列收敛到对数似然序列的稳定点，
+  不能保证收敛到极大点，可选取多个不同初值迭代，从多个结果
+  中选择最好的</li>
+</ul>
+</blockquote>
+<h2 id="Gaussion-Mixture-Model"><a href="#Gaussion-Mixture-Model" class="headerlink" title="Gaussion Mixture Model"></a><em>Gaussion Mixture Model</em></h2><blockquote>
+<ul>
+<li>高斯混合模型是指具有如下概率分布模型<script type="math/tex; mode=display">
+  P(y|\theta) = \sum_{k=1}^K \alpha_k \phi(y|\theta_k)</script><blockquote>
+<ul>
+<li>$\alpha<em>k \geq 0, \sum</em>{k=1}^K \alpha_k=1$：系数</li>
+<li>$\phi(y|\theta_k)$：高斯分布密度函数</li>
+<li>$\theta_k=(\mu_k, \sigma_k)$：第k个分模型参数</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>用EM算法估计高斯混合模型参数
+$\theta=(\alpha_1,…,\alpha_2,\theta_1,…,\theta_K)$</li>
+</ul>
+<h3 id="推导-1"><a href="#推导-1" class="headerlink" title="推导"></a>推导</h3><h4 id="明确隐变量"><a href="#明确隐变量" class="headerlink" title="明确隐变量"></a>明确隐变量</h4><p>明确隐变量，写出完全数据对数似然函数</p>
+<ul>
+<li><p>反映观测数据$y_j$来自第k个分模型的数据是未知的</p>
+<script type="math/tex; mode=display">\gamma_{j,k} = \left \{ \begin{array}{l}
+1, & 第j个观测来自第k个分模型 \\
+0, & 否则
+\end{array} \right.</script><blockquote>
+<ul>
+<li>$j=1,2,\cdots,N$：观测编号</li>
+<li>$k=1,2,\cdots,K$：模型编号</li>
+</ul>
+</blockquote>
+</li>
+<li><p>则完全数据为</p>
+<script type="math/tex; mode=display">(y_j,\gamma_{j,1},\cdots,\gamma_{j,K}), j=1,2,...,N</script></li>
+<li><p>完全数据似然函数为</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(y,\gamma|\theta) & = \prod_{j=1}^N
+   P(y_j,\gamma_{j,1},\cdots,\gamma_{j,N}|\theta) \\
+& = \prod_{k=1}^{K} \prod_{j=1}^N
+   [\alpha_k \phi(y_j|\theta_k)]^{\gamma _{j,k}} \\
+& = \prod_{k=1}^{K} \alpha_k^{n_k} \prod_{j=1}^N
+   [\phi(y_j|\theta_k)]^{\gamma _{j,k}} \\
+\end{align*}</script><blockquote>
+<ul>
+<li>$n<em>k = \sum</em>{j=1}^{N} \gamma_{j,k}$</li>
+<li>$\sum_{k=1}^K n_k = N$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>完全数据的对数似然函数为</p>
+<script type="math/tex; mode=display">
+logP(y, \gamma|\theta) = \sum_{k=1}^K \left \{
+   n_k log \alpha_k + \sum_{j=1}^N \gamma_{j,k}
+   [log \frac 1 {\sqrt {2\pi}} - log \sigma_k -
+   \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \}</script></li>
+</ul>
+<h4 id="E步：确定Q函数"><a href="#E步：确定Q函数" class="headerlink" title="E步：确定Q函数"></a>E步：确定Q函数</h4><script type="math/tex; mode=display">\begin{align*}
+Q(\theta, \theta^{(i)}) & =
+    E_z[logP(y,\gamma|\theta)|Y,\theta^{(i)}] \\
+& = E \sum_{k=1}^K \left \{ n_k log\alpha_k + \sum_{j=1}^N
+    \gamma_{j,k} [log \frac 1 {\sqrt {2\pi}} - log \sigma_k
+    - \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \} \\
+& = \sum_{k=1}^K \left \{ \sum_{k=1}^K (E\gamma_{j,k})
+    log\alpha_k + \sum_{j=1}^N (E\gamma_{j,k})
+    [log \frac 1 {\sqrt {2\pi}} - log \sigma_k
+    - \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \}
+\end{align*}</script><blockquote>
+<ul>
+<li>$E\gamma<em>{j,k} = E(\gamma</em>{j,k}|y,\theta)$：记为
+  $\hat \gamma_{j,k}$</li>
+</ul>
+</blockquote>
+<script type="math/tex; mode=display">\begin{align*}
+\hat \gamma_{j,k} & = E(\gamma_{j,k}|y,\theta) =
+    P(\gamma_{j,k}|y,\theta) \\
+& = \frac {P(\gamma_{j,k}=1, y_j|\theta)}
+    {\sum_{k=1}^K P(\gamma_{j,k}=1,y_j|\theta)} \\
+& = \frac {P(y_j|\gamma_{j,k}=1,\theta)
+    P(\gamma_{j,k}=1|\theta)} {\sum_{k=1}^K
+    P(y_j|\gamma_{j,k}=1,\theta) P(\gamma_{j,k}|\theta)} \\
+& = \frac {\alpha_k \phi(y_j|\theta _k)}
+    {\sum_{k=1}^K \alpha_k \phi(y_j|\theta_k)}
+\end{align*}</script><p>带入可得</p>
+<script type="math/tex; mode=display">
+Q(\theta, \theta^{(i)}) = \sum_{k=1}^K \left\{
+    n_k log\alpha_k + \sum_{k=1}^N \hat \gamma_{j,k}
+    [log \frac 1 {\sqrt{2\pi}} - log \sigma_k -
+    \frac 1 {2\sigma^2}(y_j - \mu_k)^2] \right \}</script><h4 id="M步"><a href="#M步" class="headerlink" title="M步"></a>M步</h4><p>求新一轮模型参数
+$\theta^{(i+1)}=(\hat \alpha_1,…,\hat \alpha_2,\hat \theta_1,…,\hat \theta_K)$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\theta^{(i+1)} & = \arg\max_{\theta} Q(\theta,\theta^{(i)}) \\
+\hat \mu_k & = \frac {\sum_{j=1}^N \hat \gamma_{j,k} y_j}
+    {\sum_{j=1}^N \hat \gamma_{j,k}} \\
+\hat \sigma_k^2 & = \frac {\sum_{j=1}^N \hat \gamma_{j,k}
+    (y_j - \mu_p)^2} {\sum_{j=1}^N \hat \gamma_{j,k}} \\
+\hat \alpha_k & = \frac {n_k} N = \frac {\sum_{j=1}^N
+    \hat \gamma_{j,k}} N
+\end{align*}</script><blockquote>
+<ul>
+<li>$\hat \theta_k = (\hat \mu_k, \hat \sigma_k^2)$：直接求
+  偏导置0即可得</li>
+<li>$\hat \alpha<em>k$：在$\sum</em>{k=1}^K \alpha_k = 1$条件下求
+  偏导置0求得</li>
+</ul>
+</blockquote>
+<h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><blockquote>
+<ul>
+<li>输入：观测数据$y_1, y_2,\cdots, y_N$，N个高斯混合模型</li>
+<li>输出：高斯混合模型参数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>取参数初始值开始迭代</p>
+</li>
+<li><p>E步：依据当前模型参数，计算分模型k对观测数据$y_j$响应度</p>
+<script type="math/tex; mode=display">
+\hat \gamma_{j,k} = \frac {\alpha \phi(y_k|\theta_k)}
+  {\sum_{k=1}^N \alpha_k \phi(y_j|\theta)}</script></li>
+<li><p>M步：计算新一轮迭代的模型参数
+$\hat mu_k, \hat \sigma_k^2, \hat \alpha_k$</p>
+</li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>GMM模型的参数估计的EM算法非常类似K-Means算法<blockquote>
+<ul>
+<li>E步类似于K-Means中计算各点和各聚类中心之间距离，不过
+ K-Means将点归类为离其最近类，而EM算法则是算期望</li>
+<li>M步根据聚类结果更新聚类中心</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h2 id="GEM"><a href="#GEM" class="headerlink" title="GEM"></a>GEM</h2><h3 id="Maximization-Maximization-Algorithm"><a href="#Maximization-Maximization-Algorithm" class="headerlink" title="Maximization-Maximization Algorithm"></a><em>Maximization-Maximization Algorithm</em></h3><h4 id="Free-Energy函数"><a href="#Free-Energy函数" class="headerlink" title="Free Energy函数"></a><em>Free Energy</em>函数</h4><blockquote>
+<ul>
+<li>假设隐变量数据Z的概率分布为$\tilde P(Z)$，定义分布
+  $\tilde P$与参数$\theta$的函数$F(\tilde P, \theta)$如下<script type="math/tex; mode=display">
+  F(\tilde P, \theta) = E_{\tilde P}
+      [log P(Y,Z|\theta)] + H(\tilde P)</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>$H(\tilde P)=-E_{\tilde P} log \tilde P(Z)$：分布
+   $\tilde P(Z)$的熵</li>
+<li>通常假设$P(Y,Z|\theta)$是$\theta$的连续函数，则函数
+   $F(\tilde P,\theta)$是$\tilde P, \theta$的连续函数</li>
+</ul>
+</blockquote>
+</blockquote>
+<h4 id="定理1-1"><a href="#定理1-1" class="headerlink" title="定理1"></a>定理1</h4><blockquote>
+<ul>
+<li>对于固定$\theta$，存在唯一分布$\tilde P<em>\theta$，极大化
+  $F(\tilde P, \theta)$，这时$\tilde P</em>\theta$由下式给出<script type="math/tex; mode=display">
+  \tilde P_\theta(Z) = P(Z|Y,\theta)</script>  并且$\tilde P_{\theta}$随$\theta$连续变化</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对于固定的$\theta$，求使得$F(\tilde P, \theta)$的极大，
+构造Lagrange函数</p>
+<script type="math/tex; mode=display">
+L(\tilde P, \lambda, \mu) = F(\tilde P, \theta) +
+   \lambda(1 - \sum_Z \tilde P(Z)) - \mu \tilde P(Z)</script><p>因为$\tilde P(Z)$是概率密度，自然包含两个约束</p>
+<script type="math/tex; mode=display">\left \{ \begin{array}{l}
+\sum_Z \tilde P(Z) = 1 \\
+\tilde P(Z) \geq 0
+\end{array} \right.</script><p>即Lagrange方程中后两项</p>
+</li>
+<li><p>对$\tilde P(Z)$求偏导，得</p>
+<script type="math/tex; mode=display">
+\frac {\partial L} {\partial \tilde P(Z)} =
+   log P(Y,Z|\theta) - log \tilde P(Z) - \lambda - \mu</script><p>令偏导为0，有</p>
+<script type="math/tex; mode=display">\begin{align*}
+log P(Y,Z|\theta) - log \tilde P(Z) & = \lambda + \mu \\
+\frac {P(Y,Z|\theta)} {\tilde P(Z)} & = e^{\lambda + \mu}
+\end{align*}</script></li>
+<li><p>则使得$F(\tilde P, \theta)$极大的$\tilde P_\theta(Z)$
+应该和$P(Y,Z|\theta)$成比例，由概率密度自然约束有</p>
+<script type="math/tex; mode=display">\tilde P_\theta(Z) = P(Y,Z|\theta)</script><p>而由假设条件，$P(Y,Z|\theta)$是$\theta$的连续函数</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>这里概率密度函数$\tilde P(Z)$是作为自变量出现</p>
+</li>
+<li><p>理论上对$\tilde P(Z)$和一般的<strong>复合函数求导</strong>没有区别，
+  但$E_{\tilde P}, \sum_Z$使得整体看起来非常不和谐</p>
+<script type="math/tex; mode=display">\begin{align*}
+  E_{\tilde P} f(Z) & = \sum_Z f(Z) \tilde P(Z) \\
+  & = \int f(Z) d(\tilde P(Z))
+  \end{align*}</script></li>
+</ul>
+</blockquote>
+<h4 id="定理2-1"><a href="#定理2-1" class="headerlink" title="定理2"></a>定理2</h4><blockquote>
+<ul>
+<li>若$\tilde P_\theta(Z) = P(Z|Y, \theta)$，则<script type="math/tex; mode=display">
+  F(\tilde P, \theta) = log P(Y|\theta)</script></li>
+</ul>
+</blockquote>
+<h4 id="定理3"><a href="#定理3" class="headerlink" title="定理3"></a>定理3</h4><blockquote>
+<ul>
+<li>设$L(\theta)=log P(Y|\theta)$为观测数据的对数似然函数，
+  $\theta^{(i)}, i=1,2,\cdots$为EM算法得到的参数估计序列，
+  函数$F(\tilde P,\theta)$如上定义<blockquote>
+<ul>
+<li>若$F(\tilde P,\theta)$在$\tilde P^{<em>}, \theta^{</em>}$
+ 上有局部极大值，则$L(\theta)$在$\theta^{*}$也有局部
+ 最大值</li>
+<li>若$F(\tilde P,\theta)$在$\tilde P^{<em>}, \theta^{</em>}$
+ 达到全局最大，则$L(\theta)$在$\theta^{*}$也达到全局
+ 最大</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由定理1、定理2有</p>
+<script type="math/tex; mode=display">
+L(\theta) = logP(Y|\theta) = F(\tilde P_\theta, \theta)</script><p>特别的，对于使$F(\tilde P,\theta)$极大$\theta^{8}$有</p>
+<script type="math/tex; mode=display">
+L(\theta^{*}) = logP(Y|\theta^{*}) =
+   F(\tilde P_\theta^{*}, \theta{*})</script></li>
+<li><p>由$\tilde P_\theta$关于$\theta$连续，局部点域内不存在点
+$\theta^{<strong>}$使得$L(\theta^{</strong>}) &gt; L(\theta^{<em>})$，否则
+与$F(\tilde P, \theta^{</em>})$矛盾</p>
+</li>
+</ul>
+<h4 id="定理4"><a href="#定理4" class="headerlink" title="定理4"></a>定理4</h4><blockquote>
+<ul>
+<li>EM算法的依次迭代可由F函数的极大-极大算法实现</li>
+<li>设$\theta^{(i)}$为第i次迭代参数$\theta$的估计，
+  $\tilde P^{(i)}$为第i次迭代参数$\tilde P$的估计，在第
+  i+1次迭代的两步为<blockquote>
+<ul>
+<li>对固定的$\theta^{(i)}$，求$\tilde P^{(i)}$使得
+ $F(\tilde P, \theta^{(i)})$极大</li>
+<li>对固定的$\tilde P^{(i+1)}$，求$\theta^{(i+1)}$使
+ $F(\tilde P^{(t+1)}, \theta)$极大化</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>固定$\theta^{(i)}$</p>
+<script type="math/tex; mode=display">\begin{align*}
+F(\tilde P^{(i+1)}, \theta^{(i)} & = E_{\tilde P^{(t+1)}}
+   [log P(Y,Z|\theta)] + H(\tilde P^{(i+1)}) \\
+& = \sum_Z log P(Y,Z|\theta) P(Z|Y,\theta^{(i)}) +
+   H(\tilde P^{(i+1)}) \\
+& = Q(\theta, \theta^{(i)}) + H(\tilde P^{(i+1)})
+\end{align*}</script></li>
+<li><p>则固定$\tilde P^{(i+1)}$求极大同EM算法M步</p>
+</li>
+</ul>
+<h3 id="GEM算法"><a href="#GEM算法" class="headerlink" title="GEM算法"></a>GEM算法</h3><blockquote>
+<ul>
+<li>输入：观测数据，F函数</li>
+<li>输出：模型参数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>初始化$\theta^{(0)}$，开始迭代</p>
+</li>
+<li><p>第i+1次迭代：记$\theta^{(i)}$为参数$\theta$的估计值，
+$\tilde P^{(i)}$为函数$\tilde P$的估计，求
+$\tilde P^{(t+1)}$使$\tilde P$极大化$F(\tilde P,\theta)$</p>
+</li>
+<li><p>求$\theta^{(t+1)}$使$F(\tilde P^{(t+1)l}, \theta)$极大化</p>
+</li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+<h3 id="次优解代替最优解"><a href="#次优解代替最优解" class="headerlink" title="次优解代替最优解"></a>次优解代替最优解</h3><blockquote>
+<ul>
+<li>输入：观测数据，Q函数</li>
+<li>输出：模型参数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>初始化参数$\theta^{(0)}$，开始迭代</p>
+</li>
+<li><p>第i+1次迭代，记$\theta^{(i)}$为参数$\theta$的估计值，
+计算</p>
+<script type="math/tex; mode=display">\begin{align*}
+Q(\theta, \theta^{(i)}) & = E_Z [
+  log P(Y,Z|\theta)|Y,\theta^{(i)}] \\
+& = \sum_Z P(Z|Y, \theta^{(i)}) log P(Y,Z|\theta)
+\end{align*}</script></li>
+<li><p>求$\theta^{(i+1)}$使</p>
+<script type="math/tex; mode=display">
+Q(\theta^{(i+1)}, \theta^{(i)}) >
+  Q(\theta^{(i)}, \theta^{(i)})</script></li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>有时候极大化$Q(\theta, \theta^{(i)})$非常困难，此算法
+  仅寻找使目标函数值上升方向</li>
+</ul>
+</blockquote>
+<h3 id="ADMM求次优解"><a href="#ADMM求次优解" class="headerlink" title="ADMM求次优解"></a>ADMM求次优解</h3><blockquote>
+<ul>
+<li>输入：观测数据，Q函数</li>
+<li>输出：函数模型</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>初始化参数
+$\theta^{(0)} = (\theta_1^{(0)},…,\theta_d^{(0)})$，
+开始迭代</p>
+</li>
+<li><p>第i次迭代，记
+$\theta^{(i)} = (\theta_1^{(i)},…,\theta_d^{(i)})$，
+为参数$\theta = (\theta_1,…,\theta_d)$的估计值，计算</p>
+<script type="math/tex; mode=display">\begin{align*}
+Q(\theta, \theta^{(i)}) & = E_Z [
+  log P(Y,Z|\theta)|Y,\theta^{(i)}] \\
+& = \sum_Z P(Z|Y, \theta^{(i)}) log P(Y,Z|\theta)
+\end{align*}</script></li>
+<li><p>进行d次条件极大化</p>
+<ol>
+<li><p>在$\theta<em>1^{(i)},…,\theta</em>{j-1}^{(i)},\theta_{j+1}^{(i)},…,\theta_d^{(i)}$
+保持不变条件下
+，求使$Q(\theta, \theta^{(i)})$达到极大的
+$\theta_j^{(i+1)}$</p>
+</li>
+<li><p>j从1到d，进行d次条件极大化的，得到
+$\theta^{(i+1)} = (\theta_1^{(i+1)},…,\theta_d^{(i+1)})$
+使得</p>
+<script type="math/tex; mode=display">
+Q(\theta^{(i+1)}, \theta^{(i)}) >
+Q(\theta^{(i)}, \theta^{(i)})</script></li>
+</ol>
+</li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

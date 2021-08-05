@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: SVM - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">SVM</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:23:47.000Z" title="7/13/2019, 11:23:47 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:59:11.000Z" title="7/16/2021, 2:59:11 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Linear-Model/">Linear Model</a></span><span class="level-item">38 minutes read (About 5636 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Linear-Model/support_vector_machine.html">Support Vector Machine</a></h1><div class="content"><h2 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h2><p>支持向量机是二分类模型</p>
+<h3 id="学习要素"><a href="#学习要素" class="headerlink" title="学习要素"></a>学习要素</h3><ul>
+<li><p>基本模型：定义在特征空间上的间隔最大线性分类器</p>
+</li>
+<li><p>学习策略：间隔最大化</p>
+<ul>
+<li><p>可形式化为求解凸二次规划问题，也等价于正则化的合页
+损失函数最小化问题</p>
+</li>
+<li><p>间隔最大使其有别于感知机，训练数据线性可分时分离
+超平面唯一</p>
+<ul>
+<li>误分类最小策略（0-1损失）得到分离超平面的解无穷
+多个</li>
+<li>距离和最小策略（平方损失）得到分离超平面唯一，
+但与此不同</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>学习算法：求解凸二次规划的最优化算法</p>
+</li>
+</ul>
+<h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p>在给定特征空间上的训练数据集
+$T={(x_1,y_1), (x_2,y_2),\cdots,(x_N,y_N)}$，其中
+$x_i \in \mathcal{X} = R^n, y_i \in {-1, +1}, i=1,2,…,N$</p>
+<blockquote>
+<ul>
+<li>输入空间：欧氏空间或离散集合</li>
+<li>特征空间：希尔伯特空间</li>
+<li>输出空间：离散集合</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>SVM假设输入空间、特征空间为两个不同空间，SVM在特征空间
+上进行学习</p>
+</li>
+<li><p>线性（可分）支持向量机假设两个空间元素<strong>一一对应</strong>，并将
+输入空间中的输入映射为特征空间中特征向量</p>
+</li>
+<li><p>非线性支持向量机利用，输入空间到特征空间的非线性映射
+（核函数）将输入映射为特征向量</p>
+</li>
+</ul>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><h2 id="Linear-Support-Vector-Machine-in-Linearly-Separable-Case"><a href="#Linear-Support-Vector-Machine-in-Linearly-Separable-Case" class="headerlink" title="Linear Support Vector Machine in Linearly Separable Case"></a><em>Linear Support Vector Machine in Linearly Separable Case</em></h2><p>线性可分支持向量机：硬间隔支持向量机，训练数据线性可分时，
+通过硬间隔最大化策略学习</p>
+<ul>
+<li>直观含义：不仅将正负实例分开，而且对于最难分的实例点
+（离超平面最近的点），也有足够大的确信度将其分开，这样的
+超平面对新实例预测能力较好</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Hard-margin Maximization</em>：硬间隔最大化，最大化超平面
+  $(w,b)$关于线性可分训练数据集的两类样本集几何间隔</li>
+</ul>
+</blockquote>
+<h3 id="原始问题策略"><a href="#原始问题策略" class="headerlink" title="原始问题策略"></a>原始问题策略</h3><ul>
+<li><p>约束最优化问题表述</p>
+<script type="math/tex; mode=display">\begin{align}
+\max_{w,b} & \gamma & \\
+s.t. & \frac {y_i} {\|w\|} (wx + b) \geq \gamma,
+   i=1,2,\cdots,N
+\end{align}</script></li>
+<li><p>考虑函数间隔、几何间隔关系得到问题</p>
+<ul>
+<li>目标、约束中使用函数间隔表示几何间隔</li>
+<li>就是普通<strong>等比缩放</strong>、<strong>分母移位</strong>，不用考虑太多</li>
+</ul>
+<script type="math/tex; mode=display">\begin{align*}
+\max_{w,b} & \frac {\hat{\gamma}} {\|w\|} \\
+s.t. & y_i(wx_i + b) \geq \hat{\gamma}, i=1,2,\cdots,N
+\end{align*}</script></li>
+<li><p>而函数间隔$\hat{\gamma}$大小会随着超平面参数变化
+成比例变化，其取值对问题求解无影响，所以可取
+$\hat{\gamma}=1$带入，得到最优化问题</p>
+<script type="math/tex; mode=display">\begin{align*}
+\min_{w,b} & \frac 1 2 {\|w\|}^2 \\
+s.t. & y_i(wx_i + b) - 1 \geq 0, i=1,2,\cdots,N
+\end{align*}</script><blockquote>
+<ul>
+<li>$\max \frac 1 {|w|}$和
+ $\min \frac 1 2 {|w|}^2$等价</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>这里确实没有通用变换技巧，因为这里的$\hat \gamma$
+是特殊的值，其取值与$w,b$相关，这是<strong>问题自然蕴含</strong>
+，可以视为还有以下一个依赖</p>
+</li>
+<li><p>当然也可以直接证明两个问题等价：先证明最优解在等式
+成立时取到，然后目标函数中1替换为等式左边</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="最大间隔分离平面存在性"><a href="#最大间隔分离平面存在性" class="headerlink" title="最大间隔分离平面存在性"></a>最大间隔分离平面存在性</h3><blockquote>
+<ul>
+<li>若训练数据集T线性可分，则可将训练数据集中样本点完全
+  正确分开的最大间隔分离超平面存在且唯一</li>
+</ul>
+</blockquote>
+<h4 id="存在性"><a href="#存在性" class="headerlink" title="存在性"></a>存在性</h4><ul>
+<li>训练数据集线性可分，所以以上中最优化问题一定存在可行解</li>
+<li>又目标函数又下界，则最优化问题必有解<h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1></li>
+<li>又训练数据集中正、负类点都有，所以$(0,b)$必不是最优化
+可行解</li>
+</ul>
+<h4 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h4><ul>
+<li><p>若以上最优化问题存在两个最优解$(w_1^{<em>},b_1^{</em>})$、
+$w_2^{<em>},b_2^{</em>}$</p>
+</li>
+<li><p>显然$|w_1^{<em>}| = |w_2^{</em>}| = c$，
+$(w=\frac {w_1^{<em>}+w_2^{</em>}} 2,b=\frac {b_1^{<em>}+b_2^{</em>}} 2)$
+使最优化问题的一个可行解，则有</p>
+<script type="math/tex; mode=display">
+c \leq \|w\| \leq \frac 1 2 \|w_1^{*}\| + \frac 1 2
+   \|w_2^{*} = c</script></li>
+<li><p>则有$|w|=\frac 1 2 |w_1^{<em>}|+\frac 1 2 |w_2^{</em>}|$
+，有$w_1^{<em>} = \lambda w_2^{</em>}, |\lambda|=1$</p>
+<ul>
+<li>$\lambda = -1$，不是可行解，矛盾</li>
+<li>$\lambda = 1$，则$w_1^{(<em>)} = w_2^{</em>}$，两个最优解
+写为$(w^{<em>}, b_1^{</em>})$、$(w^{<em>}, b_2^{</em>})$</li>
+</ul>
+</li>
+<li><p>设$x_1^{+}, x_1^{-}, x_2^{+}, x_2^{-}$分别为对应以上两组
+超平面，使得约束取等号、正/负类别的样本点，则有</p>
+<script type="math/tex; mode=display">\begin{align*}
+b_1^{*} & = -\frac 1 2 (w^{*} x_1^{+} + w^{*} x_1^{-}) \\
+b_2^{*} & = -\frac 1 2 (w^{*} x_2^{+} + w^{*} x_2^{-}) \\
+\end{align*}</script><p>则有</p>
+<script type="math/tex; mode=display">
+b_1^{*} - b_2^{*} = -\frac 1 2 [w^{*}(x_1^{+} - x_2^{+})
+   + w^{*} (x_1^{-} - x_2^{-})]</script></li>
+<li><p>又因为以上支持向量的性质可得</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{*}x_2^{+} + b_1^{*} & \geq 1 = w^{*}x_1^{+} + b_1^{*} \\
+w^{*}x_1^{+} + b_2^{*} & \geq 1 = w^{*}x_2^{+} + b_2^{*}
+\end{align*}</script><p>则有$w^{<em>}(x_1^{+} - x_2^{+})=0$，同理有
+$w^{</em>}(x_1^{-} - x_2^{-})=0$</p>
+</li>
+<li><p>则$b_1^{<em>} - b_2^{</em>} = 0$</p>
+</li>
+</ul>
+<h3 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h3><h4 id="Support-Vector"><a href="#Support-Vector" class="headerlink" title="Support Vector"></a><em>Support Vector</em></h4><p>支持向量：训练数据集中与超平面距离最近的样本点实例</p>
+<ul>
+<li>在线性可分支持向量机中即为使得约束条件取等号成立的点</li>
+<li>在决定分离超平面时，只有支持向量起作用，其他实例点不起
+作用</li>
+<li>支持向量一般很少，所以支持向量机由很少的“重要”训练样本
+决定</li>
+</ul>
+<h4 id="间隔边界"><a href="#间隔边界" class="headerlink" title="间隔边界"></a>间隔边界</h4><p>间隔边界：超平面$wx + b = +/-1$</p>
+<ul>
+<li>支持向量位于其上</li>
+<li>两个间隔边界之间距离称为间隔$=\frac 2 {|w|}$</li>
+</ul>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><blockquote>
+<ul>
+<li>输入：线性可分训练数据集T</li>
+<li>输出：最大间隔分离超平面、分类决策函数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>构造并求解约束最优化问题</p>
+<script type="math/tex; mode=display">\begin{align*}
+\min_{w,b} &  \frac 1 2 {\|w\|}^2 \\
+s.t. & y_i(wx_i + b) - 1 \geq 0, i=1,2,\cdots,N
+\end{align*}</script><p>得到最优解$w^{<em>}, b^{</em>}$</p>
+</li>
+<li><p>得到分离超平面</p>
+<script type="math/tex; mode=display">
+w^{*}x + b^{*} = 0</script><p>分类决策函数</p>
+<script type="math/tex; mode=display">
+f(x) = sign(w^{*}x + b^{*})</script></li>
+</ol>
+<h3 id="多分类"><a href="#多分类" class="headerlink" title="多分类"></a>多分类</h3><ul>
+<li><p><em>1 vs n-1</em>：对类$k=1,…,n$分别训练当前类对剩余类分类器</p>
+<ul>
+<li>分类器数据量有偏，可以在负类样本中进行抽样</li>
+<li>训练n个分类器</li>
+</ul>
+</li>
+<li><p><em>1 vs 1</em>：对$k=1,…,n$类别两两训练分类器，预测时取各
+分类器投票多数</p>
+<ul>
+<li>需要训练$\frac {n(n-1)} 2$给分类器</li>
+</ul>
+</li>
+<li><p><em>DAG</em>：对$k=1,…,n$类别两两训练分类器，根据预先设计的、
+可以使用DAG表示的分类器预测顺序依次预测</p>
+<ul>
+<li>即排除法排除较为不可能类别</li>
+<li>一旦某次预测失误，之后分类器无法弥补<ul>
+<li>但是错误率可控</li>
+<li>设计DAG时可以每次选择相差最大的类别优先判别</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Dual-Algorithm"><a href="#Dual-Algorithm" class="headerlink" title="Dual Algorithm"></a><em>Dual Algorithm</em></h2><p>对偶算法：求解对偶问题得到原始问题的最优解</p>
+<ul>
+<li>对偶问题往往更容易求解</li>
+<li>自然引入核函数，进而推广到非线性分类问题</li>
+</ul>
+<h3 id="对偶问题策略"><a href="#对偶问题策略" class="headerlink" title="对偶问题策略"></a>对偶问题策略</h3><ul>
+<li><p>Lagrange函数如下</p>
+<script type="math/tex; mode=display">
+L(w,b,\alpha) = \frac 1 2 \|w\|^2 - \sum_{i=1}^N
+   \alpha_i y_i (wx_i + b) + \sum_{i=1}^N \alpha_i</script><blockquote>
+<ul>
+<li>$\alpha_i &gt; 0$：<em>Lagrange multiplier</em></li>
+</ul>
+</blockquote>
+</li>
+<li><p>根据拉格朗日对偶性，原始问题的对偶问题是极大极小问题</p>
+<script type="math/tex; mode=display">
+\max_{\alpha} \min_{w,b} L(w,b,\alpha)</script></li>
+</ul>
+<ul>
+<li><p>求$\min_{w,b} L(w,b,\alpha)$，对拉格朗日函数求偏导置0</p>
+<script type="math/tex; mode=display">\begin{align*}
+\triangledown_w L(w,b,\alpha) & = w - \sum_{i=1}^N
+   \alpha_i y_i x_i = 0 \\
+\triangledown_b L(w,b,\alpha) & = -\sum_{i=1}^N
+   \alpha_i y_i = 0
+\end{align*}</script><p>解得</p>
+<script type="math/tex; mode=display">\begin{align*}
+w = \sum_{i=1}^N \alpha_i y_i x_i \\
+\sum_{i=1}^N \alpha_i y_i = 0
+\end{align*}</script></li>
+<li><p>将以上结果代理拉格朗日函数可得</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(w,b,\alpha) & = \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+   \alpha_i \alpha_j y_i y_j (x_i x_j) - \sum_{i=1}^N
+   \alpha_i y_i ((\sum_{j=1}^N \alpha_j y_j x_j)x_i + b)
+   + \sum_{i=1}^N \alpha_i \\
+& = -\frac 1 2 \sum_{i=1}^N \sum_{j=1}^N \alpha_i \alpha_j
+   y_i y_i (x_i x_j) + \sum_{i=1}^N \alpha_i
+\end{align*}</script></li>
+<li><p>以上函数对$\alpha$极大即为对偶问题，为方便改成极小</p>
+<script type="math/tex; mode=display">\begin{align*}
+\min_{\alpha} & \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+   \alpha_i \alpha_j y_i y_j (x_i x_j) -
+   \sum_{i=1}^N \alpha_i \\
+s.t. & \sum_{i=1}^N \alpha_i y_i = 0, \\
+& \alpha_i > 0, i = 1,2,\cdots,N
+\end{align*}</script></li>
+</ul>
+<h3 id="原始问题解"><a href="#原始问题解" class="headerlink" title="原始问题解"></a>原始问题解</h3><blockquote>
+<ul>
+<li>设$\alpha^{<em>} = (\alpha_1^{</em>}, \cdots, \alpha_N^{<em>})$是
+  上述对偶优化问题的解，则存在$j \in [1, N]$使得
+  $\alpha_j^{</em>} &gt; 0$，且原始最优化问题解如下<script type="math/tex; mode=display">\begin{align*}
+  w^{*} & = \sum_{i=1}^N \alpha_i^{*} y_i x_i \\
+  b^{*} & = y_j - \sum_{i=1}^N \alpha_i^{*} y_i (x_i x_j)
+  \end{align*}</script></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由KKT条件成立有</p>
+<script type="math/tex; mode=display">\begin{align*}
+& \triangledown_w L(w^{*}, b^{*}, \alpha^{*}) = w^{*} -
+   \sum_{i=1}^N \alpha_i{*} y_i x_i = 0 \\
+& \triangledown_b L(w^{*}, b^{*}, \alpha^{*}) =
+   -\sum_{i=1}^N \alpha_i^{*} y_i = 0 \\
+& \alpha^{*}(y_i (w^{*} x_i + b^{*}) - 1) = 0,
+   i = 1,2,\cdots,N \\
+& y_i(w^{*} x_i + b) - 1 \geq 0, i = 1,2,\cdots,N \\
+& \alpha_i^{*} \geq 0, i = 1,2,\cdots,N \\
+\end{align*}</script></li>
+<li><p>可得</p>
+<script type="math/tex; mode=display">
+w^{*} = \sum_i \alpha_i^{*} y_i x_i</script></li>
+<li><p>其中至少有一个$\alpha_j &gt; 0$，否则$w^{*}=0$不是原问题解
+，且有</p>
+<script type="math/tex; mode=display">\begin{align*}
+y_j(w^{*} x_j + b^{*}) - 1 = 0
+\end{align*}</script><p>注意到$y_j \in {-1, +1}$，则有</p>
+<script type="math/tex; mode=display">
+b^{*} = y_j - \sum_{i=1}^N \alpha_i^{*} y_i (x_i x_j)</script></li>
+</ul>
+<h4 id="分离超平面"><a href="#分离超平面" class="headerlink" title="分离超平面"></a>分离超平面</h4><ul>
+<li><p>则分离超平面为</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*} = 0</script></li>
+<li><p>分类决策函数为</p>
+<script type="math/tex; mode=display">
+f(x) = sgn(\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*})</script><p>即分类决策函数只依赖输入$x$和训练样本的内积</p>
+</li>
+</ul>
+<h4 id="支持向量"><a href="#支持向量" class="headerlink" title="支持向量"></a>支持向量</h4><blockquote>
+<ul>
+<li>将对偶最优化问题中，训练数据集中对应$\alpha_i^{*} &gt; 0$
+  的样本点$(x_i, y_i)$称为支持向量</li>
+</ul>
+</blockquote>
+<ul>
+<li>由KKT互补条件可知，对应$\alpha_i^{*} &gt; 0$的实例$x_i$有<script type="math/tex; mode=display">
+y_i(w^{*} x_i + b^{*}) - 1 = 0</script>即$(x_i, y_i)$在间隔边界上，同原始问题中支持向量定义一致</li>
+</ul>
+<h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><blockquote>
+<ul>
+<li>输入：线性可分数据集$T$</li>
+<li>输出：分离超平面、分类决策函数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>构造并求解以上对偶约束最优化问题，求得最优解
+$\alpha^{<em>} = (\alpha_1^{</em>},…,\alpha_N^{*})^T$</p>
+</li>
+<li><p>依据以上公式求$w^{<em>}$，选取$\alpha^{</em>}$正分量
+$\alpha_j^{<em>} &gt; 0$计算$b^{</em>}$</p>
+</li>
+<li><p>求出分类超平面、分类决策函数</p>
+</li>
+</ol>
+<h2 id="Linear-Support-Vector-Machine"><a href="#Linear-Support-Vector-Machine" class="headerlink" title="Linear Support Vector Machine"></a><em>Linear Support Vector Machine</em></h2><p>线性支持向量机：训练数据线性不可分时，通过软间隔最大化策略
+学习</p>
+<ul>
+<li><p>训练集线性不可分通常是由于存在一些<em>outlier</em></p>
+<ul>
+<li>这些特异点不能满足函数间隔大于等于1的约束条件</li>
+<li>将这些特异点除去后，剩下大部分样本点组成的集合是
+线性可分的</li>
+</ul>
+</li>
+<li><p>对每个样本点$(x_i,y_i)$引入松弛变量$\xi_i \geq 0$</p>
+<ul>
+<li>使得函数间隔加上松弛变量大于等于1</li>
+<li>对每个松弛变量$\xi_i$，支付一个代价$\xi_i$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>soft-margin maximization</em>：软间隔最大化，最大化样本点
+  几何间隔时，尽量减少误分类点数量</li>
+</ul>
+</blockquote>
+<h3 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h3><p>线性不可分的线性支持向量机的学习变成如下凸二次规划，即
+软间隔最大化</p>
+<script type="math/tex; mode=display">\begin{align*}
+\min_{w,b,\xi} & \frac 1 2 \|w\|^2 + C \sum_{i=1}^N \xi_i \\
+s.t. & y_i(w x_i + b) \geq 1 - \xi_i, i=1,2,\cdots,N \\
+& \xi_i \geq 0, i=1,2,\cdots,N
+\end{align*}</script><blockquote>
+<ul>
+<li>$\xi_i$：松弛变量</li>
+<li>$C &gt; 0$：惩罚参数，由应用问题决定，C越大对误分类惩罚越大</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>最小化目标函数包含两层含义</p>
+<ul>
+<li>$\frac 1 2 |w|^2$尽量小，间隔尽量大</li>
+<li>误分类点个数尽量小</li>
+</ul>
+</li>
+<li><p>以上问题是凸二次规划问题，所以$(w,b,\xi)$的解是存在的</p>
+<ul>
+<li>$w$解唯一</li>
+<li>$b$解可能不唯一，存在一个区间</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>对给定的线性不可分训练数据集，通过求解以上凸二次规划问题
+  得到的分类超平面<script type="math/tex; mode=display">w^{*} x + b^{*} = 0</script>  以及相应的分类决策函数<script type="math/tex; mode=display">f(x) = sgn(w^{*} x + b^{*})</script>  称为线性支持向量机</li>
+</ul>
+</blockquote>
+<ul>
+<li>线性支持向量包括线性可分支持向量机</li>
+<li>现实中训练数据集往往线性不可分，线性支持向量机适用性更广</li>
+</ul>
+<h3 id="对偶问题策略-1"><a href="#对偶问题策略-1" class="headerlink" title="对偶问题策略"></a>对偶问题策略</h3><p>原始问题的对偶问题</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\min_\alpha & \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N \alpha_i
+    \alpha_j y_i y_j (x_i x_j) - \sum_{i=1}^N \alpha_i \\
+s.t. & \sum_{i=1}^N \alpha_i y_i = 0 \\
+& 0 \leq \alpha_i \leq C, i=1,2,\cdots,N
+\end{align*}</script><ul>
+<li>类似线性可分支持向量机利用Lagrange对偶即可得</li>
+</ul>
+<h3 id="原始问题解-1"><a href="#原始问题解-1" class="headerlink" title="原始问题解"></a>原始问题解</h3><blockquote>
+<ul>
+<li>设$\alpha^{<em>} = (\alpha_1^{</em>}, \cdots, \alpha_N^{<em>})$是
+  上述对偶优化问题的解，则存在$j \in [1, N]$使得
+  $0 &lt; \alpha_j^{</em>} &lt; C$，且原始最优化问题解如下<script type="math/tex; mode=display">\begin{align*}
+  w^{*} & = \sum_{i=1}^N \alpha_i^{*} y_i x_i \\
+  b^{*} & = y_j - \sum_{i=1}^N \alpha_i^{*} y_i (x_i x_j)
+  \end{align*}</script></li>
+</ul>
+</blockquote>
+<ul>
+<li>类似线性可分支持向量机利用KKT条件即可得</li>
+</ul>
+<h4 id="分离超平面-1"><a href="#分离超平面-1" class="headerlink" title="分离超平面"></a>分离超平面</h4><ul>
+<li><p>则分离超平面为</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*} = 0</script></li>
+<li><p>分类决策函数/线性支持向量机对偶形式</p>
+<script type="math/tex; mode=display">
+f(x) = sgn(\sum_{i=1}^N \alpha_i^{*} y_i (x x_i) + b^{*})</script><p>即分类决策函数只依赖输入$x$和训练样本的内积</p>
+</li>
+</ul>
+<h4 id="支持向量-1"><a href="#支持向量-1" class="headerlink" title="支持向量"></a>支持向量</h4><blockquote>
+<ul>
+<li>将对偶最优化问题中，训练数据集中对应$\alpha_i^{*} &gt; 0$
+  的样本点$x_i$称为（软间隔）支持向量</li>
+</ul>
+</blockquote>
+<ul>
+<li>$\alpha_i^{*} &lt; C$：则$\xi_i = 0$，恰好落在间隔边界上</li>
+<li>$\alpha_i^{*} = C, 0 &lt; \xi_i &lt; 1$：间隔边界与分离超平面
+之间</li>
+<li>$\alpha_i^{*} = C, \xi=1$：分离超平面上</li>
+<li>$\alpha_i^{*} = C, \xi&gt;1$：分离超平面误分一侧</li>
+</ul>
+<h3 id="Hinge-Loss"><a href="#Hinge-Loss" class="headerlink" title="Hinge Loss"></a><em>Hinge Loss</em></h3><p>线性支持向量机策略还可以视为最小化以下目标函数</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^N [1-y_i(w x_i + b)]_{+} + \lambda \|w\|^2</script><blockquote>
+<ul>
+<li>第一项：经验风险，合页损失函数</li>
+<li>第二项：正则化项</li>
+</ul>
+</blockquote>
+<ul>
+<li>$w$模越大，间隔越小，合页损失越小，所以用这个作为
+正则化项是合理的</li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>data_science/loss</em></li>
+</ul>
+</blockquote>
+<h4 id="等价证明"><a href="#等价证明" class="headerlink" title="等价证明"></a>等价证明</h4><p>令</p>
+<script type="math/tex; mode=display">
+\xi_i = [1 - y_i(w x_i + b)]_{+}</script><ul>
+<li><p>则有$\xi_i \geq 0$</p>
+</li>
+<li><p>且</p>
+<script type="math/tex; mode=display">\left \{ \begin{align*}
+& y_i(w x_i + b) = 1 - \xi_i, & y_i(w x_i + b) \leq 1 \\
+& y_i(w x_i + b) > 1 - \xi_i = 1, & y_i(w x_i + b) > 1
+\end{align*} \right.</script><p>所以有</p>
+<script type="math/tex; mode=display">
+y_i(w x_i + b) \geq 1 - \xi_i</script></li>
+<li><p>则原问题两个约束条件均得到满足，此问题可写成</p>
+<script type="math/tex; mode=display">
+\min_{w,b} \sum_{i=1}^N \xi_i + \lambda \|w\|^2</script><p>取$\lambda = \frac 1 {2C}$，即同原问题</p>
+</li>
+</ul>
+<h2 id="Non-Linear-Support-Vector-Machine"><a href="#Non-Linear-Support-Vector-Machine" class="headerlink" title="Non-Linear Support Vector Machine"></a><em>Non-Linear Support Vector Machine</em></h2><p>非线性支持向量机</p>
+<ul>
+<li><p>非线性问题：通过非线性模型才能很好进行分类的问题</p>
+<ul>
+<li>通过<strong>非线性变换</strong>$\phi(x)$，将输入空间映射到特征
+空间（维数可能非常高）</li>
+<li>原空间中非线性可分问题在特征空间可能变得线性可分，
+在特征空间中学习分类模型</li>
+</ul>
+</li>
+<li><p>SVM求解非线性问题时</p>
+<ul>
+<li><em>kernel trick</em>：通过非线性变换将输入空间对应一个特征
+空间，使得输入空间中超曲面对应于特征空间的超平面模型</li>
+<li>软间隔最大化策略：在特征空间中求解线性支持向量机</li>
+</ul>
+</li>
+</ul>
+<h3 id="Kernal-Trick"><a href="#Kernal-Trick" class="headerlink" title="Kernal Trick"></a><em>Kernal Trick</em></h3><p>核技巧：线性SVM的对偶问题中，目标函数、决策函数均只涉及输入
+实例、实例之间的内积</p>
+<ul>
+<li><p>将内积使用核函数代替，等价进行复杂的非线性变换</p>
+</li>
+<li><p>映射函数是非线性函数时，学习的含有核函数的支持向量机
+是非线性模型</p>
+</li>
+<li><ul>
+<li>学习是隐式地在特征空间中进行的，不需要显式定义特征
+空间、映射函数</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>data_science/ref/functions</em></li>
+</ul>
+</blockquote>
+<h4 id="对偶问题目标函数"><a href="#对偶问题目标函数" class="headerlink" title="对偶问题目标函数"></a>对偶问题目标函数</h4><script type="math/tex; mode=display">
+W(\alpha) = \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+    \alpha_i \alpha_j y_i y_j K(x_i, x_j) -
+    \sum_{i=1}^N \alpha_i</script><h3 id="原始问题解-2"><a href="#原始问题解-2" class="headerlink" title="原始问题解"></a>原始问题解</h3><h4 id="分类决策函数"><a href="#分类决策函数" class="headerlink" title="分类决策函数"></a>分类决策函数</h4><script type="math/tex; mode=display">\begin{align*}
+f(x) & = sgn(\sum_{i=1}^{N_s} \alpha_i^{*} y_i \phi(x_i)
+    \phi(x) + b^{*}) \\
+& = sgn(\sum_{i=1}^{N_s} \alpha_i^{*} y_i K(x_i, x) + b^{*})
+\end{align*}</script><h3 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h3><blockquote>
+<ul>
+<li>输入：训练数据集$T$</li>
+<li>输出：分类决策函数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>选取适当的核函数$K(x,z)$、适当参数C，构造求解最优化问题</p>
+<script type="math/tex; mode=display">\begin{align*}
+\min_\alpha & \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+  \alpha_1 \alpha_j y_i y_j K(x_i, x_j) -
+  \sum_{i=1}^N \alpha_i \\
+s.t. & \sum_{i=1}^N \alpha_i y_i = 0 \\
+& 0 \leq \alpha_i \leq C, i=1,2,...,N
+\end{align*}</script><p>求得最优解
+$\alpha^{<em>} = (\alpha_1^{</em>},\alpha_2^{<em>},\cdots,\alpha_N^{</em>})$</p>
+</li>
+<li><p>选择$\alpha^{<em>}$的一个正分量$0 &lt; \alpha_j^{</em>} &lt; C$，计算</p>
+<script type="math/tex; mode=display">
+b^{*} = y_j - \sum_{i=1}^N \alpha_i^{*} y_i K(x_i x_j)</script></li>
+<li><p>构造决策函数</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>$K(x,z)$是正定核函数时，最优化问题是凸二次规划，有解</li>
+</ul>
+</blockquote>
+<h2 id="Sequential-Minimal-Optimization"><a href="#Sequential-Minimal-Optimization" class="headerlink" title="Sequential Minimal Optimization"></a><em>Sequential Minimal Optimization</em></h2><p>序列最小最优化算法，主要解如下凸二次规划的对偶问题</p>
+<script type="math/tex; mode=display">\begin{align*}
+\min_\alpha & \frac 1 2 \sum_{i=1}^N \sum_{j=1}^N
+    \alpha_1 \alpha_j y_i y_j K(x_i, x_j) -
+    \sum_{i=1}^N \alpha_i \\
+s.t. & \sum_{i=1}^N \alpha_i y_i = 0 \\
+& 0 \leq \alpha_i \leq C, i=1,2,...,N
+\end{align*}</script><blockquote>
+<ul>
+<li>凸二次规划有很多算法可以求得全局最优解，但是在训练样本
+  容量较大时，算法会很低效</li>
+</ul>
+</blockquote>
+<h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><p>将原问题不断分解为子问题求解，进而求解原问题</p>
+<ul>
+<li><p>如果所有变量的解都满足此优化问题的KKT条件，得到此最优化
+问题的一个可能解</p>
+<ul>
+<li>对凸二次规划就是最优解，因为凸二次规划只有一个稳定点</li>
+</ul>
+</li>
+<li><p>否则选择两个变量，固定其他变量，构建一个二次规划</p>
+<ul>
+<li><p>目标是使得解符合KKT条件，但是因为等式约束的存在，
+不可能<strong>单独改变一个变量</strong>而保持等式约束</p>
+</li>
+<li><p>子问题有解析解，求解速度快</p>
+</li>
+<li><p>二次规划问题关于两个变量的解会使得原始二次规划的目标
+函数值变得更小，更接近原始二次规划的解
+（这里SMO原始论文有证明，违反KKT条件的变量可以做到）</p>
+</li>
+</ul>
+</li>
+<li><p>不失一般性，假设选择两个变量$\alpha_1, \alpha_2$，其他
+变量$\alpha_i(i=3,4,…,N)$是固定的，则SMO最优化子问题</p>
+<script type="math/tex; mode=display">\begin{align*}
+\min_{\alpha_1, \alpha_2} & W(\alpha_1, \alpha_2) =
+   \frac 1 2 K_{11} \alpha_1^2 + \frac 1 2
+   K_{22} \alpha_2^2 + y_1 y_2 K_{12} \alpha_1 \alpha_2
+   - (\alpha_1 + \alpha_2) + y_1 \alpha_1 \sum_{i=3}^N
+   y_i \alpha_i K_{i1} + y_2 \alpha_2 \sum_{i=1}^N
+   y_i \alpha_i K{i2} \\
+s.t. & \alpha_1 y_1 + \alpha_2 y_2 = -\sum_{i=3}^N
+   y_i \alpha_i = \zeta \\
+& 0 \leq \alpha_i \leq C, i=1,2
+\end{align*}</script><blockquote>
+<ul>
+<li>$K_{ij} = K(x_i, x_j), i,j=1,2,\cdots,N$</li>
+<li>$\zeta$：常数</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="两变量二次规划取值范围"><a href="#两变量二次规划取值范围" class="headerlink" title="两变量二次规划取值范围"></a>两变量二次规划取值范围</h3><ul>
+<li><p>由<strong>等式约束</strong>，$\alpha_1, \alpha_2$中仅一个自由变量，
+不妨设为$\alpha_2$</p>
+<ul>
+<li><p>设初始可行解为$\alpha_1, \alpha_2$</p>
+</li>
+<li><p>设最优解为$\alpha_1^{<em>}, \alpha_2^{</em>}$</p>
+</li>
+<li><p>未经剪辑（不考虑约束条件而来得取值范围）最优解为
+$\alpha_2^{**}$</p>
+</li>
+</ul>
+</li>
+<li><p>由<strong>不等式</strong>约束，可以得到$\alpha_2$取值范围$[L, H]$</p>
+<ul>
+<li><p>$y_1 = y_2 = +/-1$时</p>
+<script type="math/tex; mode=display">\begin{align*}
+H & = \min \{C, \alpha_1 + \alpha_2 \} \\
+L & = \max \{0, \alpha_2 + \alpha_1 - C \}
+\end{align*}</script></li>
+<li><p>$y_1 \neq y_2$时</p>
+<script type="math/tex; mode=display">\begin{align*}
+L & = \max \{0, \alpha_2 - \alpha_1 \} \\
+L & = \min \{C, C + \alpha_2 - \alpha_1 \}
+\end{align*}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>以上取值范围第二项都是应用等式约束情况下，考虑
+不等式约束</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="两变量二次规划求解"><a href="#两变量二次规划求解" class="headerlink" title="两变量二次规划求解"></a>两变量二次规划求解</h3><p>为叙述，记</p>
+<script type="math/tex; mode=display">\begin{align*}
+g(x) & = \sum_{i=1}^N \alpha_i y_i K(x_i, x) + b \\
+E_j & = g(x_j) - y_j \\
+& = (\sum_{i=1}^N \alpha_i y_i K(x_i, x_j)) - y_j
+\end{align*}</script><ul>
+<li>$g(x)$：SVM预测函数（比分类器少了符号函数）（函数间隔）</li>
+<li>$E_j$：SVM对样本预测与真实值偏差</li>
+</ul>
+<blockquote>
+<ul>
+<li>以上两变量二次规划问题，沿约束方向未经剪辑解是<script type="math/tex; mode=display">\begin{align*}
+  \alpha_2^{**} & = \alpha_2 + \frac {y_2 (E_1 - E_2)}
+      \eta \\
+  \eta & = K_{11} + K_{22} - 2K_{12} \\
+  & = \|\phi(x_1) - \phi_(x_2)\|^2
+  \end{align*}</script>  剪辑后的最优解是<script type="math/tex; mode=display">\begin{align*}
+  \alpha_2^{*} & = \left \{ \begin{array}{l}
+      H, & \alpha_2^{**} > H \\
+      \alpha_2^{**}, & L \leq \alpha_2^{**} \leq H \\
+      L, & \alpha_2^{*} < L
+  \end{array} \right. \\
+  \alpha_1^{*} & = \alpha_1 + y_1 y_2 (\alpha_2 -
+      \alpha_2^{*})
+  \end{align*}</script></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>记</p>
+<script type="math/tex; mode=display">\begin{align*}
+v_i & = \sum_{j=3}^N \alpha_j y_j K(x_i, x_j) \\
+& = g(x_i) - \sum_{j=1}^2 \alpha_j y_j K(x_i, x_j) - b
+   i=1,2
+\end{align*}</script><p>由等式约束$\alpha_1 = (\zeta - y_2 \alpha_2) y_1$，均
+带入目标函数有</p>
+<script type="math/tex; mode=display">\begin{align*}
+W(\alpha_1, \alpha_2) = & \frac 1 2 K_{11} (\zeta -
+   y_2 \alpha_2)^2 + \frac 1 2 K_{22} \alpha_2^2 +
+   y_2 K_{12} (\zeta - y_2 \alpha_2) \alpha_2 - \\
+& y_1 (\zeta - \alpha_2 y_2) - \alpha_2 +
+   v_1 (\zeta - \alpha_2 y_2) + y_2 v_2 \alpha_2
+\end{align*}</script></li>
+<li><p>对$\alpha_2$求导置0可得</p>
+<script type="math/tex; mode=display">\begin{align*}
+(K_{11} + K_{22} - 2K_{12}) \alpha_2 & = y_2 (y_2 -
+   y_1 + \zeta K_{11} - \zeta K_{12} + v_1 + v_2) \\
+& = y_2 [y_2 - y_1 + \zeta K_{11} - \zeta K_{12} +
+   (g(x_1) - \sum_{j=1}^2 y_j \alpha_j K_{1j} - b) -
+   (g(x_2) - \sum_{j=1}^2 y_j \alpha_j K_{2j} -b )]
+\end{align*}</script><p>带入$\zeta = \alpha_1 y_1 + \alpha_2 y2$，可得</p>
+<script type="math/tex; mode=display">\begin{align*}
+(K_11 + K_22 - 2K_{12}) \alpha_2^{**} & = y_2((K_{11} +
+   K_{22} - 2K_{12}) \alpha_2 y_2 + y_2 - y_1 +
+   g(x_1) - g(x_1)) \\
+& = (K_11 + K_{22} - 2K_{12}) \alpha_2 + y_2 (E_1 - E_2)
+\end{align*}</script></li>
+</ul>
+<h3 id="变量选择"><a href="#变量选择" class="headerlink" title="变量选择"></a>变量选择</h3><p>SMO算法每个子问题的两个优化变量，其中至少一个违反KKT条件</p>
+<h4 id="外层循环—首个变量选择"><a href="#外层循环—首个变量选择" class="headerlink" title="外层循环—首个变量选择"></a>外层循环—首个变量选择</h4><p>在训练样本中选择违反KKT条件最严重的样本点，将对应的变量作为
+第一个变量$\alpha_1$</p>
+<ul>
+<li><p>检查样本点是否满足KKT条件</p>
+<script type="math/tex; mode=display">\begin{align*}
+\alpha_i = 0 \Leftrightarrow y_i g(x_i) \geq 1 \\
+0 < \alpha_i < C \Leftrightarrow y_i g(x_i) = 1 \\
+\alpha_i = C \Leftrightarrow y_i g(x_i) \leq 1
+\end{align*}</script></li>
+<li><p>检验过程中</p>
+<ul>
+<li><p>首先遍历所有满足条件的$0 &lt; \alpha_i &lt; C$样本点，即
+在间隔边界上的支持向量点</p>
+</li>
+<li><p>若没有找到违背KKT条件的样本点，则遍历整个训练集</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="内层循环"><a href="#内层循环" class="headerlink" title="内层循环"></a>内层循环</h4><p>第二个变量$\alpha_2$选择标准是其自身有足够大的变化，以加快
+计算速度</p>
+<ul>
+<li><p>由以上推导知，$\alpha_2^{*}$取值依赖于$|E_1 - E_2|$，
+所以可以选择$\alpha_2$使其对应的$|E_1 - E_2|$最大</p>
+<ul>
+<li>$\alpha_1$已经确定，$E_1$已经确定</li>
+<li>$E_1 &gt; 0$：选最小的$E_2$</li>
+<li>$E_1 &lt; 0$：选最大的$E_2$</li>
+</ul>
+</li>
+<li><p>但以上方法可能不能使得目标函数值有足够下降，采用以下
+<strong>启发式</strong>规则继续选择$\alpha_2$</p>
+<ul>
+<li>遍历间隔边界上的点</li>
+<li>遍历整个训练数据集</li>
+<li>放弃$\alpha_1$</li>
+</ul>
+</li>
+</ul>
+<h4 id="更新阈值"><a href="#更新阈值" class="headerlink" title="更新阈值"></a>更新阈值</h4><ul>
+<li><p>$0&lt; \alpha_1^{*} &lt; C$时，由KKT条件可知</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^N \alpha_i y_i K_{i1} + b = y_1</script><ul>
+<li><p>则有</p>
+<script type="math/tex; mode=display">
+b_1^{*} = y_1 - \sum_{i=3}^N \alpha_i y_i K_{i1} -
+  \alpha_1^{*} y_1 K_{11} - \alpha_2^{*} y_2 K_{21}</script></li>
+<li><p>将$E_1$定义式带入有</p>
+<script type="math/tex; mode=display">
+b_1^{*} = -E_1 - y_1 K_{11} (\alpha_1^{*} - \alpha_1)
+  - y_2 K_{21} (\alpha_2^{*} - \alpha_2) + b</script></li>
+</ul>
+</li>
+<li><p>类似的$0 &lt; \alpha_2^{*} &lt; C$时</p>
+<script type="math/tex; mode=display">
+b_2^{*} = -E_2 - y_2 K_{22} (\alpha_2^{*} - \alpha_2)
+   - y_1 K_{12} (\alpha_1^{*} - \alpha_1) + b</script></li>
+<li><p>若</p>
+<ul>
+<li><p>$0 &lt; \alpha_1^{<em>}, \alpha_2^{</em>} &lt; C$，则
+$b_1{<em>} = b_2^{</em>}$</p>
+</li>
+<li><p>$\alpha_1^{<em>}, $\alpha_2^{</em>}$均为0、C，则
+$[b_1^{<em>}, b_2^{</em>}]$中均为符合KKT条件的阈值，选择
+中点作为新阈值$b^{*}$</p>
+</li>
+</ul>
+</li>
+<li><p>同时使用新阈值更新所有的$E_i$值</p>
+<script type="math/tex; mode=display">
+E_i^{*} = \sum_S y_j \alpha_j K(x_i, x_j) + b^{*} - y_i</script><blockquote>
+<ul>
+<li>$S$：所有支持向量的集合</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="算法-3"><a href="#算法-3" class="headerlink" title="算法"></a>算法</h3><blockquote>
+<ul>
+<li>输入：训练数据集$T$，精度$\epsilon$</li>
+<li>输出：近似解$\hat \alpha$</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>初值$\alpha^{(0)}$，置k=0</p>
+</li>
+<li><p>选取优化变量$\alpha_1^{(k)}, \alpha_2^{(k)}$，解析求解
+两变量最优化问题得$\alpha_1^{(k+1)}, \alpha_2^{(k+2)}$，
+更新$\alpha^{(k+1)}$</p>
+</li>
+<li><p>若在精度范围内满足停机条件（KKT条件）</p>
+<script type="math/tex; mode=display">\begin{align*}
+& \sum_{i=1}^N \alpha_i y_i = 0 \\
+& 0 \leq \alpha_i \leq C, i=1,2,\cdots,N \\
+& y_i g(x_i) = \left \{ \begin{array}{l}
+  \geq 1, & \{x_i | \alpha_i = 0\} \\
+  = 1, & \{x_i | 0 < \alpha_i < C\} \\
+  \leq 1, & \{x_i | \alpha_i = C\}
+\end{array} \right. \\
+& g(x_i) = \sum_{j=1}^N \alpha_j y_j K(x_j, x_i) + b
+\end{align*}</script><p>则转4，否则置k=k+1，转2</p>
+</li>
+<li><p>取$\hat \alpha = \alpha^{(k+1)}$</p>
+</li>
+</ol>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

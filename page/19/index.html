@@ -1,0 +1,1804 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-10T16:51:41.000Z" title="7/11/2019, 12:51:41 AM">2019-07-11</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-04T08:17:23.000Z" title="8/4/2021, 4:17:23 PM">2021-08-04</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Spark/">Spark</a></span><span class="level-item">10 minutes read (About 1483 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/Spark/sparksql_catalyst.html">Catalyst 优化器</a></h1><div class="content"><h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>Catalyst优化器：利用Scala模式匹配和quasiquotes机制构建的
+可扩展查询优化器</p>
+<p><img src="/imgs/sparksql_optimization.png" alt="sparksql_optimization"></p>
+<p><img src="/imgs/sparksql_procedure.png" alt="sparksql_procedure"></p>
+<ul>
+<li>SparkSQL Pipeline的中间核心部分</li>
+</ul>
+<h3 id="Parser模块"><a href="#Parser模块" class="headerlink" title="Parser模块"></a><em>Parser</em>模块</h3><p>Parser模块：将SQL语句切分为token，根据一定语义规则解析为AST</p>
+<p><img src="/imgs/sql_parser_ast.png" alt="sql_parser_ast"></p>
+<ul>
+<li><p>Spark1.x使用Scala原生Parser Combinator构建的词法、语法
+分析器</p>
+</li>
+<li><p>Spark2.x使用采用第三方语法解析器工具ANTLR4</p>
+<ul>
+<li><p>ANTLR4根据语法文件<code>SqlBase.g4</code>自动解析生成两个Java类
+，将sql语句解析成ParseTree的语法结构</p>
+<ul>
+<li><code>SqlBaseLexer</code>：词法解析器</li>
+<li><code>SqlBaseParser</code>：语法解析器</li>
+</ul>
+</li>
+<li><p>随后ParsePlan过程，使用<code>AstBuilder.scala</code>将ParseTree
+转换为catalyst表达式逻辑计划<em>Unresovled Logical Plan</em></p>
+<ul>
+<li>Unsolved Relation</li>
+<li>Unsolved Function</li>
+<li>Unsolved Attribute</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Analyzer模块"><a href="#Analyzer模块" class="headerlink" title="Analyzer模块"></a><em>Analyzer</em>模块</h3><p><em>Analyzer</em>模块：使用<em>Analysis Rules</em>，借助数据元数据
+（<em>session catalog</em>、<em>hive metastore</em>）将<em>ULP</em>解析为
+<em>Logical Plan</em></p>
+<p><img src="/imgs/sparksql_catalyst_analyzer.png" alt="sparksql_catalyst_analyzer"></p>
+<ul>
+<li><p>ULP虽然具备基本骨架，但是系统对表的字段信息不清楚，需要
+基本元数据信息表达ULP中token</p>
+</li>
+<li><p>遍历整个AST，对树上每个结点进行数据类型绑定、函数绑定，
+得到LP</p>
+</li>
+</ul>
+<h4 id="Schema-Catalog"><a href="#Schema-Catalog" class="headerlink" title="Schema Catalog"></a><em>Schema Catalog</em></h4><p>元数据信息：表的模式信息</p>
+<ul>
+<li>表的基本定义：表名、列名、数据类型</li>
+<li>表的数据格式：json、text、parquet、压缩格式</li>
+<li>表的物理位置</li>
+</ul>
+<h3 id="Optimizer模块"><a href="#Optimizer模块" class="headerlink" title="Optimizer模块"></a><em>Optimizer</em>模块</h3><p><em>Optimizer</em>模块：使用Optimization Rules对<em>LP</em>进行合并、列
+裁剪、过滤器下推等优化工作，生成等价<em>Optimized Logical Plan</em></p>
+<ul>
+<li>分为RBO、CBO两种优化策略，是catalyst核心</li>
+</ul>
+<h3 id="Spark-Planner"><a href="#Spark-Planner" class="headerlink" title="Spark Planner"></a><em>Spark Planner</em></h3><p><em>Spark Planner</em>模块：将<em>OLP</em>转换为spark能够理解的
+<em>Physical Plan</em></p>
+<p><img src="/imgs/sql_optimization_physical_plan.png" alt="sql_optimization_physical_plan"></p>
+<ul>
+<li>将逻辑上可行的执行计划变为Spark真正可以执行的物理计划</li>
+<li>物理计划实际上是逻辑计划中耗时最小的算法实现</li>
+</ul>
+<h2 id="Join"><a href="#Join" class="headerlink" title="Join"></a>Join</h2><h3 id="Join类型"><a href="#Join类型" class="headerlink" title="Join类型"></a>Join类型</h3><p>SparkSQL目前支持三种join算符</p>
+<ul>
+<li><em>shuffle hash join</em></li>
+<li><em>broadcast hash join</em></li>
+<li><em>sort merge join</em></li>
+</ul>
+<h4 id="Broadcast-Hash-Join"><a href="#Broadcast-Hash-Join" class="headerlink" title="Broadcast Hash Join"></a><em>Broadcast Hash Join</em></h4><p><em>broadcast hash join</em>：将小表广播分发到大表所在的结点上，
+并行在各节点上进行hash join</p>
+<p><img src="/imgs/sparksql_broadcast_hash_join.png" alt="sparksql_broadcast_hash_join"></p>
+<ul>
+<li><p>适合小表很小，可以直接广播的场合</p>
+<blockquote>
+<ul>
+<li><code>spark.sql.autoBroadcastJoinThreshold</code>设置广播小表
+ 大小上限</li>
+</ul>
+</blockquote>
+</li>
+<li><p><em>broadcast</em>阶段：将所小表广播分发到大表所在的所有主机</p>
+<ul>
+<li>driver分发</li>
+<li>p2p分发</li>
+</ul>
+</li>
+<li><p><em>hash join</em>结点：各结点独立并行hash join</p>
+<ul>
+<li>小表构建hash表</li>
+<li>各结点本地大表试探</li>
+</ul>
+</li>
+</ul>
+<h4 id="Shuffle-Hash-Join"><a href="#Shuffle-Hash-Join" class="headerlink" title="Shuffle Hash Join"></a><em>Shuffle Hash Join</em></h4><p><em>shuffle hash join</em>：按照join key分区，在每个结点独立并行
+进行hash join</p>
+<p><img src="/imgs/sparksql_shuffle_hash_join.png" alt="sparksql_shuffle_hash_join"></p>
+<ul>
+<li><p>类似分布式GHJ，不同块位于不同结点</p>
+</li>
+<li><p><em>shuffle</em>阶段：将表按照join key分区，将具有相同join key
+的记录重分布到同一结点</p>
+</li>
+<li><p><em>hash jon</em>阶段：各结点使用本地数据独立并行hash join</p>
+</li>
+</ul>
+<h4 id="Sort-Merge-Join"><a href="#Sort-Merge-Join" class="headerlink" title="Sort Merge Join"></a><em>Sort Merge Join</em></h4><p><em>SMJ</em>：按照join key分区，在各节点独立并行<em>SMJ</em></p>
+<p><img src="/imgs/sparksql_sort_merge_join.png" alt="sparksql_sort_merge_join"></p>
+<ul>
+<li><p><em>shuffle</em>阶段：将表按照join key分区，将具有相同join key
+的记录重分布到同一结点</p>
+</li>
+<li><p><em>sort</em>阶段：各节点并行对本地数据排序</p>
+<ul>
+<li>spark当前shuffle算法使用<em>sort-based shuffle</em>算法</li>
+<li>理论上shuffle过后各分区数据已经排序完毕，无需再次
+sort，效率很高</li>
+</ul>
+</li>
+<li><p><em>merge</em>阶段：各节点对排序好表数据执行join操作</p>
+</li>
+</ul>
+<h3 id="Join-Reorder"><a href="#Join-Reorder" class="headerlink" title="Join Reorder"></a>Join Reorder</h3><ul>
+<li><p>基于CBO的join重排序优化：用统计信息预估的基修正join顺序</p>
+</li>
+<li><p>使用动态规划算法，考虑所有可能组合，选择代价最小的方案</p>
+<ul>
+<li><p>单个join操作成本，join树的成本是所有中间join成本总和</p>
+<script type="math/tex; mode=display">
+cost = weight * cardinality + (1 - weight)*size</script><blockquote>
+<ul>
+<li>carinality：对应CPU成本</li>
+<li>size：对应IO成本</li>
+</ul>
+</blockquote>
+</li>
+<li><p>没有任何join条件同时包含左、右子树时，修剪笛卡尔积
+减少搜索范围</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Statistics-Collection-Framework"><a href="#Statistics-Collection-Framework" class="headerlink" title="Statistics Collection Framework"></a><em>Statistics Collection Framework</em></h2><p>CBO依赖统计细节信息优化查询计划</p>
+<ul>
+<li>CBO自下而上遍历LP，统计信息可以随之传播到上层算子</li>
+</ul>
+<h3 id="统计信息类型"><a href="#统计信息类型" class="headerlink" title="统计信息类型"></a>统计信息类型</h3><ul>
+<li><p>Numeric、Date、Timestamp</p>
+<ul>
+<li>Distinct Count</li>
+<li>Max</li>
+<li>Min</li>
+<li>Null Count</li>
+<li>Average Length：定长</li>
+<li>Max Length：定长</li>
+</ul>
+</li>
+<li><p>String、Binary</p>
+<ul>
+<li>Distinct Count</li>
+<li>Null Count</li>
+<li>Average Length</li>
+<li>Max Length</li>
+</ul>
+</li>
+</ul>
+<h3 id="统计方式"><a href="#统计方式" class="headerlink" title="统计方式"></a>统计方式</h3><ul>
+<li>扫描全表：简单、统计信息准确，代价大</li>
+<li>抽样统计：</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><h4 id="Filter-Selectivity"><a href="#Filter-Selectivity" class="headerlink" title="Filter Selectivity"></a><em>Filter Selectivity</em></h4><p>过滤选择率：估计应用谓词表达式过滤的选择率</p>
+<h5 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h5><ul>
+<li><p><code>AND</code>：左侧过滤条件选择率、右侧过滤条件选择率之积</p>
+<script type="math/tex; mode=display">
+fs(a AND b) = fs(a) * fs(b)</script></li>
+<li><p><code>OR</code>：左侧、右侧过滤条件选择率之和，减去其乘积</p>
+<script type="math/tex; mode=display">
+fs(a OR b) = fs(a) + fs(b) - fs(a) * fs(b)</script></li>
+<li><p><code>NOT</code>：1减去原始过滤条件选择率</p>
+<script type="math/tex; mode=display">
+fs(NOT a) = 1.0 - fs(a)</script></li>
+</ul>
+<h5 id="比较运算符"><a href="#比较运算符" class="headerlink" title="比较运算符"></a>比较运算符</h5><ul>
+<li><p><code>=</code>：等于条件</p>
+<ul>
+<li>若常数取值在当前列取值范围之外，则过滤选择率为0</li>
+<li>否则根据柱状图、均匀分布得到过滤选择率</li>
+</ul>
+</li>
+<li><p><code>&lt;</code>：小于条件</p>
+<ul>
+<li>若常数取值小于当前列最小值，则过滤选择率为0</li>
+<li>否则根据柱状图、均匀分数得到过滤选择率</li>
+</ul>
+</li>
+</ul>
+<h4 id="Join-Carinality"><a href="#Join-Carinality" class="headerlink" title="Join Carinality"></a><em>Join Carinality</em></h4><p>联接基：估计联接操作结果的基</p>
+<ul>
+<li><p><em>inner</em>：其他基估计值可由inner join计算</p>
+<script type="math/tex; mode=display">
+num(A IJ B) = \frac {num(A) * num(B)}
+   {max(distinct(A.k), distinct(B.k))}</script><blockquote>
+<ul>
+<li><code>num(A)</code>：join操作前表A的有效记录数</li>
+<li><code>distinct(A.k)</code>：表A中列k唯一值数量</li>
+</ul>
+</blockquote>
+</li>
+<li><p><em>left-outer</em>：取inner join、左表中基较大者</p>
+<script type="math/tex; mode=display">
+num(A LOJ B) = max(num(A IJ B), num(A))</script></li>
+<li><p><em>right-outer</em>：取inner join、右表中基较大者</p>
+<script type="math/tex; mode=display">
+num(A ROJ B) = max(num(A IJ B), num(B))</script></li>
+<li><p><em>full-outer</em></p>
+<script type="math/tex; mode=display">
+num(A FOJ B) = num(A ROJ B) + num(A ROJ B) - num(A IJ B)</script></li>
+</ul>
+<p>B)</p>
+<pre><code>$$
+</code></pre></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-10T16:51:41.000Z" title="7/11/2019, 12:51:41 AM">2019-07-11</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T09:40:58.000Z" title="7/16/2021, 5:40:58 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/Tool/">Tool</a><span> / </span><a class="link-muted" href="/categories/Tool/Markup-Language/">Markup Language</a></span><span class="level-item">3 minutes read (About 474 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Tool/Markup-Language/config_formation.html">配置文件笔记</a></h1><div class="content"><h2 id="Ini"><a href="#Ini" class="headerlink" title="Ini"></a>Ini</h2><h2 id="Toml"><a href="#Toml" class="headerlink" title="Toml"></a>Toml</h2><h2 id="Yaml"><a href="#Yaml" class="headerlink" title="Yaml"></a>Yaml</h2><h3 id="基本语法规则"><a href="#基本语法规则" class="headerlink" title="基本语法规则"></a>基本语法规则</h3><ul>
+<li>大小写敏感</li>
+<li>缩进代表层级关系</li>
+<li>必须空格缩进<ul>
+<li>不要求空格数目</li>
+<li>同层左对齐</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><blockquote>
+<ul>
+<li><code>-</code>、<code>:</code>、<code>?</code>等符号后总是需要空格</li>
+<li><code>#</code>表示注释</li>
+</ul>
+</blockquote>
+<h4 id="对象-映射"><a href="#对象-映射" class="headerlink" title="对象/映射"></a>对象/映射</h4><p>对象/映射：键值对集合，<code>:</code>表示、<code>&#123;&#125;</code>行内表示</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">`:`后要空格</span></span><br><span class="line"><span class="attr">key:</span> <span class="string">value</span></span><br><span class="line"></span><br><span class="line"><span class="string">//</span> <span class="string">多层级对象</span></span><br><span class="line"><span class="attr">key:</span></span><br><span class="line">	<span class="attr">child_key1:</span> <span class="string">val1</span></span><br><span class="line">	<span class="attr">child_key2:</span> <span class="string">val2</span></span><br><span class="line"><span class="string">//</span> <span class="string">流式表示</span></span><br><span class="line"><span class="attr">key:</span> &#123;<span class="attr">child_key1:</span> <span class="string">val1</span>, <span class="attr">child_key2:</span> <span class="string">value2</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">//</span> <span class="string">复杂对象格式：键、值都是数组</span></span><br><span class="line"><span class="string">//</span> <span class="string">`?</span> <span class="string">`（空格）表示复杂key</span></span><br><span class="line"><span class="string">?</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="string">complex_key1</span></span><br><span class="line">	<span class="bullet">-</span> <span class="string">complex_key2</span></span><br><span class="line"><span class="string">//</span> <span class="string">`:</span> <span class="string">`（空格）表示复杂value</span></span><br><span class="line"><span class="string">:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="string">complex_val1</span></span><br><span class="line">	<span class="bullet">-</span> <span class="string">complex_val2</span></span><br></pre></td></tr></table></figure>
+<h4 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h4><p>数组：<code>-</code>开头、<code>[]</code>行内表示</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">`[[ele1,</span> <span class="string">ele2]]`</span></span><br><span class="line"><span class="bullet">-</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="string">ele1</span></span><br><span class="line">	<span class="bullet">-</span> <span class="string">ele2</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">//</span> <span class="string">`pkey:</span> [&#123;<span class="attr">key1:</span> <span class="string">val1</span>&#125;, &#123;<span class="attr">key2:</span> <span class="string">val2</span>, <span class="attr">key3:</span> <span class="string">val3</span>&#125;]<span class="string">`</span></span><br><span class="line"><span class="attr">pkey:</span> </span><br><span class="line">	<span class="bullet">-</span> </span><br><span class="line">		<span class="attr">key1:</span> <span class="string">val1</span></span><br><span class="line">	<span class="bullet">-</span> </span><br><span class="line">		<span class="attr">key2:</span> <span class="string">val2</span></span><br><span class="line">		<span class="attr">key3:</span> <span class="string">val3</span></span><br></pre></td></tr></table></figure>
+<h4 id="标量"><a href="#标量" class="headerlink" title="标量"></a>标量</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">boolean:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="literal">TRUE</span>				<span class="comment"># true, True均可</span></span><br><span class="line">	<span class="bullet">-</span> <span class="literal">FALSE</span>				<span class="comment"># false, False均可</span></span><br><span class="line"></span><br><span class="line"><span class="attr">float:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="number">3.14</span></span><br><span class="line">	<span class="bullet">-</span> <span class="number">3.14e+2</span>			<span class="comment"># 科学计数法</span></span><br><span class="line"></span><br><span class="line"><span class="attr">int:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="number">13</span></span><br><span class="line">	<span class="bullet">-</span> <span class="string">0b1010_1010_1010_1010</span>			<span class="comment">#二进制</span></span><br><span class="line"></span><br><span class="line"><span class="attr">null:</span> </span><br><span class="line">	<span class="attr">key:</span> <span class="string">~</span>				<span class="comment"># `~`表示null</span></span><br><span class="line"></span><br><span class="line"><span class="attr">string:</span></span><br><span class="line">	<span class="bullet">-</span> <span class="string">&#x27;hello world&#x27;</span>		<span class="comment"># 单、双引号包括特殊字符</span></span><br><span class="line">	<span class="bullet">-</span> <span class="string">line1</span></span><br><span class="line">	  <span class="string">line2</span>				<span class="comment"># 字符串可以拆成多行，换行转换为空格</span></span><br><span class="line"></span><br><span class="line"><span class="attr">datetime:</span></span><br><span class="line">	<span class="bullet">-</span> <span class="number">2019-07-10</span>						<span class="comment"># ISO 8601格式，`yyyy-MM-dd`</span></span><br><span class="line">	<span class="bullet">-</span> <span class="number">2019-07-10T17:53:23+08:00</span>			<span class="comment"># ISO 8601格式，`&lt;date&gt;T&lt;time&gt;+&lt;timezone&gt;`</span></span><br></pre></td></tr></table></figure>
+<h3 id="特殊符号"><a href="#特殊符号" class="headerlink" title="特殊符号"></a>特殊符号</h3><ul>
+<li><code>---</code>：表示文档开始</li>
+<li><code>...</code>：文档结束<ul>
+<li>二者配合在文件中记录多个yaml配置项</li>
+</ul>
+</li>
+<li><code>!!</code>：强制类型转换</li>
+<li><code>&gt;</code>：折叠换行符为空格</li>
+<li><code>|</code>：保留换行符</li>
+<li><code>&amp;</code>：锚点<ul>
+<li>不能独立定义，即非列表、映射值</li>
+</ul>
+</li>
+<li><code>*</code>：锚点引用<ul>
+<li>可以多次引用</li>
+<li>被引用值可能会之后被覆盖</li>
+</ul>
+</li>
+<li><code>&lt;&lt;</code>：合并内容<ul>
+<li>主要配合锚点使用</li>
+<li>相当于unlist解构</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">---</span>							<span class="comment"># 文档开始</span></span><br><span class="line"><span class="attr">string:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="type">!!str</span> <span class="number">13</span></span><br><span class="line">	<span class="bullet">-</span> <span class="type">!!str</span> <span class="literal">true</span></span><br><span class="line"><span class="string">...</span>							<span class="comment"># 文档结束</span></span><br><span class="line"></span><br><span class="line"><span class="string">---!!set</span>					<span class="comment"># 强转为set</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">A1:</span> <span class="string">&amp;A1</span> &#123;<span class="attr">x:</span> <span class="number">1</span>, <span class="attr">y:</span> <span class="number">2</span>&#125;		<span class="comment"># 定义名称为`A1`锚点</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">A2:</span> <span class="string">&amp;A2</span> &#123;<span class="attr">a:</span> <span class="number">3</span>, <span class="attr">b:</span> <span class="number">4</span>&#125;		<span class="comment"># 定义名称为`A2`锚点</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">B:</span> <span class="string">&gt;</span>						<span class="comment"># 折叠换行符</span></span><br><span class="line">	<span class="string">this</span> <span class="string">line</span></span><br><span class="line">	<span class="string">will</span> <span class="string">collapse</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">C:</span> <span class="string">|</span>						<span class="comment"># 保留换行符</span></span><br><span class="line">	<span class="string">this</span> <span class="string">paragraph</span></span><br><span class="line">	<span class="string">keeps</span> <span class="string">the</span> <span class="string">&lt;CR&gt;</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">D:</span> <span class="string">*A`</span>					<span class="comment"># 引用名为`SS`的锚点</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">E:</span>						<span class="comment"># E等价于`&#123;x:1, y:2, a:34, b:4&#125;`</span></span><br><span class="line">	<span class="string">&lt;&lt;:</span> [<span class="string">*A1</span>, <span class="string">*A2</span>]</span><br><span class="line">	<span class="attr">a:</span> <span class="number">34</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><ul>
+<li>Java<ul>
+<li>package：<code>org.yaml.snakeyaml.Yaml</code></li>
+</ul>
+</li>
+<li>Python<ul>
+<li>package：<code>PyYaml</code></li>
+<li><code>import yaml</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="Xml"><a href="#Xml" class="headerlink" title="Xml"></a>Xml</h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:33.000Z" title="7/10/2019, 12:48:33 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-19T01:04:42.000Z" title="7/19/2021, 9:04:42 AM">2021-07-19</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/SQL-DB/">SQL DB</a></span><span class="level-item">7 minutes read (About 996 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/SQL-DB/db_intro.html">数据库背景</a></h1><div class="content"><h2 id="数据库术语"><a href="#数据库术语" class="headerlink" title="数据库术语"></a>数据库术语</h2><h3 id="数据库结构"><a href="#数据库结构" class="headerlink" title="数据库结构"></a>数据库结构</h3><ul>
+<li>数据源：多源数据继承</li>
+<li>数据仓库继承工具：FTL工具、MapReduce</li>
+<li>数据仓库服务器：列存储数据库引擎</li>
+<li>数据即使：数据仓库的数据子集、聚集数据继</li>
+<li>OLAP服务器：提供多维数据视图</li>
+<li>前台数据分析工具<ul>
+<li>报表工具</li>
+<li>多维分析工具</li>
+<li>数据挖掘工具</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据库类型"><a href="#数据库类型" class="headerlink" title="数据库类型"></a>数据库类型</h3><ul>
+<li>传统关系型数据库</li>
+<li>MPP大规模并行处理数据库</li>
+<li>NoSQL数据库</li>
+<li>图数据库</li>
+<li>NewSQL数据库</li>
+<li>GPU数据库</li>
+</ul>
+<h2 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h2><ul>
+<li><p>Project Pushdown：投影下推</p>
+<ul>
+<li>只读取、查询需要的<strong>列</strong></li>
+<li>减少每次查询的IO数据量</li>
+</ul>
+</li>
+<li><p>Predicate Pushdown：谓词下推</p>
+<ul>
+<li>将过滤条件尽快执行，跳过不满足条件<strong>行</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="数据压缩算法"><a href="#数据压缩算法" class="headerlink" title="数据压缩算法"></a>数据压缩算法</h2><ul>
+<li>Run Length Encoding：重复数据</li>
+<li>Delta Encoding：有序数据集</li>
+<li>Dictionary Encoding：小规模数据集合</li>
+<li>Prefix Encoding：字符串版Delta Encoding</li>
+</ul>
+<h2 id="数据库调优"><a href="#数据库调优" class="headerlink" title="数据库调优"></a>数据库调优</h2><p>数据库调优：是数据库具有更高的吞吐量、更快响应</p>
+<ul>
+<li>被调优对象是数据库整体</li>
+<li>需要考虑很多资源、数据库配置</li>
+</ul>
+<h3 id="人工调优"><a href="#人工调优" class="headerlink" title="人工调优"></a>人工调优</h3><ul>
+<li>依赖人工，效率低下</li>
+<li>要求操作者理解查询原理，对应用、DBMS、操作系统、硬件有
+一定理解</li>
+</ul>
+<h3 id="基于案例调优"><a href="#基于案例调优" class="headerlink" title="基于案例调优"></a>基于案例调优</h3><ul>
+<li>总结典型应用案例情况中数据库参数推荐配置值、逻辑层设计等
+情况，为用户调优工作提供参考、借鉴</li>
+<li>忽略系统动态性、不同系统之间差异</li>
+</ul>
+<h3 id="自调优"><a href="#自调优" class="headerlink" title="自调优"></a>自调优</h3><ul>
+<li>为DBMS建立模型，根据“影响数据库性能效率的因素”，自动进行
+参数配置</li>
+<li>部分商业数据库实现了自调优技术</li>
+</ul>
+<h3 id="需求分析期"><a href="#需求分析期" class="headerlink" title="需求分析期"></a>需求分析期</h3><h4 id="应用情况估算"><a href="#应用情况估算" class="headerlink" title="应用情况估算"></a>应用情况估算</h4><ul>
+<li>应用使用方式<ul>
+<li>将业务逻辑转换为读写分布逻辑，以读多写少、读写均衡
+区分OLAP、OLTP</li>
+<li>应用对数据库的并发情况、并发是否可池化</li>
+</ul>
+</li>
+<li>数据量</li>
+<li>对数据库压力、峰值压力</li>
+</ul>
+<h4 id="系统选型策略"><a href="#系统选型策略" class="headerlink" title="系统选型策略"></a>系统选型策略</h4><ul>
+<li>确定适合的数据库：开源、商业；集群、单机</li>
+<li>操作系统、中间件、硬件、网络选型</li>
+</ul>
+<h3 id="项目设计期"><a href="#项目设计期" class="headerlink" title="项目设计期"></a>项目设计期</h3><h4 id="数据模型设计"><a href="#数据模型设计" class="headerlink" title="数据模型设计"></a>数据模型设计</h4><p>根据业务逻辑，从以下角度考虑表结构</p>
+<ul>
+<li>E-R模型设计：遵循E-R模型设计原理，适当非规范化可以改善
+系统查询性能</li>
+<li>数据逻辑分布策略：减少数据请求中不必要的数据量<ul>
+<li>分区</li>
+<li>利用E-R模型分表</li>
+</ul>
+</li>
+<li>数据物理存储策略：减少IO操作<ul>
+<li>启用压缩</li>
+<li>分开存储索引、表数据</li>
+<li>不同表数据分布在不同表空间</li>
+<li>不同表空间分布在不同物理存储，尤其是读写量大的表空间
+分布在不同物理存储上</li>
+<li>日志、索引、数据分布在不同物理存储上</li>
+</ul>
+</li>
+<li>索引：在查询频繁的对象上建立<strong>恰当</strong>索引</li>
+</ul>
+<h3 id="开发期"><a href="#开发期" class="headerlink" title="开发期"></a>开发期</h3><h4 id="SQL设计"><a href="#SQL设计" class="headerlink" title="SQL设计"></a>SQL设计</h4><ul>
+<li>编写正确、查询效率高的SQL语句，依据“查询重写规则”<ul>
+<li>有意识地保障SQL能利用到索引</li>
+</ul>
+</li>
+</ul>
+<h4 id="数据库功能启用"><a href="#数据库功能启用" class="headerlink" title="数据库功能启用"></a>数据库功能启用</h4><ul>
+<li>查询重用</li>
+<li>数据库参数设计</li>
+</ul>
+<h3 id="测试、试运行、上线、维护"><a href="#测试、试运行、上线、维护" class="headerlink" title="测试、试运行、上线、维护"></a>测试、试运行、上线、维护</h3><h4 id="模型系统预运行"><a href="#模型系统预运行" class="headerlink" title="模型系统预运行"></a>模型系统预运行</h4><ul>
+<li>在备用系统上模型实际运行环境，加大压力进行相似测试</li>
+</ul>
+<h4 id="系统监控分析"><a href="#系统监控分析" class="headerlink" title="系统监控分析"></a>系统监控分析</h4><ul>
+<li>应用系统表示：收集用户使用意见、系统存在问题</li>
+<li>OS环境监控：实时监控CPU、内存、IO等，对比历史正常情况</li>
+<li>数据库内部状态监控：系统表、视图、工具、锁的情况</li>
+<li>日志分析：在数据库的日志、操作系统日志中找出异常</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:33.000Z" title="7/10/2019, 12:48:33 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-09T16:48:33.000Z" title="7/10/2019, 12:48:33 AM">2019-07-10</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/SQL-DB/">SQL DB</a></span><span class="level-item">3 minutes read (About 448 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/SQL-DB/hivesql.html">HiveSQL</a></h1><div class="content"><h2 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h2><ul>
+<li><code>-d/--define &lt;key=value&gt;</code>：替换脚本中shell形式变量</li>
+<li><code>--hivevar &lt;key=value&gt;</code>：替换脚本中shell形式变量<ul>
+<li>结合hive脚本中设置shell变量使用</li>
+</ul>
+</li>
+<li><code>-h &lt;hostname&gt;</code>：hive服务器</li>
+<li><code>-p &lt;port&gt;</code>：hive服务器端口</li>
+<li><code>-database &lt;database&gt;</code>：连接数据库</li>
+<li><code>-e &lt;quoted-query-string&gt;</code>：从命令行获取、执行hive脚本</li>
+<li><code>-f &lt;filename&gt;</code>：从文件获取、执行hive脚本</li>
+<li><code>-i &lt;filename&gt;</code>：初始化hive脚本</li>
+<li><code>--hiveconf &lt;property=value&gt;</code>：设置hive参数</li>
+<li><code>-S/--slient</code>：安静模式启动交互hive shell</li>
+<li><code>-v/--verbose</code>：详细模式</li>
+<li><code>-H/--help</code>：帮助</li>
+</ul>
+<h2 id="辅助语句"><a href="#辅助语句" class="headerlink" title="辅助语句"></a>辅助语句</h2><h3 id="结果输出"><a href="#结果输出" class="headerlink" title="结果输出"></a>结果输出</h3><ul>
+<li><code>INSERT INTO/OVERWRITE</code>：查询结果追加/覆盖在hive表中</li>
+<li><code>INSERT INTO/OVERWRITE [LOCAL] DIRECTORY</code>：查询结果追加/
+覆盖本地/HDFS目录</li>
+</ul>
+<blockquote>
+<ul>
+<li>有分区情况下，仅覆盖当前分区</li>
+</ul>
+</blockquote>
+<h2 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h2><h3 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h3><ul>
+<li><code>collect_set()</code>：配合<code>group by</code>合并、消除重复字段，返回
+<code>array</code></li>
+<li><code>concat_ws()</code>：连接字符串</li>
+<li><code>if(&lt;condition&gt;, &lt;true_value&gt;, &lt;false_value&gt;)</code>：判断条件</li>
+<li><code>size()</code>：返回<code>array</code>长度</li>
+<li><code>length()</code>：返回字符串大小</li>
+</ul>
+<h2 id="配置相关语句"><a href="#配置相关语句" class="headerlink" title="配置相关语句"></a>配置相关语句</h2><h3 id="文本分隔符"><a href="#文本分隔符" class="headerlink" title="文本分隔符"></a>文本分隔符</h3><ul>
+<li>记录分隔：<code>\n</code></li>
+<li>字段分隔：<code>\001</code>（八进制）ASCII码1字符</li>
+<li>Array、Struct、Map等集合中元素分隔：<code>\002</code>ASCII码1字符</li>
+<li>Map中键值对分隔：<code>\003</code>ASCII码1字符</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">line terminated <span class="keyword">by</span> `\n`</span><br><span class="line"><span class="type">row</span> format delimited fields terminated <span class="keyword">by</span> `\<span class="number">001</span>`</span><br><span class="line">collection items terminated <span class="keyword">by</span> `\<span class="number">002</span>`</span><br><span class="line">map keys terminated <span class="keyword">by</span> `\<span class="number">003</span>`</span><br></pre></td></tr></table></figure>
+<h3 id="空值"><a href="#空值" class="headerlink" title="空值"></a>空值</h3><ul>
+<li><p>hive中空值一般有两种存储方式</p>
+<ul>
+<li><code>NULL</code>：底层存储<code>NULL</code>，查询显示为<code>NULL</code></li>
+<li><code>\N</code>：底层存储<code>\N</code>，查询显示为<code>NULL</code>，查询输出为<code>\N</code></li>
+</ul>
+</li>
+<li><p>空值查询：<code>&lt;field&gt; is NULL</code></p>
+<ul>
+<li><code>NULL</code>：也可<code>&lt;field&gt; = &#39;NULL&#39;</code></li>
+<li><code>\N</code>：也可<code>&lt;field&gt; = &#39;\\N&#39;</code>（转义）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>底层存储设置参见<strong>表存储</strong></li>
+<li>空字符串不是空值，需要用<code>&lt;field&gt; = &#39;&#39;</code>查询</li>
+</ul>
+</blockquote>
+<h2 id="表存储配置"><a href="#表存储配置" class="headerlink" title="表存储配置"></a>表存储配置</h2><h3 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h3><h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><h4 id="serdeproperties"><a href="#serdeproperties" class="headerlink" title="serdeproperties"></a><code>serdeproperties</code></h4><ul>
+<li><p>设置空值存储方式</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="operator">&lt;</span><span class="keyword">table</span><span class="operator">&gt;</span> <span class="keyword">SET</span> serdeproperites(<span class="string">&#x27;serialization.null.format&#x27;</span> <span class="operator">=</span> <span class="string">&#x27;\N&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:33.000Z" title="7/10/2019, 12:48:33 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-19T01:06:40.000Z" title="7/19/2021, 9:06:40 AM">2021-07-19</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/SQL-DB/">SQL DB</a></span><span class="level-item">12 minutes read (About 1771 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/SQL-DB/mysql.html">Mysql/Mariadb安装配置</a></h1><div class="content"><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h3><p>大部分系统常用源中包含mysql，直接使用自带的包管理工具安装
+即可，对于源中无法找到mysql的系统可以访问<a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/" title="mysql">官网</a>获取
+安装方法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo zypper install mysql-server mysql-client</span></span><br></pre></td></tr></table></figure>
+<h4 id="CentOS7"><a href="#CentOS7" class="headerlink" title="CentOS7"></a>CentOS7</h4><p>CentOS7的常用源中即不含mysql，安装mysql则需要添加mysql源，
+同样在<a target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/" title="mysql">官网</a>中找到添加方式：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm" title="mysql_rpm">下载</a>的是RPM源rpm包</li>
+<li><code>$ sudo yum localintall</code>安装后即添加源</li>
+<li>使用yum直接安装mysql，需要注意的是默认情况下只有最新版本
+mysql源是enabled，其他版本的需要<code>--enablerepo</code>指定或者
+<code>/etc/yum.repo.d</code>下修改文件</li>
+</ol>
+<h3 id="Mariadb"><a href="#Mariadb" class="headerlink" title="Mariadb"></a>Mariadb</h3><p>mariadb和mysql大部分兼容，添加了一些新的特性，是mysql的一个
+开源分支，由mysql的作者维护，避免mysql在被Oracle收购后闭源。</p>
+<ul>
+<li>大部分情况下，mariadb可以完全看作是mysql</li>
+<li>甚至在某些系统中，mariadb服务有别名mysql</li>
+<li>mariadb控制台命令也是<code>mysql</code></li>
+</ul>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><ul>
+<li><p><code>/etc/mysql/my.cnf</code>:mysql主配置文件</p>
+<ul>
+<li>mysql的此配置文件内包含有具体的配置</li>
+<li>mariadb此文件中则不包含具体配置，而是导入配置文件<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!includedir /etc/mysql/conf.d/</span><br><span class="line">!includedir /etc/mysql/mariadb.cond.d/</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>~/.my.cnf</code></p>
+<ul>
+<li>一般不存在，需要自行建文件，注意需要设置文件权限，
+只能root用户可写，否则mysql会忽略此配置文件</li>
+<li>mysqld服务启动需要root权限，因此<code>~</code>目录下的配置文件
+基本不可能影响mysql-server状态，即<code>[server]</code>下的配置
+基本是无效的</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据位置"><a href="#数据位置" class="headerlink" title="数据位置"></a>数据位置</h3><ul>
+<li>数据库存放数据位置：<code>/var/lib/mysql/db_name/</code></li>
+</ul>
+<h2 id="Mysql-Client"><a href="#Mysql-Client" class="headerlink" title="Mysql-Client"></a>Mysql-Client</h2><h3 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h3><p>@todo
+一个问题，我安装的mariadb，默认的root用户无法在一般用户账户
+登陆，必须sudo才能正常登陆</p>
+<h4 id="参数登陆"><a href="#参数登陆" class="headerlink" title="参数登陆"></a>参数登陆</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mysql -h host -P port -u user -p</span></span><br></pre></td></tr></table></figure>
+<p>mysql不带参数启动则是默认<code>cur_user_name@localhost:3306</code>，
+表示使用当前用户名作为用户名登陆，如果该用户设置密码，<code>-p</code>
+参数不能省略</p>
+<h4 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mysql --defaults-file=file_name</span></span><br></pre></td></tr></table></figure>
+<p>文件内容格式类似于配置文件</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="attr">host</span>=</span><br><span class="line"><span class="attr">user</span>=</span><br><span class="line"><span class="attr">password</span>=</span><br><span class="line"><span class="attr">database</span>=（可选）</span><br></pre></td></tr></table></figure>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><ul>
+<li>mysql中默认存在一个用户名为空的账户，只要在本地，可以
+不用账户、密码登陆mysql，因为这个账号存在，使用新建用户
+无法通过密码登陆，需要在<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ use mysql;</span><br><span class="line">$ <span class="keyword">delete</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">User</span><span class="operator">=</span>&quot;&quot;;</span><br><span class="line">$ flush privileges;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Mysql交互命令"><a href="#Mysql交互命令" class="headerlink" title="Mysql交互命令"></a>Mysql交互命令</h3><h4 id="Show信息类"><a href="#Show信息类" class="headerlink" title="Show信息类"></a>Show信息类</h4><ul>
+<li><code>SHOW DATABASES</code>：列出MySQLServer数据库。</li>
+<li><code>SHOW TABLES [FROM db_name]</code>：列出数据库数据表。</li>
+<li><code>SHOW TABLE STATUS [FROM db_name]</code>：列出数据表及表状态信息。</li>
+<li><code>SHOW COLUMNS FROM tbl_name [FROM db_name]</code>：列出资料表字段<ul>
+<li><code>DESC tbl_name</code>：同</li>
+</ul>
+</li>
+<li><code>SHOW FIELDS FROM tbl_name [FROM db_name]</code></li>
+<li><code>DESCRIBE tbl_name [col_name]</code></li>
+<li><code>SHOW FULL COLUMNS FROM tbl_name [FROM db_name]</code>：列出字段及详情</li>
+<li><code>SHOW FULL FIELDS FROM tbl_name [FROM db_name]</code>：列出字段完整属性</li>
+<li><code>SHOW INDEX FROM tbl_name [FROM db_name]</code>：列出表索引</li>
+<li><code>SHOW STATUS</code>：列出 DB Server 状态</li>
+<li><code>SHOW VARIABLES [like pattern]</code>：列出 MySQL 系统环境变量</li>
+<li><code>SHOW PROCESSLIST</code>：列出执行命令。</li>
+<li><code>SHOW GRANTS FOR user</code>：列出某用户权限</li>
+</ul>
+<h4 id="User"><a href="#User" class="headerlink" title="User"></a>User</h4><ul>
+<li><p><code>CREATE USER &#39;USER_NAME&#39;@&#39;ADDRESS&#39; IDENTIFIED BY &#39;PASSWORD&#39;</code></p>
+<ul>
+<li><code>IDENTIFIED BY PASSWORD</code>这个语法好像已经被丢弃了</li>
+</ul>
+</li>
+<li><p><code>SET PASSWORD FOR &#39;USER_NAME&#39;@&#39;ADDRESS&#39; = PASSWORD(&#39;NEW_PWD&#39;)</code></p>
+</li>
+<li><p><code>SET PASSWORD = PASSWORD(&#39;NEW_PWD&#39;)</code>：修改当前用户密码</p>
+</li>
+<li><p><code>GRANT PRIVILEGES ON DB_NAME.TBL_NAME TO &#39;USER_NAME&#39;@&#39;ADDRESS&#39;
+[WITH GRANT OPTION]</code></p>
+<ul>
+<li><code>WITH GRANT OPTION</code>：允许用户授权</li>
+</ul>
+</li>
+<li><p><code>REVOKE PRIVILIEGES ON DB_NAME.TBL_NAME TO &#39;USER_NAME&#39;@&#39;ADDRES%&#39;</code></p>
+</li>
+<li><p><code>DROP &#39;USER_NAME&#39;@&#39;ADDRESS&#39;</code></p>
+</li>
+</ul>
+<p>说明</p>
+<ul>
+<li><p>revoke和grant中的权限需要一致才能取消相应授权</p>
+<ul>
+<li><code>grant select</code>不能通过<code>revoke all</code>取消<code>select</code></li>
+<li><code>grant all</code>也不能通过<code>revoke select</code>取消<code>select</code></li>
+</ul>
+</li>
+<li><p>特殊符号</p>
+<ul>
+<li><code>%</code>：所有address，也可以是ip部分，如：111.111.111.%<ul>
+<li>这个其实在sql语句中可以表示任意长度字符串</li>
+</ul>
+</li>
+<li><code>*</code>：所有数据库、表</li>
+</ul>
+</li>
+</ul>
+<h4 id="Priviledges"><a href="#Priviledges" class="headerlink" title="Priviledges"></a>Priviledges</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alter</td>
+<td>alter table</td>
+</tr>
+<tr>
+<td>alter routine</td>
+<td>alter or drop routines</td>
+</tr>
+<tr>
+<td>create</td>
+<td>create table</td>
+</tr>
+<tr>
+<td>create routine</td>
+<td>create routine</td>
+</tr>
+<tr>
+<td>create temporary table</td>
+<td>create temporary table</td>
+</tr>
+<tr>
+<td>create user</td>
+<td>create, drop, rename users and revoke all privilieges</td>
+</tr>
+<tr>
+<td>create view</td>
+<td>create view</td>
+</tr>
+<tr>
+<td>delete</td>
+<td>delete</td>
+</tr>
+<tr>
+<td>drop</td>
+<td>drop table</td>
+</tr>
+<tr>
+<td>execute</td>
+<td>run stored routines</td>
+</tr>
+<tr>
+<td>file</td>
+<td>select info outfile and load data infile</td>
+</tr>
+<tr>
+<td>index</td>
+<td>create index and drop index</td>
+</tr>
+<tr>
+<td>insert</td>
+<td>insert</td>
+</tr>
+<tr>
+<td>lock tables</td>
+<td>lock tables on tables for which select is granted</td>
+</tr>
+<tr>
+<td>process</td>
+<td>show full processlist</td>
+</tr>
+<tr>
+<td>reload</td>
+<td>use flush</td>
+</tr>
+<tr>
+<td>replicati on client</td>
+<td>ask where slave or master server are</td>
+</tr>
+<tr>
+<td>replicati on slave</td>
+<td></td>
+</tr>
+<tr>
+<td>select</td>
+<td>select</td>
+</tr>
+<tr>
+<td>show databases</td>
+<td>show databases</td>
+</tr>
+<tr>
+<td>show view</td>
+<td>show view</td>
+</tr>
+<tr>
+<td>shutdown</td>
+<td>use mysqladmin shutdown</td>
+</tr>
+<tr>
+<td>super</td>
+<td>change master, kill, purge master logs,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre><code>set global sql statements,    use mysqladmin
+debug command, create an extra connection
+even reach the maximum amount|
+</code></pre><p>|update|update|
+|usage|connect without any specific priviliege|</p>
+<h3 id="执行Sql脚本"><a href="#执行Sql脚本" class="headerlink" title="执行Sql脚本"></a>执行Sql脚本</h3><ul>
+<li><p>shell内执行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h host -D db_name -u user -p &lt; file_name.sql;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>mysql命令行执行</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source file_name.sql;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="导入、导出数据"><a href="#导入、导出数据" class="headerlink" title="导入、导出数据"></a>导入、导出数据</h3><h4 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h4><ul>
+<li><p>shell内</p>
+</li>
+<li><p>mysql命令行内</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">load data [<span class="keyword">local</span>] infile <span class="string">&#x27;/path/to/file&#x27;</span> <span class="keyword">into</span> <span class="keyword">table</span> tbl_name</span><br><span class="line">fields terminated <span class="keyword">by</span> <span class="string">&#x27;sep_char&#x27;</span></span><br><span class="line">optionally enclosed <span class="keyword">by</span> <span class="string">&#x27;closure_char&#x27;</span></span><br><span class="line">escaped <span class="keyword">by</span> <span class="string">&#x27;esc_char&#x27;</span></span><br><span class="line">lines terminated <span class="keyword">by</span> `\r\n`;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>若<code>/path/to/file</code>不是绝对路径，则被认为是相对于当前
+数据库存储数据目录的相对路径，而不是当前目录</li>
+<li>关键字<code>local</code>表示从客户端主机导入数据，否则从服务器
+导入数据</li>
+</ul>
+</li>
+</ul>
+<h4 id="导出数据"><a href="#导出数据" class="headerlink" title="导出数据"></a>导出数据</h4><ul>
+<li><p>shell内</p>
+</li>
+<li><p>mysql命令行内</p>
+</li>
+</ul>
+<p><strong>注意</strong>：远程登陆mysql时，两种方式导出数据不同，shell导出
+数据可以导出至client，而mysql命令行内导出至server</p>
+<h2 id="Mysql-Server"><a href="#Mysql-Server" class="headerlink" title="Mysql-Server"></a>Mysql-Server</h2><h3 id="数据库字符编码方式"><a href="#数据库字符编码方式" class="headerlink" title="数据库字符编码方式"></a>数据库字符编码方式</h3><h4 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h4><ul>
+<li><p>只查看<strong>数据库编码</strong>方式</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> &quot;character_set_database;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看数据库<strong>相关的编码</strong>方式</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> &quot;character%&quot;;</span><br></pre></td></tr></table></figure>
+<p>|variable_name|value|
+|——-|——-|
+|character_set_client|latin1|
+|character_set_connection|latin1|
+|character_set_database|latin1|
+|character_set_filesystem|binary|
+|character_set_results|latin1|
+|character_set_server|latin1|
+|character_set_system|utf8|
+|character_sets_dir|/usr/share/mysql/charsets/|</p>
+</li>
+<li><p>另一种查询数据库编码方式</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> &quot;collation%&quot;;</span><br></pre></td></tr></table></figure>
+<p>|Variable_name|Value|
+|——-|——-|
+|collation_connection|utf8mb4_general_ci|
+|collation_database|utf8mb4_general_ci|
+|collation_server|utf8mb4_general_ci|</p>
+</li>
+</ul>
+<h4 id="相关变量说明"><a href="#相关变量说明" class="headerlink" title="相关变量说明"></a>相关变量说明</h4><ul>
+<li><code>character_set_client</code>：客户端编码方式</li>
+<li><code>character_set_connection</code>：建立连接是所用编码</li>
+<li><code>character_set_database</code>：数据库编码</li>
+<li><code>character_set_results</code>：结果集编码</li>
+<li><code>character_set_server</code>：服务器编码</li>
+</ul>
+<p>保证以上编码方式相同则不会出现乱码问题，还需要注意其他连接
+数据库的方式不一定同此编码方式，可能需要额外指定</p>
+<h4 id="修改编码方式"><a href="#修改编码方式" class="headerlink" title="修改编码方式"></a>修改编码方式</h4><h5 id="修改数据库默认编码方式"><a href="#修改数据库默认编码方式" class="headerlink" title="修改数据库默认编码方式"></a>修改数据库默认编码方式</h5><p>修改mysql配置文件（<code>/etc/mysql/my.cnf</code>）</p>
+<pre><code>#todo
+mysql配置文件的优先级
+utf8mb4意义
+</code></pre><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8mb4</span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8mb4</span><br><span class="line"><span class="attr">init_connect</span>=<span class="string">&quot;SET NAMES utf8mb4&quot;</span></span><br></pre></td></tr></table></figure>
+<p>重启mysql即可</p>
+<h5 id="修改单个数据库"><a href="#修改单个数据库" class="headerlink" title="修改单个数据库"></a>修改单个数据库</h5><ul>
+<li>创建时<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> database db_name <span class="type">character</span> <span class="keyword">set</span> utf8 <span class="keyword">collate</span> utf8_general_ci;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> database if <span class="keyword">not</span> <span class="keyword">exists</span> db_name defualt charater <span class="keyword">set</span> utf8;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="脚本、窗口"><a href="#脚本、窗口" class="headerlink" title="脚本、窗口"></a>脚本、窗口</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> names gbk;</span><br></pre></td></tr></table></figure>
+<p>只修改<code>character_set_client</code>、<code>character_set_connection</code>、
+<code>character_set_results</code>编码方式，且只对当前窗口、脚本有效，
+不影响数据库底层编码方式</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:33.000Z" title="7/10/2019, 12:48:33 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-09T16:48:33.000Z" title="7/10/2019, 12:48:33 AM">2019-07-10</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/SQL-DB/">SQL DB</a></span><span class="level-item">6 minutes read (About 859 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/SQL-DB/sql_grammer.html">SQL语法</a></h1><div class="content"><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span>			<span class="operator">&lt;</span>field<span class="operator">&gt;</span>, <span class="keyword">DISTINCT</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">INTO</span>			<span class="operator">&lt;</span>new_tbl<span class="operator">&gt;</span> [<span class="keyword">IN</span> <span class="operator">&lt;</span>other_db<span class="operator">&gt;</span>]</span><br><span class="line"><span class="keyword">FROM</span>			<span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">WHERE</span>			<span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>OP<span class="operator">&gt;</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span><span class="operator">/</span><span class="operator">&lt;</span>field<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span>		<span class="operator">&lt;</span>field<span class="operator">&gt;</span> [<span class="keyword">ASC</span><span class="operator">/</span><span class="keyword">DESC</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span>		<span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>[<span class="operator">&lt;</span>field<span class="operator">&gt;</span>]</span><br><span class="line"><span class="keyword">VALUES</span>			(<span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span>);</span><br><span class="line"></span><br><span class="line">UPDATE			<span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">SET</span>				<span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">=</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">WHERE</span>			<span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>OP<span class="operator">&gt;</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span><span class="operator">/</span><span class="operator">&lt;</span>field<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">DELETE</span></span><br><span class="line"><span class="keyword">FROM</span>			<span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">WHERE</span>			<span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>OP<span class="operator">&gt;</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span><span class="operator">/</span><span class="operator">&lt;</span>field<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="数据库、表、索引、视图"><a href="#数据库、表、索引、视图" class="headerlink" title="数据库、表、索引、视图"></a>数据库、表、索引、视图</h3><h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 创建数据库</span></span><br><span class="line"><span class="keyword">CREATE</span> DATABASE <span class="operator">&lt;</span>db_name<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 创建表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>(</span><br><span class="line">	<span class="operator">&lt;</span>field<span class="operator">&gt;</span>		<span class="operator">&lt;</span>dtype<span class="operator">&gt;</span>,</span><br><span class="line">	<span class="operator">&lt;</span>field<span class="operator">&gt;</span>		<span class="operator">&lt;</span>dtype<span class="operator">&gt;</span>		<span class="operator">&lt;</span>CSTRT<span class="operator">&gt;</span>,					<span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line">	<span class="operator">&lt;</span>CSTRT<span class="operator">&gt;</span>		(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,),								<span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line">	<span class="keyword">CONSTRAINT</span> [<span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>] <span class="operator">&lt;</span>cstrt<span class="operator">&gt;</span> (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)		<span class="operator">!</span><span class="comment">-- common</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 创建索引</span></span><br><span class="line"><span class="keyword">CREATE</span> INDEX <span class="operator">&lt;</span>index_name<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ON</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span> (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>);</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 创建视图</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> <span class="operator">&lt;</span>view_name<span class="operator">&gt;</span> <span class="keyword">AS</span></span><br><span class="line"><span class="operator">&lt;</span>select_expr<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h5 id="自增字段"><a href="#自增字段" class="headerlink" title="自增字段"></a>自增字段</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL</span></span><br><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> <span class="keyword">IDENTITY</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> AUTO_INCREMENT</span><br><span class="line"><span class="operator">!</span><span class="comment">-- ORACLE：创建自增序列，调用`.nextval`方法获取下个自增值</span></span><br><span class="line"><span class="keyword">CREATE</span> SEQUENCE <span class="operator">&lt;</span>seq<span class="operator">&gt;</span></span><br><span class="line">MINVALUE <span class="operator">&lt;</span>min<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">START</span> <span class="keyword">WITH</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span></span><br><span class="line">INCREMENT <span class="keyword">BY</span> <span class="operator">&lt;</span>step<span class="operator">&gt;</span></span><br><span class="line">CACHE <span class="operator">&lt;</span>cache<span class="operator">&gt;</span>				<span class="operator">!</span><span class="comment">-- 提高性能</span></span><br></pre></td></tr></table></figure>
+<h4 id="丢弃"><a href="#丢弃" class="headerlink" title="丢弃"></a>丢弃</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 丢弃索引</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL</span></span><br><span class="line"><span class="keyword">DROP</span> INDEX <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>.<span class="operator">&lt;</span>index_name<span class="operator">&gt;</span>;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- ORACLE</span></span><br><span class="line"><span class="keyword">DROP</span> INDEX <span class="operator">&lt;</span>index_name<span class="operator">&gt;</span>;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> INDEX <span class="operator">&lt;</span>index_name<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 丢弃表/数据</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>;</span><br><span class="line"><span class="keyword">TRUNCATE</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 丢弃数据库</span></span><br><span class="line"><span class="keyword">DROP</span> DATABASE <span class="operator">&lt;</span>db_name<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 丢弃视图</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">VIEW</span> <span class="operator">&lt;</span><span class="keyword">view</span><span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="修改表"><a href="#修改表" class="headerlink" title="修改表"></a>修改表</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 添加列</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 删除列</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">COLUMN</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 修改类型</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">COLUMN</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h3><h4 id="TOP"><a href="#TOP" class="headerlink" title="TOP"></a><em>TOP</em></h4><ul>
+<li>MSSQL：<code>SELECT TOP &lt;num&gt;/&lt;num&gt; PERCENT *</code></li>
+<li>MYSQL：<code>LIMIT &lt;num&gt;</code></li>
+<li>ORACLE：<code>WHERE ROWNUM &lt;= &lt;num&gt;</code></li>
+</ul>
+<h4 id="Alias"><a href="#Alias" class="headerlink" title="Alias"></a><em>Alias</em></h4><ul>
+<li><code>AS</code>：指定行、列别名</li>
+</ul>
+<h4 id="Join"><a href="#Join" class="headerlink" title="Join"></a><em>Join</em></h4><ul>
+<li><code>[INNER] JOIN</code></li>
+<li><code>LEFT JOIN</code></li>
+<li><code>RIGHT JOIN</code></li>
+<li><code>FULL JOIN</code></li>
+</ul>
+<h4 id="Union"><a href="#Union" class="headerlink" title="Union"></a><em>Union</em></h4><ul>
+<li><code>UNION</code>：合并<code>SELECT</code>结果集<ul>
+<li>要求结果集中列数量、类型必须相同</li>
+</ul>
+</li>
+</ul>
+<h4 id="NULL"><a href="#NULL" class="headerlink" title="NULL"></a><em>NULL</em></h4><ul>
+<li><code>IS [NOT] NULL</code>：比较是否为<code>NULL</code>值</li>
+</ul>
+<blockquote>
+<ul>
+<li>比较符无法测试<code>NULL</code>值</li>
+</ul>
+</blockquote>
+<h3 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h3><h4 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h4><ul>
+<li><code>=</code>：有些方言可以使用<code>==</code></li>
+<li><code>&lt;&gt;</code>：有些方言可以使用<code>!=</code></li>
+<li><code>&gt;</code></li>
+<li><code>&lt;</code></li>
+<li><code>&gt;=</code></li>
+<li><code>&lt;=</code></li>
+<li><code>BETWEEN &lt;value&gt; AND &lt;value&gt;</code></li>
+<li><code>[NOT] IN (&lt;value&gt;)</code></li>
+<li><code>[NOT] LIKE &lt;pattern&gt;</code><ul>
+<li><code>%</code>：匹配0个、多个字符</li>
+<li><code>_</code>：匹配一个字符</li>
+<li><code>[&lt;char&gt;]</code>：字符列中任意字符</li>
+<li><code>^[&lt;char&gt;]/[!&lt;char&gt;]</code>：非字符列中任意字符</li>
+</ul>
+</li>
+</ul>
+<h4 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h4><ul>
+<li><code>AND</code></li>
+<li><code>OR</code></li>
+</ul>
+<h4 id="符号-1"><a href="#符号-1" class="headerlink" title="符号"></a>符号</h4><ul>
+<li><code>&#39;</code>：SQL中使用单引号包括文本值<ul>
+<li>大部分方言也支持<code>&quot;</code>双引号</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><h4 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>TEXT类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAR([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>VARCHAR([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TINYTEXT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>LONGTEXT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MEDIUMITEXT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BLOB</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MEDIUMBLOB</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>LONGBLOB</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ENUM(&lt;val_list&gt;)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SET</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>NUMBER类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TINYINT([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SMALLINT([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MEDIUMINT([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>INT([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BIGINT([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>FLOAT([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DOUBLE([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DECIMAL([&lt;size&gt;])</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>DATE类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATE()</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DATETIME()</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TIMSTAMP()</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TIME()</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>YEAR()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="MSSQL"><a href="#MSSQL" class="headerlink" title="MSSQL"></a>MSSQL</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>ASCII类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAR([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>VARCHAR([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TEXT</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>UNICODE类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAR([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>VARCHAR([&lt;size&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>BINARY类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bit</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>binary([&lt;n&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>varbinary([&lt;n&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>image</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>NUMBER类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TINYINT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SMALLINT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MEDIUMINT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>INT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>BIGINT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DECIMAL(p, s)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>FLOAT([&lt;n&gt;])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>REAL</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SMALLMONEY</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>MONEY</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>DATE类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATETIME</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DATETIME2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SMALLDATETIME</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DATE</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TIME</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DATETIMEOFFSET</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TIMESTAMP</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h3><ul>
+<li><p>建表时添加约束</p>
+<ul>
+<li>MSSQL、ORACLE：可直接在字段声明后添加约束</li>
+<li>MySQL：需独立指定约束</li>
+</ul>
+</li>
+<li><p>向已有表添加约束</p>
+<ul>
+<li>可以添加匿名、具名约束</li>
+<li>MSSQL、ORACLE：有<code>COLUMN</code>关键字</li>
+</ul>
+</li>
+<li><p>删除约束</p>
+<ul>
+<li>MySQL：使用约束关键字指定</li>
+<li>MSSQL、ORACLE：使用<code>CONSTRAINT</code>关键字指定</li>
+</ul>
+</li>
+</ul>
+<h4 id="NOT-NULL"><a href="#NOT-NULL" class="headerlink" title="NOT NULL"></a><code>NOT NULL</code></h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span></span><br></pre></td></tr></table></figure>
+<h4 id="DEFAULT"><a href="#DEFAULT" class="headerlink" title="DEFAULT"></a><code>DEFAULT</code></h4><p><code>DEFAULT</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 建表</span></span><br><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> <span class="keyword">DEFAULT</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 已有表添加</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="keyword">SET</span> <span class="keyword">DEFAULT</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span>;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">COLUMN</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="keyword">SET</span> <span class="keyword">DEFAULT</span> <span class="operator">&lt;</span><span class="keyword">value</span><span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 删除</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="keyword">DROP</span> <span class="keyword">DEFAULT</span>;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">COLUMN</span> <span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="keyword">DROP</span> <span class="keyword">DEFAULT</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="UNIQUE"><a href="#UNIQUE" class="headerlink" title="UNIQUE"></a><code>UNIQUE</code></h4><p><code>UNIQUE</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 建表</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">CONSTRAINT</span> [<span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>] <span class="keyword">UNIQUE</span> (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">UNIQUE</span> [KEY] [<span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>] (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> <span class="keyword">UNIQUE</span></span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 已有表添加</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">UNIQUE</span>(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>);</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span> <span class="keyword">UNIQUE</span>(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,);</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 删除</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> INDEX <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABlE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="PRIMARY-KEY"><a href="#PRIMARY-KEY" class="headerlink" title="PRIMARY KEY"></a><code>PRIMARY KEY</code></h4><p><code>PRIMARY KEY</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 建表</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">CONSTRAINT</span> [<span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>] <span class="keyword">PRIMARY</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MYSQL</span></span><br><span class="line"><span class="keyword">PRIMARY</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> <span class="keyword">PRIMARY</span> KEY</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 已有表添加</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">PRIMARY</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,);</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span> <span class="keyword">PRIMARY</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,);</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 删除</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">PRIMARY</span> KEY;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="FOREIGN-KEY"><a href="#FOREIGN-KEY" class="headerlink" title="FOREIGN KEY"></a><code>FOREIGN KEY</code></h4><p><code>FOREIGN KEY</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 建表</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">CONSTRAINT</span> [<span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>] <span class="keyword">FOREIGN</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="keyword">REFERENCES</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MYSQL</span></span><br><span class="line"><span class="keyword">FOREIGN</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="keyword">REFERENCES</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> <span class="keyword">FOREIGN</span> KEY</span><br><span class="line"><span class="keyword">REFERENCES</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 已有表添加</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">FOREIGN</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="keyword">REFERENCES</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,);</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span> <span class="keyword">FOREIGN</span> KEY (<span class="operator">&lt;</span>field<span class="operator">&gt;</span>,)</span><br><span class="line"><span class="keyword">REFERENCES</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span>(<span class="operator">&lt;</span>field<span class="operator">&gt;</span>);</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 删除</span></span><br><span class="line"><span class="operator">!</span><span class="operator">-</span>  MySQL</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">FOREIGN</span> KEY <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="CHECK"><a href="#CHECK" class="headerlink" title="CHECK"></a><code>CHECK</code></h4><p><code>CHECK</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">!</span><span class="comment">-- 建表</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">CONSTRAINT</span> [<span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>] <span class="keyword">CHECK</span>(<span class="operator">&lt;</span><span class="keyword">condition</span><span class="operator">&gt;</span>)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">CHECK</span> (<span class="keyword">condition</span>)</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="operator">&lt;</span>field<span class="operator">&gt;</span> <span class="operator">&lt;</span>dtype<span class="operator">&gt;</span> <span class="keyword">CHECK</span>(<span class="operator">&lt;</span><span class="keyword">condition</span><span class="operator">&gt;</span>)</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 已有表添加</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL、MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">CHECK</span> (<span class="keyword">condition</span>);</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">ADD</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span> <span class="keyword">CHECK</span> (<span class="keyword">condition</span>);</span><br><span class="line"></span><br><span class="line"><span class="operator">!</span><span class="comment">-- 删除</span></span><br><span class="line"><span class="operator">!</span><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">CHECK</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>;</span><br><span class="line"><span class="operator">!</span><span class="comment">-- MSSQL、ORACLE</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="operator">&lt;</span>tbl<span class="operator">&gt;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">CONSTRAINT</span> <span class="operator">&lt;</span>cstrt_name<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="内建函数"><a href="#内建函数" class="headerlink" title="内建函数"></a>内建函数</h2><h3 id="Date"><a href="#Date" class="headerlink" title="Date"></a><em>Date</em></h3><ul>
+<li><p>MySQL</p>
+<ul>
+<li><code>NOW()</code></li>
+<li><code>CURDATE()</code></li>
+<li><code>CURTIME()</code></li>
+<li><code>DATE()</code></li>
+<li><code>EXTRACT()</code></li>
+<li><code>DATE_ADD()</code></li>
+<li><code>DATE_SUB()</code></li>
+<li><code>DATE_DIFF()</code></li>
+<li><code>DATE_FORMAT()</code></li>
+</ul>
+</li>
+<li><p>MSSQL</p>
+<ul>
+<li><code>GETDATE()</code></li>
+<li><code>DATEPART()</code></li>
+<li><code>DATEADD()</code></li>
+<li><code>DATEDIFF()</code></li>
+<li><code>CONVERT()</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="NULL-1"><a href="#NULL-1" class="headerlink" title="NULL"></a><em>NULL</em></h3><ul>
+<li><p>MSSQL</p>
+<ul>
+<li><code>ISNULL(&lt;field&gt;, &lt;replacement&gt;)</code></li>
+</ul>
+</li>
+<li><p>ORACLE</p>
+<ul>
+<li><code>NVL(&lt;field&gt;, &lt;repalcement&gt;)</code></li>
+</ul>
+</li>
+<li><p>MySQL</p>
+<ul>
+<li><code>IFNULL(&lt;field&gt;, &lt;replacement&gt;)</code></li>
+<li><code>COALESCE(&lt;field&gt;, &lt;replacement&gt;)</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="Aggregate聚集函数"><a href="#Aggregate聚集函数" class="headerlink" title="Aggregate聚集函数"></a><em>Aggregate</em>聚集函数</h3><h3 id="Scalar"><a href="#Scalar" class="headerlink" title="Scalar"></a><em>Scalar</em></h3></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:32.000Z" title="7/10/2019, 12:48:32 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-09T16:48:32.000Z" title="7/10/2019, 12:48:32 AM">2019-07-10</time></span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a></span><span class="level-item">4 minutes read (About 541 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Java/config.html">Java安装设置</a></h1><div class="content"><h2 id="Java-概念"><a href="#Java-概念" class="headerlink" title="Java 概念"></a><em>Java</em> 概念</h2><ul>
+<li><p><em>Java</em> 平台包括</p>
+<ul>
+<li><em>Standard Edition</em> / <em>SE</em>：桌面、简单服务器应用平台</li>
+<li><em>Enterprise Edition</em> / <em>EE</em>：在 <em>SE</em> 基础上添加企业级技术标准、模块<ul>
+<li>包括 <em>JDBC</em>、<em>EJB</em> 等</li>
+<li>适合复杂服务器应用</li>
+<li><em>Oracle</em> 已停止更新，类似一般模块</li>
+</ul>
+</li>
+<li><em>Micro Edition</em> / <em>ME</em>：手机等小型设备</li>
+</ul>
+</li>
+<li><p><em>Java</em> 版本号包含小数、整数两种方式</p>
+<ul>
+<li>以 <em>SE</em> 平台为例<ul>
+<li><em>J2SE 1.4</em> 使用小数点后一位标识大版本</li>
+<li><em>Java SE 5</em> 后使用整数标识大版本</li>
+</ul>
+</li>
+<li><em>Java</em> 平台对应的 <em>JDK</em> 版本<ul>
+<li><em>JDK 1.9</em> 使用小数点后一位标识大版本</li>
+<li><em>JDK 10</em> 使用整数标识大版本</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>J2</em> / <em>Java 2</em> 曾经用于标识 <em>Java</em> 版本</li>
+</ul>
+</blockquote>
+<h3 id="Java-Virtual-Machine"><a href="#Java-Virtual-Machine" class="headerlink" title="Java Virtual Machine"></a><em>Java Virtual Machine</em></h3><ul>
+<li><p><em>JVM</em>：运行java字节码（<code>.class</code>)的虚拟机</p>
+<ul>
+<li>无法直接执行<code>.java</code>文件，需要编译为<code>.class</code></li>
+<li>java能够跨平台的关键，在所有平台上都有JVM的实现，可以
+直接执行编译后的<code>.class</code>文件</li>
+</ul>
+</li>
+<li><p><em>JVM</em>版本</p>
+<ul>
+<li><em>Google dalvik</em></li>
+<li><em>ART</em></li>
+<li><em>Oracle JRE</em> 自带 <em>JVM</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="Java-Runtime-Environment"><a href="#Java-Runtime-Environment" class="headerlink" title="Java Runtime Environment"></a><em>Java Runtime Environment</em></h3><ul>
+<li><em>JRE</em>：<em>Java</em> 运行环境，运行 <em>Java</em> 编写的应用<ul>
+<li><em>JRE</em> = <em>JVM</em> + <code>.class</code>库文件 + 其他支持文件</li>
+</ul>
+</li>
+</ul>
+<h3 id="Java-Development-Kits"><a href="#Java-Development-Kits" class="headerlink" title="Java Development Kits"></a><em>Java Development Kits</em></h3><ul>
+<li><em>JDK</em>：<em>Java</em> 开发工具集合<ul>
+<li><em>JDK</em> = <em>Java</em> 开发工具 + <em>JRE</em></li>
+<li>包括 <em>complier</em>、<em>debugger</em>，用于开发 <em>Java</em> 应用</li>
+</ul>
+</li>
+</ul>
+<h3 id="Java-发行版"><a href="#Java-发行版" class="headerlink" title="Java 发行版"></a><em>Java</em> 发行版</h3><ul>
+<li><em>Java</em> 常见的发行版本两个：<em>OpenJDK</em> 和 <em>JDK</em><ul>
+<li><em>JDK(Sun JDK)</em>：<em>Sun</em> 公司发布</li>
+<li><em>OpenJDK</em>：<em>JDK</em> 的开源版本，其实也是Sun公司发布的Java版本，Sun被Oracle收购之后也称为Oracle OpenJDK<ul>
+<li><em>JDK</em> 的一个“发行版”，<em>Java SE 7 JSR</em> 的一个开源实现</li>
+<li>现在同 <em>Oracle JDK</em> 区别很小<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/opt/jdk</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 安装是jdk，所以目录直接由jdk就好</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 或者保留原版本号，创建符号链接`java`执行原目录</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 可自定以部分</span></span><br><span class="line">export JRE_HOME=$JAVA_HOME/jre</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br><span class="line">export CLASSPATH=$CLASSPATH:$JRE_HOME/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</span><br><span class="line"><span class="meta">	#</span><span class="bash"> jar包是java文件的集合，可以/需要看作是文件夹</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> java的`CLASSPATH`所以需要添加的是jar包</span></span><br></pre></td></tr></table></figure>
+<h3 id="Scala"><a href="#Scala" class="headerlink" title="Scala"></a>Scala</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export SCALA_HOME=/opt/scala</span><br><span class="line">export PATH=$PATH:$SCALA_HOME/bin:$SCALA_HOME/sbin</span><br></pre></td></tr></table></figure>
+<h1 id="MAVEN"><a href="#MAVEN" class="headerlink" title="MAVEN"></a>MAVEN</h1></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:32.000Z" title="7/10/2019, 12:48:32 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-04T11:41:34.000Z" title="8/4/2021, 7:41:34 PM">2021-08-04</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/Tool/">Tool</a></span><span class="level-item">5 minutes read (About 738 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/Tool/git.html">Git 基础</a></h1><div class="content"><h2 id="gitingore"><a href="#gitingore" class="headerlink" title=".gitingore"></a>.gitingore</h2><h3 id="gitignore忽略规则"><a href="#gitignore忽略规则" class="headerlink" title=".gitignore忽略规则"></a>.gitignore忽略规则</h3><ul>
+<li><p><code>!</code>开头：排除<strong>应被忽略</strong></p>
+</li>
+<li><p><code>/</code><strong>结尾</strong>：忽略文件夹</p>
+</li>
+<li><p><code>/</code><strong>开头</strong>：git仓库根目录路径开始（可省略）</p>
+</li>
+<li><p>遵循一定的正则表达式</p>
+<ul>
+<li><code>*</code>：多个字符，不包括<code>/</code>，因此多层级目录需要一一指定</li>
+<li><code>?</code>：单个字符</li>
+<li><code>[]</code>：匹配其中候选字符</li>
+</ul>
+</li>
+</ul>
+<h3 id="gitignore配置方式"><a href="#gitignore配置方式" class="headerlink" title=".gitignore配置方式"></a>.gitignore配置方式</h3><ul>
+<li><p>仓库根目录创建<code>.gitignore</code>文件，添加忽略规则</p>
+<ul>
+<li>忽略规则针对当前项目</li>
+<li><code>.gitignore</code>文件<em>默认</em>随仓库分发，所有人共用忽略规则
+（当然可以在<code>.gitignore</code>中配置忽略<code>.gitignore</code>）</li>
+</ul>
+</li>
+<li><p>设置全局忽略文件，对所有git项目适用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global core.excludesfile /path/to/.gitignore</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改<code>.git/info/exclude</code>文件，添加忽略规则</p>
+<ul>
+<li>对单一项目有效</li>
+<li>非所有人共用忽略规则</li>
+</ul>
+</li>
+</ul>
+<h2 id="Git配置-config"><a href="#Git配置-config" class="headerlink" title="Git配置/config"></a>Git配置/<code>config</code></h2><ul>
+<li><p>配置文件、配置类型</p>
+<ul>
+<li><code>--system</code>：系统全局配置，配置文件<code>/etc/gitconfig</code></li>
+<li><code>--global</code>：用户全局配置，配置文件
+<code>$HOME/.gitconfig</code>、<code>$HOME/.config/git/config</code></li>
+<li><code>--local</code>：局部repo配置，配置文件<code>repo/.git/config</code></li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改`section.key`值（缺省`--local`）</span></span><br><span class="line">$ git config [--system|--global|--<span class="built_in">local</span>] &lt;section&gt;.&lt;key&gt; &lt;value&gt;</span><br><span class="line"><span class="comment"># 删除配置项</span></span><br><span class="line">$ git config [--system|--global|--<span class="built_in">local</span>] --<span class="built_in">unset</span> &lt;section&gt;.&lt;key&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="配置文件常用"><a href="#配置文件常用" class="headerlink" title="配置文件常用"></a>配置文件常用</h3><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"> # 核心修改</span><br><span class="line">[core]</span><br><span class="line"><span class="code">	# 忽略文件权限修改</span></span><br><span class="line"><span class="code">	filemode = false</span></span><br><span class="line"><span class="code">	editor = vim</span></span><br><span class="line"><span class="code">	# 提交、检出时换行符设置</span></span><br><span class="line"><span class="code">		# `input`：提交时转换为`&lt;LF&gt;`、检出时不转换</span></span><br><span class="line"><span class="code">		# `false`：提交、检出均不转换</span></span><br><span class="line"><span class="code">		# `true`：提交时转换为`&lt;LF&gt;`、检出时转换为`&lt;CRLF&gt;`</span></span><br><span class="line"><span class="code">	autocrlf = input</span></span><br><span class="line"><span class="code">	# 是否允许文件混用换行符</span></span><br><span class="line"><span class="code">		# `true`：拒绝提交包含混合换行符文件</span></span><br><span class="line"><span class="code">		# `false`：允许提交包含混合换行符文件</span></span><br><span class="line"><span class="code">		# `warn`：提交包含混合换行符文件时警告</span></span><br><span class="line"><span class="code">	safecrlf = true</span></span><br><span class="line"><span class="code">[user]</span></span><br><span class="line"><span class="code">	name = xyy15926</span></span><br><span class="line"><span class="code">	email = xyy15926@163.com</span></span><br><span class="line"><span class="code"> # 设置别名</span></span><br><span class="line"><span class="code">[alias]</span></span><br><span class="line"><span class="code">	st = status</span></span><br><span class="line"><span class="code">	ci = commit</span></span><br><span class="line"><span class="code">	br = branch</span></span><br><span class="line"><span class="code">	lg = &quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br><span class="line"><span class="code">	d  =  difftool</span></span><br><span class="line"><span class="code"> # 输出着色</span></span><br><span class="line"><span class="code">[color]</span></span><br><span class="line"><span class="code">	# 打开所有默认终端着色</span></span><br><span class="line"><span class="code">	ui = true</span></span><br><span class="line"><span class="code">[diff]</span></span><br><span class="line"><span class="code">	tool = vimdiff</span></span><br><span class="line"><span class="code">[difftool]</span></span><br><span class="line"><span class="code">	prompt = false</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>autocrlf</code>在linux若设置为<code>input</code>，在<code>add</code>包含<code>&lt;CRLF&gt;</code>
+文件会报<code>fatal</code>错<ul>
+<li>因为<code>input</code>在提交时会将<code>&lt;CRLF&gt;</code>转换为<code>&lt;LF&gt;</code>，但在
+检出时无操作</li>
+<li>所以导致即使<code>add</code>也不能保证repo当前状态和提交状态
+一致</li>
+</ul>
+</li>
+</ul>
+<h3 id="remote"><a href="#remote" class="headerlink" title="remote"></a><code>remote</code></h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 查看远程仓库</span></span><br><span class="line">$ git remote -v</span><br><span class="line"> <span class="comment"># 设置远程仓库地址</span></span><br><span class="line">$ git remote set-url &lt;repo_name&gt; &lt;new_url&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="指定ssh-key"><a href="#指定ssh-key" class="headerlink" title="指定ssh key"></a>指定ssh key</h3><blockquote>
+<ul>
+<li>git依赖ssh进行存储库认证，无法直接告诉git使用哪个私钥</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><code>~/.ssh/config</code>中配置ssh host：git每次使用host代替原
+服务器地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">host &lt;host&gt;</span><br><span class="line">HostName github.com</span><br><span class="line">IdentityFile $HOME/.ssh/id_rsa_github_private</span><br><span class="line">User git</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>ssh host详见*linux/shell/config_files”</li>
+</ul>
+</blockquote>
+</li>
+<li><p><code>GIT_SSH_COMMAND</code>环境变量：指定ssh命令<code>-i</code>中参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GIT_SSH_COMMAND=&quot;ssh -i ~/.ssh/id_rsa_github_private&quot; git clone ...</span><br><span class="line">// 可以`export`持久化</span><br><span class="line">export GIT_SSH_COMMAND = ...</span><br><span class="line">// 写入git配置</span><br><span class="line">git config core.sshCommand &quot;...&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="展示命令"><a href="#展示命令" class="headerlink" title="展示命令"></a>展示命令</h2><h3 id="log"><a href="#log" class="headerlink" title="log"></a><code>log</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span> [&lt;file_name&gt;]</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 查看文件提交历史</span></span><br></pre></td></tr></table></figure>
+<h3 id="show"><a href="#show" class="headerlink" title="show"></a><code>show</code></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git show &lt;tag_no|commit_hash&gt;</span><br><span class="line">	# 查看改动内容</span><br></pre></td></tr></table></figure>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:32.000Z" title="7/10/2019, 12:48:32 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-04T08:33:38.000Z" title="8/4/2021, 4:33:38 PM">2021-08-04</time></span><span class="level-item"><a class="link-muted" href="/categories/CS/">CS</a><span> / </span><a class="link-muted" href="/categories/CS/Program-Design/">Program Design</a></span><span class="level-item">10 minutes read (About 1460 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/CS/Program-Design/language_design.html">语言设计</a></h1><div class="content"><h2 id="编程范型"><a href="#编程范型" class="headerlink" title="编程范型"></a>编程范型</h2><h3 id="Functional-Programming"><a href="#Functional-Programming" class="headerlink" title="Functional Programming"></a><em>Functional Programming</em></h3><p>函数式编程：使用纯函数</p>
+<ul>
+<li>程序使用紧密的函数调用表示，这些函数可以进行必要计算，
+但是不会执行会改变程序状态（如：赋值）的操作</li>
+<li>函数就是数据值，可以像对待其他数据值一样对其进行操作</li>
+</ul>
+<h4 id="纯函数"><a href="#纯函数" class="headerlink" title="纯函数"></a>纯函数</h4><p>纯函数：没有副作用、表达式对所有引用透明度表达式也是引用透明
+的函数</p>
+<ul>
+<li>执行过程中除了根据输入参数给出运算结果外没有其他影响</li>
+<li>输入完全由输入决定，任何内部、外部过程的状态改变不会影响
+函数执行结果</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>reference transparency</em>：引用透明，表达式可以用其结果
+  取代而不改变程序含义</li>
+</ul>
+</blockquote>
+<h2 id="语言基础"><a href="#语言基础" class="headerlink" title="语言基础"></a>语言基础</h2><h3 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h3><blockquote>
+<ul>
+<li><em>trapped errors</em>：导致程序终止执行错误<blockquote>
+<ul>
+<li>除0</li>
+<li>Java中数组越界访问</li>
+</ul>
+</blockquote>
+</li>
+<li><em>untrapped errors</em>：出错后程序继续执行，但行为不可预知，
+  可能出现任何行为<blockquote>
+<ul>
+<li>C缓冲区溢出、Jump到错误地址</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h3 id="程序行为"><a href="#程序行为" class="headerlink" title="程序行为"></a>程序行为</h3><blockquote>
+<ul>
+<li><em>forbidden behaviours</em>：语言设计时定义的一组行为，必须
+  包括<em>untrapped errors</em>，<em>trapped errors</em>可选</li>
+<li><em>undefined behaviours</em>：未定义为行为，C++标准没有做出
+  明确规定，由编译器自行决定</li>
+<li><em>well behaved</em>：程序执行不可能出现<em>forbidden behaviors</em></li>
+<li><em>ill behaved</em>：否则</li>
+</ul>
+</blockquote>
+<h3 id="语言类型"><a href="#语言类型" class="headerlink" title="语言类型"></a>语言类型</h3><p><img src="/imgs/language_types.png" alt="language_types"></p>
+<blockquote>
+<ul>
+<li><em>strongly typed</em>：强类型，偏向于不能容忍<strong>隐式类型转换</strong></li>
+<li><em>weakly typed</em>：弱类型，偏向于容忍<strong>隐式类型转换</strong></li>
+<li><em>statically typed</em>：静态类型，编译时就知道每个变量类型，
+  因为类型错误而不能做的事情是语法错误</li>
+<li><em>dynamically typed</em>：动态类型，编译时不知道每个变量类型
+  ，因为类型错误而不能做的事情是运行时错误</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>静态类型语言不定需要声明变量类型</p>
+<ul>
+<li><em>explicitly typed</em>：显式静态类型，类型是语言语法的
+一部分，如：C</li>
+<li><em>implicitly typed</em>：隐式静态类型，类型由编译时推导
+，如：ML、OCaml、Haskell</li>
+</ul>
+</li>
+<li><p>类型绑定</p>
+<ul>
+<li>强类型倾向于<strong>值类型</strong>，即类型和值绑定</li>
+<li>弱类型倾向于<strong>变量类型</strong>，类型和变量绑定，因而偏向于
+容忍隐式类型转换</li>
+</ul>
+</li>
+</ul>
+<h2 id="polymorphism"><a href="#polymorphism" class="headerlink" title="polymorphism"></a><em>polymorphism</em></h2><p>多态：能将相同代码应用到多种数据类型上方式</p>
+<ul>
+<li>相同对象收到不同消息、不同对象收到相同消息产生不同动作</li>
+</ul>
+<h3 id="Ad-hoc-Polymorphism："><a href="#Ad-hoc-Polymorphism：" class="headerlink" title="Ad hoc Polymorphism："></a><em>Ad hoc Polymorphism</em>：</h3><p><em>ad hoc polymorphism</em>：接口多态，为类型定义公用接口</p>
+<ul>
+<li>函数重载：函数可以接受多种不同类型参数，根据参数类型有
+不同的行为</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>ad hoc</em>：for this, 表示专为某特定问题、任务设计的解决
+  方案，不考虑泛用、适配其他问题</li>
+</ul>
+</blockquote>
+<h3 id="Parametric-Polymorphism"><a href="#Parametric-Polymorphism" class="headerlink" title="Parametric Polymorphism"></a><em>Parametric Polymorphism</em></h3><p><em>parametric polymorphism</em>：参数化多态，使用抽象符号代替具体
+类型名</p>
+<ul>
+<li><p>定义数据类型范型、函数范型</p>
+</li>
+<li><p>参数化多态能够让语言具有更强表达能力的同时，保证类型安全</p>
+</li>
+<li>例<ul>
+<li>C++：函数、类模板</li>
+<li>Rust：trait bound</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>在函数式语言中广泛使用，被简称为<em>polymorphism</em></li>
+</ul>
+</blockquote>
+<h3 id="Subtyping"><a href="#Subtyping" class="headerlink" title="Subtyping"></a><em>Subtyping</em></h3><p><em>subtyping/inclsion polymorphism</em>：子类多态，使用基类实例
+表示派生类</p>
+<ul>
+<li><p>子类多态可以用于限制多态适用范围</p>
+</li>
+<li><p>子类多态一般是<strong>动态解析</strong>的，即函数地址绑定时间</p>
+<ul>
+<li>非多态：编译期间绑定</li>
+<li>多态：运行时绑定</li>
+</ul>
+</li>
+<li><p>例</p>
+<ul>
+<li>C++：父类指针</li>
+<li>Rust：trait bound</li>
+</ul>
+</li>
+</ul>
+<h2 id="变量设计"><a href="#变量设计" class="headerlink" title="变量设计"></a>变量设计</h2><h3 id="Lvalue、Rvalue"><a href="#Lvalue、Rvalue" class="headerlink" title="Lvalue、Rvalue"></a><em>Lvalue</em>、<em>Rvalue</em></h3><blockquote>
+<ul>
+<li><em>lvalue</em>：<em>location value</em>，可寻址</li>
+<li><em>rvalue</em>：<em>readable value</em>，可读取</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>左值：引用内存中能够存储数据的内存单元的表达式</p>
+<ul>
+<li>使用表达式在内存中位置</li>
+<li>考虑其作为对象的身份</li>
+</ul>
+</li>
+<li><p>右值：非左值表达式</p>
+<ul>
+<li>使用表达式的值</li>
+<li>考虑其作为对象的内容</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>左值、右值最初源自C<blockquote>
+<ul>
+<li>左值：可以位于赋值运算符<code>=</code>左侧的表达式</li>
+<li>右值：不可以位于赋值运算赋<code>=</code>左侧的表达式</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h4 id="左值"><a href="#左值" class="headerlink" title="左值"></a>左值</h4><ul>
+<li>任何左值都存储在内存中，所以都有一个地址</li>
+<li>左值声明后，地址不会改变，地址中存储的内容可能发生
+改变</li>
+<li>左值的地址是一个指针值，可以被存储在内存中的、像数据
+一样被修改</li>
+</ul>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>重要原则</p>
+<ul>
+<li>多数情况下，需要右值处可使用左值替代</li>
+<li>需要左值处不能用右值替代</li>
+</ul>
+</li>
+<li><p>重要特点</p>
+<ul>
+<li>左值存在在变量中，有持久的状态</li>
+<li>右值常为字面常量、表达式求职过程中创建的临时对象，
+没有持久状态</li>
+</ul>
+</li>
+</ul>
+<h3 id="一等对象"><a href="#一等对象" class="headerlink" title="一等对象"></a>一等对象</h3><p>一等对象：满足以下条件的程序实体</p>
+<ul>
+<li>在运行时创建</li>
+<li>能赋值给变量、数据结构中的元素</li>
+<li>能作为参数传递给函数</li>
+<li>能作为函数返回结果</li>
+</ul>
+<h4 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h4><p>高阶函数：以其他函数作为参数、返回函数作为结果的函数</p>
+<h3 id="短路求值"><a href="#短路求值" class="headerlink" title="短路求值"></a>短路求值</h3><p>短路求值：布尔运算<em>and/or</em>中若结果已经确定，则不继续计算之后
+表达式</p>
+<ul>
+<li><p><code>x and y</code>：首先对<code>x</code>求值</p>
+<ul>
+<li>若<code>x</code>为假停止计算</li>
+<li>否则继续对<code>y</code>求值再判断</li>
+</ul>
+</li>
+<li><p><code>x or y</code>：首先对<code>x</code>求值</p>
+<ul>
+<li>若<code>x</code>为真则停止计算</li>
+<li>否则继续对<code>y</code>求值再判断</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>返回值取决于语言实现<blockquote>
+<ul>
+<li>确定返回布尔值：C/C++</li>
+<li>返回<code>x</code>、或<code>y</code>的求值结果：python</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-09T16:48:32.000Z" title="7/10/2019, 12:48:32 AM">2019-07-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T09:16:06.000Z" title="7/16/2021, 5:16:06 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Hadoop/">Hadoop</a></span><span class="level-item">11 minutes read (About 1679 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/Hadoop/hive.html">Hive</a></h1><div class="content"><h2 id="Hive简介"><a href="#Hive简介" class="headerlink" title="Hive简介"></a>Hive简介</h2><p>Hive是Hadoop平台上的数据仓库，面向结构化数据分析</p>
+<ul>
+<li><p>将<strong>结构化</strong>数据文件映射为一张<strong>数据库表</strong></p>
+</li>
+<li><p>提供完整的SQL查询功能，所用语言称为HiveQL</p>
+<ul>
+<li>Hive将HiveQL转换为MapReduce作业，在hadoop平台运行</li>
+<li>Hive相当于一个在hadoop平台上的SQL Shell</li>
+<li>方便用户使用HiveQL快速实现简单数据分析、统计，而不必
+开发专用MapReduce程序，学习成本低</li>
+</ul>
+</li>
+<li><p>相较于传统关系数据库，Hive具有如下特点</p>
+<p>||Hive|传统关系型数据库|
+|———|———|———-|
+|数据存储|HDFS分布式文件系统|服务器本地文件系统|
+|查询处理|MapReduce计算模型|自行设计的查询处理模型|
+|应用场景|海量数据分析处理|高性能查询，实时性好|
+|数据更新|不支持对具体数据行修改，只能覆盖、追加|支持|
+|事务处理|不支持|支持|
+|索引支持|不支持，一般需要对数据进行全部扫描|支持，多种索引|
+|扩展能力|基于Hadoop平台，存储、计算强大的扩展能力|扩展性较差|
+|数据加载|Writing Time Schema：数据加载时无需进行模式检查，在读取数据时对数据以一定模式进行解释|Reading Time Schema：要求数据必须符合数据库表结构|</p>
+</li>
+</ul>
+<h3 id="Hive服务端组件"><a href="#Hive服务端组件" class="headerlink" title="Hive服务端组件"></a>Hive服务端组件</h3><h4 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a>Driver</h4><p>负责将用户的编写的HiveQL查询语句进行解析、编译、优化、生成
+执行计划，然后调用底层MapReduce计算模型执行，包括</p>
+<ul>
+<li>Compiler：编译器</li>
+<li>Optimizer：优化器</li>
+<li>Executor：执行器</li>
+</ul>
+<h4 id="MetaStore"><a href="#MetaStore" class="headerlink" title="MetaStore"></a>MetaStore</h4><p>元信息管理器，对Hive正确运行举足轻重</p>
+<ul>
+<li><p>MetaStore实际上就是Thrift服务</p>
+<ul>
+<li>MetaStore客户端（hive、spark shell等）和服务端通过
+thrift协议进行通信</li>
+<li>客户端通过连接metastore服务，实现对元数据的存取</li>
+<li>通过Thrift获取元数据，屏蔽了访问MetaStore Database
+所需的驱动、url、用户名、密码等细节</li>
+</ul>
+</li>
+<li><p>负责存储元数据在关系型数据库（称为MetaStore Database）</p>
+<ul>
+<li>元数据包括Hive创建的database、table等元信息</li>
+<li>支持的关系型数据库<ul>
+<li>Derby：Apache旗下Java数据库</li>
+<li>MySQL</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>MetaStore服务可以独立运行，可以让多个客户端同时连接、
+甚至安装到远程服务器集群，保持Hive运行的健壮性</p>
+</li>
+</ul>
+<h5 id="Embedded-Metastore-Server-Database-Derby"><a href="#Embedded-Metastore-Server-Database-Derby" class="headerlink" title="Embedded Metastore Server(Database Derby)"></a>Embedded Metastore Server(Database Derby)</h5><p>内嵌模式：使用内嵌的Derby数据库存储元数据</p>
+<ul>
+<li>不需要额外起Metastore服务</li>
+<li>一次只能一个客户端连接，使用做实验，不适合生产环境</li>
+<li>Derby默认会在调用hive命令所在目录的<code>metastore_db</code>文件中
+持久化元数据</li>
+</ul>
+<p><img src="/imgs/embeded_metastore_database.png" alt="embeded_metastore_database"></p>
+<h5 id="Local-Metastore-Server"><a href="#Local-Metastore-Server" class="headerlink" title="Local Metastore Server"></a>Local Metastore Server</h5><p>本地元存储</p>
+<ul>
+<li><p>采用外部数据库，支持</p>
+<ul>
+<li>MySQL</li>
+<li>Postgres</li>
+<li>Orcale</li>
+<li>MSSQL</li>
+</ul>
+</li>
+<li><p>数据库独立于hive部署，hive服务使用JDBC访问元数据，多个
+服务可以同时进行</p>
+</li>
+<li><p>本地元存储不需要单独起metastore服务，用的是跟hive在同一
+进程metastore服务</p>
+</li>
+</ul>
+<p><img src="/imgs/local_metastore_server.png" alt="local_metastore_server"></p>
+<h5 id="Remote-Metastore-Server"><a href="#Remote-Metastore-Server" class="headerlink" title="Remote Metastore Server"></a>Remote Metastore Server</h5><p>远程元存储</p>
+<ul>
+<li><p>类似于本地元存储，只是需要单独启动metastore服务，和hive
+运行在不同的进程（甚至主机）中</p>
+</li>
+<li><p>需要在每个客户端配置文件配置连接到该metastore服务</p>
+<ul>
+<li>hive通过thrift访问metastore</li>
+</ul>
+</li>
+<li><p>此模式可以控制到数据库的连接</p>
+</li>
+</ul>
+<p><img src="/imgs/remote_metastore_server.png" alt="remote_metastore_server"></p>
+<h4 id="hiveserver2"><a href="#hiveserver2" class="headerlink" title="hiveserver2"></a>hiveserver2</h4><p>基于的Thrift RPC实现</p>
+<ul>
+<li><p>远程客户端可以通过hiveserver2执行对hive的查询并返回结果</p>
+<ul>
+<li>支持多客户端并发、身份验证</li>
+</ul>
+</li>
+<li><p>可以使用JDBC、ODBC、Thrift连接hiveserver2（Thrift Server
+特性）</p>
+</li>
+<li><p>hiveserver2也能访问元数据，不依赖于metastore服务</p>
+</li>
+</ul>
+<h3 id="Hive客户端组件"><a href="#Hive客户端组件" class="headerlink" title="Hive客户端组件"></a>Hive客户端组件</h3><h4 id="CLI"><a href="#CLI" class="headerlink" title="CLI"></a>CLI</h4><p>Command Line Interface</p>
+<ul>
+<li>允许用户交互式的使用Hive</li>
+</ul>
+<h4 id="THrift-Client-beeline"><a href="#THrift-Client-beeline" class="headerlink" title="THrift Client/beeline"></a>THrift Client/beeline</h4><p>基于Thrift的JDBC Client</p>
+<ul>
+<li>包括JDBC/ODBC驱动程序</li>
+</ul>
+<h4 id="WEB-GUI"><a href="#WEB-GUI" class="headerlink" title="WEB GUI"></a>WEB GUI</h4><p>允许用户通过WEB GUI图形界面访问Hive</p>
+<ul>
+<li>需要首先启动Hive Web Interface服务</li>
+</ul>
+<h2 id="Hive查询处理"><a href="#Hive查询处理" class="headerlink" title="Hive查询处理"></a>Hive查询处理</h2><h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><ol>
+<li>用户提交HQL至Driver</li>
+<li>Driver把查询交给Compiler，Compiler使用MetaStore中元信息
+检查、编译</li>
+<li>查询经过Optimizer优化交由Executor Engine执行，转换为
+MapReduce作业后调用MapReduce执行</li>
+<li>MapReduce存取HDFS，对数据进行处理，查询结果返回Driver</li>
+</ol>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ul>
+<li><p>基础数据类型</p>
+<ul>
+<li>Integer</li>
+<li>Float</li>
+<li>Double</li>
+<li>String</li>
+</ul>
+</li>
+<li><p>复杂数据类型：通过嵌套表达复杂类型</p>
+<ul>
+<li>Map</li>
+<li>List</li>
+<li>Struct</li>
+</ul>
+</li>
+<li><p>还允许用户自定以类型、函数扩展系统</p>
+</li>
+</ul>
+<h3 id="数据存储模型"><a href="#数据存储模型" class="headerlink" title="数据存储模型"></a>数据存储模型</h3><p>使用传统数据库：Table、Row、Column、Partition等概念，易于
+理解</p>
+<h4 id="Database"><a href="#Database" class="headerlink" title="Database"></a>Database</h4><p>相当于关系型数据库中的Namespace</p>
+<ul>
+<li>将不同用户数据隔离到不同的数据库、模式中</li>
+</ul>
+<h4 id="Table"><a href="#Table" class="headerlink" title="Table"></a>Table</h4><p>表格</p>
+<ul>
+<li><p>逻辑上由存储的数据、描述数据格式的相关元数据组成</p>
+<ul>
+<li>表格数据存放在分布式文件系统（HDFS）中</li>
+<li>元数据存储在MetaStore服务指定关系型数据库中</li>
+</ul>
+</li>
+<li><p>创建表格、加载数据之前，表格在HDFS中就是一个目录，
+表格分为两种类型</p>
+<ul>
+<li>托管表：数据文件存放在Hive数据仓库中，即HDFS中的一个
+目录，是Hive数据文件默认存放路径</li>
+<li>外部表：数据文件<strong>可以</strong>存放在其他文件系统中</li>
+</ul>
+</li>
+</ul>
+<h4 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h4><p>根据“分区列”的值，对表格数据进行粗略划分的极值</p>
+<ul>
+<li><p>存储上：是Hive中表格主目录的子目录，名字即为定义的分区列
+名字</p>
+</li>
+<li><p>逻辑上：分区不是表中的实际字段，是虚拟列</p>
+<ul>
+<li>根据虚拟列（可能包含多个实际字段）划分、存储表格数据</li>
+<li>同一虚拟列中字段通常应该经常一起被查询，这样在需要
+存取部分数据字段时，可以只扫描部分表</li>
+</ul>
+</li>
+</ul>
+<h4 id="Bucket"><a href="#Bucket" class="headerlink" title="Bucket"></a>Bucket</h4><p>Table、Partition都是目录级别的数据拆分，指定Bucket的表格，
+数据文件将按照规律拆分成多个文件</p>
+<ul>
+<li><p>每个桶就是table、partition目录中的文件</p>
+</li>
+<li><p>一般使用Hash函数实现数据分桶，创建表时，需要指定桶数量、
+分桶操作依据的列</p>
+</li>
+<li><p>用户执行Sample查询时，Hive可以使用分桶信息，有效的Prune
+Data，如：对每个目录下单个桶文件进行查询</p>
+</li>
+</ul>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/18/">Previous</a></div><div class="pagination-next"><a href="/page/20/">Next</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/18/">18</a></li><li><a class="pagination-link is-current" href="/page/19/">19</a></li><li><a class="pagination-link" href="/page/20/">20</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/40/">40</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

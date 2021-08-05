@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>NDArray标量 - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="NDArray标量类型 numpy中定义了24种新python类型（NDArray标量类型）  类型描述符主要基于CPython中C语言可用的类型   标量具有和ndarray相同的属性和方法  数组标量不可变，故属性不可设置     内置标量类型    Routine Desc     iinfo(int_type) 整数类型的取值范围等信息   finfo(float_type) 浮点类型的取"><meta property="og:type" content="blog"><meta property="og:title" content="NDArray标量"><meta property="og:url" content="https://xyy15926.github.io/Python/Numpy/ndarray_scalars.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="NDArray标量类型 numpy中定义了24种新python类型（NDArray标量类型）  类型描述符主要基于CPython中C语言可用的类型   标量具有和ndarray相同的属性和方法  数组标量不可变，故属性不可设置     内置标量类型    Routine Desc     iinfo(int_type) 整数类型的取值范围等信息   finfo(float_type) 浮点类型的取"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/imgs/numpy_dtype_hierarchy.png"><meta property="article:published_time" content="2021-02-01T00:32:44.000Z"><meta property="article:modified_time" content="2021-02-01T00:32:44.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Python"><meta property="article:tag" content="Numpy"><meta property="article:tag" content="NDArray"><meta property="article:tag" content="Data Science"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/imgs/numpy_dtype_hierarchy.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Python/Numpy/ndarray_scalars.html"},"headline":"NDArray标量","image":["https://xyy15926.github.io/imgs/numpy_dtype_hierarchy.png"],"datePublished":"2021-02-01T00:32:44.000Z","dateModified":"2021-02-01T00:32:44.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"NDArray标量类型 numpy中定义了24种新python类型（NDArray标量类型）  类型描述符主要基于CPython中C语言可用的类型   标量具有和ndarray相同的属性和方法  数组标量不可变，故属性不可设置     内置标量类型    Routine Desc     iinfo(int_type) 整数类型的取值范围等信息   finfo(float_type) 浮点类型的取"}</script><link rel="canonical" href="https://xyy15926.github.io/Python/Numpy/ndarray_scalars.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-02-01T00:32:44.000Z" title="2/1/2021, 8:32:44 AM">2021-02-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-02-01T00:32:44.000Z" title="2/1/2021, 8:32:44 AM">2021-02-01</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Numpy/">Numpy</a></span><span class="level-item">20 minutes read (About 3066 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">NDArray标量</h1><div class="content"><h2 id="NDArray标量类型"><a href="#NDArray标量类型" class="headerlink" title="NDArray标量类型"></a>NDArray标量类型</h2><ul>
+<li><p>numpy中定义了24种新python类型（NDArray标量类型）</p>
+<ul>
+<li>类型描述符主要基于CPython中C语言可用的类型</li>
+</ul>
+</li>
+<li><p>标量具有和<code>ndarray</code>相同的属性和方法</p>
+<ul>
+<li>数组标量不可变，故属性不可设置</li>
+</ul>
+</li>
+</ul>
+<p><img src="/imgs/numpy_dtype_hierarchy.png" alt="numpy_dtype_hierarchy"></p>
+<h3 id="内置标量类型"><a href="#内置标量类型" class="headerlink" title="内置标量类型"></a>内置标量类型</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Routine</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iinfo(int_type)</code></td>
+<td>整数类型的取值范围等信息</td>
+</tr>
+<tr>
+<td><code>finfo(float_type)</code></td>
+<td>浮点类型的取值范围等信息</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="Python关联"><a href="#Python关联" class="headerlink" title="Python关联"></a>Python关联</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>NumPy类型</th>
+<th>Python类型</th>
+<th>64位NumPy定长类型</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int_</code></td>
+<td>继承自<code>int</code>（Python2）</td>
+<td><code>int64</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>float_</code></td>
+<td>继承自<code>float</code></td>
+<td><code>float64</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>complex_</code></td>
+<td>继承自<code>complex</code></td>
+<td><code>complex128</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bytes_</code></td>
+<td>继承自<code>bytes</code></td>
+<td><code>S#&quot;</code>/<code>&quot;a#&quot;</code></td>
+<td>Python字节串</td>
+</tr>
+<tr>
+<td><code>unicode_</code></td>
+<td>继承自<code>str</code></td>
+<td><code>&quot;U#&quot;</code></td>
+<td>Python字符串</td>
+</tr>
+<tr>
+<td><code>void</code></td>
+<td></td>
+<td><code>&quot;V#&quot;</code></td>
+<td>Python缓冲类型</td>
+</tr>
+<tr>
+<td><code>object_</code></td>
+<td>继承自<code>object</code>（Python3）</td>
+<td><code>&quot;O&quot;</code></td>
+<td>Python对象引用</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><p><code>np.bool_</code>类似Python中<code>bool</code>类型，但不继承它</p>
+<ul>
+<li>Python中<code>bool</code>类型不允许被继承</li>
+<li><code>np.bool_</code>大小和<code>bool</code>类型大小不同</li>
+</ul>
+</li>
+<li><p><code>np.int_</code>不继承自<code>int</code>，因为后者宽度不再固定</p>
+<ul>
+<li>NumPy中数组没有真正<code>np.int</code>类型，因为宽度不再固定，
+各产品</li>
+</ul>
+</li>
+<li><p><code>bytes_</code>、<code>unicode_</code>、<code>void</code>是可灵活配置宽度的类型</p>
+<ul>
+<li>在指定长度后不能更改，赋长于指定长度的值会被截断</li>
+<li><code>unicode_</code>：强调内容为字符串</li>
+<li><code>bytes_</code>：强调内容为字节串</li>
+<li><code>void</code>：类型强调内容为二进制内容，但不是字节串</li>
+</ul>
+</li>
+<li><p><code>object_</code>存储的是python对象的引用而不对象本身</p>
+<ul>
+<li>其中引用不必是相同的python类型</li>
+<li>兜底类型</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Python基本类型等在NumPy命名空间下都有同名别名，如：
+  <code>np.unicode == np.str == str</code></li>
+<li>NumPy数组中数据类型无法被真正设置为<code>int</code>类型，为保证数组
+  中元素宽度一致性，必然无法被设置为非定长类型</li>
+</ul>
+</blockquote>
+<h4 id="C类型关联"><a href="#C类型关联" class="headerlink" title="C类型关联"></a>C类型关联</h4><blockquote>
+<ul>
+<li>NumPy支持的原始类型和C中原始类型紧密相关</li>
+</ul>
+</blockquote>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>NumPy类型</th>
+<th>C类型</th>
+<th>64位定长别名</th>
+<th>Desc</th>
+<th>单字符代码</th>
+<th>定长字符串代码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bool_</code></td>
+<td><code>bool</code></td>
+<td><code>bool8</code></td>
+<td>存储为字节的bool值</td>
+<td><code>&quot;?&quot;</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>byte</code></td>
+<td><code>signed char</code></td>
+<td><code>int8</code></td>
+<td></td>
+<td><code>&quot;b&quot;</code></td>
+<td><code>&quot;i1&quot;</code></td>
+</tr>
+<tr>
+<td><code>short</code></td>
+<td><code>short</code></td>
+<td><code>int16</code></td>
+<td></td>
+<td><code>&quot;h&quot;</code></td>
+<td><code>&quot;i2&quot;</code></td>
+</tr>
+<tr>
+<td><code>intc</code></td>
+<td><code>int</code></td>
+<td><code>int32</code></td>
+<td></td>
+<td><code>&quot;i&quot;</code></td>
+<td><code>&quot;i4&quot;</code></td>
+</tr>
+<tr>
+<td><code>int_</code></td>
+<td><code>long</code></td>
+<td><code>int64</code></td>
+<td></td>
+<td><code>&quot;l&quot;</code></td>
+<td><code>&quot;i8&quot;</code></td>
+</tr>
+<tr>
+<td><code>longlong</code></td>
+<td><code>long long</code></td>
+<td>无</td>
+<td></td>
+<td><code>&quot;q&quot;</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>ubyte</code></td>
+<td><code>unsigned char</code></td>
+<td><code>uint8</code></td>
+<td></td>
+<td><code>&quot;B&quot;</code></td>
+<td><code>&quot;u1&quot;</code></td>
+</tr>
+<tr>
+<td><code>ushort</code></td>
+<td><code>unsigned short</code></td>
+<td><code>uint16</code></td>
+<td></td>
+<td><code>&quot;H&quot;</code></td>
+<td><code>&quot;u2&quot;</code></td>
+</tr>
+<tr>
+<td><code>uintc</code></td>
+<td><code>unsigned int</code></td>
+<td><code>uint32</code></td>
+<td></td>
+<td><code>&quot;I&quot;</code></td>
+<td><code>&quot;u4&quot;</code></td>
+</tr>
+<tr>
+<td><code>uint</code></td>
+<td><code>usigned long</code></td>
+<td><code>uint64</code></td>
+<td></td>
+<td><code>&quot;L&quot;</code></td>
+<td><code>&quot;u8&quot;</code></td>
+</tr>
+<tr>
+<td><code>ulonglong</code></td>
+<td><code>unsigned long long</code></td>
+<td>无</td>
+<td></td>
+<td><code>&quot;Q&quot;</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>half</code></td>
+<td>无</td>
+<td><code>float16</code></td>
+<td>半精度浮点：1+5+10</td>
+<td><code>&quot;e&quot;</code></td>
+<td><code>&quot;f2&quot;</code></td>
+</tr>
+<tr>
+<td><code>single</code></td>
+<td><code>float</code></td>
+<td><code>float32</code></td>
+<td>单精度浮点，通常为：1+8+23</td>
+<td><code>&quot;f4&quot;</code></td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td><code>double</code></td>
+<td><code>float64</code></td>
+<td>双精度浮点，通常为：1+11+52</td>
+<td><code>&quot;d&quot;</code></td>
+<td><code>&quot;f8&quot;</code></td>
+</tr>
+<tr>
+<td><code>longdouble</code>/<code>longfloat</code></td>
+<td><code>long double</code></td>
+<td><code>float128</code></td>
+<td>平台定义的扩展精度浮点</td>
+<td><code>&quot;g&quot;</code></td>
+<td><code>&quot;f16&quot;</code></td>
+</tr>
+<tr>
+<td><code>csingle</code></td>
+<td><code>float complex</code></td>
+<td><code>complex64</code></td>
+<td>两个单精度浮点</td>
+<td><code>&quot;F&quot;</code></td>
+<td><code>&quot;c8&quot;</code></td>
+</tr>
+<tr>
+<td><code>cdouble</code>/<code>cfloat</code></td>
+<td><code>double complex</code></td>
+<td><code>complex128</code></td>
+<td>两个双精度浮点</td>
+<td><code>&quot;D&quot;</code></td>
+<td><code>&quot;c16&quot;</code></td>
+</tr>
+<tr>
+<td><code>clongdouble</code>/<code>clongfloat</code></td>
+<td><code>long duoble complex</code></td>
+<td><code>complex256</code></td>
+<td>两个扩展精度浮点</td>
+<td><code>&quot;G&quot;</code></td>
+<td><code>&quot;c32&quot;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><code>float complex</code>、<code>double complex</code>类型定义在<code>complex.h</code>中</li>
+<li>C中的定长类型别名定义在<code>stdint.h</code>中</li>
+</ul>
+</blockquote>
+<h4 id="其他类型"><a href="#其他类型" class="headerlink" title="其他类型"></a>其他类型</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Python类型</th>
+<th>Desc</th>
+<th>单字符代码</th>
+<th>定长字符串代码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>timedelta64</code></td>
+<td>时间增量</td>
+<td><code>&quot;m&quot;</code></td>
+<td><code>&quot;m8&quot;</code></td>
+</tr>
+<tr>
+<td><code>datetime64</code></td>
+<td>日期时间</td>
+<td><code>&quot;M&quot;</code></td>
+<td><code>&quot;M8&quot;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="属性、索引、方法"><a href="#属性、索引、方法" class="headerlink" title="属性、索引、方法"></a>属性、索引、方法</h3><ul>
+<li><p>数组标量属性基本同<code>ndarray</code></p>
+</li>
+<li><p>数组标量类似0维数组一样支持索引</p>
+<ul>
+<li><code>X[()]</code>返回副本</li>
+<li><code>X[...]</code>返回0维数组</li>
+<li><code>X[&lt;field-name&gt;]</code>返回对应字段的数组标量</li>
+</ul>
+</li>
+<li><p>数组标量与<code>ndarray</code>有完全相同的方法</p>
+<ul>
+<li>默认行为是在内部将标量转换维等效0维数组，并调用相应
+数组方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="定义数组标量类型"><a href="#定义数组标量类型" class="headerlink" title="定义数组标量类型"></a>定义数组标量类型</h3><ul>
+<li>从内置类型组合结构化类型</li>
+<li>子类化<code>ndarray</code><ul>
+<li>部分内部行为会由数组类型替代</li>
+</ul>
+</li>
+<li>完全自定义数据类型，在numpy中注册<ul>
+<li>只能使用numpy C-API在C中定义</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据类型相关函数"><a href="#数据类型相关函数" class="headerlink" title="数据类型相关函数"></a>数据类型相关函数</h2><h3 id="数据类型信息"><a href="#数据类型信息" class="headerlink" title="数据类型信息"></a>数据类型信息</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>finfo(dtype)</code></td>
+<td>机器对浮点类型限制</td>
+</tr>
+<tr>
+<td><code>iinfo(type)</code></td>
+<td>机器对整型限制</td>
+</tr>
+<tr>
+<td><code>MachAr([float_conv,int_conv])</code></td>
+<td>诊断机器参数</td>
+</tr>
+<tr>
+<td><code>typename(char)</code></td>
+<td>对给定数据类型字符代码的说明</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="数据类型测试"><a href="#数据类型测试" class="headerlink" title="数据类型测试"></a>数据类型测试</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>can_cast(from_,to[,casting])</code></td>
+<td>是否可以类型转换</td>
+</tr>
+<tr>
+<td><code>issctype(rep)</code></td>
+<td><code>rep</code>（不能为可转换字符串）是否表示标量数据类型</td>
+</tr>
+<tr>
+<td><code>issubdtype(arg1,arg2)</code></td>
+<td><code>arg1</code>在数据类型层次中较低（即<code>dtype</code>的<code>issubclass</code>）</td>
+</tr>
+<tr>
+<td><code>issubsctype(arg1,arg2)</code></td>
+<td>同<code>issubdtype</code>，但支持包含<code>dtype</code>属性对象作为参数</td>
+</tr>
+<tr>
+<td><code>issubclass_(arg1,arg2)</code></td>
+<td>同内置<code>issubclass</code>，但参数非类时仅返回<code>False</code>，而不是<code>raise TypeError</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><p><code>np.int64</code>、<code>np.int32</code>在层次体系中不同、且层级一致，所以
+会出现<code>issubdtype(np.int64, int) -&gt; True</code>，其他情况为
+<code>False</code></p>
+</li>
+<li><p>通过<code>np.can_cast</code>函数确定safely类型转换</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_casting</span>(<span class="params">ntypes</span>):</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;X&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> char <span class="keyword">in</span> ntypes:</span><br><span class="line">		<span class="built_in">print</span>(char, end=<span class="string">&quot; &quot;</span>)</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> row <span class="keyword">in</span> ntypes:</span><br><span class="line">		<span class="built_in">print</span>(row, end=<span class="string">&quot; &quot;</span>)</span><br><span class="line">		<span class="keyword">for</span> col <span class="keyword">in</span> ntypes:</span><br><span class="line">			<span class="built_in">print</span>(<span class="built_in">int</span>(np.can_cast(row, col)), end=<span class="string">&quot; &quot;</span>)</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;&quot;</span>)</span><br><span class="line">print_casting(np.typecodes[<span class="string">&quot;All&quot;</span>])</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="数据类型确定"><a href="#数据类型确定" class="headerlink" title="数据类型确定"></a>数据类型确定</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Params</th>
+<th>ReturnType</th>
+<th>ReturnDesc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>min_scalar_type(a)</code></td>
+<td>标量值</td>
+<td>dtype实例</td>
+<td>满足要求最小类型</td>
+</tr>
+<tr>
+<td><code>promote_types(type1,type2)</code></td>
+<td>dtype等</td>
+<td>dtype实例</td>
+<td>可安全转换的最小类型</td>
+</tr>
+<tr>
+<td><code>result_type(*array_and_dtypes)</code></td>
+<td>dtype等、标量值、数组</td>
+<td>dtype实例</td>
+<td>应用<em>promotion rules</em>得到类型</td>
+</tr>
+<tr>
+<td><code>find_common_type(array_types,scalar_types)</code></td>
+<td>dtype等列表</td>
+<td>dtype实例</td>
+<td>综合考虑标量类型、数组类型</td>
+</tr>
+<tr>
+<td><code>common_type(*arrays)</code></td>
+<td>数值型数组（有<code>dtype</code>属性）</td>
+<td>预定义类型</td>
+<td>满足要求类型中、最高精度类型</td>
+</tr>
+<tr>
+<td><code>maximum_sctype(t)</code></td>
+<td>dtype等、标量值、数组</td>
+<td>预定义类型</td>
+<td>满足要求类型中、最高精度类型</td>
+</tr>
+<tr>
+<td><code>obj2sctype(rep[,default])</code></td>
+<td>dtype等、标量值、数组</td>
+<td>预定义类型</td>
+<td>对象类型</td>
+</tr>
+<tr>
+<td><code>sctype2char(sctype)</code></td>
+<td>dtype等、标量值、数组</td>
+<td>类型字符代码</td>
+<td>满足要求的最小类型</td>
+</tr>
+<tr>
+<td><code>mintypecode(typechars[,typeset,default])</code></td>
+<td>dtype等、标量值、数组</td>
+<td>类型字符代码</td>
+<td><code>typeset</code>中选择</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>除非标量和数组为不同体系内数据类型，否则标量不能up_cast
+数组数据类型</li>
+</ul>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://numpy.org/devdocs/reference/generated/numpy.issubdtype.html#numpy.issubdtype">https://numpy.org/devdocs/reference/generated/numpy.issubdtype.html#numpy.issubdtype</a></li>
+<li><a target="_blank" rel="noopener" href="https://numpy.org/devdocs/reference/generated/numpy.issubsctype.html#numpy.issubsctype">https://numpy.org/devdocs/reference/generated/numpy.issubsctype.html#numpy.issubsctype</a></li>
+<li><a target="_blank" rel="noopener" href="https://numpy.org/devdocs/reference/generated/numpy.find_common_type.html#numpy.find_common_type">https://numpy.org/devdocs/reference/generated/numpy.find_common_type.html#numpy.find_common_type</a></li>
+<li><a target="_blank" rel="noopener" href="https://numpy.org/devdocs/reference/generated/numpy.result_type.html#numpy.result_type">https://numpy.org/devdocs/reference/generated/numpy.result_type.html#numpy.result_type</a></li>
+<li><a target="_blank" rel="noopener" href="https://numpy.org/devdocs/reference/generated/numpy.common_type.html#numpy.common_type">https://numpy.org/devdocs/reference/generated/numpy.common_type.html#numpy.common_type</a></li>
+</ul>
+</blockquote>
+<h2 id="数据类型类np-dtype"><a href="#数据类型类np-dtype" class="headerlink" title="数据类型类np.dtype"></a>数据类型类<code>np.dtype</code></h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">dtype</span>(<span class="params">obj[,align,copy]</span>)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>numpy.dtype</code>类描述如何解释数组项对应内存块中字节</p>
+<ul>
+<li>数据大小</li>
+<li>数据内存顺序：<em>little-endian</em>、<em>big-endian</em></li>
+<li>数据类型<ul>
+<li>结构化数据<ul>
+<li>各字段名称</li>
+<li>各字段数据类型</li>
+<li>字段占用的内存数据块</li>
+</ul>
+</li>
+<li>子数组<ul>
+<li>形状</li>
+<li>数据类型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>需<code>numpy.dtype</code>实例作为参数的场合，大部分场景可用等价、
+可转换为<code>dtype</code>实例的其他值代替</p>
+<ul>
+<li>python、numpy中预定义的标量类型、泛型类型</li>
+<li>创建<code>dtype</code>实例类型的字符串、字典、列表</li>
+<li>包含<code>dtype</code>属性的类、实例</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据类型元素"><a href="#数据类型元素" class="headerlink" title="数据类型元素"></a>数据类型元素</h3><h4 id="类型类"><a href="#类型类" class="headerlink" title="类型类"></a>类型类</h4><ul>
+<li><p>NumPy内置类型</p>
+<ul>
+<li>24中内置数组标量类型</li>
+<li><p>泛型类型</p>
+<p>|Generic类型|转换后类型|
+|——-|——-|
+|<code>number</code>,<code>inexact</code>,<code>floating</code>|<code>float_</code>|
+|<code>complexfloating</code>|<code>complex_</code>|
+|<code>integer</code>,<code>signedinteger</code>|<code>int_</code>|
+|<code>unsignedinteger</code>|<code>uint</code>|
+|<code>character</code>|<code>string</code>|
+|<code>generic</code>,<code>flexible</code>|<code>void</code>|</p>
+</li>
+</ul>
+</li>
+<li><p>python内置类型，等效于相应数组标量</p>
+<ul>
+<li>转换规则同NumPy内置数组标量类型</li>
+<li><p><code>None</code>：缺省值，转换为<code>float_</code></p>
+<p>|Python内置类型|转换后类型|
+|——-|——-|
+|<code>int</code>|<code>int_</code>|
+|<code>bool</code>|<code>bool_</code>|
+|<code>float</code>|<code>float_</code>|
+|<code>complex</code>|<code>complex_</code>|
+|<code>bytes</code>|<code>bytes_</code>|
+|<code>str</code>|<code>unicode_</code>|
+|<code>unicode</code>|<code>unicode_</code>|
+|<code>buffer</code>|<code>void</code>|
+|Others|<code>object_</code>|</p>
+</li>
+</ul>
+</li>
+<li><p>带有<code>.dtype</code>属性的类型：直接访问、使用该属性</p>
+<ul>
+<li>该属性需返回可转换为<code>dtype</code>对象的内容</li>
+</ul>
+</li>
+</ul>
+<h4 id="可转换类型的字符串"><a href="#可转换类型的字符串" class="headerlink" title="可转换类型的字符串"></a>可转换类型的字符串</h4><ul>
+<li><p><code>numpy.sctypeDict.keys()</code>中字符串</p>
+</li>
+<li><p><em>Array-protocal</em>类型字符串，详细参见NumPy数组标量类型</p>
+<ul>
+<li>首个字符指定数据类型</li>
+<li>支持指定字节数的字符可在之后指定项目占用字节数<ul>
+<li>定长类型只能指定满足平台要求的字节数</li>
+<li>非定长类型可以指定任意字节数</li>
+</ul>
+</li>
+</ul>
+<p>|代码|类型|
+|——-|——-|
+|<code>&#39;?&#39;</code>|boolean|
+|<code>&#39;b&#39;</code>|(signed) byte，等价于<code>&#39;i1&#39;</code>|
+|<code>&#39;B&#39;</code>|unsigned byte，等价于<code>&#39;u1&#39;</code>|
+|<code>&#39;i&#39;</code>|(signed) integer|
+|<code>&#39;u&#39;</code>|unsigned integer|
+|<code>&#39;f&#39;</code>|floating-point|
+|<code>&#39;c&#39;</code>|complex-floating point|
+|<code>&#39;m&#39;</code>|timedelta|
+|<code>&#39;M&#39;</code>|datetime|
+|<code>&#39;O&#39;</code>|(Python) objects|
+|<code>&#39;S&#39;</code>/<code>&#39;a&#39;</code>|zero-terminated bytes (not recommended)|
+|<code>&#39;U&#39;</code>|Unicode string|
+|<code>&#39;V&#39;</code>|raw data (void)|</p>
+</li>
+</ul>
+<h3 id="结构化数据类型"><a href="#结构化数据类型" class="headerlink" title="结构化数据类型"></a>结构化数据类型</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>format_parser(formats,names,titles[,aligned,byteorder])</code></td>
+<td>创建数据类型</td>
+</tr>
+<tr>
+<td><code>dtype(obj[,align,copy])</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><p>结构化数据类型</p>
+<ul>
+<li>包含一个或多个数据类型字段，每个字段有可用于访问的
+名称</li>
+<li>父数据类型应有足够大小包含所有字段</li>
+<li>父数据类型几乎总是基于<code>void</code>类型</li>
+</ul>
+</li>
+<li><p>仅包含不具名、单个基本类型时，数组结构会穿透</p>
+<ul>
+<li>字段不会被隐式分配名称</li>
+<li>子数组shape会被添加至数组shape</li>
+</ul>
+</li>
+</ul>
+<h4 id="参数格式"><a href="#参数格式" class="headerlink" title="参数格式"></a>参数格式</h4><ul>
+<li><p>可转换数据类型的字符串指定类型、shape</p>
+<ul>
+<li>依次包含四个部分<ul>
+<li>字段shape</li>
+<li>字节序描述符：<code>&lt;</code>、<code>&gt;</code>、<code>|</code></li>
+<li>基本类型描述符</li>
+<li>数据类型占用字节数<ul>
+<li>对非变长数据类型，需按特定类型设置</li>
+<li>对变长数据类型，指字段包含的数量</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>逗号作为分隔符，分隔多个字段</li>
+<li>各字段名称只能为默认字段名称</li>
+</ul>
+<blockquote>
+<ul>
+<li>对变长类型，仅设置shape时，会将其视为bytes长度</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dt = np.dtype(<span class="string">&quot;i4, (2,3)f8, f4&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>元组指定字段类型、shape</p>
+<ul>
+<li>元组中各元素指定各字段名、数据类型、shape：
+<code>(&lt;field_name&gt;, &lt;dtype&gt;, &lt;shape&gt;)</code><ul>
+<li>若名称为<code>&#39;&#39;</code>空字符串，则分配标准字段名称</li>
+</ul>
+</li>
+<li>可在列表中多个元组指定多个字段
+<code>[(&lt;field_name&gt;, &lt;dtype&gt;, &lt;shape&gt;),...]</code></li>
+<li>数据类型<code>dtype</code>可以<strong>嵌套其他数据类型</strong><ul>
+<li>可转换类型字符串</li>
+<li>元组/列表</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dt = np.dtype((<span class="string">&quot;U10&quot;</span>, (<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line">dt = np.dtype((<span class="string">&quot;i4, (2,3)f8, f4&quot;</span>, (<span class="number">2</span>,<span class="number">3</span>))</span><br><span class="line">dt = np.dtype([(<span class="string">&quot;big&quot;</span>, <span class="string">&quot;&gt;i4&quot;</span>), (<span class="string">&quot;little&quot;</span>, <span class="string">&quot;&lt;i4&quot;</span>)])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字典元素为名称、类型、shape列表</p>
+<ul>
+<li>类似<code>format_parser</code>函数，字典各键值对分别指定名称
+列表、类型列表等：
+<code>&#123;&quot;names&quot;:...,&quot;formats&quot;:...,&quot;offsets&quot;:...,&quot;titles&quot;:...,&quot;itemsize&quot;:...&#125;</code><ul>
+<li><code>&quot;name&quot;</code>、<code>&quot;formats&quot;</code>为必须</li>
+<li><code>&quot;itemsize&quot;</code>指定总大小，必须足够大</li>
+</ul>
+</li>
+<li>分别指定各字段：<code>&quot;field_1&quot;:..., &quot;field_2&quot;:...</code><ul>
+<li>不鼓励，容易与上一种方法冲突</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dt = np.dtype(&#123;</span><br><span class="line">	<span class="string">&quot;names&quot;</span>: [<span class="string">&#x27;r&#x27;</span>, <span class="string">&#x27;g&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;a&#x27;</span>],</span><br><span class="line">	<span class="string">&quot;formats&quot;</span>: [<span class="string">&quot;u1&quot;</span>, <span class="string">&quot;u1&quot;</span>, <span class="string">&quot;u1&quot;</span>, <span class="string">&quot;u1&quot;</span>]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解释基数据类型为结构化数据类型：
+<code>(&lt;base_dtype&gt;, &lt;new_dtype&gt;)</code></p>
+<ul>
+<li>此方式使得<code>union</code>成为可能</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dt = np.dtype((<span class="string">&quot;i4&quot;</span>, [(<span class="string">&quot;r&quot;</span>, <span class="string">&quot;I1&quot;</span>), (<span class="string">&quot;g&quot;</span>, <span class="string">&quot;I1&quot;</span>), (<span class="string">&quot;b&quot;</span>, <span class="string">&quot;I1&quot;</span>), (<span class="string">&quot;a&quot;</span>, <span class="string">&quot;I1&quot;</span>)]))</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li><p>描述数据类型</p>
+<p>|属性|描述|
+|——-|——-|
+|<code>.type</code>|用于实例化此数据类型的数组标量类型|
+|<code>.kind</code>|内置类型字符码|
+|<code>.char</code>|内置类型字符码|
+|<code>.num</code>|内置类型唯一编号|
+|<code>.str</code>|类型标识字符串|</p>
+</li>
+<li><p>数据大小</p>
+<p>|属性|描述|
+|——-|——-|
+|<code>.name</code>|数据类型位宽名称|
+|<code>.itemsize</code>|元素大小|</p>
+</li>
+<li><p>字节顺序</p>
+<p>|属性|描述|
+|——-|——-|
+|<code>.byteorder</code>|指示字节顺序|</p>
+</li>
+<li><p>字段描述</p>
+<p>|属性|描述|
+|——-|——-|
+|<code>.fields</code>|命名字段字典|
+|<code>.names</code>|字典名称列表|</p>
+</li>
+<li><p>数组类型（非结构化）描述</p>
+<p>|属性|描述|
+|——-|——-|
+|<code>.subtype</code>|<code>(item_dtype,shape)</code>|
+|<code>.shape</code>||</p>
+</li>
+<li><p>附加信息</p>
+<p>|属性|描述|
+|——-|——-|
+|<code>.hasobject</code>|是否包含任何引用计数对象|
+|<code>.flags</code>|数据类型解释标志|
+|<code>.isbuiltin</code>|与内置数据类型相关|
+|<code>.isnative</code>|字节顺序是否为平台原生|
+|<code>.descr</code>|<code>__array_interface__</code>数据类型说明|
+|<code>.alignment</code>|数据类型需要对齐的字节（编译器决定）|
+|<code>.base</code>|基本元素的<code>dtype</code>|</p>
+</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ul>
+<li><p>更改字节顺序</p>
+<p>|方法|描述|
+|——-|——-|
+|<code>.newbyteorder([new_order])</code>|创建不同字节顺序数据类型|</p>
+</li>
+<li><p>Pickle协议实现</p>
+<p>|方法|描述|
+|——-|——-|
+|<code>.reduce()</code>|pickle化|
+|<code>.setstate()</code>||</p>
+</li>
+</ul>
+<h2 id="Datetime"><a href="#Datetime" class="headerlink" title="Datetime"></a>Datetime</h2><ul>
+<li>Numpy种时间相关数据类型<ul>
+<li>支持大量时间单位</li>
+<li>基于POSIX时间存储日期时间</li>
+<li>使用64位整形存储值，也由此决定了时间跨度</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.numpy.org.cn/reference/arrays/datetime.html">https://www.numpy.org.cn/reference/arrays/datetime.html</a></li>
+</ul>
+</blockquote>
+<h3 id="np-datetime64"><a href="#np-datetime64" class="headerlink" title="np.datetime64"></a><code>np.datetime64</code></h3><ul>
+<li><code>np.datetime64</code>表示单个时刻<ul>
+<li>若两个日期时间具有不同单位，可能仍然代表相同时刻</li>
+<li>从较大单位转换为较小单位是安全的投射</li>
+</ul>
+</li>
+</ul>
+<h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><ul>
+<li><p>创建规则</p>
+<ul>
+<li>内部存储单元自动从字符串形式中选择单位</li>
+<li>接受<code>&quot;NAT&quot;</code>字符串，表示“非时间”值</li>
+<li>可以强制使用特定单位</li>
+</ul>
+</li>
+<li><p>基本方法：ISO 8601格式的字符串</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">np.datetime64(<span class="string">&quot;2020-05-23T14:23&quot;</span>)</span><br><span class="line">np.datetime64(<span class="string">&quot;2020-05-23T14:23&quot;</span>, <span class="string">&quot;D&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从字符串创建日期时间数组</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">np.array([<span class="string">&quot;2020-01-23&quot;</span>, <span class="string">&quot;2020-04-23&quot;</span>], dtype=<span class="string">&quot;datetime64&quot;</span>)</span><br><span class="line">np.array([<span class="string">&quot;2020-01-23&quot;</span>, <span class="string">&quot;2020-04-23&quot;</span>], dtype=<span class="string">&quot;datetime64[D]&quot;</span>)</span><br><span class="line">np.arange(<span class="string">&quot;2020-01-01&quot;</span>, <span class="string">&quot;2020-05-03&quot;</span>, dtype=<span class="string">&quot;datetime64[D]&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>np.datetime64</code>为向后兼容，仍然支持解析时区</li>
+</ul>
+</blockquote>
+<h3 id="np-timedelta64"><a href="#np-timedelta64" class="headerlink" title="np.timedelta64"></a><code>np.timedelta64</code></h3><ul>
+<li><code>np.timedelta64</code>：时间增量</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>np.timedelta64</code>是对<code>np.datetime64</code>的补充，弥补Numpy对
+  物理量的支持</li>
+</ul>
+</blockquote>
+<h4 id="创建-1"><a href="#创建-1" class="headerlink" title="创建"></a>创建</h4><ul>
+<li><p>创建规则</p>
+<ul>
+<li>接受<code>&quot;NAT&quot;</code>字符串，表示“非时间”值数字</li>
+<li>可以强制使用特定单位</li>
+</ul>
+</li>
+<li><p>直接从数字创建</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.timedelta64(<span class="number">100</span>, <span class="string">&quot;D&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从已有<code>np.timedelta64</code>创建，指定单位</p>
+<ul>
+<li>注意，不能将月份及以上转换为日，因为不同时点进制不同</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.timedelta(a, <span class="string">&quot;M&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h4><ul>
+<li><p><code>np.datetime64</code>可以和<code>np.timedelta64</code>联合使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">np.datetime64(<span class="string">&quot;2020-05-14&quot;</span>) - np.datetime64(<span class="string">&quot;2020-01-12&quot;</span>)</span><br><span class="line">np.datetime64(<span class="string">&quot;2020-05-14&quot;</span>) + np.timedelta64(<span class="number">2</span>, <span class="string">&quot;D&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="相关方法"><a href="#相关方法" class="headerlink" title="相关方法"></a>相关方法</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>np.busdaycalendar(weekmask,holidays)</code></td>
+<td>返回存储有效工作日对象</td>
+</tr>
+<tr>
+<td><code>np.busday_offset(date,offset[,roll,weekmask,holidays,busdaycal,out])</code></td>
+<td>工作日offset</td>
+</tr>
+<tr>
+<td><code>np.is_busday(date[,weekmask,holidays,busdaycal,out])</code></td>
+<td>判断是否是工作日</td>
+</tr>
+<tr>
+<td><code>np.busday_count(begindates,enddates[,weekmask,holidays,busdaycal,out])</code></td>
+<td>指定天数</td>
+</tr>
+<tr>
+<td><code>np.datetime_as_string(arr[,unit,timezone,...])</code></td>
+<td>转换为字符串数组</td>
+</tr>
+<tr>
+<td><code>np.datetime_date(dtype,/)</code></td>
+<td>获取日期、时间类型步长信息</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><code>np.busday_offset</code>中<ul>
+<li><code>roll</code>缺省为<code>&quot;raise&quot;</code>，要求<code>date</code>本身为工作日</li>
+</ul>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>NDArray标量</p><p><a href="https://xyy15926.github.io/Python/Numpy/ndarray_scalars.html">https://xyy15926.github.io/Python/Numpy/ndarray_scalars.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-02-01</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-02-01</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Python/">Python</a><a class="link-muted mr-2" rel="tag" href="/tags/Numpy/">Numpy</a><a class="link-muted mr-2" rel="tag" href="/tags/NDArray/">NDArray</a><a class="link-muted mr-2" rel="tag" href="/tags/Data-Science/">Data Science</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Python/Numpy/ndarray_derived.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">NDArray子类</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Python/Numpy/ndarray.html"><span class="level-item">NDArray</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "d688bfdaedcf9a5cd03cf24f33f340ce",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#NDArray标量类型"><span class="level-left"><span class="level-item">1</span><span class="level-item">NDArray标量类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#内置标量类型"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">内置标量类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Python关联"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">Python关联</span></span></a></li><li><a class="level is-mobile" href="#C类型关联"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">C类型关联</span></span></a></li><li><a class="level is-mobile" href="#其他类型"><span class="level-left"><span class="level-item">1.1.3</span><span class="level-item">其他类型</span></span></a></li></ul></li><li><a class="level is-mobile" href="#属性、索引、方法"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">属性、索引、方法</span></span></a></li><li><a class="level is-mobile" href="#定义数组标量类型"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">定义数组标量类型</span></span></a></li></ul></li><li><a class="level is-mobile" href="#数据类型相关函数"><span class="level-left"><span class="level-item">2</span><span class="level-item">数据类型相关函数</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#数据类型信息"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">数据类型信息</span></span></a></li><li><a class="level is-mobile" href="#数据类型测试"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">数据类型测试</span></span></a></li><li><a class="level is-mobile" href="#数据类型确定"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">数据类型确定</span></span></a></li></ul></li><li><a class="level is-mobile" href="#数据类型类np-dtype"><span class="level-left"><span class="level-item">3</span><span class="level-item">数据类型类np.dtype</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#数据类型元素"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">数据类型元素</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#类型类"><span class="level-left"><span class="level-item">3.1.1</span><span class="level-item">类型类</span></span></a></li><li><a class="level is-mobile" href="#可转换类型的字符串"><span class="level-left"><span class="level-item">3.1.2</span><span class="level-item">可转换类型的字符串</span></span></a></li></ul></li><li><a class="level is-mobile" href="#结构化数据类型"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">结构化数据类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#参数格式"><span class="level-left"><span class="level-item">3.2.1</span><span class="level-item">参数格式</span></span></a></li></ul></li><li><a class="level is-mobile" href="#属性"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">属性</span></span></a></li><li><a class="level is-mobile" href="#方法"><span class="level-left"><span class="level-item">3.4</span><span class="level-item">方法</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Datetime"><span class="level-left"><span class="level-item">4</span><span class="level-item">Datetime</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#np-datetime64"><span class="level-left"><span class="level-item">4.1</span><span class="level-item">np.datetime64</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#创建"><span class="level-left"><span class="level-item">4.1.1</span><span class="level-item">创建</span></span></a></li></ul></li><li><a class="level is-mobile" href="#np-timedelta64"><span class="level-left"><span class="level-item">4.2</span><span class="level-item">np.timedelta64</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#创建-1"><span class="level-left"><span class="level-item">4.2.1</span><span class="level-item">创建</span></span></a></li><li><a class="level is-mobile" href="#运算"><span class="level-left"><span class="level-item">4.2.2</span><span class="level-item">运算</span></span></a></li></ul></li><li><a class="level is-mobile" href="#相关方法"><span class="level-left"><span class="level-item">4.3</span><span class="level-item">相关方法</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

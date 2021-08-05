@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: Random Walk - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">Random Walk</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-14T04:13:11.000Z" title="7/14/2019, 12:13:11 PM">2019-07-14</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:33:59.000Z" title="7/16/2021, 4:33:59 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Specification/">ML Specification</a><span> / </span><a class="link-muted" href="/categories/ML-Specification/Graph-Analysis/">Graph Analysis</a></span><span class="level-item">30 minutes read (About 4508 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Specification/Graph-Analysis/social_network.html">社交网络</a></h1><div class="content"><h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><ul>
+<li><em>node/vertex</em>：人</li>
+<li><em>link/edge</em>：人与人之间的<em>relation</em>，可以有标签、权重、
+方向</li>
+<li><em>graph/network</em>：社交网络，表示个体之间的相互关系</li>
+</ul>
+<blockquote>
+<ul>
+<li>图、网络参见<em>cs_algorithm/data_structure/graph</em></li>
+</ul>
+</blockquote>
+<h3 id="基本统计指标、特性"><a href="#基本统计指标、特性" class="headerlink" title="基本统计指标、特性"></a>基本统计指标、特性</h3><ul>
+<li><p><em>subnetwork/subgraph</em></p>
+<ul>
+<li><em>singleton</em>：单点集，没有边的子图</li>
+<li><em>clique</em>：派系，任意两个节点间均有连边的子图</li>
+</ul>
+</li>
+<li><p><em>degree</em>：</p>
+<ul>
+<li>对有向图可以分为<em>out-degree</em>、<em>in-degree</em></li>
+<li><em>average degree</em>：网络平均度，所有节点度的算术平均</li>
+<li><em>degree distribution</em>：网络度分布，概率分布函数
+$P(k)$</li>
+</ul>
+</li>
+</ul>
+<h4 id="Path"><a href="#Path" class="headerlink" title="Path"></a><em>Path</em></h4><ul>
+<li><em>path length</em>：路径长度</li>
+<li><em>shortest path</em>：节点间最短路径</li>
+<li><em>distance</em>：节点距离，节点间最短路径长度</li>
+<li><p><em>diameter</em>：网络直径，任意两个节点间距离最大值</p>
+</li>
+<li><p>对规模（节点数量）为$N$大多数现实网络（尤其是社交网络）</p>
+<ul>
+<li>小直径：与六度分离实验相符</li>
+<li>存在巨大连通分支</li>
+<li>高聚类特性：具有较大点聚类系数</li>
+<li>明显的模块结构</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>giant connected component</em>：巨大连通分支，即规模达到
+  $O(N)$的连通分支</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><em>node clustering coefficient</em>：点聚类系数</p>
+<script type="math/tex; mode=display">\begin{align*}
+NC_i & = \frac {triange_i} {triple_i} \\
+NC & = \frac {\sum_i NC_i} N
+\end{align*}</script><blockquote>
+<ul>
+<li>$triangle_i$：包含节点$i$三角形数量</li>
+<li>$triple_i$：与节点$i$相连三元组：包含节点$i$的三个
+ 节点，且至少存在节点$i$
+ 到其他两个节点的两条边</li>
+<li>$NC_i$：节点$i$聚类系数</li>
+<li>$NC$：整个网络聚类系数</li>
+</ul>
+</blockquote>
+</li>
+<li><p><em>edge clustering coefficient</em>：边聚类系数</p>
+<script type="math/tex; mode=display">
+EC_{ij} = \frac {|包含边<i,j>三角形|}
+   {min\{(d_i-1), (d_j-1)\}}</script><blockquote>
+<ul>
+<li>$d_i$：节点$i$度，即分母为边$<i,j>$最大可能存在于
+ 的三角形数量</li>
+</ul>
+</blockquote>
+</li>
+<li><p><em>edge betweenness</em>：边介数，从源节点$v$出发、通过该边
+的最短路径数目</p>
+</li>
+</ul>
+<h4 id="边介数的计算"><a href="#边介数的计算" class="headerlink" title="边介数的计算"></a>边介数的计算</h4><ul>
+<li><p>从源节点$i$出发，为每个节点$j$维护距离源节点最短路径
+$d_j$、从源节点出发经过其到达其他节点最短路径数目$w_j$</p>
+<ul>
+<li><p>定义源节点$i$距离$d_i=0$、权值$w_i=1$</p>
+</li>
+<li><p>对源节点$i$的邻接节点$j$，定义其距离$d_j=d_i+1$、
+权值$w_j=w_i=1$</p>
+</li>
+<li><p>对节点$j$的任意邻接节点$k$</p>
+<ul>
+<li>若$k$未被指定距离，则指定其距离$d_k=d_j+1$、
+权值$w_k=w_j$</li>
+<li>若$k$被指定距离且$d_k=d_j+1$，则原权值增加1，
+即$w_k=w_k+1$</li>
+<li>若$k$被指定距离且$d_k&lt;d_j+1$，则跳过</li>
+</ul>
+</li>
+<li><p>重复以上直至网络中包含节点的连通子图中节点均被指定
+距离、权重</p>
+</li>
+</ul>
+</li>
+<li><p>从节点$k$经过节点$j$到达源节点$i$的最短路径数目、与节点
+$k$到达源节点$i$的最短路径数目之比为$w_i/w_j$</p>
+<ul>
+<li><p>从叶子节点$l$开始，若叶子节点$l$节点$i$相邻，则将
+权值$w_i/w_l$赋给边$(i,l)$</p>
+</li>
+<li><p>从底至上，边$(i,j)$赋值为该边之下的邻边权值之和加1
+乘以$w_i/w_j$</p>
+</li>
+<li><p>重复直至遍历图中所有节点</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>叶子节点：广度优先搜索叶子节点，即不被任何从源节点出发到
+  其他节点的最短路径经过</li>
+<li>此边介数计算方式与节点介数中心性计算，都是寻找通过边、
+  节点的最短路径数目，但是具体计算方式不同</li>
+</ul>
+</blockquote>
+<h5 id="最短路径唯一"><a href="#最短路径唯一" class="headerlink" title="最短路径唯一"></a>最短路径唯一</h5><blockquote>
+<ul>
+<li>考虑从任何节点间<strong>最短路径只有一条</strong>，则某节点到其他节点
+  的最短路径构成一棵最短路径树</li>
+</ul>
+</blockquote>
+<ul>
+<li>找到最短路径树的叶子节点，为每条与叶子节点相连的边赋值
+为1</li>
+<li>自下而上为树中其他边赋值：边之下所有临边值之和加1</li>
+<li>处理所有节点直至树根源节点时，各边相对于树根源节点的介数
+即为其权重</li>
+</ul>
+<blockquote>
+<ul>
+<li>对各节点分别重复以上即可得到各边对各节点介数，相总即可得
+  各边总边介数</li>
+</ul>
+</blockquote>
+<h3 id="Node-Centrality"><a href="#Node-Centrality" class="headerlink" title="Node Centrality"></a><em>Node Centrality</em></h3><p>节点中心性：采用某种定量方法对每个节点处于网络中心地位的程度
+进行刻画</p>
+<ul>
+<li>描述整个网络是否存在核心、核心的状态</li>
+</ul>
+<h5 id="基于度"><a href="#基于度" class="headerlink" title="基于度"></a>基于度</h5><ul>
+<li><p><em>Degree Centrality</em>：度中心性</p>
+<script type="math/tex; mode=display">DC_i = \frac {d_i} {N-1}</script><blockquote>
+<ul>
+<li>$d_i$：节点$i$的度</li>
+</ul>
+</blockquote>
+<ul>
+<li>衡量节点对促进网络传播过程发挥的作用</li>
+</ul>
+</li>
+<li><p><em>eigenvector centrality</em>：特征向量中心性</p>
+<p>$$ EC_i = $</p>
+</li>
+<li><p><em>subgraph centrality</em>：子图中心性</p>
+<p>$$ SC_i = $</p>
+</li>
+</ul>
+<h5 id="基于路径数"><a href="#基于路径数" class="headerlink" title="基于路径数"></a>基于路径数</h5><ul>
+<li><p><em>Betweenness Centrality</em>：介数中心性</p>
+<script type="math/tex; mode=display">
+BC_i = \frac 2 {(N-1)(N-2)} \sum_{j<k, j,k \neq i}
+   \frac {p_{j,k}(i)} {p_{j,k}}</script><blockquote>
+<ul>
+<li>$p_{j,k}$：节点$j,k$间路径数量</li>
+<li>$p_{j,k}(i)$：节点$j,k$间路径经过节点$i$路径数量</li>
+</ul>
+</blockquote>
+<ul>
+<li>衡量节点对其他节点间信息传输的潜在控制能力</li>
+</ul>
+</li>
+<li><p><em>Closeness Centrality</em></p>
+<script type="math/tex; mode=display">
+CC_i =</script></li>
+</ul>
+<h3 id="Community-Structure"><a href="#Community-Structure" class="headerlink" title="Community Structure"></a><em>Community Structure</em></h3><p>社团/模块/社区结构：内部联系紧密、外部联系稀疏（通过边数量
+体现）的子图</p>
+<h4 id="基于连接频数的定义"><a href="#基于连接频数的定义" class="headerlink" title="基于连接频数的定义"></a>基于连接频数的定义</h4><script type="math/tex; mode=display">\begin{align*}
+\sigma_{in}(S) & = \frac {|E(S)|}  {|V(S)|(|V(S)|-1)/2} \\
+\sigma_{out}(S) & = \frac {|E| - |E(S)|}
+    {(N - |V(S)|)(N - |V_S| - 1) / 2} \\
+\sigma(G) & = \frac {|E|} {|V|(|V|-1) / 2}
+\end{align*}</script><blockquote>
+<ul>
+<li>$G, S$：全图、子图</li>
+<li>$\simga_{in}(S)$：子图$S$的内部连接率/频数</li>
+<li>$S_{in}$：子图$S$内部的实际边数</li>
+<li>$E, E(S)$：全图、子图$S$内部边</li>
+<li>$V, V(S)$：全图、子图$S$内部节点</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若子图$S \subset G$满足如下，则称为网络$G$的社区</p>
+<script type="math/tex; mode=display">
+\sigma_{in}(S) > \sigma(G) > \sigma_{out}(S)</script></li>
+</ul>
+<h4 id="强弱社区"><a href="#强弱社区" class="headerlink" title="强弱社区"></a>强弱社区</h4><ul>
+<li><p>强社区结构</p>
+<script type="math/tex; mode=display">|E_{in}(S, i)| > |E_{out}(S, i)|, \forall i \in S</script><blockquote>
+<ul>
+<li>$E_{in}(S, i)$：节点$i$和子图$S$内节点连边</li>
+<li>$E_{out}(S, i)$：节点$i$和子图$S$内节点连边</li>
+</ul>
+</blockquote>
+</li>
+<li><p>弱社区结构</p>
+<script type="math/tex; mode=display">
+\sum_{i \in S} |E_{in}(S, i)| > \sum_{i \in S}
+   |E_{out}(S, i)|, \forall i \in S</script></li>
+<li><p>最弱社区结构</p>
+<script type="math/tex; mode=display">
+\forall i \in S_j, |E_{in}(S_j, i)| > |E(S_j, i, S_k)|,
+   j \neq k, k=1,2,\cdots,M</script><blockquote>
+<ul>
+<li>社区$S_1,S_2,\cdots,S_M$是网络$G$中社区</li>
+<li>$E(S_j, i, S_k)$：子图$S_j$中节点$i$与子图$S_k$之间
+ 连边数</li>
+</ul>
+</blockquote>
+</li>
+<li><p>改进的弱社区结构：同时满足弱社区结构、最弱社区结构</p>
+</li>
+</ul>
+<h4 id="LS集"><a href="#LS集" class="headerlink" title="LS集"></a>LS集</h4><p>LS集：<strong>任何真子集</strong>与集合内部连边数都多于与集合外部连边数
+的节点集合</p>
+<h4 id="Clique"><a href="#Clique" class="headerlink" title="Clique"></a><em>Clique</em></h4><blockquote>
+<ul>
+<li>派系：节点数大于等于3的全连通子图</li>
+<li><p>n派系：任意两个顶点最多可以通过n-1个中介点连接</p>
+<blockquote>
+<ul>
+<li>对派系定义的弱化</li>
+<li>允许两社团的重叠</li>
+</ul>
+</blockquote>
+</li>
+<li><p>全连通子图：任意两个节点间均有连边</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="模块度函数Q"><a href="#模块度函数Q" class="headerlink" title="模块度函数Q"></a>模块度函数Q</h4><script type="math/tex; mode=display">\begina{align*}
+Q & = \sum_{i} (e_{i,i} - \hat e_{i,i}) \\
+& = \sum_{i} (e_{i,i} - a_i^2) \\
+& = \sum_{i} (e_{i,i} - \sum_j e_{i,j}^2)
+& = Tre - \sum_{i,j} e_{i,j}^2
+\end{align*}</script><blockquote>
+<ul>
+<li>$\hat e_{i,i}$：随机网络中社区$i$内连边数占比期望</li>
+<li>$e_{i,j}$：社区$i,j$中节点间连边数在所有边中所占比例</li>
+<li>$a<em>i = \sum_j e</em>{i,j}$：与社区$i$中节点连边数比例</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>思想：随机网络不会具有明显社团结构</p>
+<ul>
+<li><p>不考虑节点所属社区在节点对间直接连边，则应有
+$\hat e<em>{i,j} = a_i a_j$，特别的
+$\hat e</em>{i,i} = a_i^2$</p>
+</li>
+<li><p>比较社区实际覆盖度、随机连接覆盖度差异评估对社区结构
+的划分</p>
+</li>
+</ul>
+</li>
+<li><p>划分对应Q值越大，划分效果越好</p>
+<ul>
+<li>$0&lt; Q &lt;1$：一般以$Q=0.3$作为网络具有明显社团结构的
+下限</li>
+<li>实际网络中$Q<em>{max} \in [0.3, 0.7]$，$Q</em>{max}$越大
+网络分裂（聚类）性质越强，社区结构越明显</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>采用完全随机形式，无法避免重边、自环的存在，而现实
+网络研究常采用简单图，所以Q值存在局限</li>
+<li>Q值分辨能力有限，网络中规模较大社区会掩盖小社区，
+即使其内部连接紧密</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>覆盖度：社区内部连接数占总连接数比例</li>
+</ul>
+</blockquote>
+<h4 id="模块密度D"><a href="#模块密度D" class="headerlink" title="模块密度D"></a>模块密度D</h4><script type="math/tex; mode=display">\begin{align*}
+D & = \sum_{i=1}^M d(S_i) \\
+& = \sum_{i=1}^K \frac {|E_{in}(S_i)| - |E_{out}(S_i)|}
+    {|V_{in}(S_i)}
+\begin{align*}</script><ul>
+<li>模块密度D表示社区内部连边、社区间连边之差与社区节点总数
+之比<ul>
+<li>值越大表示划分结果越好</li>
+<li>考虑社区总节点数，克服模块度Q无法探测小社区的缺陷</li>
+</ul>
+</li>
+</ul>
+<h4 id="社区度C"><a href="#社区度C" class="headerlink" title="社区度C"></a>社区度C</h4><script type="math/tex; mode=display">
+C = \frac 1 M \sum_{i=1}^M [\frac {|E_{in}(S_i)|}
+    {|V(S_i)|(|V(S_i)| - 1) / 2} - \frac {|E_{out}(S_i)|}
+    {|V(S_i)| (|V| - V(S_i)|}]</script><blockquote>
+<ul>
+<li>$\frac {|E_{in}(S_i)} {|V(S_i)||(|V(S_i)-1)/2}$：社区
+  $S_i$的簇内密度</li>
+<li>$\frac {|E_{out}(S_i)} {|V(S_i)||(|V|-|V(S_i))}$：社区
+  $S_i$的簇内密度</li>
+</ul>
+</blockquote>
+<h4 id="Fitness函数"><a href="#Fitness函数" class="headerlink" title="Fitness函数"></a>Fitness函数</h4><script type="math/tex; mode=display">\begin{align*}
+f_i & = \frac {d_{in}(S_i)} {d_{in}(S_i) + d_{out}(S_i)} \\
+& = \frac {2 * E_{in}(S_i)} {2 * E_{in}(S_i) + E_{out}(S_i)} \\
+\bar f = \frac 1 M \sum_{i=1}^M f_i
+\end{align*}</script><blockquote>
+<ul>
+<li>$f_i$：社区$S_i$的fitness函数</li>
+<li>$d<em>{in}(S_i) = 2 * E</em>{in}(S_i)$：社区$S_i$内部度</li>
+<li>$d<em>{out}(S_i) = E</em>{out}(S_i)$：社区$S_i$外部度</li>
+<li>$\bar f$：整个网络社区划分的fitness函数</li>
+</ul>
+</blockquote>
+<ul>
+<li>fitness函数使用直接的方式避开了模块度Q函数的弊端<ul>
+<li>应用结果显示其为网络社区结构的有效度量标准</li>
+</ul>
+</li>
+</ul>
+<h4 id="Modularity"><a href="#Modularity" class="headerlink" title="Modularity"></a>Modularity</h4><script type="math/tex; mode=display">
+Q = \frac 1 {2|E|} \sum_{i,j}</script><h2 id="社区发现算法"><a href="#社区发现算法" class="headerlink" title="社区发现算法"></a>社区发现算法</h2><h3 id="网络测试集"><a href="#网络测试集" class="headerlink" title="网络测试集"></a>网络测试集</h3><ul>
+<li><p><em>Girvan</em>、<em>Newman</em>人工构造网络</p>
+<ul>
+<li>网络包含128个节点、平均分为4组</li>
+<li>每组内部连边、组间连边概率分别记为$p<em>{in}, p</em>{out}$</li>
+<li>要求每个节点度期望为16</li>
+</ul>
+</li>
+<li><p><em>Lancichinet ti</em>人工构造网络</p>
+<ul>
+<li>测试集中节点度、社区大小服从幂律分布</li>
+<li>混淆参数$\mu$控制社区结构显著程度</li>
+</ul>
+</li>
+<li><p>小规模、社区结构已知真实网络</p>
+<ul>
+<li>Zachary空手道俱乐部</li>
+<li>海豚社会关系网络</li>
+<li>美国大学生足球俱乐部网络</li>
+</ul>
+</li>
+</ul>
+<h3 id="社区发现算法-1"><a href="#社区发现算法-1" class="headerlink" title="社区发现算法"></a>社区发现算法</h3><blockquote>
+<ul>
+<li><em>Agglomerative Method</em>：凝聚算法<blockquote>
+<ul>
+<li>NF算法</li>
+<li><em>Walk Trap</em></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p><em>Division Method</em>：分裂算法</p>
+<ul>
+<li><em>Girvan-Newman</em>算法</li>
+<li>边聚类探测算法</li>
+</ul>
+</blockquote>
+</blockquote>
+<ul>
+<li><p>凝聚算法流程</p>
+<ul>
+<li>最初每个节点各自成为独立社区</li>
+<li>按某种方法计算各社区之间相似性，选择相似性最高的社区
+合并<ul>
+<li>相关系数</li>
+<li>路径长度</li>
+<li>矩阵方法</li>
+</ul>
+</li>
+<li>不断重复直至整个网络成为一个社区</li>
+</ul>
+</li>
+<li><p>算法流程可以的用世系图表示</p>
+<ul>
+<li>可以在任意合并步骤后停止，此时节点聚合情况即为网络中
+社区结构</li>
+<li>但应该在度量标准值最大时停止</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>分裂算法流程同凝聚算法相反</li>
+</ul>
+</blockquote>
+<h4 id="Girvan-Newman算法"><a href="#Girvan-Newman算法" class="headerlink" title="Girvan-Newman算法"></a><em>Girvan-Newman</em>算法</h4><p>GN算法</p>
+<ul>
+<li><p>流程</p>
+<ul>
+<li>计算网络中各边相对于可能源节点的边介数</li>
+<li>删除网络中边介数较大的边，每当分裂出新社区
+（即产生新连通分支）<ul>
+<li>计算网络的社区结构评价指标</li>
+<li>记录对应网络结构</li>
+</ul>
+</li>
+<li>重复直到网络中边都被删除，每个节点为单独社区，选择
+最优评价指标的网络结构作为网络最终分裂状态</li>
+</ul>
+</li>
+<li><p>缺点：计算速度满，边介数计算开销大，只适合处理中小规模
+网络</p>
+</li>
+</ul>
+<h4 id="Newman-Fast-Algorithm"><a href="#Newman-Fast-Algorithm" class="headerlink" title="Newman Fast Algorithm"></a><em>Newman Fast Algorithm</em></h4><p>NF快速算法：</p>
+<ul>
+<li><p>流程</p>
+<ul>
+<li><p>初始化网络中各个节点为独立社区、矩阵$E={e_{i,j}}$</p>
+<script type="math/tex; mode=display">\begin{align*}
+e_{i,j} & = \left \{ \begin{array}{l}
+  \frac 1 {2M}, & 边(i,j)存在 \\
+  0, & 节点间不存在边
+\end{array} \right. \\
+a_i & = \frac {d_i} {2M}
+\end{align*}</script><blockquote>
+<ul>
+<li>$M$：网络中边总数</li>
+<li>$e_{i,j}$：网络中社区$i,j$节点边在所有边中占比</li>
+<li>$a_i$：与社区$i$中节点相连边在所有边中占比</li>
+</ul>
+</blockquote>
+</li>
+<li><p>依次合并有边相连的社区对，计算合并后模块度增量</p>
+<script type="math/tex; mode=display">\Delta Q = e_{i,j} + e_{j,i} = 2(e_{i,j}-a_i a_j)</script><ul>
+<li>根据贪婪思想，每次沿使得$Q$增加最多、减少最小
+方向进行</li>
+<li>每次合并后更新元素$e_{i,j}$，将合并社区相关行、
+列相加</li>
+<li>计算网络社区结构评价指标、网络结构</li>
+</ul>
+</li>
+<li><p>重复直至整个网络合并成为一个社区，选择最优评价指标
+对应网络社区结构</p>
+</li>
+</ul>
+</li>
+<li><p>基于贪婪思想的凝聚算法</p>
+</li>
+<li><p>GN算法、NF算法大多使用无权网络，一个可行的方案是计算无权
+情况下各边介数，加权网络中各边介数为无权情况下个边介数
+除以边权重</p>
+<ul>
+<li>此时，边权重越大介数越小，被移除概率越小，符合社区
+结构划分定义</li>
+</ul>
+</li>
+</ul>
+<h4 id="Edge-Clustering-Detection-Algorithm"><a href="#Edge-Clustering-Detection-Algorithm" class="headerlink" title="Edge-Clustering Detection Algorithm"></a><em>Edge-Clustering Detection Algorithm</em></h4><p>边聚类探测算法：</p>
+<ul>
+<li>流程：<ul>
+<li>计算网络中尚存的边聚类系数值</li>
+<li>移除边聚类系数值最小者$(i,j)$，每当分裂出新社区
+（即产生新连通分支）<ul>
+<li>计算网络社区评价指标fitness、modularity</li>
+<li>记录对应网络结构</li>
+</ul>
+</li>
+<li>重复直到网络中边都被删除，每个节点为单独社区，选择
+最优评价指标的网络结构作为网络最终分裂状态</li>
+</ul>
+</li>
+</ul>
+<h4 id="Walk-Trap"><a href="#Walk-Trap" class="headerlink" title="Walk Trap"></a><em>Walk Trap</em></h4><p>随机游走算法：</p>
+<h4 id="Label-Propagation"><a href="#Label-Propagation" class="headerlink" title="Label Propagation"></a><em>Label Propagation</em></h4><p>标签扩散算法：</p>
+<h3 id="Self-Similar"><a href="#Self-Similar" class="headerlink" title="Self-Similar"></a><em>Self-Similar</em></h3><p>（网络结构）自相似性：局部在某种意义上与整体相似</p>
+<ul>
+<li><em>fractal</em>分形的重要性质</li>
+</ul>
+<h3 id="Random-Walk"><a href="#Random-Walk" class="headerlink" title="Random Walk"></a><em>Random Walk</em></h3><p>（网络）随机游走：</p>
+<h4 id="游走形式"><a href="#游走形式" class="headerlink" title="游走形式"></a>游走形式</h4><ul>
+<li><em>unbiased random walks</em>：无偏随机游走，等概率游走</li>
+<li><em>biased random walks</em>：有偏随机游走，正比于节点度</li>
+<li><em>self-avoid walks</em>：自规避随机游走</li>
+<li><em>quantum walks</em>：量子游走</li>
+</ul>
+<h4 id="研究内容"><a href="#研究内容" class="headerlink" title="研究内容"></a>研究内容</h4><ul>
+<li><p><em>first-passage time</em>：平均首达时间</p>
+<script type="math/tex; mode=display">F(s,t)</script></li>
+<li><p><em>mean commute time</em>：平均转移时间</p>
+<script type="math/tex; mode=display">
+C(t,s) = F(s,t) + F(t,s)</script></li>
+<li><p><em>mean return time</em>：平均返回时间</p>
+<script type="math/tex; mode=display">
+T(s,s)</script></li>
+</ul>
+<h4 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h4><ul>
+<li><em>community detection</em>：社区探测</li>
+<li><em>recommendation systems</em>：推荐系统</li>
+<li><em>electrical networks</em>：电力系统</li>
+<li><em>spanning trees</em>：生成树</li>
+<li><em>infomation retrieval</em>：信息检索</li>
+<li><em>natural language proessing</em>：自然语言处理</li>
+<li><em>graph partitioning</em>：图像分割</li>
+<li><em>random walk hypothesis</em>：随机游走假设（经济学）</li>
+<li><em>pagerank algorithm</em>：PageRank算法</li>
+</ul>
+<h3 id="网络可视化"><a href="#网络可视化" class="headerlink" title="网络可视化"></a>网络可视化</h3><h4 id="Graph-Layout"><a href="#Graph-Layout" class="headerlink" title="Graph Layout"></a><em>Graph Layout</em></h4><p>图布局：无实际意义但是影响网络直观效果</p>
+<ul>
+<li><em>random layout</em>：随机布局，节点、边随机放置</li>
+<li><em>circular layout</em>：节点放在圆环上</li>
+<li><em>grid layout</em>：网格布局</li>
+<li><em>force-directed layout</em>：力导向布局<ul>
+<li>最常用</li>
+<li>动态、由节点相互连接决定布局</li>
+<li>点距离较近节点在放置在较近位置</li>
+</ul>
+</li>
+<li><em>YiFan Hu layout</em></li>
+<li><em>Harel-Koren Fast Multiscale Layout</em></li>
+<li><em>NodeXL</em>：节点以box形式被展示，边放置在box内、间</li>
+</ul>
+<h4 id="Visualizing-Network-Features"><a href="#Visualizing-Network-Features" class="headerlink" title="Visualizing Network Features"></a><em>Visualizing Network Features</em></h4><p>网络特征可视化：边权、节点特性、标签、团结构</p>
+<ul>
+<li>标签：只显示感兴趣标签</li>
+<li>度、中心性、权重等量化特征：借助大小、形状、颜色体现</li>
+<li>节点分类信息：节点节点颜色、形状体现</li>
+</ul>
+<h4 id="Scale-Issue"><a href="#Scale-Issue" class="headerlink" title="Scale Issue"></a><em>Scale Issue</em></h4><p>网络可视化：是否对所有网络均有可视化必要</p>
+<ul>
+<li>网络密度太小、太大，无可视化必要</li>
+</ul>
+<h2 id="现实网络"><a href="#现实网络" class="headerlink" title="现实网络"></a>现实网络</h2><ul>
+<li><p>网络科学：现实世界的任何问题都可以用复杂关系网络近似模拟</p>
+<ul>
+<li>节点：研究问题中主体</li>
+<li>边：模拟主体间的某种相互关系</li>
+</ul>
+</li>
+<li><p>现实网络大多为无标度网络，且幂指数$\gamma \in [2, 3]$</p>
+<ul>
+<li>网络中大部分节点度很小，小部分hub节点有很大的度</li>
+<li>对随机攻击稳健，但对目的攻击脆弱</li>
+<li><em>triangle power law</em>：网络中三角形数量服从幂律分布</li>
+<li><em>eigenvalue power law</em>：网络邻接矩阵的特征值服从
+幂律分布</li>
+</ul>
+</li>
+<li><p>绝大多数现实网络、网络结构模型虽然不能只管看出自相性，
+但是在某种<em>length-scale</em>下确实具有自相似性</p>
+<ul>
+<li>万维网</li>
+<li>社会网络</li>
+<li>蛋白质交互作用网络</li>
+<li>细胞网络</li>
+</ul>
+</li>
+<li><p>个体社会影响力：社交网络中节点中心性</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>power-law distribution</em>：幂律分布</li>
+<li><em>scale-free network</em>：无标度网络，度分布服从幂律分布的
+  复杂网络，具有无标度特性</li>
+<li><em>heavy-tailed distribution</em>：厚尾分布</li>
+</ul>
+</blockquote>
+<h3 id="社交网络"><a href="#社交网络" class="headerlink" title="社交网络"></a>社交网络</h3><ul>
+<li><p>人、人与人之间的关系确定，则网络结构固定</p>
+</li>
+<li><p>有人类行为存在的任何领域都可以转化为社交网络形式</p>
+<ul>
+<li><em>offline social networks</em>：线下社交网络，现实面对面
+接触中的人类行为产生，人类起源时即出现</li>
+<li><em>online social networks/social webs</em>：在线社交网络</li>
+<li><em>social media websites</em>：多媒体网社交网</li>
+</ul>
+</li>
+<li><p>由于社交网络中人类主观因素的存在，定性特征可以用于社交
+网络分析</p>
+<ul>
+<li>关系强弱</li>
+<li>信任值</li>
+</ul>
+</li>
+<li><p>对网络结构的分析的数量化指标可以分析社交网络的基本特征</p>
+<ul>
+<li>度、度分布</li>
+<li>聚类系数</li>
+<li>路径长度</li>
+<li>网络直径</li>
+</ul>
+</li>
+<li><p>数据分析类型</p>
+<ul>
+<li><em>Content Data</em>：内容数据分析，文本、图像、其他多媒体
+数据</li>
+<li><em>Linkage Data</em>：链接数据分析，网络的动力学行为：网络
+结构、个体之间沟通交流</li>
+</ul>
+</li>
+</ul>
+<h3 id="社交网络中社区发现"><a href="#社交网络中社区发现" class="headerlink" title="社交网络中社区发现"></a>社交网络中社区发现</h3><ul>
+<li><p>现实世界网络普遍具有模块/社区结构特性</p>
+<ul>
+<li>内部联系紧密、外部连接稀疏</li>
+<li>提取社区/模块结构，研究其特性有助于在网络动态演化
+过程中理解、预测其自然出现的、关键的、具有因果关系的
+本质特性</li>
+</ul>
+</li>
+<li><p>挑战</p>
+<ul>
+<li>现实问题对应的关系网络<ul>
+<li>拓扑结构类型未知</li>
+<li>大部分为随时间变化网络</li>
+<li>规模庞大</li>
+</ul>
+</li>
+<li>现有技术方法应用受到限制<ul>
+<li>多数方法适用静态无向图，研究有向网络、随时间动态
+演化网络形式技术方法较少</li>
+<li>传统算法可能不适用超大规模网络</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>社区发现/探测重要性</p>
+<ul>
+<li>社区结构刻画了网络中连边关系的局部聚集特性，体现了
+连边的分布不均匀性</li>
+<li>社区通常由功能相近、性质相似的网络节点组成<ul>
+<li>有助于揭示网络结构和功能之间的关系</li>
+<li>有助于更加有效的理解、开发网络</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id=""><a href="#" class="headerlink" title=" "></a> </h4></div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hashing - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Hashing"><meta property="og:type" content="blog"><meta property="og:title" content="Hashing"><meta property="og:url" content="https://xyy15926.github.io/Algorithm/Data-Structure/hash_table.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="Hashing"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/imgs/hash_overflow_area.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/hash_perfect_structure.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/multi_hash_table_ori.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/multi_hash_table_splited.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/dynamic_scalable_hash_table_ori.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/dynamic_scalable_hash_table_splited.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/linear_hash_ori.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/linear_hash_splited_bucket.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/linear_hash_splited_level.png"><meta property="article:published_time" content="2019-06-04T15:11:44.000Z"><meta property="article:modified_time" content="2019-06-04T15:11:44.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Algorithm"><meta property="article:tag" content="Data Structure"><meta property="article:tag" content="Hashing"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/imgs/hash_overflow_area.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Algorithm/Data-Structure/hash_table.html"},"headline":"Hashing","image":["https://xyy15926.github.io/imgs/hash_overflow_area.png","https://xyy15926.github.io/imgs/hash_perfect_structure.png","https://xyy15926.github.io/imgs/multi_hash_table_ori.png","https://xyy15926.github.io/imgs/multi_hash_table_splited.png","https://xyy15926.github.io/imgs/dynamic_scalable_hash_table_ori.png","https://xyy15926.github.io/imgs/dynamic_scalable_hash_table_splited.png","https://xyy15926.github.io/imgs/linear_hash_ori.png","https://xyy15926.github.io/imgs/linear_hash_splited_bucket.png","https://xyy15926.github.io/imgs/linear_hash_splited_level.png"],"datePublished":"2019-06-04T15:11:44.000Z","dateModified":"2019-06-04T15:11:44.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"Hashing"}</script><link rel="canonical" href="https://xyy15926.github.io/Algorithm/Data-Structure/hash_table.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-04T15:11:44.000Z" title="6/4/2019, 11:11:44 PM">2019-06-04</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-06-04T15:11:44.000Z" title="6/4/2019, 11:11:44 PM">2019-06-04</time></span><span class="level-item"><a class="link-muted" href="/categories/Algorithm/">Algorithm</a><span> / </span><a class="link-muted" href="/categories/Algorithm/Data-Structure/">Data Structure</a></span><span class="level-item">20 minutes read (About 3057 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">Hashing</h1><div class="content"><h2 id="Hashing-Table"><a href="#Hashing-Table" class="headerlink" title="Hashing Table"></a><em>Hashing Table</em></h2><blockquote>
+<ul>
+<li>哈希表/散列表：可根据哈希值<strong>直接访问</strong>的数据结构</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>原理：以哈希值做为地址，缩小搜索空间、提高查找效率</p>
+<ul>
+<li>使用哈希函数为每个键计算哈希值，得到位于
+$0, \cdots, m-1$之间整数</li>
+<li>按照哈希值把键分布在$H[0, \cdots, m-1]$哈希表中</li>
+<li>查找匹配键时，以查找键<strong>哈希值作为起点</strong>在哈希表中
+搜索</li>
+</ul>
+</li>
+<li><p>应选择合适的哈希函数、哈希表长度，尽量把键尽量均分在
+哈希表中</p>
+<ul>
+<li>哈希函数$hash$：参见<em>math_algebra/#todo</em><ul>
+<li>对闭散列：减少冲突</li>
+<li>对开散列：避免数据集中</li>
+</ul>
+</li>
+<li>散列表长度$m$：常为质数（方便双散列）</li>
+</ul>
+</li>
+</ul>
+<h3 id="Load-Factor"><a href="#Load-Factor" class="headerlink" title="Load Factor"></a><em>Load Factor</em></h3><p>负载因子：$\alpha = \frac {noempty} {m}$</p>
+<blockquote>
+<ul>
+<li>$m$：哈希表中slots数量（长度）（哈希桶数量）</li>
+<li>$noempty$：非空数量</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>闭散列：负载因子反映哈希表冲突可能性、查找效率</p>
+<ul>
+<li>负载因子过小：冲突可能性小，查找效率高，但浪费空间</li>
+<li>负载因子过大：冲突可能性大，查找效率低，空间利用率高</li>
+<li>负载因子取值最大为1</li>
+<li>应适当平衡负载因子，负载因子接近1时重散列，避免冲突
+过多影响查找效率</li>
+</ul>
+<blockquote>
+<ul>
+<li>Java中<code>HashMap</code>初始负载值为0.75</li>
+</ul>
+</blockquote>
+</li>
+<li><p>开散列：负载因子反映查找效率</p>
+<ul>
+<li>但应该无法反映冲突可能性（也无必要）<ul>
+<li>开散列往往被用于应对大规模数据，冲突总是存在</li>
+<li>查找效率更多取决于数据（哈希值）偏倚程度</li>
+</ul>
+</li>
+<li>负载因子可以大于1</li>
+</ul>
+</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><ul>
+<li>字典/映射实现：<em>cs_algorithm/data_structure/set</em></li>
+</ul>
+<h2 id="Open-Addressing"><a href="#Open-Addressing" class="headerlink" title="Open Addressing"></a><em>Open Addressing</em></h2><p>闭散列/开放寻址：所有键存储在散列表本身中，不扩展存储空间</p>
+<ul>
+<li><p>哈希表$m$至少要和哈希键数量$n$一样大</p>
+</li>
+<li><p>冲突问题解决：根据一定规则计算下个地址</p>
+</li>
+<li><p><em>cluster</em>：聚合，散列表接近满时，一序列连续单元格被占据</p>
+<ul>
+<li>线性探查性能恶化，操作效率降低</li>
+<li>聚合越来的越大时，新元素插入聚类可能性增加</li>
+<li>聚合可能被新插入元素连接，导致更大程度聚合</li>
+</ul>
+</li>
+</ul>
+<h3 id="增量类型"><a href="#增量类型" class="headerlink" title="增量类型"></a>增量类型</h3><p>增量类型：碰撞发生后，根据一定规则对原哈希值修正</p>
+<script type="math/tex; mode=display">
+H_i = (hash(key) + d_i) mod m, i=1,2,\cdots</script><blockquote>
+<ul>
+<li>$d_i = i$：<em>linear probing</em>，线性探查</li>
+<li>$d_i = i^2, -i^2$：<em>quadratic probing</em>，二次探查</li>
+<li>$d_i = 伪随机数$：伪随机探查</li>
+<li>$d_i = i <em> hash_2(K), i=0,1,2,\cdots$：</em>double hashing*
+  ，再散列法</li>
+</ul>
+</blockquote>
+<ul>
+<li>再散列法说明：为保证哈希表中每个位置被探查，增量$s(K)$
+必须互质<ul>
+<li>$m$为质数时自动满足</li>
+<li>文献推荐：$s(K) = m - 2 - K mod (m-2)$</li>
+<li>对较小散列：$s(K) = 8 - (K mod 8)$</li>
+<li>对较大散列：$s(K) = K mod 97 + 1$</li>
+</ul>
+</li>
+</ul>
+<h4 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h4><ul>
+<li><p>插入：依次检查哈希值$h(K)$、探查目标序列，直至找到空
+单元格放置键</p>
+</li>
+<li><p>查找：给定查找键K，计算哈希值$h(K)$、探查目标序列，比较
+K和单元格中键值</p>
+<ul>
+<li>若查找到匹配键，查找成功</li>
+<li>遇到空单元格，查找失败</li>
+</ul>
+</li>
+<li><p>删除：<strong>延迟删除</strong>，用特殊符号标记曾经被占用过、现被删除
+的位置</p>
+<ul>
+<li>不能直接删除，否则的中间出现空单元格，影响查找正确性</li>
+</ul>
+</li>
+</ul>
+<h4 id="算法效率"><a href="#算法效率" class="headerlink" title="算法效率"></a>算法效率</h4><ul>
+<li><p>成功查找访问次数：
+$S \approx \frac 1 2 (1+\frac 1 {(1-\alpha)})$</p>
+</li>
+<li><p>失败查找访问次数：
+$U \approx \frac 1 2 [1+\frac 1 {(1-\alpha)^2}]$</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>简化版本近似结论（散列规模越大，近似结论越正确）</li>
+<li>无法避免散列表趋满时性能恶化</li>
+<li>再哈希法数学分析困难，经验表明优秀的散列函数（两个），
+  性能较线性探查好</li>
+</ul>
+</blockquote>
+<h3 id="Multi-Hashing"><a href="#Multi-Hashing" class="headerlink" title="Multi Hashing"></a><em>Multi Hashing</em></h3><p>多重哈希：使用一组哈希函数$h_0,\cdots,h_n$依次计算哈希值，
+确定插入、查找地址</p>
+<ul>
+<li>类似增量类型方法，仅各次地址独立使用哈希函数计算</li>
+</ul>
+<h3 id="增大空间"><a href="#增大空间" class="headerlink" title="增大空间"></a>增大空间</h3><h4 id="Rehashing"><a href="#Rehashing" class="headerlink" title="Rehashing"></a><em>Rehashing</em></h4><p>重散列：扫描当前表，将所有键重新放置在更大的表中</p>
+<ul>
+<li>散列表趋满时唯一解决办法</li>
+</ul>
+<h4 id="Overflow-Area"><a href="#Overflow-Area" class="headerlink" title="Overflow Area"></a><em>Overflow Area</em></h4><p>建立公共溢出区：将哈希表分为基本表、溢出表两部分</p>
+<ul>
+<li>将发生冲突的元素都放入溢出区</li>
+<li>基本表中可以考虑为为每个哈希值设置多个slots<ul>
+<li>即基本表直接存储哈希桶</li>
+</ul>
+</li>
+</ul>
+<p><img src="/imgs/hash_overflow_area.png" alt="hash_overflow_area"></p>
+<h2 id="Chaining"><a href="#Chaining" class="headerlink" title="Chaining"></a><em>Chaining</em></h2><p>开散列/分离链：哈希表作为目录，使用额外数据空间组织哈希键</p>
+<h3 id="拉链法-分桶法"><a href="#拉链法-分桶法" class="headerlink" title="拉链法/分桶法"></a>拉链法/分桶法</h3><p>拉链法/分桶法：哈希表作为目录项存储指向hash桶的指针，hash桶
+中存储哈希键</p>
+<ul>
+<li><p>目录项表：顺序表，连续存储空间</p>
+<ul>
+<li>可以通过hash值在常数时间内定位：一般其索引位置就是
+hash值</li>
+<li>目录项越多，数据分布相对越稀疏、碰撞概率越小、效率
+越高</li>
+</ul>
+</li>
+<li><p>hash桶：存储具有相同哈希值元素的顺序表</p>
+<ul>
+<li>目录项存储chain为顺序表：每个链即为hash桶</li>
+<li>目录项存储chain为顺序表链：链中每个顺序表为hash桶<ul>
+<li>即每个目录项对应多个hash值，链接多个hash桶</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="操作-1"><a href="#操作-1" class="headerlink" title="操作"></a>操作</h4><ul>
+<li>查找<ul>
+<li>对查找键K，使用同样散列函数计算键散的函数值$h(K)$</li>
+<li>遍历相应单元格附着链表，查找是否存在键K</li>
+</ul>
+</li>
+<li>插入：计算键对应桶，在链表尾部添加键即可</li>
+<li>删除：查找需要删除的键，从链表中移除即可</li>
+</ul>
+<h4 id="算法效率-1"><a href="#算法效率-1" class="headerlink" title="算法效率"></a>算法效率</h4><ul>
+<li><p>效率取决于链表长度，而链表长度取决于字典、散列表长度
+和散列函数质量</p>
+<ul>
+<li>成功查找需要检查指针次数$S = 1 + \alpha / 2$</li>
+<li>不成功查找需要检查指针次数$U = \alpha$</li>
+<li>计算散列函数值是常数时间操作</li>
+<li>若n和m大致相等，平均情况下$\in \Theta(1)$</li>
+</ul>
+</li>
+<li><p>算法查找的高效是以额外空间为代价的</p>
+</li>
+</ul>
+<h3 id="Perfect-Hashing"><a href="#Perfect-Hashing" class="headerlink" title="Perfect Hashing"></a><em>Perfect Hashing</em></h3><p>完美哈希：采用两级全域哈希，目录项链接独立哈希表的拉链哈希表</p>
+<p><img src="/imgs/hash_perfect_structure.png" alt="hash_perfect_structure"></p>
+<ul>
+<li><p>二级哈希表开头部分存储哈希表元信息</p>
+<ul>
+<li>$m = n^2$：哈希表槽数，$n$为映射至该槽元素数量
+（此时由全域哈希性质：冲突次数期望小于0.5）</li>
+<li>$a, b$：全域哈希参数</li>
+</ul>
+</li>
+<li><p>复杂度</p>
+<ul>
+<li>时间复杂度：最坏情况下查找为$O(1)$</li>
+<li>空间复杂度：期望空间为线性
+$E(\sum_{i=1}^{m-1} \theta(n_i^2) = \theta(n)$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>完美哈希没有冲突的概率至少为0.5</li>
+<li>全域哈希参见<em>math_algebra/hash_funcs</em></li>
+</ul>
+</blockquote>
+<h2 id="Dynamic-Hashing"><a href="#Dynamic-Hashing" class="headerlink" title="Dynamic Hashing"></a><em>Dynamic Hashing</em></h2><p>动态hash：在hash表中元素增加同时，动态调整hash桶数目</p>
+<ul>
+<li>在原hash表基础上进行动态桶扩展</li>
+<li>不需要遍历表元素重复执行插入操作</li>
+<li><strong>开散列法在大规模、在线数据的扩展</strong></li>
+</ul>
+<h3 id="多hash表"><a href="#多hash表" class="headerlink" title="多hash表"></a>多hash表</h3><p>多hash表：通过建立多个hash表的方式扩展原hash表</p>
+<ul>
+<li>思想、实现简单</li>
+<li>占用空间大，数据分布偏斜程度较大时，桶利用率不高</li>
+</ul>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>操作时需要考虑多个hash表</p>
+<ul>
+<li><p>插入</p>
+<ul>
+<li>若存在hash相应桶中存在空闲区域，直接插入
+<img src="/imgs/multi_hash_table_ori.png" alt="multi_hash_table_ori"></li>
+<li>否则分裂，新建hash表，插入元素至空闲区域
+<img src="/imgs/multi_hash_table_splited.png" alt="multi_hash_table_splited"></li>
+</ul>
+</li>
+<li><p>查找：需要查找所有hash表相应桶才能确定</p>
+<ul>
+<li>当表中元素较多时，可以考虑并行执行查找操作</li>
+</ul>
+</li>
+<li><p>删除操作：若删除元素导致某hash表空，可考虑删除该表</p>
+</li>
+</ul>
+<h3 id="可扩展动态hash"><a href="#可扩展动态hash" class="headerlink" title="可扩展动态hash"></a>可扩展动态hash</h3><p>可扩展动态hash：只分裂将要溢出的桶，<strong>使用目录项作为索引</strong></p>
+<ul>
+<li>多个目录项可能指向同一个桶</li>
+<li>分裂时代价较小<ul>
+<li>翻倍目录项替代翻倍整个hash表</li>
+<li>每次只分裂将要溢出桶</li>
+<li>只需要进行局部重散列，重分布需要分裂的桶</li>
+</ul>
+</li>
+<li>目录指数级增长<ul>
+<li>数据分布不均时，会使得目录项很大</li>
+</ul>
+</li>
+</ul>
+<h4 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h4><blockquote>
+<ul>
+<li><code>D</code>：全局位深度，hash值截断长度，为局部桶深度最大值</li>
+<li><code>L_i</code>：桶局部深度，等于指向其目录项数目</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若对应桶存在空闲位，则直接插入</p>
+<p><img src="/imgs/dynamic_scalable_hash_table_ori.png" alt="dynamic_scalable_hash_table_ori"></p>
+</li>
+<li><p>否则分裂桶：分裂后两桶局部深度加1</p>
+<p><img src="/imgs/dynamic_scalable_hash_table_splited.png" alt="dynamic_scalable_hash_table_splited"></p>
+<ul>
+<li><p>若分裂桶局部深度不大于全局位深度</p>
+<ul>
+<li>创建新桶</li>
+<li>重散列原始桶中数据</li>
+<li>更新目录项中对应指针：分别指向分裂后桶</li>
+</ul>
+</li>
+<li><p>若分类桶局部深度大于全局位深度</p>
+<ul>
+<li>更新全局位深度</li>
+<li>目录项翻倍</li>
+<li>创建新桶</li>
+<li>重散列原始桶中数据</li>
+<li>更新目录项中对应指针<ul>
+<li>（新增）无关目录项仍然指向对应桶</li>
+<li>相关目录项指向分别指向分裂后桶</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h4><ul>
+<li>计算原始hash值</li>
+<li>按照全局位深度截断</li>
+<li>寻找相应目录项，找到对应桶，在桶中进行比较、查找</li>
+</ul>
+<h4 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h4><ul>
+<li>计算原始hash值</li>
+<li>按照全局位深度截断</li>
+<li>寻找相应目录项，找到对应桶，在桶中进行比较、删除<ul>
+<li>若删除后发现桶为空，考虑与其兄弟桶合并，并使局部深度
+减1</li>
+</ul>
+</li>
+</ul>
+<h3 id="线性散列"><a href="#线性散列" class="headerlink" title="线性散列"></a>线性散列</h3><p>线性散列：按次序分裂桶，<strong>保证整个建表过程类似完全二叉树</strong></p>
+<ul>
+<li><p>整个哈希表建表过程<strong>始终保持为完全二叉树</strong></p>
+<ul>
+<li>每次分裂的桶是完全二叉树编号最小的叶子节点</li>
+<li>分裂前后桶间均为有序</li>
+</ul>
+</li>
+<li><p>相较于可扩展散列</p>
+<ul>
+<li>无需存放数据桶指针的专门目录项，节省空间</li>
+<li>能更自然的处理数据桶满的情况</li>
+<li>允许更灵活的选择桶分裂时机</li>
+<li>但若数据散列后分布不均，则问题可能比可扩散散列严重</li>
+</ul>
+</li>
+<li><p>实现相较而言更复杂</p>
+</li>
+</ul>
+<h4 id="桶分裂"><a href="#桶分裂" class="headerlink" title="桶分裂"></a>桶分裂</h4><blockquote>
+<ul>
+<li><code>N</code>：hash表中初始桶数目，应为2的幂次</li>
+<li><code>d = log_2N</code>：表示桶数目需要位数</li>
+<li><code>level</code>：分裂轮数，初始值为0，则每轮初始桶数为
+  $N * 2^{level}$</li>
+<li><code>Next</code>：下次要发生分裂的桶编号</li>
+</ul>
+</blockquote>
+<p><img src="/imgs/linear_hash_ori.png" alt="linear_hash_ori"></p>
+<ul>
+<li><p>每次同分裂条件可以灵活选择</p>
+<ul>
+<li>设置桶填充因子，桶中记录数达到该值时进行分裂</li>
+<li>桶满时发生分裂</li>
+</ul>
+</li>
+<li><p>每次发生的分裂的桶总是由<code>Next</code>决定
+<img src="/imgs/linear_hash_splited_bucket.png" alt="linear_hash_splited_bucket"></p>
+<ul>
+<li>与当前被插入的桶溢出无关，可引入溢出页处理桶溢出</li>
+<li>每次只分裂<code>Next</code>指向的桶，桶分裂后<code>Next += 1</code></li>
+<li>后续产生映像桶总是位于上次产生映像桶之后</li>
+</ul>
+</li>
+<li><p>“轮转分裂进化”：各桶轮流进行分裂，一轮分裂完成后进入下轮
+分裂
+<img src="/imgs/linear_hash_splited_level.png" alt="linear_hash_splited_level"></p>
+</li>
+</ul>
+<h4 id="查找-1"><a href="#查找-1" class="headerlink" title="查找"></a>查找</h4><ul>
+<li><p>根据<code>N</code>、<code>level</code>计算当前<code>d</code>值，截取原始hash值</p>
+</li>
+<li><p>若hash值位于<code>Next</code>、<code>N</code>之间，说明该轮对应桶还未分裂，
+直接在桶中查找</p>
+</li>
+<li><p>若hash值小于<code>Next</code>，说明该轮对应桶已经分裂，hash值向前
+多取一位，在对应桶中查找</p>
+</li>
+</ul>
+<h4 id="删除-1"><a href="#删除-1" class="headerlink" title="删除"></a>删除</h4><blockquote>
+<ul>
+<li>删除操作是插入操作的逆操作</li>
+</ul>
+</blockquote>
+<ul>
+<li>若删除元素后溢出块为空，可直接释放</li>
+<li>若删除元素后某个桶元素为空，<code>Next -= 1</code><ul>
+<li>当<code>Next</code>减少到0，且最后桶也是空时，<code>Next = N/2 - 1</code>
+，同时<code>level -= 1</code></li>
+</ul>
+</li>
+</ul>
+<p> 1`</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Hashing</p><p><a href="https://xyy15926.github.io/Algorithm/Data-Structure/hash_table.html">https://xyy15926.github.io/Algorithm/Data-Structure/hash_table.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-06-04</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2019-06-04</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Algorithm/">Algorithm</a><a class="link-muted mr-2" rel="tag" href="/tags/Data-Structure/">Data Structure</a><a class="link-muted mr-2" rel="tag" href="/tags/Hashing/">Hashing</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Python/Py3Ref/dm_basics.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">数据模型--基本数据类型</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Algorithm/Data-Structure/tree_derived.html"><span class="level-item">二叉树衍生</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "837f09e9ae853ba316f8b99a8ba8fadf",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#Hashing-Table"><span class="level-left"><span class="level-item">1</span><span class="level-item">Hashing Table</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Load-Factor"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">Load Factor</span></span></a></li><li><a class="level is-mobile" href="#应用"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">应用</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Open-Addressing"><span class="level-left"><span class="level-item">2</span><span class="level-item">Open Addressing</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#增量类型"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">增量类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#操作"><span class="level-left"><span class="level-item">2.1.1</span><span class="level-item">操作</span></span></a></li><li><a class="level is-mobile" href="#算法效率"><span class="level-left"><span class="level-item">2.1.2</span><span class="level-item">算法效率</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Multi-Hashing"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">Multi Hashing</span></span></a></li><li><a class="level is-mobile" href="#增大空间"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">增大空间</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Rehashing"><span class="level-left"><span class="level-item">2.3.1</span><span class="level-item">Rehashing</span></span></a></li><li><a class="level is-mobile" href="#Overflow-Area"><span class="level-left"><span class="level-item">2.3.2</span><span class="level-item">Overflow Area</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Chaining"><span class="level-left"><span class="level-item">3</span><span class="level-item">Chaining</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#拉链法-分桶法"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">拉链法/分桶法</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#操作-1"><span class="level-left"><span class="level-item">3.1.1</span><span class="level-item">操作</span></span></a></li><li><a class="level is-mobile" href="#算法效率-1"><span class="level-left"><span class="level-item">3.1.2</span><span class="level-item">算法效率</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Perfect-Hashing"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">Perfect Hashing</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Dynamic-Hashing"><span class="level-left"><span class="level-item">4</span><span class="level-item">Dynamic Hashing</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#多hash表"><span class="level-left"><span class="level-item">4.1</span><span class="level-item">多hash表</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#实现"><span class="level-left"><span class="level-item">4.1.1</span><span class="level-item">实现</span></span></a></li></ul></li><li><a class="level is-mobile" href="#可扩展动态hash"><span class="level-left"><span class="level-item">4.2</span><span class="level-item">可扩展动态hash</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#插入"><span class="level-left"><span class="level-item">4.2.1</span><span class="level-item">插入</span></span></a></li><li><a class="level is-mobile" href="#查找"><span class="level-left"><span class="level-item">4.2.2</span><span class="level-item">查找</span></span></a></li><li><a class="level is-mobile" href="#删除"><span class="level-left"><span class="level-item">4.2.3</span><span class="level-item">删除</span></span></a></li></ul></li><li><a class="level is-mobile" href="#线性散列"><span class="level-left"><span class="level-item">4.3</span><span class="level-item">线性散列</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#桶分裂"><span class="level-left"><span class="level-item">4.3.1</span><span class="level-item">桶分裂</span></span></a></li><li><a class="level is-mobile" href="#查找-1"><span class="level-left"><span class="level-item">4.3.2</span><span class="level-item">查找</span></span></a></li><li><a class="level is-mobile" href="#删除-1"><span class="level-left"><span class="level-item">4.3.3</span><span class="level-item">删除</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

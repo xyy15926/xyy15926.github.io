@@ -1,0 +1,1449 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: DataFrame - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">DataFrame</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-08-02T15:17:39.000Z" title="8/2/2019, 11:17:39 PM">2019-08-02</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-19T01:03:11.000Z" title="7/19/2021, 9:03:11 AM">2021-07-19</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Spark/">Spark</a></span><span class="level-item">17 minutes read (About 2506 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/Spark/spark_rdd.html">Resilient Distributed Dataset</a></h1><div class="content"><h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><p>RDD：容错的、immutable、分布式、确定可重复计算的数据集</p>
+<ul>
+<li><p>RDD可分配在集群中的多个节点中以支持并行处理</p>
+<ul>
+<li>隶属于同一RDD数据，被划分为不同的Partition，以此为
+单位分布到集群环境中各个节点上</li>
+</ul>
+</li>
+<li><p>RDD是<strong>无结构的数据表</strong>，可以存放任何数据类型</p>
+</li>
+<li><p>RDD immutable</p>
+<ul>
+<li>对RDD进行转换，不会修改原RDD，只是返回新RDD</li>
+<li>这也是基于Lineage容错机制的要求</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>是Spark软件系统的核心概念</li>
+</ul>
+</blockquote>
+<h3 id="RDD容错机制"><a href="#RDD容错机制" class="headerlink" title="RDD容错机制"></a>RDD容错机制</h3><ul>
+<li><p>RDD采用基于Lineage的容错机制</p>
+<ul>
+<li>每个RDD记住确定性操作的lineage，即从其他RDD转换而来
+的路径</li>
+<li>若所有RDD的转换操作是确定的，则最终转换数据一致，
+无论机器发生的错误</li>
+<li>当某个RDD损坏时，Spark可以从上游RDD重新计算、创建
+其数据</li>
+</ul>
+</li>
+<li><p>容错语义</p>
+<ul>
+<li>输入源文件：Spark运行在HDFS、S3等容错文件系统上，从
+任何容错数据而来的RDD都是容错的</li>
+<li>receiver：可靠接收者告知可靠数据源，保证所有数据总是
+会被恰好处理一次</li>
+<li>输出：输出操作可能会使得数据被重复写出，但文件会被
+之后写入覆盖</li>
+</ul>
+</li>
+<li><p>故障类型</p>
+<ul>
+<li>worker节点故障：节点中内存数据丢失，其上接收者缓冲
+数据丢失</li>
+<li>driver节点故障：spark context丢失，所有执行算子丢失</li>
+</ul>
+</li>
+</ul>
+<h2 id="RDD操作"><a href="#RDD操作" class="headerlink" title="RDD操作"></a>RDD操作</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.rdd.<span class="type">RDD</span></span><br></pre></td></tr></table></figure>
+<h3 id="Transformation"><a href="#Transformation" class="headerlink" title="Transformation"></a>Transformation</h3><p>转换：从已有数据集创建新数据集</p>
+<ul>
+<li><p>返回新RDD，原RDD保持不变</p>
+</li>
+<li><p>转换操作Lazy</p>
+<ul>
+<li>仅记录转换操作作用的基础数据集</li>
+<li>仅当某个<strong>动作</strong>被Driver Program（客户操作）调用DAG
+的动作操作时，动作操作的一系列proceeding转换操作才会
+被启动</li>
+</ul>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Transformation</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>map(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>flatMap(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>filter(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reduceByKey(func[, numTasks])</code></td>
+<td>包含<code>(K, V)</code>键值对，返回按键聚集键值对</td>
+<td></td>
+</tr>
+<tr>
+<td><code>groupByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>aggregateByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pipe()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>coalesce()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>repartition(numPartitions)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>union(other)</code></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><code>XXXByKey</code>：RDD中应为<code>(K, V)</code>键值对</li>
+</ul>
+</blockquote>
+<p><img src="/imgs/spark_rdd_transformation.png" alt="spark_rdd_transformation"></p>
+<blockquote>
+<ul>
+<li>绿色、黑色：单、多RDD窄依赖转换</li>
+<li>紫色：KV shuffle转换</li>
+<li>黄色：重分区转换</li>
+<li>蓝色：特例转换</li>
+</ul>
+</blockquote>
+<h3 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h3><p>动作：在数据集上进行计算后返回值到驱动程序</p>
+<ul>
+<li>施加于一个RDD，通过对RDD数据集的计算返回新的结果<ul>
+<li>默认RDD会在每次执行动作时重新计算，但可以使用
+<code>cache</code>、<code>persist</code>持久化RDD至内存、硬盘中，加速下次
+查询速度</li>
+</ul>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>count()</code></td>
+<td></td>
+<td>返回包含单元素RDD的DStream</td>
+</tr>
+<tr>
+<td><code>collect()</code></td>
+<td>将RDD数据聚集至本地</td>
+<td></td>
+</tr>
+<tr>
+<td><code>countByValue()</code></td>
+<td>返回<code>(T, long)</code>键值对</td>
+<td></td>
+</tr>
+<tr>
+<td><code>countByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>first()</code></td>
+<td></td>
+<td>返回包含单元素RDDd的DStream</td>
+</tr>
+<tr>
+<td><code>reduce(func)</code></td>
+<td></td>
+<td>返回包含单元素RDD的DStream</td>
+</tr>
+<tr>
+<td><code>take(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>foreach(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>foreachPartition(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>join(other[, numTasks])</code></td>
+<td>包含<code>(K,V)</code>，与另一<code>(K,W)</code>连接</td>
+<td></td>
+</tr>
+<tr>
+<td><code>cogroup(other[, numTasks])</code></td>
+<td>包含<code>(K,V)</code>、输入<code>(K,W)</code>，返回<code>(K, Seq(V), Seq(W)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><code>numTasks</code>：默认使用Spark默认并发数目</li>
+</ul>
+</blockquote>
+<h3 id="DStream-RDD"><a href="#DStream-RDD" class="headerlink" title="DStream RDD"></a>DStream RDD</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RDD级`map`：`func`以RDD为参数，自定义转换操作</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transform</span></span>(func)</span><br><span class="line"><span class="comment">// RDD级`foreach`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foreachRDD</span></span>(func)</span><br><span class="line"></span><br><span class="line"><span class="comment">// RDD级`reduce`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateStateByKey</span></span>[<span class="type">S</span>: <span class="type">ClassTag</span>](</span><br><span class="line">	<span class="comment">// `K`、`Seq[V]`：当前RDD中键`K`对应值`V`集合</span></span><br><span class="line">	<span class="comment">// `Option[S]`：上个RDD结束后键`K`对应状态</span></span><br><span class="line">	updateFunc: (<span class="type">Iterator</span>[(<span class="type">K</span>, <span class="type">Seq</span>[<span class="type">V</span>], <span class="type">Option</span>[<span class="type">S</span>])]) =&gt; <span class="type">Iterator</span>[(<span class="type">K</span>, <span class="type">S</span>)],</span><br><span class="line">	<span class="comment">// 分区算法</span></span><br><span class="line"></span><br><span class="line">	partitioner: <span class="type">Partitioner</span>,</span><br><span class="line">	<span class="comment">// 是否在接下来Streaming执行过程中产生的RDD使用相同分区算法</span></span><br><span class="line">	remmemberPartition: <span class="type">Boolean</span>,</span><br><span class="line">	<span class="comment">// 键值对的初始状态</span></span><br><span class="line">	initRDD: <span class="type">RDD</span>[(<span class="type">K</span>,<span class="type">S</span>)]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>RDD分布在多个worker节点上，对不可序列化传递对象，需要在
+每个worker节点独立创建</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dstream.foreachRDD(rdd =&gt; &#123;</span><br><span class="line">	rdd.foreachPartition(partitionOfRecords =&gt; &#123;</span><br><span class="line">		<span class="comment">// 为每个partition创建不可序列化网络连接</span></span><br><span class="line">		<span class="comment">// 为每个record创建成本过高</span></span><br><span class="line">		<span class="keyword">val</span> connection = createNewConnnection()</span><br><span class="line">		<span class="comment">// 进一步可以维护静态连接对象池</span></span><br><span class="line">		<span class="comment">// val connection = ConnectionPool.getConnection()</span></span><br><span class="line">		partitionOfRecords.foreach(record =&gt; connection.send(record))</span><br><span class="line">		connection.close()</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="DStream-Window-Action"><a href="#DStream-Window-Action" class="headerlink" title="DStream Window Action"></a>DStream Window Action</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Window Action</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>window(windowLength, slideInterval)</code></td>
+<td>基于DStream产生的窗口化批数据产生DStream</td>
+</tr>
+<tr>
+<td><code>countByWindow(windowLenght, slideInterval)</code></td>
+<td>返回滑动窗口数</td>
+</tr>
+<tr>
+<td><code>reduceByWindow(func, windowLength, slideInterval)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reduceByKeyAndWindow(func, windowLength, slidenInterval[, numTasks])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reduceByKeyAndWindow(func, invFunc, windowLength, slideInterval[, numTasks])</code></td>
+<td>须提供<code>invFunc</code>消除离开窗口RDD对reduce结果影响</td>
+</tr>
+<tr>
+<td><code>countByValueAndWindow(windowLength, slideInterval[, numTasks])</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><code>windowLength</code>：窗口长度</li>
+<li><p><code>slideInterval</code>：滑动间隔</p>
+</li>
+<li><p>以上操作默认会持久化RDD至内存，无需手动调用<code>persist</code>等方法</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/imgs/spark_streaming_dstream_window_based_transformation.png" alt="spark_streaming_dstream_window_based_operation"></p>
+<h3 id="Output"><a href="#Output" class="headerlink" title="Output"></a>Output</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Output Operation</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>print</code></td>
+<td>打印前10条元素</td>
+<td>每个RDD打印前10条元素</td>
+</tr>
+<tr>
+<td><code>saveAsObjectFile(prefix[, suffix])</code></td>
+<td>保存为序列化文件</td>
+<td>命名为<code>&lt;prefix&gt;-TIME_IN_M.&lt;suffix&gt;</code></td>
+</tr>
+<tr>
+<td><code>saveAsTextFile(prefix[, suffix])</code></td>
+<td>保存为文本文件</td>
+<td></td>
+</tr>
+<tr>
+<td><code>saveAsHadoopFile(prefix[, suffix])</code></td>
+<td>保存为Hadoop文件</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Persistence"><a href="#Persistence" class="headerlink" title="Persistence"></a>Persistence</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Persistence</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>persist()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>cache()</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="Directed-Asycled-Graph"><a href="#Directed-Asycled-Graph" class="headerlink" title="Directed Asycled Graph"></a>Directed Asycled Graph</h2><p>Spark中DAG：可以看作由RDD、转换操作、动作操作构成，用于表达
+复杂计算</p>
+<ul>
+<li><p>当需要<strong>执行</strong>某个操作时，将重新从上游RDD进行计算</p>
+</li>
+<li><p>也可以对RDD进行缓存、持久化，以便再次存取，获得更高查询
+速度</p>
+<ul>
+<li>In-mem Storage as Deserialized Java Objects</li>
+<li>In-mem Storage as Serialized Data</li>
+<li>On-Disk Storage</li>
+</ul>
+</li>
+</ul>
+<h3 id="DAG工作流示例"><a href="#DAG工作流示例" class="headerlink" title="DAG工作流示例"></a>DAG工作流示例</h3><p><img src="/imgs/spark_dag_procedure.png" alt="spark_dag_procedure"></p>
+<ul>
+<li>从HDFS装载数据至两个RDD中</li>
+<li>对RDD（和中间生成的RDD）施加一系列转换操作</li>
+<li>最后动作操作施加于最后的RDD生成最终结果、存盘</li>
+</ul>
+<h3 id="宽依赖、窄依赖"><a href="#宽依赖、窄依赖" class="headerlink" title="宽依赖、窄依赖"></a>宽依赖、窄依赖</h3><p><img src="/imgs/spark_dag_wide_narrow_dependecies.png" alt="spark_dag_wide_narrow_dependencies"></p>
+<ul>
+<li><p>窄依赖：每个父RDD最多被一个子RDD分区使用</p>
+<ul>
+<li>即单个父RDD分区经过转换操作生成子RDD分区</li>
+<li>窄依赖可以在一台机器上处理，无需Data Shuffling，
+在网络上进行数据传输</li>
+</ul>
+</li>
+<li><p>宽依赖：多个子RDD分区，依赖同一个父RDD分区</p>
+<ul>
+<li>涉及宽依赖操作<ul>
+<li><code>groupByKey</code></li>
+<li><code>reduceByKey</code></li>
+<li><code>sortByKey</code></li>
+</ul>
+</li>
+<li>宽依赖一般涉及Data Shuffling</li>
+</ul>
+</li>
+</ul>
+<h3 id="DAG-Scheduler"><a href="#DAG-Scheduler" class="headerlink" title="DAG Scheduler"></a>DAG Scheduler</h3><p><em>DAG Scheduler</em>：<em>Stage-Oriented</em>的DAG执行调度器</p>
+<p><img src="/imgs/spark_dag_job_stage.png" alt="spark_dag_job_stage"></p>
+<ul>
+<li><p>使用Job、Stage概念进行作业调度</p>
+<ul>
+<li>作业：一个提交到DAG Scheduler的工作项目，表达成DAG，
+以一个RDD结束</li>
+<li>阶段：一组并行任务，每个任务对应RDD一个分区，是作业
+的一部分、数据处理基本单元，负责计算部分结果，</li>
+</ul>
+</li>
+<li><p>DAG Scheduler检查依赖类型</p>
+<ul>
+<li>把一系列窄依赖RDD组织成一个阶段<ul>
+<li>所以说阶段中并行的每个任务对应RDD一个分区</li>
+</ul>
+</li>
+<li>宽依赖需要跨越连续阶段<ul>
+<li>因为宽依赖子RDD分区依赖多个父RDD分区，涉及
+Data Shuffling，数据处理不能在单独节点并行执行</li>
+<li>或者说阶段就是根据宽依赖进行划分</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>DAG Scheduler对整个DAG进行分析</p>
+<ul>
+<li>为作业产生一系列阶段、其间依赖关系</li>
+<li>确定需要持久化的RDD、阶段的输出</li>
+<li>找到作业运行最小代价的执行调度方案、根据Cache Status
+确定的运行每个task的优选位置，把信息提交给
+Task Sheduler执行</li>
+</ul>
+</li>
+<li><p>容错处理</p>
+<ul>
+<li>DAG Scheduler负责对shuffle output file丢失情况进行
+处理，把已经执行过的阶段重新提交，以便重建丢失的数据</li>
+<li>stage内其他失败情况由Task Scheduler本身进行处理，
+将尝试执行任务一定次数、直到取消整个阶段</li>
+</ul>
+</li>
+</ul>
+<h2 id="DataFrame"><a href="#DataFrame" class="headerlink" title="DataFrame"></a>DataFrame</h2><ul>
+<li><p><em>DataFrame</em>：类似关系型数据库中表，数据被组织到具名列中</p>
+<ul>
+<li>相较于RDD是对分布式、结构化数据集的高层次抽象，提供
+特定领域的专用API进行处理</li>
+<li>静态类型安全：相较于SQL查询语句，在编译时即可发现
+语法错误</li>
+</ul>
+</li>
+<li><p><em>Dataset</em>：有明确类型数据、或无明确数据类型集合，相应API
+也分为两类</p>
+<ul>
+<li>相较于DataFrame，也可组织半结构化数据，同样提供方便
+易用的结构化API</li>
+<li>静态类型、运行时类型安全：相较于DataFrame，集合元素
+有明确类型，在编译时即可发现分析错误</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Spark2.0中二者API统一</li>
+<li>DataFrame可视为无明确数据类型<code>Dataset[Row]</code>别名，每行是
+  无类型JVM对象</li>
+</ul>
+</blockquote>
+<h3 id="创建方式"><a href="#创建方式" class="headerlink" title="创建方式"></a>创建方式</h3><ul>
+<li><p><code>.toDF</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> sqlContext = <span class="keyword">new</span> org.apache.spark.sql.<span class="type">SQLContext</span>(sc)</span><br><span class="line"><span class="keyword">import</span> sqlContext.implicits._</span><br><span class="line"></span><br><span class="line"><span class="comment">// `.toDF` + `Seq`创建</span></span><br><span class="line"><span class="keyword">val</span> df = <span class="type">Seq</span>(</span><br><span class="line">	(<span class="number">1</span>, <span class="string">&quot;F&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-02&quot;</span>)),</span><br><span class="line">	(<span class="number">2</span>, <span class="string">&quot;G&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-01&quot;</span>))</span><br><span class="line">).toDF(<span class="string">&quot;id&quot;</span>, <span class="string">&quot;level&quot;</span>, <span class="string">&quot;date&quot;</span>)</span><br><span class="line"><span class="comment">// 不指定列名，则默认为`_1`、`_2`等</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// `.toDF` + `case Class`创建</span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">name: <span class="type">String</span>, age: <span class="type">Int</span></span>)</span></span><br><span class="line"><span class="keyword">val</span> people = sc.textFile(<span class="string">&quot;people.txt&quot;</span>)</span><br><span class="line">	.map(_.split(<span class="string">&quot;,&quot;</span>))</span><br><span class="line">	.map(p =&gt; <span class="type">Person</span>(p(<span class="number">0</span>),p(<span class="number">1</span>).trim.toInt))</span><br><span class="line">	.toDF()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>.createDataFrame</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.sql.types._</span><br><span class="line"><span class="keyword">val</span> schema = <span class="type">StrucType</span>(<span class="type">List</span>(</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">&quot;id&quot;</span>, <span class="type">IntegerType</span>, nullable=<span class="type">False</span>),</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">&quot;level&quot;</span>, <span class="type">StringType</span>, nullable=<span class="type">False</span>),</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">&quot;date&quot;</span>, <span class="type">DateType</span>, nullable=<span class="type">False</span>)</span><br><span class="line">))</span><br><span class="line"><span class="keyword">val</span> rdd = sc.parallelize(<span class="type">Seq</span>(</span><br><span class="line">	(<span class="number">1</span>, <span class="string">&quot;F&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-02&quot;</span>)),</span><br><span class="line">	(<span class="number">2</span>, <span class="string">&quot;G&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-01&quot;</span>))</span><br><span class="line">))</span><br><span class="line"><span class="keyword">val</span> df = sqlContext.createDataFrame(rdd, schema)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>读取文件创建</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> df = sqlContext.read.parquet(<span class="string">&quot;hdfs:/peopole.parq&quot;</span>)</span><br><span class="line"><span class="keyword">val</span> df = spark.read.json(<span class="string">&quot;people.json&quot;</span>)</span><br><span class="line"><span class="comment">// 读取csv仅2.0版本`SparkSession`后可</span></span><br><span class="line"><span class="keyword">val</span> df = spark.read.format(<span class="string">&quot;com.databricks.spark.csv&quot;</span>)</span><br><span class="line">	.option(<span class="string">&quot;header&quot;</span>, <span class="string">&quot;true&quot;</span>)</span><br><span class="line">	.option(<span class="string">&quot;mode&quot;</span>, <span class="string">&quot;DROPMALFORMED&quot;</span>)</span><br><span class="line">	.load(<span class="string">&quot;people.csv&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="三种数据集对比"><a href="#三种数据集对比" class="headerlink" title="三种数据集对比"></a>三种数据集对比</h3><ul>
+<li><p>空间、时间效率：DataFrame &gt;= Dataset &gt; RDD</p>
+<ul>
+<li>DataFrame、Dataset基于SparkSQL引擎构建，使用Catalyst
+生成优化后的逻辑、物理查询计划；无类型DataFrame相较
+有类型Dataset运行更快</li>
+<li>Spark作为编译器可以理解Dataset类型JVM对象，会使用
+编码器将其映射为Tungsten内存内部表示</li>
+</ul>
+</li>
+<li><p>RDD适合场景</p>
+<ul>
+<li>对数据集进行最基本的转换、处理、控制</li>
+<li>希望以函数式编程而不是以特定领域表达处理数据</li>
+<li>数据为非结构化，如：流媒体、字符流</li>
+</ul>
+</li>
+<li><p>DataFrame、Dataset使用场景</p>
+<ul>
+<li>需要语义丰富、高级抽象、通用平台、特定领域API</li>
+<li>需要对半结构化数据进行高级处理，如：filter、SQL查询</li>
+<li>需要编译时/运行时类型安全、Catalyst优化、内存优化</li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-02-17T03:57:07.000Z" title="2/17/2019, 11:57:07 AM">2019-02-17</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Pandas/">Pandas</a></span><span class="level-item">10 minutes read (About 1573 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Pandas/data_structure.html">Pandas数据结构</a></h1><div class="content"><h2 id="DataFrame"><a href="#DataFrame" class="headerlink" title="DataFrame"></a>DataFrame</h2><p>可以看作包含两个Index类（index、columns）、一个二维ndarray类
+（values）</p>
+<ul>
+<li>二维values + 结构化index + 结构化columns<ul>
+<li>values自己还有两根只能使用integer indice的轴</li>
+</ul>
+</li>
+<li>结构同数据库表相似：列为属性，行为个体</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DF = pd.DataFrame(</span><br><span class="line">	data=ndarray/&#123;col_name: val&#125;/DF/array-like,</span><br><span class="line">	index=Index/array-like,</span><br><span class="line">	columns=Index/array-like,</span><br><span class="line">	dtype=<span class="literal">None</span>/dtype,</span><br><span class="line">	copy=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># `data=dict`：可以通过`columns`仅使用部分键值对创建</span></span><br><span class="line">	<span class="comment"># `copy`：仅影响`data`为DF/ndarray时，默认不使用拷贝</span></span><br></pre></td></tr></table></figure>
+<h3 id="DF行列逻辑"><a href="#DF行列逻辑" class="headerlink" title="DF行列逻辑"></a>DF行列逻辑</h3><p>可以通过<code>DF = df1.T</code>作转制更改行列逻辑</p>
+<h4 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h4><h5 id="列优先"><a href="#列优先" class="headerlink" title="列优先"></a>列优先</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Ser = df1[col_name]</span><br><span class="line">Ser = df1.col_name</span><br><span class="line">	<span class="comment"># 取列</span></span><br><span class="line">Ser = df1[col_level_0, col_level_1,...]</span><br><span class="line">Ser = df1[(col_level_0, col_level_1,...)]</span><br><span class="line">Ser = df1.col_level_0.col_level_1</span><br><span class="line">	<span class="comment"># 对层级索引取列</span></span><br><span class="line"></span><br><span class="line">Val = df1[col_name][index_name]</span><br><span class="line">Val = df1.col_name.index_name</span><br><span class="line">	<span class="comment"># 取具体值</span></span><br><span class="line">	<span class="comment"># 属性方式，要求`*_name`为字符串</span></span><br><span class="line">	<span class="comment"># `.`、`[]`应该是覆盖过</span></span><br><span class="line"></span><br><span class="line">Val = df1[col_level_0, col_level_1,...]\</span><br><span class="line">	[index_level_0, index_level_1,...]</span><br><span class="line"></span><br><span class="line">Val = df1[(col_level_0, col_level_1,...)]\</span><br><span class="line">	[index_level_0, index_level_1,...]</span><br><span class="line"></span><br><span class="line">Val = df1.col_level_0.col_level_1....\</span><br><span class="line">	.index_level_0.index_level_1...</span><br><span class="line">	<span class="comment"># 对层级索引取值</span></span><br><span class="line"></span><br><span class="line">DF = df1[cond1 &amp; cond2 &amp;...]</span><br><span class="line">DF = df1[cond1][cond2]...</span><br><span class="line">	<span class="comment"># `condX`为Ser(bool)</span></span><br><span class="line">	<span class="comment"># 两种讲道理应该没差</span></span><br></pre></td></tr></table></figure>
+<h5 id="行优先"><a href="#行优先" class="headerlink" title="行优先"></a>行优先</h5><h6 id="loc"><a href="#loc" class="headerlink" title=".loc[]"></a><code>.loc[]</code></h6><p>行优先,逻辑和df1[]列优先类似</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Ser = df.loc[index_name]</span><br><span class="line">	<span class="comment"># 取行</span></span><br><span class="line">Ser = df.loc[index_level_0, index_level_1,...]</span><br><span class="line">Ser = df.loc[(index_level_0, index_level_1,...)]</span><br><span class="line">	<span class="comment"># 层级索引取行Ser/DF</span></span><br><span class="line"></span><br><span class="line">Val = df1.loc[index_name, column_name]</span><br><span class="line">	<span class="comment"># 还可以这样的取值</span></span><br><span class="line">	<span class="comment"># 不建议使用，容易照成混淆</span></span><br><span class="line"> <span class="comment"># Val = df1.loc.index_name`</span></span><br><span class="line">	<span class="comment"># 不可</span></span><br><span class="line"></span><br><span class="line">Val = df1.loc[index_level_0, index_level_1,...]\</span><br><span class="line">	[col_level_0, col_level_1,...]</span><br><span class="line">	<span class="comment"># 层级索引时，index、col不能混在一起</span></span><br><span class="line"></span><br><span class="line">Val = df1.loc[(index_level_0, index_level_1,...)]\</span><br><span class="line">	[(col_level_0, col_level_1,...)]</span><br></pre></td></tr></table></figure>
+<h6 id="iloc"><a href="#iloc" class="headerlink" title=".iloc[]"></a><code>.iloc[]</code></h6><p>indices locate，应视为对value（ndarray）进行操作，index和
+columns的结构对其没有任何影响</p>
+<ul>
+<li>在层级索引情况下，仍然返回Ser</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Ser = df1.iloc[indice]</span><br><span class="line">	<span class="comment"># 返回values第indice行Ser对象</span></span><br><span class="line">Val = df1.iloc[index_indice, col_indice]</span><br><span class="line">	<span class="comment"># 取得values第index_indice行、第col_indice列元素</span></span><br></pre></td></tr></table></figure>
+<h6 id="ix"><a href="#ix" class="headerlink" title=".ix[]"></a><code>.ix[]</code></h6><p><code>.loc</code>、<code>.iloc</code>的封装，不建议使用</p>
+<ul>
+<li>优先使用<code>.loc</code>，除非参数为int、且Index不是int类型</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Ser = df1.ix[index]</span><br></pre></td></tr></table></figure>
+<h5 id="行优先快速版本"><a href="#行优先快速版本" class="headerlink" title="行优先快速版本"></a>行优先快速版本</h5><p><strong>只能</strong>、<strong>必须</strong>取一个值</p>
+<ul>
+<li>不能用于获取切片</li>
+<li><p>对于多重索引必须将Index、Columns所有level全部指定</p>
+</li>
+<li><p><code>.iat</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Val = df1.iat[index_indice, col_indice]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>.at</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Val = df1.at[index_name, col_name]</span><br><span class="line">	<span class="comment"># 单索引</span></span><br><span class="line">Val = df1.at[(index_level_0, index_level_1,...), (col_level_0, col_level_1,...)]</span><br><span class="line">	<span class="comment"># 多重索引必须指定全部level保证只取到一个值</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h3><h4 id="Values切片"><a href="#Values切片" class="headerlink" title="Values切片"></a>Values切片</h4><p>切片对象是values</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.iloc[irow_start: irow_end, icol_start: icol_end]</span><br><span class="line">	<span class="comment"># 对values的切片，参数都是indices</span></span><br><span class="line">	<span class="comment"># 这个应该就是ndarray切片操作，不包括上限</span></span><br><span class="line">	<span class="comment"># 如果只对行切片，可以省略`.iloc`，但不建议，因为这个</span></span><br><span class="line">		<span class="comment"># 同时也可以表示Index切片（优先）</span></span><br></pre></td></tr></table></figure>
+<h4 id="Index切片"><a href="#Index切片" class="headerlink" title="Index切片"></a>Index切片</h4><p>切片对象是index，包括上限</p>
+<h5 id="全切片"><a href="#全切片" class="headerlink" title="全切片"></a>全切片</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.loc[</span><br><span class="line">	(index_0, index_1,...): (index_0, index_1,...),</span><br><span class="line">	(col_0, col_1,...): (col_0, col_1,...)]</span><br><span class="line">	<span class="comment"># `.loc`可以替换为`.ix`，但不能删除，不建议使用</span></span><br></pre></td></tr></table></figure>
+<h5 id="行切片"><a href="#行切片" class="headerlink" title="行切片"></a>行切片</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.loc[[(index_0, index_1,...),...]]</span><br><span class="line">DF = df1.loc[(index_0, index_1,...): (index_0, index_1,...)]</span><br><span class="line">	<span class="comment"># index_level可以不用指定到最低level，</span></span><br><span class="line">	<span class="comment"># 同样的，`.loc`可以替换为`.ix`，但不建议使用</span></span><br></pre></td></tr></table></figure>
+<h5 id="列切片"><a href="#列切片" class="headerlink" title="列切片"></a>列切片</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df1[[col_name,...]]</span><br><span class="line">DF = df1.loc[:, (col_0,...): (col_0,...)]</span><br><span class="line">	<span class="comment"># `.loc`可以替换为`.ix`，但是不能删除，不建议使用</span></span><br><span class="line">	<span class="comment"># 列切片没有`:`语法，只能通过设置行切片为`:`得到</span></span><br></pre></td></tr></table></figure>
+<h3 id="DF数据共享逻辑"><a href="#DF数据共享逻辑" class="headerlink" title="DF数据共享逻辑"></a>DF数据共享逻辑</h3><p>DF数据（values）共享的逻辑</p>
+<ul>
+<li>一般尽量共享数据，直至无法处理（数据同时增加/删除行、列）</li>
+<li>有些方法会有<code>copy</code>参数，可以显式控制是否拷贝副本<ul>
+<li>如<code>.reindex</code>默认拷贝副本</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">df1_T = df1.T</span><br><span class="line">	<span class="comment"># 两个此时共享数据，对任一的更改会反映在另一者</span></span><br><span class="line">df1_T[<span class="string">&quot;new_col_1&quot;</span>] = [ ]</span><br><span class="line">	<span class="comment"># 添加新列后，两者仍然共享公共部分数据，只是`df1`中无法</span></span><br><span class="line">		<span class="comment"># 访问新列</span></span><br><span class="line">df1[<span class="string">&quot;new_col_2&quot;</span>] = [ ]</span><br><span class="line">	<span class="comment"># 此时两者数据均独立</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 类似的`del`删除列也是如此逻辑</span></span><br></pre></td></tr></table></figure>
+<h2 id="Index-索引"><a href="#Index-索引" class="headerlink" title="Index 索引"></a>Index 索引</h2><p>使用integer作为index时注意df1.ix[]的逻辑</p>
+<h3 id="MultiIndex-层级索引"><a href="#MultiIndex-层级索引" class="headerlink" title="MultiIndex 层级索引"></a>MultiIndex 层级索引</h3><p>层级索引允许以低维度形式表示高纬度数据</p>
+<ul>
+<li>层级索引可以使用tuple形式表示：<code>(level_0, level_1,...)</code><ul>
+<li>需要注意区分和tuple本身作为index<ul>
+<li>打印时可以tuple有括号，而层级索引没有</li>
+<li>层级索引有时可以省略括号</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="from-arrays"><a href="#from-arrays" class="headerlink" title="from_arrays"></a><code>from_arrays</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Index = pd.MultiIndex.from_arrays(</span><br><span class="line">	arrays([[],[]]),</span><br><span class="line">	sortorder=<span class="literal">None</span>/<span class="built_in">int</span>,</span><br><span class="line">	names=<span class="literal">None</span>/[])</span><br><span class="line"></span><br><span class="line">Index = [</span><br><span class="line">	level_0_list,</span><br><span class="line">	level_1_list,...]</span><br><span class="line">	<span class="comment"># 隐式构建层级索引，各list长度相同，其按顺序组合</span></span><br><span class="line">	<span class="comment"># 可以在：DF构造参数、给DF对象Index赋值等使用</span></span><br><span class="line">	<span class="comment"># 应该是可以看作pandas使用`from_arrays`处理</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：将arrays转换为MultiIndex</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>arrays</code>：包含多个list作为各个level索引<ul>
+<li>各list按照传递顺序决定level</li>
+<li><strong>不会自动合并</strong>不连续labels（否则需要交换数据位置）</li>
+</ul>
+</li>
+<li><code>sortorder</code>：sortedness级别？</li>
+<li><code>names</code>：level名</li>
+</ul>
+</li>
+</ul>
+<h4 id="from-tuples"><a href="#from-tuples" class="headerlink" title="from_tuples"></a><code>from_tuples</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Index = pd.MultiIndex.from_tuples(</span><br><span class="line">	tuples=[<span class="built_in">tuple</span>-like],</span><br><span class="line">	sortorder=<span class="literal">None</span>/<span class="built_in">int</span>,</span><br><span class="line">	names=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：将<code>tuples</code>转换为MultiIndex</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>tuples</code>：每个tuple为一个index，按照tuple中元素顺序
+决定各元素level</li>
+</ul>
+</li>
+</ul>
+<h4 id="from-product"><a href="#from-product" class="headerlink" title="from_product"></a><code>from_product</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Index = pd.MultiIndex.from_product(</span><br><span class="line">	iterables([[]]/[iterables]),</span><br><span class="line">	sortorder=<span class="literal">None</span>/<span class="built_in">int</span>,</span><br><span class="line">	names)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：对<code>iterables</code>元素作product（积）作为MultiIndex</li>
+</ul>
+<ol>
+<li><p>Series：可以看作是包含一个Index类（index，存放标签）、一个一维ndarray类（values，存放数据）</p>
+<p>a.    ser=pd.Series(data=np.darray/dict, index=list)</p>
+<p>b.    Series对象可以处理标签不一致的数据，但是只有标签的交集才能得到有意义的结果，其余为NaN</p>
+<p>c.    其余性质类似于DataFrame对象</p>
+</li>
+<li><p>Index属性#todo</p>
+<p>a.    index属性</p>
+<ol>
+<li><p>df1.columns=[]：更改列名称，index同</p>
+</li>
+<li><p>df1.columns.names=[]：更改列名，index同</p>
+</li>
+</ol>
+</li>
+<li><p>pandas库中的其他一些问题</p>
+<p>a.    数据类型转换：Series对象和DF对象在运算过程中dtype类型可能发生”无意义”的转换</p>
+<ol>
+<li><p>dtype=i8的对象之间的+、-结果为dtype=f8类型的对象（当然这个可能是保持和\的一致性）</p>
+</li>
+<li><p>SeriesObj.reindex(new_index)会”可能”会改变原有数据类型（由i8-&gt;f8）（有增加新index时）</p>
+</li>
+</ol>
+</li>
+</ol>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-02-17T03:57:07.000Z" title="2/17/2019, 11:57:07 AM">2019-02-17</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Pandas/">Pandas</a></span><span class="level-item">33 minutes read (About 4992 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Pandas/df_funcs.html">Pandas函数目录</a></h1><div class="content"><h2 id="“内容结构”变换"><a href="#“内容结构”变换" class="headerlink" title="“内容结构”变换"></a>“内容结构”变换</h2><h3 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h3><h4 id="merge"><a href="#merge" class="headerlink" title="merge"></a><code>merge</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DF = pd.merge(</span><br><span class="line">	left(DF),</span><br><span class="line">	right(DF),</span><br><span class="line">	on=col_name/[col_names],</span><br><span class="line">	left_on=<span class="string">&quot;left_col_name&quot;</span>,</span><br><span class="line">	right_on=<span class="string">&quot;right_col_name&quot;</span>,</span><br><span class="line">	left_index=<span class="literal">False</span>/<span class="literal">True</span>,</span><br><span class="line">	right_index=<span class="literal">False</span>/true,</span><br><span class="line">	how=<span class="string">&quot;Inner&quot;</span>/<span class="string">&quot;outer&quot;</span>/<span class="string">&quot;left&quot;</span>/<span class="string">&quot;right&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>功能：合并操作，类似于sql的<em>join</em>操作</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>on</code>：merge合并基准列，可以是多个列名称的list，df1、
+df2仅有一列名称相同时可省略，否则返回空DF对象</li>
+<li><code>left_on</code>、<code>right_on</code>：df1、df2合并基准列名称不同时
+使用</li>
+<li><code>left_index</code>、<code>right_index</code>：默认为<code>False</code>，值为
+<code>True</code>时使用索引作为基准进行合并（此时也可以使用
+<code>df1.join(df2)</code>）</li>
+<li><code>how</code>：合并方式，默认是inner join，参数取值：’outer’
+、’left’、’right’（不知道能不能取’inner’，这个应该
+是默认取值，可以使用）</li>
+</ul>
+</li>
+<li><p>其他</p>
+<ul>
+<li>df1、df2有多个列名相同且不全是合并基准列时，返回的
+DF对象的重复列名称会改变</li>
+</ul>
+</li>
+</ul>
+<h4 id="join"><a href="#join" class="headerlink" title="join"></a><code>join</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.join(</span><br><span class="line">	other(DF/Ser/[DF]),</span><br><span class="line">	on=<span class="literal">None</span>/[col_names],</span><br><span class="line">	how=<span class="string">&quot;Left/right/outer/inner&quot;</span>,</span><br><span class="line">	lsuffix=<span class="built_in">str</span>,</span><br><span class="line">	rsuffix=<span class="built_in">str</span>,</span><br><span class="line">	sort=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：和其他DF对象进行join操作</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>other</code><ul>
+<li>参数为Ser时，必须设置field名称</li>
+</ul>
+</li>
+<li><code>on</code><ul>
+<li>默认<code>None</code>，按照index-on-index进行join</li>
+<li>也可以按照col_name进行join</li>
+</ul>
+</li>
+<li><code>how</code>：同上</li>
+<li><code>lsuffix</code>：df1重名列使用的后缀</li>
+<li><code>rsuffix</code>：df2重名列使用的后缀</li>
+<li><code>sort</code>：按照join-key排序</li>
+</ul>
+</li>
+</ul>
+<h4 id="concat"><a href="#concat" class="headerlink" title="concat"></a><code>concat</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Df/Ser = pd.concat(</span><br><span class="line">	objs=[Ser, DF, <span class="built_in">dict</span>],</span><br><span class="line">	axix=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	join=<span class="string">&quot;Outer&quot;</span>/<span class="string">&quot;inner&quot;</span>,</span><br><span class="line">	join_axes=<span class="literal">None</span>/[index],</span><br><span class="line">	ignore_index=<span class="literal">False</span>/<span class="literal">True</span>,</span><br><span class="line">	keys=<span class="literal">None</span>/[]/[()],</span><br><span class="line">	levels=<span class="literal">None</span>/[],</span><br><span class="line">	names=<span class="literal">None</span>/[index_names],</span><br><span class="line">	verify_integrity=<span class="literal">False</span>,</span><br><span class="line">	copy=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：以某个轴为方向将多个Series对象或DF对象拼接</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>objs</code><ul>
+<li>dict作为参数值传递，排序后的keys传递给<code>keys</code></li>
+</ul>
+</li>
+<li><code>join</code>：处理其他轴的方式（其他轴长度、命名不同）</li>
+<li><code>join_axes</code>：指定其他轴的index</li>
+<li><code>ingore_index</code>：默认<code>False</code>，为<code>True</code>拼接后的DF的
+Index将为RangeIndex</li>
+<li><code>keys</code>：指定构建多级索引最外层Index</li>
+<li><code>levels</code>：用于构建多重索引的具体层级，默认从<code>keys</code>
+推断</li>
+<li><code>names</code>：返回DF对象索引名称</li>
+<li><code>verify_integrity</code>：默认<code>False</code>，不检查返回DF对象
+是否含有重复index
+<code>copy</code>：默认拷贝数据</li>
+</ul>
+</li>
+<li><p>其他</p>
+<ul>
+<li><p><code>pd.concat</code>只涉及拼接方向，而merge只能沿列数增加的
+方向“拼接”</p>
+</li>
+<li><p><code>pd.concat()</code>时即使有相同的列名称、index序号也不会
+重命名</p>
+</li>
+<li><p><code>pd.concat(axis=1,...)</code>和
+<code>pd.merge(left_index=True, right_index=True,...)</code>的
+作用应该是一样的，只是不会将相同的列名称重命名</p>
+</li>
+<li><p><code>pd.merge</code>可以指定合并基准列，而<code>pd.concat</code>只能按
+Index“合并”，且只能inner join或时outer join</p>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li><p><code>pd.concat</code>默认会对索引进行排序，所以若索引包含不可
+比较元素则会报错，尤其是在多重索引情况下</p>
+<ul>
+<li><p>改变索引类型规避</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 改为categorical索引</span></span><br><span class="line">df.index.astype(<span class="string">&quot;categorical&quot;</span>)</span><br><span class="line"><span class="comment"># 改为str类型</span></span><br><span class="line">df.index.astype(<span class="built_in">str</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>reset索引规避</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df_new = pd.cancat([df1.reset_index(), df2.reset_index()])</span><br><span class="line">df_new = df_new.set_index(col_name)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>pd.concat</code>连接会尝试转换数据类型，如：
+<code>pd.Timestamp</code>可能会被转换为<code>int</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="combine-first"><a href="#combine-first" class="headerlink" title="combine_first"></a><code>combine_first</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Ser = ser1.combine_first(other(Ser))</span><br><span class="line">Df = df1.combine_first(other(DF))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：和其他DF/Ser进行元素级别的combine，即填充<strong>NULL</strong>
+元素<ul>
+<li>元素级别</li>
+<li>返回对象包含所有的index</li>
+</ul>
+</li>
+</ul>
+<h3 id="增、删"><a href="#增、删" class="headerlink" title="增、删"></a>增、删</h3><h4 id="drop"><a href="#drop" class="headerlink" title="drop"></a><code>drop</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DF/<span class="literal">None</span> = df1.drop(</span><br><span class="line">	labels=<span class="literal">None</span>/label/[labels],</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	index=<span class="literal">None</span>/index_name/[index_names],</span><br><span class="line">	columns=<span class="literal">None</span>/col_name/[col_names],</span><br><span class="line">	level=<span class="literal">None</span>/<span class="built_in">int</span>/level_name,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	errors==<span class="string">&quot;Raise/ignore&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：删除df1某轴上的labels</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>columns</code>/<code>index</code>：替代<code>axis</code>+<code>label</code>指定需要删除的
+列/行</li>
+</ul>
+</li>
+</ul>
+<h4 id="new-col-name"><a href="#new-col-name" class="headerlink" title="[new_col_name]"></a><code>[new_col_name]</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df1[new_col_name] = <span class="built_in">list</span></span><br><span class="line">df1.loc[new_index_name] = <span class="built_in">list</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：添加新列/行<ul>
+<li><code>.iloc[new_index_name]</code>不可用</li>
+</ul>
+</li>
+</ul>
+<h4 id="append"><a href="#append" class="headerlink" title="append"></a><code>append</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.append(</span><br><span class="line">	other(DF/Ser/<span class="built_in">dict</span>/[]),</span><br><span class="line">	ignore_index=<span class="literal">False</span>,</span><br><span class="line">	verify_integrity=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：将<code>other</code>行追加到df1</li>
+</ul>
+<h4 id="del"><a href="#del" class="headerlink" title="del"></a><code>del</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">del</span> df1[col_name]</span><br><span class="line">	<span class="comment"># python自身语法直接删除某列</span></span><br></pre></td></tr></table></figure>
+<h2 id="形、态变换"><a href="#形、态变换" class="headerlink" title="形、态变换"></a>形、态变换</h2><h3 id="形状"><a href="#形状" class="headerlink" title="形状"></a>形状</h3><h4 id="stack"><a href="#stack" class="headerlink" title="stack"></a><code>stack</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DF/Ser = df1.stack(</span><br><span class="line">	level=-<span class="number">1</span>/<span class="built_in">int</span>,</span><br><span class="line">	dropna=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：<strong>旋转</strong><code>level</code>级列索引</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>dropna</code>：默认剔除返回DF/Ser对象中NULL行</li>
+</ul>
+</li>
+</ul>
+<h4 id="unstack"><a href="#unstack" class="headerlink" title="unstack"></a><code>unstack</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DF/Ser = df1.unstack(</span><br><span class="line">	level=-<span class="number">1</span>/<span class="built_in">int</span>,</span><br><span class="line">	fill_value=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：<strong>旋转</strong><code>level</code>级行索引</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>fill_value</code>：替换NaN的值</li>
+</ul>
+</li>
+<li><p>其他</p>
+<ul>
+<li>两个函数好像都有排序操作，<code>df1.unstack().stack()</code>会
+合并层级索引</li>
+</ul>
+</li>
+</ul>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><h4 id="sort-index"><a href="#sort-index" class="headerlink" title="sort_index"></a><code>sort_index</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.sort_index(</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>,</span><br><span class="line">	level=<span class="literal">None</span>/<span class="built_in">int</span>/<span class="built_in">str</span>,</span><br><span class="line">	ascending=<span class="literal">True</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	kind=<span class="string">&quot;Quicksort&quot;</span>/<span class="string">&quot;mergesort&quot;</span>/<span class="string">&quot;heapsort&quot;</span>,</span><br><span class="line">	na_position=<span class="string">&quot;First&quot;</span>/<span class="string">&quot;last&quot;</span>,</span><br><span class="line">	sort_remaining=<span class="literal">True</span>/<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：按照labels排序</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>kind</code>：排序方法</li>
+<li><code>na_position</code>：默认将NaN放在开头<ul>
+<li>对多重索引无效</li>
+</ul>
+</li>
+<li><code>sort_remaining</code>：默认依次对剩余层级排序</li>
+</ul>
+</li>
+</ul>
+<h4 id="sort-value"><a href="#sort-value" class="headerlink" title="sort_value"></a><code>sort_value</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.sort_value(</span><br><span class="line">	by(label/[labels]),</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>,</span><br><span class="line">	ascending=<span class="literal">True</span>/<span class="literal">False</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	kind=<span class="string">&quot;Quicksort&quot;</span>/<span class="string">&quot;mergesort&quot;</span>/<span class="string">&quot;heapsort&quot;</span>,</span><br><span class="line">	na_position=<span class="string">&quot;Last&quot;</span>/<span class="string">&quot;first&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：依某labels（行、列）值排列</li>
+</ul>
+<h4 id="rank"><a href="#rank" class="headerlink" title="rank"></a><code>rank</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.rank(</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>,</span><br><span class="line">	method=<span class="string">&quot;Average&quot;</span>/<span class="string">&quot;min&quot;</span>/<span class="string">&quot;max&quot;</span>/<span class="string">&quot;first&quot;</span>/<span class="string">&quot;dense&quot;</span>,</span><br><span class="line">	numeric_only=<span class="literal">None</span>/<span class="literal">True</span>/<span class="literal">False</span>,</span><br><span class="line">	na_option=<span class="string">&quot;Keep&quot;</span>/<span class="string">&quot;top&quot;</span>/<span class="string">&quot;bottom&quot;</span>,</span><br><span class="line">	ascending=<span class="literal">True</span>,</span><br><span class="line">	pct=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：沿轴计算数值型数据的rank</p>
+<ul>
+<li>rank值相同者取rank值平均</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>method</code><ul>
+<li><code>average</code>：组（延轴分组）rank平均</li>
+<li><code>min</code>/<code>max</code>：组内最小/大</li>
+<li><code>first</code>：label出现顺序优先</li>
+<li><code>dense</code>：类似<code>min</code>，但是rank值总是增加1</li>
+</ul>
+</li>
+<li><code>numeric_only</code>：默认不考虑<strong>含有</strong>非数值型数据label<ul>
+<li>但是文档上确实写默认值为<code>None</code></li>
+</ul>
+</li>
+<li><code>na_option</code><ul>
+<li><code>keep</code>：NaN值rank值不变</li>
+<li><code>top</code>：NaN作为“小”值</li>
+<li><code>bottom</code>：NaN作为“大”值</li>
+</ul>
+</li>
+<li><code>ascending</code>：默认小值rank值小</li>
+<li><code>pct</code>：默认不计算rank值占比</li>
+</ul>
+</li>
+</ul>
+<h4 id="take"><a href="#take" class="headerlink" title="take"></a><code>take</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.take(</span><br><span class="line">	indices([indice]),</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>,</span><br><span class="line">	covert=<span class="literal">True</span>,</span><br><span class="line">	is_copy=<span class="literal">True</span>,</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：按照indices对应的labels顺序返回DF</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>indices</code>：指明返回indices、及其顺序<ul>
+<li>indices是指行数，不是labels</li>
+<li>可以为负值indice，类似list</li>
+</ul>
+</li>
+<li><code>convert</code>：是否处理负值indice（将废除，均处理）</li>
+<li><code>is_copy</code>：默认创建副本返回</li>
+</ul>
+</li>
+</ul>
+<h4 id="reindex"><a href="#reindex" class="headerlink" title="reindex"></a><code>reindex</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.reindex(</span><br><span class="line">	labels=<span class="literal">None</span>/[labels]/Index,</span><br><span class="line">	index=<span class="literal">None</span>/[labels]/Index,</span><br><span class="line">	columns=<span class="literal">None</span>/[labels],</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	method=<span class="literal">None</span>/<span class="string">&quot;backfill&quot;</span>/<span class="string">&quot;bfill&quot;</span>/<span class="string">&quot;pad&quot;</span>/<span class="string">&quot;ffill&quot;</span>/<span class="string">&quot;nearest&quot;</span>,</span><br><span class="line">	copy=<span class="literal">True</span>/<span class="literal">False</span>,</span><br><span class="line">	level=<span class="literal">None</span>/<span class="built_in">int</span>/level_name,</span><br><span class="line">	fill_value=NaN/scalar,</span><br><span class="line">	limit=<span class="literal">None</span>/limit,</span><br><span class="line">	tolerance=scalar/array-like)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：将DF对象转换有其他Index的对象</p>
+<ul>
+<li>可以包含之前没有的labels</li>
+<li>类似于labels版本<code>.take</code>，是<strong>选择</strong>不是重命名</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>labels</code>：新Index，配合<code>axis</code>决定替换轴</li>
+<li><code>index</code>/<code>columns</code>：两根轴的Index</li>
+<li><code>method</code>：新labels值填补方法<ul>
+<li>用于填补的值不一定会出现在返回DF对象中，可能是
+使用原DF对象中未被选择labels</li>
+</ul>
+</li>
+<li><code>copy</code>：默认拷贝副本</li>
+<li><code>fill_value</code>：新labels值填补值</li>
+<li><code>limit</code>：允许最长连续使用<code>method</code>方法填补值</li>
+<li><code>tolerance</code>：使用<code>method</code>方法填补新labels值时，用于
+填补labels和新labels的最大差距<ul>
+<li>超过<code>tolerance</code>则为默认NaN</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h2><h3 id="简单统计"><a href="#简单统计" class="headerlink" title="简单统计"></a>简单统计</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Ser = df1.<span class="built_in">sum</span>(</span><br><span class="line">	level=<span class="literal">None</span>/<span class="number">0</span>/<span class="number">1</span>,</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">Ser = df1.mean(</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">Ser = df1.std(</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">DF = df1.describe()</span><br><span class="line"></span><br><span class="line">DF = df1.corr()</span><br><span class="line"></span><br><span class="line">DF = df1.cov()</span><br><span class="line"></span><br><span class="line"><span class="built_in">float</span> = ser1.corr(</span><br><span class="line">	ser1)</span><br><span class="line"></span><br><span class="line">Ser = df1.corwith(</span><br><span class="line">	other(DF/Ser),</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>,</span><br><span class="line">	drop=<span class="literal">False</span>/<span class="literal">True</span>)</span><br><span class="line">	<span class="comment"># `other`为DF对象时计算相同名称相关系数</span></span><br></pre></td></tr></table></figure>
+<h4 id="value-count"><a href="#value-count" class="headerlink" title="value_count"></a><code>value_count</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Ser = pd.value_counts(</span><br><span class="line">	values(ndarray(1d)),</span><br><span class="line">	sort=<span class="literal">True</span>/<span class="literal">False</span>,</span><br><span class="line">	ascending=<span class="literal">False</span>/<span class="literal">True</span>,</span><br><span class="line">	normalize=<span class="literal">False</span>/<span class="literal">True</span>,</span><br><span class="line">	bins=<span class="literal">None</span>/<span class="built_in">int</span>/[num],</span><br><span class="line">	dropna=<span class="literal">True</span>/<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：计算hisgram</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>sort</code>：默认按值排序</li>
+<li><code>normalize</code>：默认不正则化（计算相对histgram）</li>
+<li><code>bins</code>：hisgrams划分bins<ul>
+<li>默认每个值划分为一个bins</li>
+<li>给出<code>int</code>时表示数目，<code>(min, max]</code>均等分</li>
+<li>给出<code>[num]</code>计算列表内数量（范围外不考虑）</li>
+</ul>
+</li>
+<li><code>dropna</code>：默认不计算NaN值个数</li>
+</ul>
+</li>
+</ul>
+<h4 id="quantile"><a href="#quantile" class="headerlink" title="quantile"></a><code>quantile</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Ser/DF = df1.quantile(</span><br><span class="line">	q=<span class="number">0.5</span>/<span class="built_in">float</span>/[<span class="built_in">float</span>],</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	numeric_only=<span class="literal">True</span>,</span><br><span class="line">	interpolation=<span class="string">&quot;linear&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：计算<code>q</code>分位数</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>q</code>：分位，可以是列表，计算多个分位数</li>
+<li><code>interpolation</code>：分位数计算方式（分位数位i、j间）<ul>
+<li><code>linear</code>：<code>i+(j-i)*fraction</code>（线性回归）</li>
+<li><code>low</code>：<code>i</code></li>
+<li><code>high</code>：<code>i+1</code></li>
+<li><code>nearest</code>：<code>i</code>、<code>i+1</code>中近者</li>
+<li><code>midpoint</code>：(<code>i</code>+<code>j</code>)/2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="元素级"><a href="#元素级" class="headerlink" title="元素级"></a>元素级</h2><h3 id="Apply"><a href="#Apply" class="headerlink" title="Apply"></a>Apply</h3><h4 id="apply"><a href="#apply" class="headerlink" title="apply"></a><code>apply</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DF/Ser = df1.apply(</span><br><span class="line">	func(func/&#123;label: func&#125;),</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	broadcast=<span class="literal">False</span>,</span><br><span class="line">	raw=<span class="literal">False</span>,</span><br><span class="line">	reduce=<span class="literal">None</span>/<span class="literal">True</span>/<span class="literal">False</span>,</span><br><span class="line">	args=(),</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：对<code>df1</code>沿轴方向labels应用func</p>
+<ul>
+<li>可以用于DFGB对象<ul>
+<li>为聚合函数时返回DF对象Index为groupby键，类似于
+<code>agg</code></li>
+<li>非聚合函数时返回DF对象为原Index，类似于
+<code>transform</code>，但包含用于groupby的label</li>
+<li>但是此时其他参数无法使用，<code>func</code>也仅能为单一
+function，而<code>agg</code>可以使用各种</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>broadcast</code>：仅对aggregation（聚合）函数，默认不保持
+原shape<ul>
+<li>0.23.0 deprecated</li>
+</ul>
+</li>
+<li><code>raw</code>：默认不是将label作为ndarray对象传递，而是保持
+Series对象<ul>
+<li>如果函数处理nadarry对象，<code>True</code>性能更好</li>
+</ul>
+</li>
+<li><code>reduce</code>：默认根据函数判断是否返回DF<ul>
+<li><code>False</code>：尽量返回DF对象</li>
+<li>0.23.0 deprecated</li>
+</ul>
+</li>
+<li><code>result_type</code><ul>
+<li><code>expand</code>：返回DF对象</li>
+<li><code>reduce</code>：尽量返回Ser对象</li>
+<li><code>broadcast</code>：保持原shape返回</li>
+<li>0.23.0 new</li>
+</ul>
+</li>
+<li><code>args</code>：传递给<code>func</code>的VAR_POSITIONs</li>
+<li><code>kwargs</code>：传递给<code>func</code>的VAR_KEYWORDs</li>
+</ul>
+</li>
+</ul>
+<h4 id="agg"><a href="#agg" class="headerlink" title="agg"></a><code>agg</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.agg(</span><br><span class="line">	func(<span class="built_in">callable</span>/<span class="string">&quot;func_name&quot;</span>(<span class="built_in">str</span>)/&#123;label:func&#125;/[],</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	*args,</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：聚合</p>
+<ul>
+<li>可以用于DFGB，必然返回DF，因此要求函数<strong>结果</strong>必须
+聚合<ul>
+<li>如果分组结果都只有单个label，函数可以非聚合</li>
+<li>如果分结果中由多label分组，函数必须聚合</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>func</code><ul>
+<li>dict键应为column labels，值为function</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="transform"><a href="#transform" class="headerlink" title="transform"></a><code>transform</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df1/dfgb1.transform(</span><br><span class="line">	func(<span class="built_in">callable</span>/<span class="string">&quot;func_name&quot;</span>(<span class="built_in">str</span>)/<span class="built_in">dict</span>/[]),</span><br><span class="line">	*args,</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：返回应用<code>func</code>处理后DF<ul>
+<li>应用于DF对象时，等同于<code>axis=0</code>的<code>agg</code>、<code>apply</code></li>
+<li>应用于DFGB对象时，无价值，和应用于原DF对象结果一样，
+仅剔除groupby label</li>
+</ul>
+</li>
+</ul>
+<h3 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h3><h4 id="replace"><a href="#replace" class="headerlink" title="replace"></a><code>replace</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.replace(</span><br><span class="line">	to_replace=<span class="literal">None</span>/<span class="built_in">str</span>/regex/num/[]/&#123;&#125;/Series,</span><br><span class="line">	value=<span class="literal">None</span>/<span class="built_in">str</span>/num/[]/&#123;&#125;,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	limit=<span class="literal">None</span>/<span class="built_in">int</span>,</span><br><span class="line">	regex=<span class="literal">False</span>,</span><br><span class="line">	method=<span class="string">&quot;pad&quot;</span>/<span class="string">&quot;ffill&quot;</span>/<span class="string">&quot;bfill&quot;</span>/<span class="string">&quot;backfill&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：替换</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>to_replace</code>：<strong>被替换</strong>对象<ul>
+<li>str/regex/num：匹配str/regex/num的值被替换为<code>value</code></li>
+<li>[ ]<ul>
+<li><code>value</code>也为list时，长度必须相同</li>
+<li>str元素可看作regex</li>
+</ul>
+</li>
+<li>{}<ul>
+<li>nested dict顶层键匹配列label，然后应用对应
+子dict进行匹配（此时包含<code>value</code>功能）</li>
+<li>非顶层键可以为regex</li>
+</ul>
+</li>
+<li>None：此时<code>regex</code>必为str/[]/{}/Ser</li>
+</ul>
+</li>
+<li><code>value</code>：<strong>替换</strong>值<ul>
+<li>str/num：替换值</li>
+<li>{}：键匹配列label然后替换值，无匹配保持原样</li>
+<li>[ ]：长度必须和<code>to_replace</code>相同</li>
+</ul>
+</li>
+<li><code>limit</code>：允许最长连续bfill、ffill替换</li>
+<li><code>regex</code><ul>
+<li>为<code>True</code>时，<code>to_replace</code>、<code>value</code>将作为regex</li>
+<li>代替<code>to_replace</code>作regex替换</li>
+</ul>
+</li>
+<li><code>method</code>：<code>to_replace</code>为list时替换方法</li>
+</ul>
+</li>
+<li><p>说明</p>
+<ul>
+<li><code>to_replace</code>为{regex:str}时，只替换DF中str匹配的部分
+，如果需要替换整个str，需要<code>^.*str.*$</code>匹配整个str</li>
+<li>但为{regex:int}时，不需要<code>^.*str.*$</code>也会匹配整个str
+并替换为int</li>
+</ul>
+</li>
+</ul>
+<h4 id="where"><a href="#where" class="headerlink" title="where"></a><code>where</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">df = df1.where(</span><br><span class="line">	cond(df(<span class="built_in">bool</span>)/<span class="built_in">callable</span>/[]),</span><br><span class="line">	other=num/df/<span class="built_in">callable</span>,</span><br><span class="line">	inplace=false,</span><br><span class="line">	axis=none,</span><br><span class="line">	level=none,</span><br><span class="line">	errors=<span class="string">&quot;raise&quot;</span>,</span><br><span class="line">	try_cast=<span class="literal">False</span>,</span><br><span class="line">	raise_on_error=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：mask <code>True</code>，替换<code>False</code>为<code>other</code>值，默认（<code>other</code>
+中无法找到对应值）NaN</p>
+<ul>
+<li><code>cond</code>、<code>other</code>是按照<code>[index][col]</code>对应位置，而不是
+打印位置</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>cond</code><ul>
+<li>DF(bool)：<code>True</code>保持原值不变，<code>False</code>从<code>other</code>
+替换</li>
+<li>callable：应用在<code>df1</code>上，返回DF(bool)，不应改变
+`df</li>
+<li><code>cond</code>不提供位置视为被替换1`</li>
+</ul>
+</li>
+<li><code>other</code><ul>
+<li>num：替换为num</li>
+<li>DF：替换值</li>
+<li>callable：应用在<code>df1</code>上，返回DF用于替换</li>
+</ul>
+</li>
+<li><code>axis</code>：alignment axis if needed</li>
+<li><code>level</code>：alignemnt level if needed</li>
+<li><code>errors</code><ul>
+<li><code>raise</code>：允许raise exceptions</li>
+<li><code>ignore</code>：suppress exceptions，错误时返回原对象</li>
+</ul>
+</li>
+<li><code>try_cast</code>：默认不尝试将结果cast为原输入</li>
+</ul>
+</li>
+</ul>
+<h4 id="mask"><a href="#mask" class="headerlink" title="mask"></a><code>mask</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.mask(</span><br><span class="line">	cond(DF(<span class="built_in">bool</span>)/<span class="built_in">callable</span>/[]),</span><br><span class="line">	other=num/DF/<span class="built_in">callable</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	axis=<span class="literal">None</span>,</span><br><span class="line">	level=<span class="literal">None</span>,</span><br><span class="line">	errors=<span class="string">&quot;raise&quot;</span>,</span><br><span class="line">	try_cast=<span class="literal">False</span>,</span><br><span class="line">	raise_on_error=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：<code>True</code>、<code>False</code> mask规则同<code>where</code>相反，其他同</li>
+</ul>
+<h3 id="筛选"><a href="#筛选" class="headerlink" title="筛选"></a>筛选</h3><h4 id="isin"><a href="#isin" class="headerlink" title="isin"></a><code>isin</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.isin(</span><br><span class="line">	values(iterable/&#123;&#125;/DF))</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：判断元素是否存在于<code>values</code>中</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>values</code><ul>
+<li>iterable：元素在iterable中为<code>True</code></li>
+<li>{}：<code>df1</code>元素在dict中对应键<strong>值</strong>中存在为<code>True</code></li>
+<li>DF：<code>df1</code>元素在DF对应index、columns labels存在
+才为<code>True</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><h4 id="to-numeric"><a href="#to-numeric" class="headerlink" title="to_numeric"></a><code>to_numeric</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Ser = pd.to_numeric(</span><br><span class="line">	arg([]/()/ndarray(1d)/Ser),</span><br><span class="line">	errors=<span class="string">&quot;Raise&quot;</span>/<span class="string">&quot;ingore&quot;</span>/<span class="string">&quot;coerce&quot;</span>,</span><br><span class="line">	downcast=<span class="literal">None</span>/<span class="string">&quot;integer&quot;</span>/<span class="string">&quot;signed&quot;</span>/<span class="string">&quot;unsigned&quot;</span>/<span class="string">&quot;float&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：转换为numeric类型</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>errors</code><ul>
+<li><code>raise</code>：无效值将raise exception</li>
+<li><code>coerce</code>：无效值设为NaN</li>
+<li><code>ignore</code>：无效值保持原样</li>
+</ul>
+</li>
+<li><code>downcast</code>：根据参数downcast值为“最小”类型<ul>
+<li>downcast过程中exception不受<code>errors</code>影响</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="to-datetime"><a href="#to-datetime" class="headerlink" title="to_datetime"></a><code>to_datetime</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Ser = pd.to_datetime(</span><br><span class="line">	arg(<span class="built_in">int</span>/<span class="built_in">float</span>/<span class="built_in">str</span>/datetime/[]/()/ndarray(1d)/Ser/DF,</span><br><span class="line">	error=<span class="string">&quot;Raise&quot;</span>/<span class="string">&quot;ignore&quot;</span>/<span class="string">&quot;coerce&quot;</span>,</span><br><span class="line">	dayfirst=<span class="literal">False</span>,</span><br><span class="line">	yearfirst=<span class="literal">False</span>,</span><br><span class="line">	utc=<span class="literal">None</span>/<span class="literal">True</span>,</span><br><span class="line">	box=<span class="literal">True</span>/<span class="literal">False</span>,</span><br><span class="line">	<span class="built_in">format</span>=<span class="literal">None</span>/<span class="built_in">str</span>,</span><br><span class="line">	exact=<span class="literal">True</span>,</span><br><span class="line">	unit=<span class="string">&quot;ns&quot;</span>/<span class="string">&quot;D&quot;</span>/<span class="string">&quot;s&quot;</span>/<span class="string">&quot;ms&quot;</span>/<span class="string">&quot;us&quot;</span>/<span class="string">&quot;ns&quot;</span>,</span><br><span class="line">	infer_datatime_format=<span class="literal">False</span>,</span><br><span class="line">	origin=<span class="string">&quot;unit&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：转换为datetime</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>dayfirst</code>：处理类”10/11/12”，设置day在前</li>
+<li><code>yearfirst</code>：处理类”10/11/12”，设置year在前</li>
+<li><code>utc</code>：默认不返回UTC DatatimeIndex</li>
+<li><code>box</code><ul>
+<li><code>True</code>：返回DatetimeIndex</li>
+<li><code>False</code>：返回ndarray值</li>
+</ul>
+</li>
+<li><code>format</code>：parse格式，如”%d/%m/%y %H:%M:%S”</li>
+<li><code>exact</code>：默认要求<code>arg</code>精确匹配<code>format</code></li>
+<li><code>unit</code>：<code>arg</code>传递数值时作为单位</li>
+<li><code>infer_datatime_format</code>：在<code>format</code>为<code>None</code>时，尝试
+猜测格式，并选择最快的方式parse，耗时5~10倍</li>
+<li><code>origin</code>：决定参考（起始）时间<ul>
+<li><code>unix</code>：起始时间：1970-01-01</li>
+<li><code>julian</code>：4714 BC 1.1（此时<code>unit</code>必须为<code>D</code>）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="infer-objects"><a href="#infer-objects" class="headerlink" title="infer_objects"></a><code>infer_objects</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.infer_objects()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：soft转换数据类型，无法转换保持原样</li>
+</ul>
+<h4 id="astype"><a href="#astype" class="headerlink" title="astype"></a><code>astype</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DF = df.astype(</span><br><span class="line">	dtype(dtype/&#123;col_name:dtype&#125;),</span><br><span class="line">	copy=<span class="literal">True</span>,</span><br><span class="line">	errors=<span class="string">&quot;raise&quot;</span>/<span class="string">&quot;ingore&quot;</span>,</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：强制转换为<code>dtype</code>类型</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>copy</code>：默认返回拷贝</li>
+<li><code>kwargs</code>：传递给构造函数的参数</li>
+</ul>
+</li>
+</ul>
+<h3 id="Ser"><a href="#Ser" class="headerlink" title="Ser"></a>Ser</h3><h4 id="map"><a href="#map" class="headerlink" title="map"></a><code>map</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Ser = ser1.<span class="built_in">map</span>(</span><br><span class="line">	arg=&#123;&#125;/Ser/<span class="built_in">callable</span>,</span><br><span class="line">	na_action=<span class="literal">None</span>/<span class="string">&quot;ignore&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：对Ser中元素进行映射</p>
+<ul>
+<li><strong>map</strong>对无法<strong>配置</strong>（dict）返回None而不是保持不变</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>arg</code><ul>
+<li>{}：对Ser中值根据键值对映射</li>
+<li>callable：对元素<strong>应用</strong>callable</li>
+</ul>
+</li>
+<li><code>no_action</code>：默认对NA也处理，否则忽略</li>
+</ul>
+</li>
+<li><p>其他</p>
+<ul>
+<li>好像默认会应用类似于<code>apply(convert_type=True)</code>，如
+直接取值是<code>np.float64</code>类型，传给函数就变成了<code>float</code>
+类型</li>
+</ul>
+</li>
+</ul>
+<h4 id="apply-1"><a href="#apply-1" class="headerlink" title="apply"></a><code>apply</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Ser = ser1.apply(</span><br><span class="line">	func(<span class="built_in">callable</span>/&#123;&#125;/[]),</span><br><span class="line">	convert_type=<span class="literal">True</span>/<span class="literal">False</span>,</span><br><span class="line">	args=(),</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：在Ser上应用<code>func</code></p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><p><code>func</code></p>
+<ul>
+<li>{}：返回<strong>多重索引</strong>Ser，键作为顶层索引，不是对
+不同值应用不同方法</li>
+<li>[ ]：返回DF对象，列labels根据list元素命令，list
+元素不能聚合、非聚合混合</li>
+</ul>
+</li>
+<li><p><code>convert_type</code>：默认转换为合适的类型，否则设为
+<code>dtype=object</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="agg-1"><a href="#agg-1" class="headerlink" title="agg"></a><code>agg</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Ser = ser1.agg(</span><br><span class="line">	func(<span class="built_in">callable</span>/&#123;&#125;/[]),</span><br><span class="line">	axis=<span class="number">0</span>,</span><br><span class="line">	args=(),</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：好像和<code>apply</code>完全相同，只是参数不同，但<code>axis</code>没用</li>
+</ul>
+<h2 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h2><h4 id="cut"><a href="#cut" class="headerlink" title="cut"></a><code>cut</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Ser = pd.cut(</span><br><span class="line">	x(array-like),</span><br><span class="line">	bins(<span class="built_in">int</span>/[num]/IntervalIndex),</span><br><span class="line">	right=<span class="literal">True</span>,</span><br><span class="line">	labels=<span class="literal">None</span>/[],</span><br><span class="line">	retbins=<span class="literal">False</span>,</span><br><span class="line">	precision=<span class="number">3</span>/<span class="built_in">int</span>,</span><br><span class="line">	include_lowest=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：返回各个元素所属区间，同时也是对应indice</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>bins</code>：左开右闭<ul>
+<li>int：将<code>x</code>等分（事实上为了包含最小值，<code>bins</code>
+左边界会扩展.1%）</li>
+<li>[num]：定义<code>bins</code>边界</li>
+</ul>
+</li>
+<li><code>right</code>：默认包含right-most边界</li>
+<li><code>labels</code>：指定生成bins的labels</li>
+<li><code>retbins</code>：默认不返回bins，设为<code>True</code>将返回tuple</li>
+<li><code>precision</code>：bins labels显示精度</li>
+<li><code>include_lowest</code>：第一个bin是否应该包括最小值<ul>
+<li>应该仅对<code>bins=[]</code>有效</li>
+<li>设为<code>True</code>仍然为左开右闭区间，但是左边界会小于
+<code>bins=[]</code>中的最小值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="qcut"><a href="#qcut" class="headerlink" title="qcut"></a><code>qcut</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Ser = pd.qcut(</span><br><span class="line">	x(array-like),</span><br><span class="line">	q=<span class="built_in">int</span>/quantile_list,</span><br><span class="line">	labels=<span class="literal">None</span>,</span><br><span class="line">	retbins=<span class="literal">False</span>,</span><br><span class="line">	precision=<span class="number">3</span>,</span><br><span class="line">	duplicates=<span class="string">&quot;Raise&quot;</span>/<span class="string">&quot;drop&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：将<code>x</code>按照<code>q</code>划分分位数后进组（即按照数量分组）</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>q</code><ul>
+<li>int：划分int个等分位数</li>
+<li>[num]：将<code>x</code>元素按照给出<strong>分位数</strong>分组</li>
+</ul>
+</li>
+<li><code>duplicates</code><ul>
+<li><code>raise</code>：bins边缘不唯一raise exception</li>
+<li><code>drop</code>：bins边缘不唯一则丢弃不唯一值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="groupby"><a href="#groupby" class="headerlink" title="groupby"></a><code>groupby</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DFGB = df1.groupby(</span><br><span class="line">	by(col_name),</span><br><span class="line">	axis=<span class="number">0</span>,</span><br><span class="line">	level=<span class="literal">None</span>,</span><br><span class="line">	as_index=<span class="literal">True</span>,</span><br><span class="line">	sort=<span class="literal">True</span>,</span><br><span class="line">	group_keys=<span class="literal">True</span>,</span><br><span class="line">	squeeze=<span class="literal">False</span>,</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：根据<code>by</code>对DF分组</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>by</code><ul>
+<li>func：应用于DF的Index上，结果作分组依据</li>
+<li>dict/Ser：对Index作映射，映射结果作分组依据</li>
+<li>array-like：其值依顺序标记DF行，据此分组，因此
+要求长度必须和DF行数相同</li>
+<li>col_name/[col_name]：根据col_name分组</li>
+</ul>
+</li>
+<li><code>as_index</code>：默认使用分组依据作为分组Index（labels）</li>
+<li><code>sort</code>：默认组内各保持原DF顺序，可以关闭获得更好性能</li>
+<li><code>group_keys</code>：默认在calling apply时，添加group键用于
+标识各组</li>
+<li><code>squeeze</code>：为<code>True</code>时尽可能减少返回值维度，否则返回
+consistent type</li>
+</ul>
+</li>
+</ul>
+<h2 id="Index"><a href="#Index" class="headerlink" title="Index"></a>Index</h2><h3 id="Index值"><a href="#Index值" class="headerlink" title="Index值"></a>Index值</h3><h4 id="pivot"><a href="#pivot" class="headerlink" title="pivot"></a><code>pivot</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.pivot(</span><br><span class="line">	index=<span class="literal">None</span>/<span class="built_in">str</span>,</span><br><span class="line">	columns=<span class="literal">None</span>/<span class="built_in">str</span>,</span><br><span class="line">	values=<span class="literal">None</span>/<span class="built_in">str</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：根据某列值reshape数据（创建一个<strong>枢</strong>）</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>index</code>：用作Index的列名，默认Index</li>
+<li><code>columns</code>：用作Column的列名</li>
+<li><code>values</code>：填充进新DF对象的列名，默认所有剩余所有列
+（列索引为层级索引）</li>
+</ul>
+</li>
+<li><p>其他</p>
+<ul>
+<li>但是如果选取的两列元素两两组合有重复回报错</li>
+</ul>
+</li>
+</ul>
+<h4 id="set-index"><a href="#set-index" class="headerlink" title="set_index"></a><code>set_index</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.set_index(</span><br><span class="line">	keys(col_name/[ ]/[col_names,[ ]]),</span><br><span class="line">	drop=<span class="literal">True</span>,</span><br><span class="line">	append=<span class="literal">False</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	verify_integrity=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：用一列/多列作为新DF的Index（row labels）</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>keys</code>：列名，列名列表</li>
+<li><code>drop</code>：默认删除用作Index的列</li>
+<li><code>append</code>：默认不保留原Index（不以<strong>添加</strong>方式设置
+Index）</li>
+<li><code>verify_integrity</code>：默认不检查新Index是否唯一，直至
+必要的时候</li>
+</ul>
+</li>
+</ul>
+<h4 id="reset-index"><a href="#reset-index" class="headerlink" title="reset_index"></a><code>reset_index</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.reset_index(</span><br><span class="line">	level=<span class="literal">None</span>/<span class="built_in">int</span>/<span class="built_in">str</span>/[<span class="built_in">int</span>, <span class="built_in">str</span>],</span><br><span class="line">	drop=<span class="literal">False</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	col_level=<span class="number">0</span>/<span class="built_in">int</span>/<span class="built_in">str</span>,</span><br><span class="line">	col_fill=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>level</code>：默认所有层级</li>
+<li><code>drop</code>：默认将Index作为一列添加</li>
+<li><code>col_level</code>：Index作为列添加进的列索引层次，默认
+最高层</li>
+<li><code>col_fill</code>：对于多级索引，Index作为列添加时其他层级
+的命名，默认xtts </li>
+</ul>
+</li>
+<li><p>其他</p>
+<ul>
+<li>Index作为新列的名称默认为”index”/“level_0”、
+“level_1”等</li>
+</ul>
+</li>
+</ul>
+<h3 id="Index属性"><a href="#Index属性" class="headerlink" title="Index属性"></a>Index属性</h3><h4 id="swaplevel"><a href="#swaplevel" class="headerlink" title="swaplevel"></a><code>swaplevel</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df.swaplevel(</span><br><span class="line">	i=-<span class="number">2</span>/<span class="built_in">int</span>/<span class="built_in">str</span>,</span><br><span class="line">	j=-<span class="number">1</span>/<span class="built_in">int</span>/<span class="built_in">str</span>,</span><br><span class="line">	axis=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：交换i、j两层索引</li>
+</ul>
+<h4 id="rename"><a href="#rename" class="headerlink" title="rename"></a><code>rename</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DF = df.rename(</span><br><span class="line">	mapper=<span class="literal">None</span>/<span class="built_in">dict</span>/func,</span><br><span class="line">	index=<span class="literal">None</span>/<span class="built_in">dict</span>/func,</span><br><span class="line">	columns=<span class="literal">None</span>/<span class="built_in">dict</span>/func,</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	copy=<span class="literal">True</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	level=<span class="literal">None</span>/<span class="built_in">int</span>/<span class="built_in">str</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：修改labels（行、列名）</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>mapper</code>：labels的重命名规则</li>
+<li><code>index</code>/<code>columns</code>：行、列labels重命名规则<ul>
+<li><code>mapper</code>+<code>axis</code></li>
+<li><code>index</code></li>
+<li><code>columns</code></li>
+</ul>
+</li>
+<li><code>copy</code>：默认复制数据<ul>
+<li><code>inplace</code>为<code>True</code>时，此参数无效</li>
+</ul>
+</li>
+<li><code>level</code>：默认重命名所有level</li>
+</ul>
+</li>
+</ul>
+<h4 id="add-prefix"><a href="#add-prefix" class="headerlink" title="add_prefix"></a><code>add_prefix</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DF = df.add_prefix(</span><br><span class="line">	prefix(<span class="built_in">str</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明：为列labels添加前缀</li>
+</ul>
+<h2 id="特殊值"><a href="#特殊值" class="headerlink" title="特殊值"></a>特殊值</h2><h3 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h3><h4 id="unique"><a href="#unique" class="headerlink" title="unique"></a><code>unique</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bool</span> = ser1.is_unique</span><br><span class="line">	<span class="comment"># 无重复元素**属性**为`True`</span></span><br><span class="line">Ser = ser1.unique()</span><br><span class="line">	<span class="comment"># 返回非重复元素</span></span><br></pre></td></tr></table></figure>
+<h4 id="duplicated"><a href="#duplicated" class="headerlink" title="duplicated"></a><code>duplicated</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Ser(<span class="built_in">bool</span>) = df1.duplicated(</span><br><span class="line">	subset=<span class="literal">None</span>/label/[labels],</span><br><span class="line">	keep=<span class="string">&quot;First&quot;</span>/<span class="string">&quot;last&quot;</span>/<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：返回标识“副本（元素相同）”行的Ser(bool)</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>subset</code>：默认检查所有列，否则检查指定列</li>
+<li><code>keep</code><ul>
+<li><code>first</code>：重复者除第一个外标记为<code>True</code></li>
+<li><code>last</code>：重复者除最后一个外标记为<code>True</code></li>
+<li>False：重复者均标记为<code>True</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.drop_duplicates(</span><br><span class="line">	subset=<span class="literal">None</span>/label/[labels],</span><br><span class="line">	keep=<span class="string">&quot;First&quot;</span>/<span class="string">&quot;last&quot;</span>/<span class="literal">False</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="空"><a href="#空" class="headerlink" title="空"></a>空</h3><h4 id="null"><a href="#null" class="headerlink" title="null"></a><code>null</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DF(<span class="built_in">bool</span>) = df1.isnull()</span><br><span class="line">DF(<span class="built_in">bool</span>) = df1.notnull()</span><br></pre></td></tr></table></figure>
+<h4 id="dropna"><a href="#dropna" class="headerlink" title="dropna"></a><code>dropna</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.dropna(</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>,</span><br><span class="line">	how=<span class="string">&quot;Any&quot;</span>/<span class="string">&quot;all&quot;</span>,</span><br><span class="line">	thresh=<span class="literal">None</span>/<span class="built_in">int</span>,</span><br><span class="line">	subset=<span class="literal">None</span>/label/[labels],</span><br><span class="line">	inplace=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：剔除空labels（及其数据）</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>how</code>：默认any NaN值存在剔除label</li>
+<li><code>thresh</code>：剔除label的NaN值阈值</li>
+<li><code>subset</code>：指定考虑的labels</li>
+</ul>
+</li>
+</ul>
+<h4 id="fillna"><a href="#fillna" class="headerlink" title="fillna"></a><code>fillna</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DF = df1.fillna(</span><br><span class="line">	value=<span class="literal">None</span>/scalar/<span class="built_in">dict</span>/Ser/DF,</span><br><span class="line">	method=<span class="literal">None</span>/<span class="string">&quot;backfill&quot;</span>/<span class="string">&quot;bfill&quot;</span>/<span class="string">&quot;pad&quot;</span>/<span class="string">&quot;ffill&quot;</span>,</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	inplace=<span class="literal">False</span>,</span><br><span class="line">	limit=<span class="literal">None</span>/<span class="built_in">int</span>,</span><br><span class="line">	downcast=<span class="literal">None</span>/<span class="built_in">dict</span>,</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：填补NaN值</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>value</code>：用于填补NaN的值，dict-like时无法找到的NaN
+不被填补</li>
+<li><code>method</code><ul>
+<li>“pad”/“ffill”：使用last（前一个）值填补</li>
+<li>“bfill”/“backfill”：使用next（后一个）值填补</li>
+</ul>
+</li>
+<li><code>limit</code>：填补允许的最大连续NaN值，超过部分保留NaN</li>
+<li><code>downcast</code>：数据类型精度降级dict，或者<code>&quot;infer&quot;</code>由
+自行推断</li>
+</ul>
+</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h4 id="any"><a href="#any" class="headerlink" title="any"></a><code>any</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Ser = df1(<span class="built_in">bool</span>).<span class="built_in">any</span>(</span><br><span class="line">	axis=<span class="number">0</span>/<span class="number">1</span>/<span class="string">&quot;index&quot;</span>/<span class="string">&quot;columns&quot;</span>,</span><br><span class="line">	bool_only=<span class="literal">None</span>,</span><br><span class="line">	skipna=<span class="literal">True</span>,</span><br><span class="line">	level=<span class="literal">None</span>/<span class="built_in">int</span>/<span class="built_in">str</span>,</span><br><span class="line">	**kwargs)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>说明：label（行、列）对应值存在真返回True</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>skipna</code>：默认skip NA，如果全label为NA则结果为NA</li>
+<li><code>level</code>：默认考虑整个索引</li>
+<li><code>bool_only</code>：默认将所有转换为bool值再做判断</li>
+</ul>
+</li>
+</ul>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

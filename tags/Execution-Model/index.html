@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: Execution Model - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">Execution Model</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-08-19T09:09:00.000Z" title="8/19/2019, 5:09:00 PM">2019-08-19</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T07:07:32.000Z" title="8/2/2021, 3:07:32 PM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/TensorFlow/">TensorFlow</a></span><span class="level-item">14 minutes read (About 2161 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/TensorFlow/tf_execution.html">TensorFlow执行</a></h1><div class="content"><h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p><em>Session</em>：TF中OPs对象执行、Tensor对象计算的封装环境</p>
+<ul>
+<li><p>Session管理图、OPs</p>
+<ul>
+<li>所有图必须Session中执行</li>
+<li>将图中OPs、其执行方法分发到CPU、GPU、TPU等设备上</li>
+<li>为当前变量值分配内存</li>
+</ul>
+</li>
+<li><p>Session只执行<em>Data/Tensor Flow</em>中OPs，忽略不相关节点</p>
+<ul>
+<li>即通往<code>fetches</code>的flow中的<strong>OPs构成子图</strong>才会被计算</li>
+</ul>
+</li>
+<li><p>各Session中各值独立维护，不会相互影响</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Session</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">		target=<span class="built_in">str</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">		graph=<span class="literal">None</span>/tf.Graph,</span></span></span><br><span class="line"><span class="params"><span class="function">		config=<span class="literal">None</span>/tf.ConfigProto</span>)</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">		# 获取<span class="title">Session</span>中载入图</span></span><br><span class="line"><span class="function">		<span class="title">self</span>.<span class="title">graph</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	# 关闭会话，释放资源</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">close</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 支持上下文语法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__enter__</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__exit__</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 执行TensorFlow中节点，获取`fetches`中节点值</span></span><br><span class="line">	<span class="comment"># 返回值若为Tensor</span></span><br><span class="line">		<span class="comment"># python中：以`np.ndarray`返回</span></span><br><span class="line">		<span class="comment"># C++/C中：以`tensorflow:Tensor`返回</span></span><br><span class="line">	<span class="comment"># 可直接调用`.eval()`获得单个OP值</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">run</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">		fetches=tf.OPs/[tf.OPs],</span></span></span><br><span class="line"><span class="params"><span class="function">		feed_dict=<span class="literal">None</span>/<span class="built_in">dict</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">		options=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">		run_metadata=<span class="literal">None</span></span>)</span></span><br></pre></td></tr></table></figure>
+<h3 id="tf-InteractiveSession"><a href="#tf-InteractiveSession" class="headerlink" title="tf.InteractiveSession"></a><code>tf.InteractiveSession</code></h3><p><code>tf.InteractiveSession</code>：开启交互式会话</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 开启交互式Session</span></span><br><span class="line">sess = tf.InteractiveSession()</span><br><span class="line">a = tf.constant(<span class="number">5.0</span>)</span><br><span class="line">b = tf.constant(<span class="number">6.0</span>)</span><br><span class="line">c = a * b</span><br><span class="line">x = tf.Variable([<span class="number">1.0</span>, <span class="number">2.0</span>])</span><br><span class="line"> <span class="comment"># 无需显式在`sess.run`中执行</span></span><br><span class="line"> <span class="comment"># 直接调用`OPs.eval/run()`方法得到结果</span></span><br><span class="line">x.initializer.run()</span><br><span class="line"><span class="built_in">print</span>(c.<span class="built_in">eval</span>())</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<h3 id="Session执行"><a href="#Session执行" class="headerlink" title="Session执行"></a>Session执行</h3><ul>
+<li><p>Fetch机制：<code>sess.run()</code>执行图时，传入需<strong>取回</strong>的结果，
+取回操作输出内容</p>
+</li>
+<li><p>Feed机制：通过<code>feed_dict</code>参数，使用自定义tensor值替代图
+中任意feeable OPs的输出</p>
+<ul>
+<li><code>tf.placeholder()</code>表示创建占位符，执行Graph时必须
+使用tensor替代</li>
+<li><code>feed_dict</code>只是函数参数，只在调用它的方法内有效，
+方法执行完毕则消失</li>
+</ul>
+</li>
+<li><p>可以通过<code>feed_dict</code> feed所有feedable tensor，placeholder
+只是指明必须给某些提供值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = tf.add(<span class="number">2</span>, <span class="number">5</span>)</span><br><span class="line">b = tf.multiply(a, <span class="number">3</span>)</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	sess.run(b, feed_dict=&#123;a: <span class="number">15</span>&#125;)			<span class="comment"># 45</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="config参数选项"><a href="#config参数选项" class="headerlink" title="config参数选项"></a><code>config</code>参数选项</h3><ul>
+<li><code>log_device_placement</code>：打印每个操作所用设备</li>
+<li><code>allow_soft_placement</code>：允许不在GPU上执行操作自动迁移到
+CPU上执行</li>
+<li><code>gpu_options</code><ul>
+<li><code>allow_growth</code>：按需分配显存</li>
+<li><code>per_process_gpu_memory_fraction</code>：指定每个GPU进程
+使用显存比例（无法对单个GPU分别设置）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>具体配置参见<code>tf.ConfigProto</code></li>
+</ul>
+</blockquote>
+<h2 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h2><p><em>Graph</em>：表示TF中计算任务，</p>
+<ul>
+<li><p><em>operation/node</em>：Graph中节点，包括：<em>operator</em>、
+<em>variable</em>、<em>constant</em></p>
+<ul>
+<li>获取一个、多个Tensor执行计算、产生、返回tensor</li>
+<li>不能无法对其值直接进行访问、比较、操作</li>
+<li>图中节点可以命名，TF会自动给未命名节点命名</li>
+</ul>
+</li>
+<li><p><em>tensor</em>：Graph中边，n维数组</p>
+<ul>
+<li>TF中所有对象都是Operators</li>
+<li>tensor是OPs执行结果，在图中传递/流动</li>
+</ul>
+</li>
+<li><p>图计算模型优势</p>
+<ul>
+<li>优化能力强、节省计算资源<ul>
+<li>缓冲自动重用</li>
+<li>常量折叠，只计算取得目标值过程中必须计算的值</li>
+<li>方便并行化</li>
+<li>自动权衡计算、存储效率</li>
+</ul>
+</li>
+<li>易于部署<ul>
+<li>可被割成子图（即极大连通分量），便于自动区分</li>
+<li>子图可以分发到不同的设备上分布式执行，即模型并行</li>
+<li>许多通用ML模型是通过有向图教学、可视化的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>图计算模型劣势</p>
+<ul>
+<li>难以debug<ul>
+<li>图定义之后执行才会报错</li>
+<li>无法通过pdb、打印状态debug</li>
+</ul>
+</li>
+<li>语法繁复</li>
+</ul>
+</li>
+</ul>
+<h3 id="构建图"><a href="#构建图" class="headerlink" title="构建图"></a>构建图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 将当前图作为默认图</span></span><br><span class="line">	<span class="comment"># 支持上下文语法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">as_default</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 强制OPs依赖关系（图中未反映），即优先执行指定OPs</span></span><br><span class="line">	<span class="comment"># 支持上下文语法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">as_default</span>(<span class="params">self</span>):</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">control_dependencies</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">		?ops=[tf.OPs]</span>)</span></span><br><span class="line"><span class="function">		<span class="title">pass</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	# 以<span class="title">ProtoBuf</span>格式展示<span class="title">Graph</span></span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">as_graph_def</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 判断图中节点是否可以被feed</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">is_feedable</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">		?op=tf.OPs</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>可以通过<code>tf.Graph</code>创建新图，但最好在是在一张图中使用多个
+不相连的子图，而不是多张图</p>
+<ul>
+<li>充分性：Session执行图时忽略不必要的OPs</li>
+<li>必要性<ul>
+<li>多张图需要多个会话，每张图执行时默认尝试使用所有
+可能资源</li>
+<li>不能通过python/numpy在图间传递数据（分布式系统）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>初始化即包含默认图，OP构造器默认为其增加节点</p>
+<ul>
+<li>通过<code>tf.get_default_graph()</code>获取</li>
+</ul>
+</li>
+</ul>
+<h3 id="图相关方法"><a href="#图相关方法" class="headerlink" title="图相关方法"></a>图相关方法</h3><ul>
+<li><p>获取TF初始化的默认图</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">get_default_graph</span>():</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 均支持、利用上下文语法，将OPs定义于其下</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">name_scope</span>(<span class="params">name(<span class="params"><span class="built_in">str</span></span>)</span>):</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tf</span>.<span class="title">variable_scope</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">	name(<span class="params"><span class="built_in">str</span></span>),</span></span></span><br><span class="line"><span class="params"><span class="function">	reuse=tf.AUTO_REUSE</span></span></span><br><span class="line"><span class="params"><span class="function"></span>):</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>tf.name_scope</code>：将变量分组<ul>
+<li>只是将变量打包，不影响变量的重用、可见性等</li>
+<li>方便管理、查看graph</li>
+</ul>
+</li>
+<li><code>tf.variable_scope</code>：<ul>
+<li>对变量有控制能力<ul>
+<li>可设置变量重用性</li>
+<li>变量可见性局限于该<em>variable scope</em>内，即不同
+variable scope间可以有完全同名变量
+（未被TF添加顺序后缀）</li>
+</ul>
+</li>
+<li>会隐式创建<em>name scope</em></li>
+<li>大部分情况是用于实现变量共享</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fully_connected</span>(<span class="params">x, output_dim, scope</span>):</span></span><br><span class="line">	<span class="comment"># 设置variable scope中变量自动重用</span></span><br><span class="line">	<span class="comment"># 或者调用`scope.reuse_variables()`声明变量可重用</span></span><br><span class="line">	<span class="keyword">with</span> tf.variable_scope(scope, reuse=tf.AUTO_REUSE) <span class="keyword">as</span> scope:</span><br><span class="line">		<span class="comment"># 在当前variable scope中获取、创建变量</span></span><br><span class="line">		w = tf.get_variable(<span class="string">&quot;weights&quot;</span>, [x.shape[<span class="number">1</span>]], output_dim,</span><br><span class="line">							initializer=tf.random_normal_initializer())</span><br><span class="line">		b = tf.get_variable(<span class="string">&quot;biases&quot;</span>, [output_dim],</span><br><span class="line">							initializer=tf.constant_initizer(<span class="number">0.0</span>))</span><br><span class="line">		<span class="keyword">return</span> tf.matmul(x, w) + b</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two_hidden_layers</span>(<span class="params">x</span>):</span></span><br><span class="line">	h1 = fully_connected(x, <span class="number">50</span>, <span class="string">&quot;h1&quot;</span>)</span><br><span class="line">	h2 =-fully_connected(h1, <span class="number">10</span>, <span class="string">&quot;h2&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;two_layers&quot;</span>) <span class="keyword">as</span> scope:</span><br><span class="line">	logits1 = two_hidden_layers(x1)</span><br><span class="line">	logits2 = two_hidden_layers(x2)</span><br></pre></td></tr></table></figure>
+<h3 id="Lazy-Loading"><a href="#Lazy-Loading" class="headerlink" title="Lazy Loading"></a>Lazy Loading</h3><p><em>Lazy Loading</em>：推迟声明/初始化OP对象至载入图时
+（不是指TF的延迟计算，是个人代码结构问题，虽然是TF延迟图计算
+模型的结果）</p>
+<ul>
+<li><p>延迟加载容易导致向图中添加大量重复节点，影响图的载入、
+传递</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x = tf.Variable(<span class="number">10</span>, name=<span class="string">&#x27;x&#x27;</span>)</span><br><span class="line">y = tf.Variable(<span class="number">20</span>, name=<span class="string">&#x27;y&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	sess.run(tf.global_variables_initializer())</span><br><span class="line">	writer = tf.summary.FileWriter(<span class="string">&#x27;graphs/lazy_loading&#x27;</span>, sess.graph)</span><br><span class="line">	<span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">		<span class="comment"># 延迟加载节点，每次执行都会添加`tf.add`OP</span></span><br><span class="line">		sess.run(tf.add(x, y))</span><br><span class="line">	<span class="built_in">print</span>(tf.get_default_graph().as_graph_def())</span><br><span class="line">	writer.close()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解决方案</p>
+<ul>
+<li>总是把（图的搭建）OPs的定义、执行分开</li>
+<li>python利用<code>@property</code>装饰器，使用<strong>单例模式函数</strong>
+封装变量控制，保证仅首次调用函数时才创建OP</li>
+</ul>
+</li>
+</ul>
+<h2 id="Eager-Execution"><a href="#Eager-Execution" class="headerlink" title="Eager Execution"></a>Eager Execution</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> tensorflow.contrib.eager <span class="keyword">as</span> tfe</span><br><span class="line"> <span class="comment"># 启用TF eager execution</span></span><br><span class="line">tfe.enable_eager_execution()</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>优势</p>
+<ul>
+<li>支持python debug工具</li>
+<li>提供实时报错</li>
+<li>支持python数据结构</li>
+<li><p>支持pythonic的控制流</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i = tf.constant(<span class="number">0</span>)</span><br><span class="line">whlile i &lt; <span class="number">1000</span>:</span><br><span class="line">	i = tf.add(i, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>eager execution开启后</p>
+<ul>
+<li>tensors行为类似<code>np.ndarray</code></li>
+<li>大部分API和未开启同样工作，倾向于使用<ul>
+<li><code>tfe.Variable</code></li>
+<li><code>tf.contrib.summary</code></li>
+<li><code>tfe.Iterator</code></li>
+<li><code>tfe.py_func</code></li>
+<li>面向对象的layers</li>
+<li>需要自行管理变量存储</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>eager execution和graph大部分兼容</p>
+<ul>
+<li>checkpoint兼容</li>
+<li>代码可以同时用于python过程、构建图</li>
+<li>可使用<code>@tfe.function</code>将计算编译为图</li>
+</ul>
+</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><ul>
+<li><p>placeholder、sessions</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 普通TF</span></span><br><span class="line">x = tf.placholder(tf.float32, shape=[<span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">m = tf.matmul(x, x)</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">	m_out = sess.run(m, feed_dict=&#123;x: [[<span class="number">2.</span>]]&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Eager Execution</span></span><br><span class="line">x = [[<span class="number">2.</span>]]</span><br><span class="line">m = tf.matmul(x, x)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Lazy loading</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random_uniform([<span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(x.shape[<span class="number">0</span>]):</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(x.shape[<span class="number">1</span>]):</span><br><span class="line">		<span class="comment"># 不会添加多个节点</span></span><br><span class="line">		<span class="built_in">print</span>(x[i, j])</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Device"><a href="#Device" class="headerlink" title="Device"></a>Device</h2><h3 id="设备标识"><a href="#设备标识" class="headerlink" title="设备标识"></a>设备标识</h3><ul>
+<li><p>设备标识：设备使用字符串进行标识</p>
+<ul>
+<li><code>/cpu:0</code>：所有CPU都以此作为名称</li>
+<li><code>/gpu:0</code>：第一个GPU，如果有</li>
+<li><code>/gpu:1</code>：第二个GPU</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为计算指定硬件资源</span></span><br><span class="line"><span class="keyword">with</span> tf.device(<span class="string">&quot;/gpu:2&quot;</span>):</span><br><span class="line">	a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>], name=<span class="string">&quot;a&quot;</span>)</span><br><span class="line">	b = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>], name=<span class="string">&quot;b&quot;</span>)</span><br><span class="line">	c = tf.multiply(a, b)</span><br><span class="line">	<span class="comment"># creates a graph</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>环境变量：python中既可以修改<code>os.environ</code>，也可以直接设置
+中设置环境变量</p>
+<ul>
+<li><code>CUDA_VISIBLE_DEVICES</code>：可被使用的GPU id</li>
+</ul>
+</li>
+</ul>
+<h3 id="设备执行"><a href="#设备执行" class="headerlink" title="设备执行"></a>设备执行</h3><p>设备执行：TF将图形定义转换成分布式执行的操作以充分利用计算
+资源</p>
+<ul>
+<li><p>TF默认自动检测硬件配置，尽可能使用找到首个GPU执行操作</p>
+</li>
+<li><p>TF会默认占用所有GPU及每个GPU的所有显存（可配置）</p>
+<ul>
+<li>但只有一个GPU参与计算，其他GPU默认不参与计算（显存
+仍然被占用），需要明确将OPs指派给其执行</li>
+<li>指派GPU数量需通过设置环境变量实现</li>
+<li>控制显存占用需设置Session <code>config</code>参数</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>注意：有些操作不能再GPU上完成，手动指派计算设备需要注意</li>
+</ul>
+</blockquote>
+<h2 id="tf-ConfigProto"><a href="#tf-ConfigProto" class="headerlink" title="tf.ConfigProto"></a><code>tf.ConfigProto</code></h2><ul>
+<li><p>Session参数配置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># `tf.ConfigProto`配置方法</span></span><br><span class="line">conf = tf.ConfigProto(log_device_placement=<span class="literal">True</span>)</span><br><span class="line">conf.gpu_options.allow_growth=<span class="literal">True</span></span><br><span class="line">sess = tf.Session(config=conf)</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-11T09:32:52.000Z" title="6/11/2019, 5:32:52 PM">2019-06-11</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T03:46:49.000Z" title="8/2/2021, 11:46:49 AM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3Ref/">Py3Ref</a></span><span class="level-item">10 minutes read (About 1484 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3Ref/execution_model.html">Python执行模型</a></h1><div class="content"><h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><h3 id="Code-Blocks"><a href="#Code-Blocks" class="headerlink" title="Code Blocks"></a><em>Code Blocks</em></h3><p>代码块：作为一个单元执行的一段python文本，代码块构成python
+程序</p>
+<ul>
+<li>模块、函数体、类定义</li>
+<li>交互式输入的每条命令</li>
+<li>作为标准输入、命令行参数发送给解释器的脚本文件</li>
+<li>脚本命令</li>
+<li>传递给<code>eval()</code>、<code>exec()</code>的字符串参数</li>
+</ul>
+<blockquote>
+<ul>
+<li>代码块在执行帧中执行，执行帧包含某些用于调试的管理信息
+  并决定代码块执行完成后操作</li>
+</ul>
+</blockquote>
+<h2 id="Naming、Binding"><a href="#Naming、Binding" class="headerlink" title="Naming、Binding"></a><em>Naming</em>、<em>Binding</em></h2><h3 id="Binding-of-Names"><a href="#Binding-of-Names" class="headerlink" title="Binding of Names"></a><em>Binding of Names</em></h3><blockquote>
+<ul>
+<li>名称：用于<strong>指代对象</strong>，通过名称绑定操作引入</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>名称绑定方法</p>
+<ul>
+<li>传递参数</li>
+<li><code>import</code>语句<ul>
+<li><code>from ... import *</code>会绑定被导入模块中定义的所有
+公有名称（仅在模块层级上被使用）</li>
+</ul>
+</li>
+<li>类、函数定义</li>
+<li>以标识符为目标的赋值</li>
+<li><p><code>for</code>循环开头、<code>with</code>和<code>except</code>子句的<code>as</code>之后</p>
+</li>
+<li><p><code>del</code>语句的目标也被视为绑定，虽然实际语义为解除名称
+绑定</p>
+</li>
+</ul>
+</li>
+<li><p>变量类型</p>
+<ul>
+<li>局部变量：绑定在代码块中的名称，且未声明为<code>nonlocal</code>
+、或<code>global</code></li>
+<li>全局变量：绑定在模块层级的名称<ul>
+<li>模块代码块中变量既为全局变量、也是局部变量</li>
+</ul>
+</li>
+<li>自由变量：在代码块中使用但未在其中定义的变量</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>自由变量不同于闭包变量，函数闭包变量<code>__closure__</code>要求
+  自由变量来自于父函数作用域</li>
+</ul>
+</blockquote>
+<h3 id="Scope"><a href="#Scope" class="headerlink" title="Scope"></a><em>Scope</em></h3><p>作用域：定义了代码块中名称的可见性</p>
+<ul>
+<li><p>名称的作用域包含</p>
+<ul>
+<li>定义该变量代码块</li>
+<li>定义变量代码块所包含的代码块
+（除非被包含代码块中引入对该名称不同绑定）</li>
+</ul>
+</li>
+<li><p>名称作用域虽然包括定义变量代码块所包含的代码块</p>
+<ul>
+<li>可以直接访问变量</li>
+<li>但修改变量必须使用<code>global</code>、<code>local</code>等声明</li>
+</ul>
+</li>
+<li><p>在代码块内任何位置进行名称绑定，则代码块内所有对该名称
+的使用被认为是<strong>对代码块的引用</strong></p>
+<blockquote>
+<ul>
+<li>python没有声明语法，则代码块中局部变量可通过，在整个
+ 代码块文本中扫描名称绑定来确定</li>
+</ul>
+</blockquote>
+</li>
+<li><p><strong>模块作用域在模块第一次被导入时创建</strong></p>
+</li>
+</ul>
+<h3 id="Resolution-of-Names"><a href="#Resolution-of-Names" class="headerlink" title="Resolution of Names"></a><em>Resolution of Names</em></h3><ul>
+<li><p>若名称在代码块中被使用，会由<strong>包含它的最近作用域</strong>来解析</p>
+</li>
+<li><p>若名称完全无法找到将<code>raise NameError</code></p>
+</li>
+<li><p>若当前作用域为函数作用域，且名称指向局部变量，若名称被
+绑定值前被被使用将<code>raise UnboundLocalError</code>
+（<code>UnboundLocalError</code>是<code>NameError</code>子类）</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>（代码块）环境：对代码块可见的所作用域集合</li>
+</ul>
+</blockquote>
+<h4 id="global"><a href="#global" class="headerlink" title="global"></a><code>global</code></h4><ul>
+<li><p>对<code>global</code>指定名称的使用是对<strong>最高层级命名空间</strong>中该名称
+绑定的引用</p>
+<ul>
+<li>全局命名空间：包含代码块的模块命名空间</li>
+<li>内置命名空间：<code>builtins</code>模块的命名空间</li>
+</ul>
+</li>
+<li><p><code>global</code>语句与同一代码块中名称绑定具有相同作用域</p>
+<ul>
+<li>若自由变量最近包含作用域中有<code>global</code>语句，其也会被
+当作全局变量</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>global</code>语句须在名称使用之前声明</li>
+</ul>
+</blockquote>
+<h4 id="nonlocal"><a href="#nonlocal" class="headerlink" title="nonlocal"></a><code>nonlocal</code></h4><ul>
+<li><p><code>nonlocal</code>使得相应名称指向最近包含函数作用域的中绑定的
+变量</p>
+</li>
+<li><p>指定名称不存在于任何包含函数作用域则<code>raise SyntaxError</code></p>
+</li>
+</ul>
+<h4 id="内置命名空间"><a href="#内置命名空间" class="headerlink" title="内置命名空间"></a>内置命名空间</h4><ul>
+<li><p>与代码块执行相关联的内置命名空间实际上是通过其在全局命名
+空间中搜索名称<code>__builtins__</code>找到，一般是字典、模块
+（此时使用模块的命名空间字典）</p>
+</li>
+<li><p>默认情况下</p>
+<ul>
+<li><code>__main__</code>模块中：<code>__builtins__</code>为内置模块<code>builtins</code></li>
+<li>非<code>__main__</code>模块中：<code>__buitlins__</code>是<code>builtins</code>模块
+自身的字典别名</li>
+</ul>
+</li>
+</ul>
+<h4 id="动态特性"><a href="#动态特性" class="headerlink" title="动态特性"></a>动态特性</h4><ul>
+<li><p>自由变量的名称解析</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span>():</span></span><br><span class="line">	<span class="built_in">print</span>(i)</span><br><span class="line">i = <span class="number">42</span></span><br><span class="line">f()</span><br><span class="line">	<span class="comment"># 打印`42`</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>发生在运行时，而不是编译时</strong></li>
+<li><strong>在全局命名空间中</strong>，而不是最近包含命名空间中</li>
+</ul>
+</li>
+</ul>
+<h4 id="eval-、exec"><a href="#eval-、exec" class="headerlink" title="eval()、exec()"></a><code>eval()</code>、<code>exec()</code></h4><ul>
+<li><p><code>eval()</code>、<code>exec()</code>没有对完整环境的访问权限来解析名称</p>
+<ul>
+<li>有可选参数用于重载全局、局部命名空间</li>
+<li>若只指定一个命名空间，则会同时作用于两者</li>
+</ul>
+</li>
+</ul>
+<h4 id="类"><a href="#类" class="headerlink" title="类"></a>类</h4><ul>
+<li><p>类中名称解析遵守大部分情况下同普通规则，但
+<strong>未绑定局部变将在全局命名空间中搜索</strong></p>
+</li>
+<li><p>类定义的命名空间<code>__dict__</code>会成为类的属性字典</p>
+</li>
+<li><p>类代码块中定义的名称的作用域会被限制在类代码块中，不会
+扩展到方法代码块中，包括推导式、生成器表达式</p>
+   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>:</span></span><br><span class="line">	a = <span class="number">42</span></span><br><span class="line">	b = <span class="built_in">list</span>(a + i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Exception"><a href="#Exception" class="headerlink" title="Exception"></a><em>Exception</em></h2><p>异常：中断代码块的正常控制流程以便处理错误、其他异常条件的
+方式</p>
+<ul>
+<li><p>在错误被检测到的位置引发</p>
+<ul>
+<li>解释器检测到运行时错误时错误</li>
+<li><code>raise</code>语句显式引发</li>
+</ul>
+</li>
+<li><p>可被当前包围代码块、任何直接或间接主调代码块捕获、处理</p>
+<ul>
+<li><code>try...except</code>指定错误处理，<code>finally</code>子句清理代码</li>
+<li>异常通过实例标识、根据器类型选择执行<code>except</code>子句</li>
+</ul>
+</li>
+<li><p>错误处理采用“终止”模型</p>
+<ul>
+<li>异常处理器可以找出发生的问题，在外层继续执行</li>
+<li>但不能修复错误的根源，并重试失败操作</li>
+<li>异常完全未被处理时，解释器会终止程序执行、或返回交互
+模式循环，并打印栈回溯信息，除非为<code>SystemExit</code>异常</li>
+</ul>
+</li>
+<li><p>异常实例可以携带关于异常状态的额外信息</p>
+<blockquote>
+<ul>
+<li>异常信息不是python API一部分，内容可能在不同python
+ 版本间不经警告的改变</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

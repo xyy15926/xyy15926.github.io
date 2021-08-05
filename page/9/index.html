@@ -1,0 +1,2563 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T18:10:08.000Z" title="8/1/2019, 2:10:08 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:52:53.000Z" title="7/16/2021, 2:52:53 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Linear-Model/">Linear Model</a></span><span class="level-item">25 minutes read (About 3688 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Linear-Model/maximum_entropy.html">最大熵模型</a></h1><div class="content"><h2 id="逻辑斯蒂回归"><a href="#逻辑斯蒂回归" class="headerlink" title="逻辑斯蒂回归"></a>逻辑斯蒂回归</h2><h3 id="逻辑斯蒂分布"><a href="#逻辑斯蒂分布" class="headerlink" title="逻辑斯蒂分布"></a>逻辑斯蒂分布</h3><script type="math/tex; mode=display">\begin{align*}
+F(x) & = P(X \leq x) = \frac 1 {1 + e^{-(x-\mu)/\gamma}} \\
+f(x) & = F^{'}(x) = \frac {e^{-(x-\mu)/\gamma}}
+    {\gamma(1+e^{-(x-\mu)/\gamma})^2}
+\end{align*}</script><blockquote>
+<ul>
+<li>$\mu$：位置参数</li>
+<li>$\gamma$：形状参数</li>
+</ul>
+</blockquote>
+<ul>
+<li>分布函数属于逻辑斯蒂函数</li>
+<li><p>分布函数图像为sigmoid curve</p>
+<ul>
+<li>关于的$(\mu, \frac 1 2)$中心对称<script type="math/tex; mode=display">
+F(-x+\mu) - \frac 1 2 = -F(x+\mu) + \frac 1 2</script></li>
+<li>曲线在靠近$\mu$中心附近增长速度快，两端速度增长慢</li>
+<li>形状参数$\gamma$越小，曲线在中心附近增加越快</li>
+</ul>
+</li>
+<li><p>模型优点</p>
+<ul>
+<li>模型输出值位于0、1之间，天然具有概率意义，方便观测
+样本概率分数</li>
+<li>可以结合$l-norm$正则化解决过拟合、共线性问题</li>
+<li>实现简单，广泛用于工业问题</li>
+<li>分类时计算量比较小、速度快、消耗资源少</li>
+</ul>
+</li>
+<li><p>模型缺点</p>
+<ul>
+<li>特征空间很大时，性能不是很好，容易欠拟合，准确率一般</li>
+<li>对非线性特征需要进行转换</li>
+</ul>
+</li>
+</ul>
+<h3 id="Binomial-Logistic-Regression-Model"><a href="#Binomial-Logistic-Regression-Model" class="headerlink" title="Binomial Logistic Regression Model"></a><em>Binomial Logistic Regression Model</em></h3><p>二项逻辑斯蒂回归模型：形式为参数化逻辑斯蒂分布的二分类
+生成模型</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(Y=1|x) & = \frac {exp(wx + b)} {1 + exp (wx + b)} \\
+P(Y=0|x) & = \frac 1 {1 + exp(wx + b)} \\
+P(Y=1|\hat x) & = \frac {exp(\hat w \hat x)}
+    {1 + exp (\hat w \hat x)} \\
+P(Y=0|\hat x) & = \frac 1 {1+exp(\hat w \hat x)}
+\end{align*}</script><blockquote>
+<ul>
+<li>$w, b$：权值向量、偏置</li>
+<li>$\hat x = (x^T|1)^T$</li>
+<li>$\hat w = (w^T|b)^T$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>逻辑回归比较两个条件概率值，将实例$x$归于条件概率较大类</p>
+</li>
+<li><p>通过逻辑回归模型，可以将线性函数$wx$转换为概率</p>
+<ul>
+<li>线性函数值越接近正无穷，概率值越接近1</li>
+<li>线性函数值越接近负无穷，概率值越接近0</li>
+</ul>
+</li>
+</ul>
+<h4 id="Odds-Odds-Ratio"><a href="#Odds-Odds-Ratio" class="headerlink" title="Odds/Odds Ratio"></a>Odds/Odds Ratio</h4><ul>
+<li><p>在逻辑回归模型中，输出$Y=1$的对数几率是输入x的线性函数</p>
+<script type="math/tex; mode=display">
+log \frac {P(Y=1|x)} {1-P(Y=1|x)} = \hat w \hat x</script></li>
+<li><p>OR在逻辑回归中意义：$x_i$每增加一个单位，odds将变为原来
+的$e^{w_i}$倍</p>
+<script type="math/tex; mode=display">\begin{align*}
+odd &= \frac {P(Y=1|x)} {1-P(Y=1|x)} = e^{\hat w \hat x} \\
+OR_{x_i+1 / x_i} &= e^{w_i}
+\end{align*}</script><ul>
+<li><p>对数值型变量</p>
+<ul>
+<li>多元LR中，变量对应的系数可以计算相应
+<em>Conditional OR</em></li>
+<li>可以建立单变量LR，得到变量系数及相应
+<em>Marginal OR</em></li>
+</ul>
+</li>
+<li><p>对分类型变量</p>
+<ul>
+<li>可以直接计算变量各取值间对应的OR</li>
+<li>变量数值化编码建立模型，得到变量对应OR</li>
+</ul>
+<blockquote>
+<ul>
+<li>根据变量编码方式不同，变量对应OR的含义不同，其中
+符合数值变量变动模式的是WOE线性编码</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h4><p>极大似然：极小对数损失（交叉熵损失）</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(w) & = log \prod_{i=1}^N [\pi(x_i)]^{y_i}
+    [1-\pi(x_i)]^{1-y_i} \\
+& = \sum_{i=1}^N [y_i log \pi(x_i) + (1-y_i)log(1-\pi(x_i))] \\
+& = \sum_{i=1}^N [y_i log \frac {\pi(x_i)}
+    {1-\pi(x_i)} log(1-\pi(x_i))] \\
+& = \sum_{i=1}^N [y_i(\hat w \hat x_i) -
+    log(1+exp(\hat w \hat x_i))]
+\end{align*}</script><blockquote>
+<ul>
+<li>$\pi(x) = P(Y=1|x)$</li>
+</ul>
+</blockquote>
+<h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><ul>
+<li>通常采用梯度下降、拟牛顿法求解有以上最优化问题</li>
+</ul>
+<h3 id="Multi-Nominal-Logistic-Regression-Model"><a href="#Multi-Nominal-Logistic-Regression-Model" class="headerlink" title="Multi-Nominal Logistic Regression Model"></a><em>Multi-Nominal Logistic Regression Model</em></h3><p>多项逻辑斯蒂回归：二项逻辑回归模型推广</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(Y=j|x) & = \frac {exp(\hat w_j \hat x)} {1+\sum_{k=1}^{K-1}
+    exp(\hat w_k \hat x)}, k=1,2,\cdots,K-1 \\
+P(Y=K|x) & = \frac 1 {1+\sum_{k=1}^{K-1}
+    exp(\hat w_k \hat x)}
+\end{align*}</script><ul>
+<li>策略、算法类似二项逻辑回归模型</li>
+</ul>
+<h2 id="Generalized-Linear-Model"><a href="#Generalized-Linear-Model" class="headerlink" title="Generalized Linear Model"></a><em>Generalized Linear Model</em></h2><h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1><h2 id="Maximum-Entropy-Model"><a href="#Maximum-Entropy-Model" class="headerlink" title="Maximum Entropy Model"></a><em>Maximum Entropy Model</em></h2><h3 id="最大熵原理"><a href="#最大熵原理" class="headerlink" title="最大熵原理"></a>最大熵原理</h3><p>最大熵原理：学习概率模型时，在所有可能的概率模型（分布）中，
+<strong>熵最大的模型是最好的模型</strong></p>
+<ul>
+<li><p>使用约束条件确定概率模型的集合，则最大熵原理也可以表述为
+<strong>在满足约束条件的模型中选取熵最大的模型</strong></p>
+</li>
+<li><p>直观的，最大熵原理认为</p>
+<ul>
+<li>概率模型要满足已有事实（约束条件）</li>
+<li>没有更多信息的情况下，不确定部分是等可能的</li>
+<li>等可能不容易操作，所有考虑使用<strong>可优化</strong>的熵最大化
+表示等可能性</li>
+</ul>
+</li>
+</ul>
+<h3 id="最大熵模型"><a href="#最大熵模型" class="headerlink" title="最大熵模型"></a>最大熵模型</h3><p>最大熵模型为生成模型</p>
+<ul>
+<li><p>对给定数据集$T={(x_1,y_1),\cdots,(x_N,y_N)}$，联合分布
+P(X,Y)、边缘分布P(X)的经验分布如下</p>
+<script type="math/tex; mode=display">\begin{align*}
+\tilde P(X=x, Y=y) & = \frac {v(X=x, Y=y)} N \\
+\tilde P(X=x) & = \frac {v(X=x)} N
+\end{align*}</script><blockquote>
+<ul>
+<li>$v(X=x,Y=y)$：训练集中样本$(x,y)$出频数</li>
+</ul>
+</blockquote>
+</li>
+<li><p>用如下<em>feature function</em> $f(x, y)$描述输入x、输出y之间
+某个事实</p>
+<script type="math/tex; mode=display">f(x, y) = \left \{ \begin{array}{l}
+1, & x、y满足某一事实 \\
+0, & 否则
+\end{array} \right.</script><ul>
+<li><p>特征函数关于经验分布$\tilde P(X, Y)$的期望</p>
+<script type="math/tex; mode=display">
+E_{\tilde P} = \sum_{x,y} \tilde P(x,y)f(x,y)</script></li>
+<li><p>特征函数关于生成模型$P(Y|X)$、经验分布$\tilde P(X)$
+期望</p>
+<script type="math/tex; mode=display">
+E_P(f(x)) = \sum_{x,y} \tilde P(x)P(y|x)f(x,y)</script></li>
+</ul>
+</li>
+<li><p>期望模型$P(Y|X)$能够获取数据中信息，则两个期望值应该相等</p>
+<script type="math/tex; mode=display">\begin{align*}
+E_P(f) & = E_{\tilde P}(f) \\
+\sum_{x,y} \tilde P(x)P(y|x)f(x,y) & =
+   \sum_{x,y} \tilde P(x,y)f(x,y)
+\end{align*}</script><p>此即作为模型学习的约束条件</p>
+<ul>
+<li><p>此约束是纯粹的关于$P(Y|X)$的约束，只是约束形式特殊，
+需要通过期望关联熵</p>
+</li>
+<li><p>若有其他表述形式、可以直接带入的、关于$P(Y|X)$约束，
+可以直接使用</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>满足所有约束条件的模型集合为<script type="math/tex; mode=display">
+  \mathcal{C} = \{P | E_{P(f_i)} = E_{\tilde P (f_i)},
+      i=1,2,\cdots,n \}</script>  定义在条件概率分布$P(Y|X)$上的条件熵为<script type="math/tex; mode=display">
+  H(P) = -\sum_{x,y} \tilde P(x) P(y|x) logP(y|x)</script>  则模型集合$\mathcal{C}$中条件熵最大者即为最大是模型</li>
+</ul>
+</blockquote>
+<h3 id="策略-1"><a href="#策略-1" class="headerlink" title="策略"></a>策略</h3><p>最大熵模型的策略为以下约束最优化问题</p>
+<script type="math/tex; mode=display">\begin{array}{l}
+\max_{P \in \mathcal{C}} & -H(P)=\sum_{x,y} \tilde P(x)
+    P(y|x) logP(y|x) \\
+s.t. & E_P(f_i) - E_{\tilde P}(f_i) = 0, i=1,2,\cdots,M \\
+& \sum_{y} P(y|x)  = 1
+\end{array}</script><ul>
+<li><p>引入拉格朗日函数</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(P, w) & = -H(P) - w_0(1-\sum_y P(y|x)) + \sum_{m=1}^M
+   w_m(E_{\tilde P}(f_i) - E_P(f_i)) \\
+& = \sum_{x,y} \tilde P(x) P(y|x) logP(y|x) + w_0
+   (1-\sum_y P(y|x)) + \sum_{m=1}^M w_m (\sum_{x,y}
+   \tilde P(x,y)f_i(x, y) - \tilde P(x)P(y|x)f_i(x,y))
+\end{align*}</script><ul>
+<li><p>原始问题为</p>
+<script type="math/tex; mode=display">
+\min_{P \in \mathcal{C}} \max_{w} L(P, w)</script></li>
+<li><p>对偶问题为</p>
+<script type="math/tex; mode=display">
+\max_{w} \min_{P \in \mathcal{C}} L(P, w)</script></li>
+<li><p>考虑拉格朗日函数$L(P, w)$是P的凸函数，则原始问题、
+对偶问题解相同</p>
+</li>
+</ul>
+</li>
+<li><p>记</p>
+<script type="math/tex; mode=display">\begin{align*}
+\Psi(w) & = \min_{P \in \mathcal{C}} L(P, w)
+   = L(P_w, w) \\
+P_w & = \arg\min_{P \in \mathcal{C}} L(P, w) = P_w(Y|X)
+\end{align*}</script></li>
+<li><p>求$L(P, w)$对$P(Y|X)$偏导</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac {\partial L(P, w)} {\partial P(Y|X)} & =
+   \sum_{x,y} \tilde P(x)(logP(y|x)+1) - \sum_y w_0 -
+   \sum_{x,y}(\tilde P(x) \sum_{i=1}^N w_i f_i(x,y)) \\
+& = \sum_{x,y} \tilde P(x)(log P(y|x) + 1 - w_0 -
+   \sum_{i=1}^N w_i f_i(x, y))
+\end{align*}</script><p>偏导置0，考虑到$\tilde P(x) &gt; 0$，其系数必始终为0，有</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(Y|X) & = \exp(\sum_{i=1}^N w_i f_i(x,y) + w_0 - 1) \\
+& = \frac {exp(\sum_{i=1}^N w_i f_i(x,y))} {exp(1-w_0)}
+\end{align*}</script></li>
+<li><p>考虑到约束$\sum_y P(y|x) = 1$，有</p>
+<script type="math/tex; mode=display">\begin{align*}
+P_w(y|x) & = \frac 1 {Z_w(x)} exp(\sum_{i=1}^N w_i
+   f_i(x,y)) \\
+Z_w(x) & = \sum_y exp(\sum_{i=1}^N w_i f_i(x,y)) \\
+& = exp(1 - w_0)
+\end{align*}</script><blockquote>
+<ul>
+<li>$Z_w(x)$：规范化因子</li>
+<li>$f(x, y)$：特征</li>
+<li>$w_i$：特征权值</li>
+</ul>
+</blockquote>
+</li>
+<li><p>原最优化问题等价于求解偶问题极大化问题$\max_w \Psi(w)$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\Psi(w) & = \sum_{x,y} \tilde P(x) P_w(y|x) logP_w(y|x)
+   + \sum_{i=1}^N w_i(\sum_{x,y} \tilde P(x,y) f_i(x,y)
+   - \sum_{x,y} \tilde P(x) P_w(y|x) f_i(x,y)) \\
+& = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^N w_i f_i(x,y) +
+   \sum_{x,y} \tilde P(x,y) P_w(y|x)(log P_w(y|x) -
+   \sum_{i=1}^N w_i f_i(x,y)) \\
+& = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^N w_i f_i(x,y) -
+   \sum_{x,y} \tilde P(x,y) P_w(y|x) log Z_w(x) \\
+& = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^N w_i f_i(x,y) -
+   \sum_x \tilde P(x) log Z_w(x)
+\end{align*}</script><p>记其解为</p>
+<script type="math/tex; mode=display">w^{*} = \arg\max_w \Psi(w)</script><p>带入即可得到最优（最大熵）模型$P_{w^{*}}(Y|X)$</p>
+</li>
+</ul>
+<h4 id="策略性质"><a href="#策略性质" class="headerlink" title="策略性质"></a>策略性质</h4><ul>
+<li><p>已知训练数据的经验概率分布为$\tilde P(X,Y)$，则条件概率
+分布$P(Y|X)$的对数似然函数为</p>
+<script type="math/tex; mode=display">\begin{align*}
+L_{\tilde P}(P_w) & = N log \prod_{x,y}
+   P(y|x)^{\tilde P(x,y)} \\
+& = \sum_{x,y} N * \tilde P(x,y) log P(y|x)
+\end{align*}</script><blockquote>
+<ul>
+<li>这里省略了系数样本数量$N$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>将最大熵模型带入，可得</p>
+<script type="math/tex; mode=display">\begin{align*}
+L_{\tilde P_w} & = \sum_{x,y} \tilde P(y|x) logP(y|x) \\
+& = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^N w_i f_i(x,y) -
+   \sum_{x,y} \tilde P(x,y)log Z_w(x) \\
+& = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^N w_i f_i(x,y) -
+   \sum_x \tilde P(x) log Z_w(x) \\
+& = \Psi(w)
+\end{align*}</script><p>对偶函数$\Psi(w)$等价于对数似然函数$L_{\tilde P}(P_w)$，
+即最大熵模型中，<strong>对偶函数极大等价于模型极大似然估计</strong></p>
+</li>
+</ul>
+<h3 id="改进的迭代尺度法"><a href="#改进的迭代尺度法" class="headerlink" title="改进的迭代尺度法"></a>改进的迭代尺度法</h3><ul>
+<li><p>思想</p>
+<ul>
+<li>假设最大熵模型当前参数向量$w=(w_1,w_2,\cdots,w_M)^T$</li>
+<li>希望能找到新的参数向量（参数向量更新）
+$w+\sigma=(w_1+\sigma_1,\cdots,w_M+\sigma_M)$
+使得模型对数似然函数/对偶函数值增加</li>
+<li>不断对似然函数值进行更新，直到找到对数似然函数极大值</li>
+</ul>
+</li>
+<li><p>对给定经验分布$\tilde P(x,y)$，参数向量更新至$w+\sigma$
+时，对数似然函数值变化为</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(w+\sigma) - L(w) & = \sum_{x,y} \tilde P(x,y)
+   log P_{w+\sigma}(y|x) - \sum_{x,y} \tilde P(x,y)
+   log P_w(y|x) \\
+& = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^M \sigma_i
+   f_i(x,y) - \sum_x \tilde P(x) log \frac
+   {Z_{w+\sigma}(x)} {Z_w(x)} \\
+& \geq \sum_{x,y} \tilde P(x,y) \sum_{i=1}^M \sigma_i
+   f_i(x,y) + 1 - \sum_x \tilde P(x) \frac
+   {Z_{w+\sigma}(x)} {Z_w(x)} \\
+& = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^M \sigma_i
+   f_i(x,y) + 1 - \sum_x \tilde P(x) \sum_y P_y(y|x)
+   exp(\sum_{i=1}^M \sigma_i f_i(x,y))
+\end{align*}</script><ul>
+<li><p>不等式步利用$a - 1 \geq log a, a \geq 1$</p>
+</li>
+<li><p>最后一步利用</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac {Z_{w+\sigma}(x)} {Z_w(x)} & = \frac 1 {Z_w(x)}
+  \sum_y exp(\sum_{i=1}^M (w_i + \sigma_i)
+  f_i(x, y)) \\
+& = \frac 1 {Z_w(x)} \sum_y exp(\sum_{i=1}^M w_i
+  f_i(x,y) + \sigma_i f_i(x,y)) \\
+& = \sum_y P_w(y|x) exp(\sum_{i=1}^n \sigma_i
+  f_i(x,y))
+\end{align*}</script></li>
+</ul>
+</li>
+<li><p>记上式右端为$A(\sigma|w)$，则其为对数似然函数改变量的
+一个下界</p>
+<script type="math/tex; mode=display">
+L(w+\sigma) - L(w) \geq A(\sigma|w)</script><ul>
+<li>若适当的$\sigma$能增加其值，则对数似然函数值也应该
+增加</li>
+<li>函数$A(\sigma|w)$中因变量$\sigma$为向量，难以同时
+优化，尝试每次只优化一个变量$\sigma_i$，固定其他变量
+$\sigma_j$</li>
+</ul>
+</li>
+<li><p>记</p>
+<script type="math/tex; mode=display">f^{**} (x,y) = \sum_i f_i(x,y)</script><p>考虑到$f_i(x,y)$为二值函数，则$f^{**}(x,y)$表示所有特征
+在$(x,y)$出现的次数，且有</p>
+<script type="math/tex; mode=display">
+A(\sigma|w) = \sum_{x,y} \tilde P(x,y) \sum_{i=1}^M
+   \sigma_i f_i(x,y) + 1 - \sum_x \tilde P(x)
+   \sum_y P_w(y|x) exp(f^{**}(x,y) \sum_{i=1}^M
+   \frac {\sigma_i f_i(x,y)} {f^{**}(x,y)})</script></li>
+<li><p>考虑到$\sum_{i=1}^M \frac {f_i(x,y)} {f^{**}(x,y)} = 1$，
+由指数函数凸性、Jensen不等式有</p>
+<script type="math/tex; mode=display">
+exp(\sum_{i=1}^M \frac {f_i(x,y)} {f^{**}(x,y)} \sigma_i
+   f^{**}(x,y)) \leq \sum_{i=1}^M \frac {f_i(x,y)}
+   {f^{**}(x,y)} exp(\sigma_i f^{**}(x,y))</script><p>则</p>
+<script type="math/tex; mode=display">
+A(\sigma|w) \geq \sum_{x,y} \tilde P(x,y) \sum_{i=1}^M
+   \sigma_i f_i(x,y) + 1 - \sum_x \tilde P(x) \sum_y
+   P_w(y|x) \sum_{i=1}^M \frac {f_i(x,y)} {f^{**}(x,y)}
+   exp(\sigma_i f^{**}(x,y))</script></li>
+<li><p>记上述不等式右端为$B(\sigma|w)$，则有</p>
+<script type="math/tex; mode=display">
+L(w+\sigma) - L(w) \geq B(\sigma|w)</script><p>其为对数似然函数改变量的一个新、相对不紧的下界</p>
+</li>
+<li><p>求$B(\sigma|w)$对$\sigma_i$的偏导</p>
+<script type="math/tex; mode=display">
+\frac {\partial B(\sigma|w)} {\partial \sigma_i} =
+   \sum_{x,y} \tilde P(x,y) f_i(x,y) -
+   \sum_x \tilde P(x) \sum_y P_w(y|x) f_i(x,y)
+   exp(\sigma_i f^{**}(x,y))</script><p>置偏导为0，可得</p>
+<script type="math/tex; mode=display">
+\sum_x \tilde P(x) \sum_y P_w(y|x) f_i(x,y) exp(\sigma_i
+   f^{**}(x,y)) = \sum_{x,y} \tilde P(x,y) f_i(x,y) =
+   E_{\tilde P}(f_i)</script><p>其中仅含变量$\sigma_i$，则依次求解以上方程即可得到
+$\sigma$</p>
+</li>
+</ul>
+<h4 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h4><blockquote>
+<ul>
+<li>输入：特征函数$f_1, f_2, \cdots, f_M$、经验分布
+  $\tilde P(x)$、最大熵模型$P_w(x)$</li>
+<li>输出：最优参数值$w<em>i^{*}$、最优模型$P</em>{w^{*}}$</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>对所有$i \in {1,2,\cdots,M}$，取初值$w_i = 0$</p>
+</li>
+<li><p>对每个$i \in {1,2,\cdots,M}$，求解以上方程得$\sigma_i$</p>
+<ul>
+<li><p>若$f^{**}(x,y)=C$为常数，则$\sigma_i$有解析解</p>
+<script type="math/tex; mode=display">
+\sigma_i = \frac 1 C log \frac {E_{\tilde P}(f_i)}
+ {E_P(f_i)}</script></li>
+<li><p>若$f^{**}(x,y)$不是常数，则可以通过牛顿法迭代求解</p>
+<script type="math/tex; mode=display">
+\sigma_i^{(k+1)} = \sigma_i^{(k)} - \frac
+ {g(\sigma_i^{(k)})} {g^{'}(\sigma_i^{(k)})}</script><blockquote>
+<ul>
+<li>$g(\sigma_i)$：上述方程对应函数</li>
+</ul>
+</blockquote>
+<ul>
+<li>上述方程有单根，选择适当初值则牛顿法恒收敛</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>更新$w_i$，$w_i \leftarrow w_i + \sigma_i$，若不是所有
+$w_i$均收敛，重复2</p>
+</li>
+</ol>
+<h3 id="BFGS算法"><a href="#BFGS算法" class="headerlink" title="BFGS算法"></a>BFGS算法</h3><p>对最大熵模型</p>
+<ul>
+<li><p>为方便，目标函数改为求极小</p>
+<script type="math/tex; mode=display">\begin{array}{l}
+\min_{w \in R^M} f(w) = \sum_x \tilde P(x) log \sum_{y}
+   exp(\sum_{i=1}^M w_i f_i(x,y)) - \sum_{x,y}
+   \tilde P(x,y) \sum_{i=1}^M w_i f_i(x,y)
+\end{array}</script></li>
+<li><p>梯度为</p>
+<script type="math/tex; mode=display">\begin{align*}
+g(w) & = (\frac {\partial f(w)} {\partial w_i}, \cdots,
+   \frac {\partial f(w)} {\partial w_M})^T \\
+\frac {\partial f(w)} {\partial w_M} & = \sum_{x,y}
+   \tilde P(x) P_w(y|x) f_i(x,y) - E_{\tilde P}(f_i)
+\end{align*}</script></li>
+</ul>
+<h4 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h4><p>将目标函数带入BFGS算法即可</p>
+<blockquote>
+<ul>
+<li>输入：特征函数$f_1, f_2, \cdots, f_M$、经验分布
+  $\tilde P(x)$、最大熵模型$P_w(x)$</li>
+<li>输出：最优参数值$w<em>i^{*}$、最优模型$P</em>{w^{*}}$</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>取初值$w^{(0)}$、正定对称矩阵$B^{(0)}$，置k=0</p>
+</li>
+<li><p>计算$g^{(k)} = g(w^{(k)})$，若$|g^{(k)}| &lt; \epsilon$，
+停止计算，得到解$w^{*} = w^{(k)}$</p>
+</li>
+<li><p>由拟牛顿公式$B^{(k)}p^{(k)} = -g^{(k)}$求解$p^{(k)}$</p>
+</li>
+<li><p>一维搜索，求解</p>
+<script type="math/tex; mode=display">
+\lambda^{(k)} = \arg\min_{\lambda} f(w^{(k)} +
+  \lambda p_k)</script></li>
+<li><p>置$w^{(k+1)} = w^{(k)} + \lambda^{(k)} p_k$</p>
+</li>
+<li><p>计算$g^{(k+1)} = g(w^{(k+1)})$，若
+$|g^{(k+1)}| &lt; \epsilon$，停止计算，得到解
+$w^{*} = w^{(k+1)}$，否则求</p>
+<script type="math/tex; mode=display">
+B^{(k+1)} = B^{(k)} - \frac {B^{(k)} s^{(k)}
+  (s^{(k)})^T B^{(k)}} {(s^{(k)})^T B^{(k)} s^{(k)}}
+  + \frac {y^{(k)} (y^{(k)})^T} {(y^{(k)})^T s^{(k)}}</script><blockquote>
+<ul>
+<li>$s^{(k)} = w^{(k+1)} - w^{(k)}$</li>
+<li>$y^{(k)} = g^{(k+1)} - g^{(k)}$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>置k=k+1，转3</p>
+</li>
+</ol>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T17:53:29.000Z" title="8/1/2019, 1:53:29 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-04T11:43:08.000Z" title="8/4/2021, 7:43:08 PM">2021-08-04</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/Tool/">Tool</a><span> / </span><a class="link-muted" href="/categories/Linux/Tool/Vi/">Vi</a></span><span class="level-item">13 minutes read (About 1909 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/Tool/Vi/config.html">Vim 配置</a></h1><div class="content"><h2 id="打印信息"><a href="#打印信息" class="headerlink" title="打印信息"></a>打印信息</h2><ul>
+<li><code>:echo</code>：打印信息，但是信息不会保存</li>
+<li><code>:echom</code>：打印信息会保存在<code>:messages</code>中</li>
+<li><code>:messages</code>：查看<code>:echom</code>保存的信息</li>
+</ul>
+<h2 id="设置选项"><a href="#设置选项" class="headerlink" title="设置选项"></a>设置选项</h2><ul>
+<li><p>设置选项方式</p>
+<ul>
+<li>命令行一次设置多个选项：<code>:set number numberwidth=6</code></li>
+<li>本地缓冲区设置：<code>:setlocal nonumber</code></li>
+</ul>
+</li>
+<li><p>设置 <em>bool</em> 选项</p>
+<ul>
+<li><code>:set &lt;name&gt;</code>：打开选项</li>
+<li><code>:set no&lt;name&gt;</code>：关闭选项</li>
+<li><code>:set &lt;name&gt;!</code>：切换选项</li>
+<li><code>:set &lt;name&gt;?</code>：查看选项值（返回<name>或no<name>）</li>
+</ul>
+</li>
+<li><p>设置键值选项</p>
+<ul>
+<li><code>:set &lt;name&gt;=value</code>：设置选项值</li>
+<li><code>:set &lt;name&gt;?</code>：查看选项值</li>
+<li>键值选项支持运算：<code>+=</code> 等</li>
+</ul>
+</li>
+</ul>
+<h3 id="statusline-状态栏设置"><a href="#statusline-状态栏设置" class="headerlink" title="statusline 状态栏设置"></a><em>statusline</em> 状态栏设置</h3><ul>
+<li><p>状态栏代码通用格式：<code>%-0&#123;minwid&#125;.&#123;maxwid&#125;&#123;item&#125;</code></p>
+<ul>
+<li><code>-</code>：左对齐</li>
+<li><code>0</code>：使用”0”填充</li>
+<li><p><code>%=</code>：切换到<strong>状态栏</strong>右侧</p>
+</li>
+<li><p><code>%f</code>：文件名</p>
+</li>
+<li><code>%F</code>：完整路径文件名</li>
+<li><code>%y</code>：文件类型（[text]，[python]）</li>
+<li><p><code>%Y</code>：文件类型（TEXT，PYTHON）</p>
+</li>
+<li><p><code>%l</code>：当前行号</p>
+</li>
+<li><code>%L</code>：总行数</li>
+<li><code>%v/%V</code>：列号</li>
+<li><code>%c</code>：字符列号</li>
+<li><p><code>%p</code>：文件位置百分比</p>
+</li>
+<li><p><code>%n</code>：buffer number</p>
+</li>
+<li><code>%&#123;&amp;ff&#125;</code>：文件格式（DOS、UNIX）</li>
+<li><code>%b</code>：当前字符ACSII码</li>
+<li><code>%B</code>：当前字符16进制值</li>
+<li><code>%m</code>：modified flag（[+]，[-]表示不可修改）</li>
+</ul>
+</li>
+<li><p>设置状态栏显式格式，既可以一行完成配置，也可以分开配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">set statusline=%f\ -\ filetype:\ %y</span><br><span class="line">set statusline=%f</span><br><span class="line">set statusline+=%=</span><br><span class="line">set statusline+=%l</span><br><span class="line">set statusline+=/</span><br><span class="line">set statusline+=%L</span><br></pre></td></tr></table></figure>
+<ul>
+<li>中间空格需要用“\“转义，“%%”转义“%”</li>
+</ul>
+</li>
+<li><p><code>laststatus</code>：设置状态栏显示模式</p>
+<ul>
+<li><code>1</code>：默认值，两个以上窗口才显示</li>
+<li><code>2</code>：一直显示</li>
+</ul>
+</li>
+</ul>
+<h3 id="折叠设置"><a href="#折叠设置" class="headerlink" title="折叠设置"></a>折叠设置</h3><ul>
+<li><code>foldmethod</code><ul>
+<li><code>manual</code>：手动折叠选中的行（默认 <code>zf</code> 触发）</li>
+<li><code>marker</code>：<code>&#123;&#123;&#123;` 到 `&#125;&#125;&#125;</code> 标记待折叠行（默认 <code>za</code> 触发）</li>
+<li><code>indent</code>：折叠缩进</li>
+<li><code>syntax</code>：语法折叠</li>
+</ul>
+</li>
+<li><code>foldlevel=&lt;num&gt;</code>：设置 <em>indent</em> 折叠起始水平（<code>zm</code> 触发），即从 <code>&lt;num&gt;</code> 水平开始尝试折叠</li>
+<li><code>foldlevelstart=&lt;num&gt;</code>：设置文件打开时默认折叠水平<ul>
+<li><code>-1</code>：初始不折叠</li>
+</ul>
+</li>
+<li><code>foldcolumn=&lt;num&gt;</code>：用 <code>&lt;num&gt;</code> 行表示可可折叠状态</li>
+</ul>
+<h3 id="一些常用关键字"><a href="#一些常用关键字" class="headerlink" title="一些常用关键字"></a>一些常用关键字</h3><ul>
+<li><p><code>iskeyword=@,_,48-57,192_255</code>：指定关键字</p>
+<ul>
+<li>下划线</li>
+<li><em>ASCII</em> 码位在 48-57 之间的字符（<code>0-9</code>）、192-255之间的字符</li>
+</ul>
+</li>
+<li><p><code>conceallevel=0</code>：隐藏等级</p>
+<ul>
+<li><code>1</code></li>
+<li><code>2</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="键盘映射"><a href="#键盘映射" class="headerlink" title="键盘映射"></a>键盘映射</h2><blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://yianwillis.github.io/vimcdoc/doc/map.html">https://yianwillis.github.io/vimcdoc/doc/map.html</a></li>
+</ul>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:&lt;mode&gt;map &lt;mark&gt; &#123;lhs&#125; &#123;rhs&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>注意：映射后不能跟注释，vim会认为整行都是命令</li>
+</ul>
+</blockquote>
+<h3 id="映射工作模式"><a href="#映射工作模式" class="headerlink" title="映射工作模式"></a>映射工作模式</h3><ul>
+<li>映射的工作模式可区分 6 种<ul>
+<li><em>normal</em> 模式：输入命令时</li>
+<li><em>visual</em> 模式：可视区域高亮并输入命令时</li>
+<li><em>select</em> 模式：类似可视模式，但键入的字符对选择区替换</li>
+<li><em>operator-pending</em> 模式：操作符等待中</li>
+<li><em>insert</em> 模式：包括替换模式</li>
+<li><em>command-line</em> 模式：输入 <code>:</code>、<code>/</code> 命令时</li>
+</ul>
+</li>
+</ul>
+<h3 id="映射命令设置"><a href="#映射命令设置" class="headerlink" title="映射命令设置"></a>映射命令设置</h3><ul>
+<li><p>映射命令设置的模式如下，对应都有如下非递归、取消命令</p>
+<ul>
+<li><code>&lt;mode&gt;noremap[!]</code>：非递归映射，即不会在其他映射中再次被展开</li>
+<li><code>&lt;mode&gt;unmap[!]</code>：取消映射</li>
+<li><code>&lt;mode&gt;mapclear[!]</code>：</li>
+</ul>
+<p>|命令|模式|
+|——-|——-|
+|<code>:map</code>|<em>normal</em>、<em>visual</em>、<em>select</em>、<em>operator-pending</em>|
+|<code>:nmap</code>|<em>normal</em>|
+|<code>:vmap</code>|<em>visual</em>、<em>select</em>|
+|<code>:smap</code>|<em>selection</em>|
+|<code>:xmap</code>|<em>visual</em>|
+|<code>:omap</code>|<em>operator-pending</em>|
+|<code>:map!</code>|<em>insert</em>、<em>command-line</em>|
+|<code>:imap</code>|<em>insert</em>|
+|<code>:lmap</code>|<em>insert</em>、<em>command-line</em>、<em>Lang-Arg</em>|
+|<code>:cmap</code>|<em>command-line</em>|
+|<code>:tmap</code>|终端作业|</p>
+</li>
+</ul>
+<h3 id="特殊参数"><a href="#特殊参数" class="headerlink" title="特殊参数"></a>特殊参数</h3><ul>
+<li><p>映射特殊参数</p>
+<ul>
+<li><code>&lt;buffer&gt;</code>：映射将局限于当前缓冲区<ul>
+<li>优先级比全局映射高</li>
+<li>清除映射时同样需要添加参数</li>
+<li>可使用 <code>&lt;leader&gt;</code> 替代 <code>&lt;localleader&gt;</code> 可工作，但是不推荐</li>
+</ul>
+</li>
+<li><code>&lt;nowait&gt;</code>：存在较短映射时，失效以其作为前缀的较长映射</li>
+<li><code>&lt;silent&gt;</code>：映射不在命令行上回显</li>
+<li><code>&lt;special&gt;</code>：特殊键可以使用<code>&lt;&gt;</code>记法</li>
+<li><code>&lt;script&gt;</code>：映射只使用通过以<code>&lt;SID&gt;</code>开头来定义的脚本局部映射来重映射优右值中的字符</li>
+<li><code>&lt;unique&gt;</code>：若存在相同命令、缩写则定义失败<ul>
+<li>定义局部映射时，同样会检查全局映射</li>
+</ul>
+</li>
+<li><code>&lt;expr&gt;</code>：映射的右值将被作为表达式被计算</li>
+</ul>
+</li>
+<li><p>特殊参数说明</p>
+<ul>
+<li>特殊参数的尖括号<code>&lt;&gt;</code>是本身具有的，必须紧跟命令后面</li>
+<li>有些特殊参数在取消映射时同样需注明</li>
+</ul>
+</li>
+</ul>
+<h3 id="omap"><a href="#omap" class="headerlink" title="omap"></a><code>omap</code></h3><blockquote>
+<ul>
+<li>应用方法：<em>operator</em> （操作） + <em>operator-pending</em> （移动、范围选择）</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>预定义的 <em>operator-pending</em> 映射如 <code>w</code>、<code>aw</code>、<code>i(</code>、<code>t,</code></p>
+<p>|按键    |操作            |移动            |
+|———-|———————-|———————-|
+|dw        |删除(delete)    |到下一个单词    |
+|ci(    |修改(change)    |在括号内        |
+|yt,    |复制            |到逗号前        |</p>
+</li>
+<li><p>自定义的 <em>operator-pending</em> 映射则需要</p>
+<ul>
+<li><p>选取一定范围：可同时指定开头、结尾（一般通过进入 <em>visual</em> 模式下选择范围）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot; 下个括号内内容</span><br><span class="line">onoremap in( :&lt;c-u&gt;normal! f(vi(&lt;cr&gt;</span><br><span class="line">&quot; 当前括号内容</span><br><span class="line">onoremap il( :&lt;c-u&gt;normal! f)vi(&lt;cr&gt;`</span><br><span class="line">&quot; 选取使用 `===` 标记 markdown 标题</span><br><span class="line">onoremap ih :&lt;c-u&gt;execute &quot;normal! ?^==\\+$\r:nohlsearch\rkvg_&quot;&lt;cr&gt;</span><br><span class="line">onoremap ah :&lt;c-u&gt;execute &quot;normal! ?^==\\+$\r:nohlsearch\rg_vk0&quot;&lt;cr&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>指定光标位置：光标当前位置为开头、指定位置为结尾</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot; 移动至 `return` 前一行</span><br><span class="line">onoremap b /return&lt;cr&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="leaders、localleader"><a href="#leaders、localleader" class="headerlink" title="leaders、localleader"></a><em>leaders</em>、<em>localleader</em></h3><p><em>leader</em>、<em>localleader</em>：作为“前缀”的不常用的按键，后接其他字符作为整体映射</p>
+<ul>
+<li><p>用途</p>
+<ul>
+<li>避免覆盖太多按键原始功能 </li>
+<li>约定俗成的规范，容易理解</li>
+<li>方便更改 <code>&lt;leader&gt;</code>、<code>&lt;localleader&gt;</code> 作为前缀设置<ul>
+<li><code>&lt;leader&gt;</code>：对全局映射而设置的映射的前缀</li>
+<li><code>&lt;localleader&gt;</code>：只对某类（个）文件而设置的映射的前缀</li>
+</ul>
+</li>
+<li><code>&lt;leader&gt;</code> 和 <code>&lt;localleader&gt;</code> 除了设置不同以外，没有太大区别，应用场合时约定规范，不是强制性的</li>
+</ul>
+</li>
+<li><p><code>&lt;leader&gt;</code>、<code>&lt;localleader&gt;</code> 设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">:let mapleader = &quot;-&quot;</span><br><span class="line">:nnoremap &lt;leader&gt;d dd</span><br><span class="line">:let maplocalleader = &quot;\\&quot;</span><br><span class="line">:nnoremap &lt;buffer&gt; &lt;localleader&gt;c I#&lt;esc&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><em>vim</em> 会对 <code>mapleader</code>、<code>maplocalleader</code> 进行特殊的处理，不是简单的声明</li>
+</ul>
+</li>
+</ul>
+<h2 id="Abbreviations-缩写"><a href="#Abbreviations-缩写" class="headerlink" title="Abbreviations 缩写"></a><em>Abbreviations</em> 缩写</h2><ul>
+<li><code>iabbrev</code>：紧跟缩写输入非关键字后，缩写会替换为相应的完整字符串<ul>
+<li>相较于映射<ul>
+<li><code>iabbrev</code> 用于 <em>insert</em>、<em>replace</em>、<em>command-line</em> 模式</li>
+<li><code>iabbrev</code> 会注意缩写前后的字符，只在需要的时候替换</li>
+</ul>
+</li>
+<li><code>iabbrev</code> 同样支持特殊参数<ul>
+<li><code>&lt;buffer&gt;</code>：仅限本地缓冲区</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&quot; 纠错</span><br><span class="line">iabbrev waht what</span><br><span class="line">&quot; 简化输入</span><br><span class="line">iabbrev @@ xyy15926@gmail.com</span><br><span class="line">&quot; 替换 `----` 为前个单词</span><br><span class="line">iabbrev &lt;buffer&gt; ---- &amp;mdash</span><br><span class="line">&quot; 替换 `return` 为 null</span><br><span class="line">iabbrev &lt;buffer&gt; return nopenopenope</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>:set iskeyword?</code> 即可查看关键字字符</li>
+</ul>
+</blockquote>
+<h2 id="Autocmd-自动命令"><a href="#Autocmd-自动命令" class="headerlink" title="Autocmd 自动命令"></a><em>Autocmd</em> 自动命令</h2><h3 id="autocmd-使用"><a href="#autocmd-使用" class="headerlink" title="autocmd 使用"></a><code>autocmd</code> 使用</h3><ul>
+<li><p><code>autocmd</code> 注意事项</p>
+<ul>
+<li>同时监听多个事件，使用 <code>,</code> 分隔，中间不能有空格</li>
+<li>一般同时监听 <code>bufnewfile</code>、<code>bufread</code>，这样打开文件时无论文件是否存在都会执行命令</li>
+<li>所有事件后面都需要注明适用场景，可用<code>*</code>表示全部场景，中间也不能有空格</li>
+<li><code>autocmd</code> 是定义命令，不是执行命令<ul>
+<li>每次执行都会定义命令，而<em>vim</em> 不会忽略重复定义</li>
+<li>如：<code>:autocmd bufwrite * :sleep 200m</code>，每次执行时都会重复定义命令</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>缓冲区事件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">autocmd bufnewfile * :write</span><br><span class="line">autocmd bufnewfile *.txt :write</span><br><span class="line">autocmd bufwritepre *.html :normal gg=g</span><br><span class="line">autocdm bufnewfile,bufread *.html setlocal nowrap</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><em>filetype</em> 事件（<em>vim</em> 设置缓冲区 <em>filetype</em> 时触发）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">autocmd filetype javascript nnoremap &lt;buffer&gt; &lt;localleader&gt;c i//&lt;esc&gt;</span><br><span class="line">autocmd filetype python nnoremap &lt;buffer&gt; &lt;localleader&gt;c i#&lt;esc&gt;</span><br><span class="line">autocmd filetype javascript :iabbrev &lt;buffer&gt; iff if ()&lt;left&gt;</span><br><span class="line">autocmd filetype python :iabbrev &lt;buffer&gt; iff if:&lt;left&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="augroup-自动命令组"><a href="#augroup-自动命令组" class="headerlink" title="augroup 自动命令组"></a><code>augroup</code> 自动命令组</h3><ul>
+<li><p>自动命令组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">augroup cmdgroup</span><br><span class="line">	autocmd bufwrite * :echom &quot;foo&quot;</span><br><span class="line">	autocmd bufwrite * :echom &quot;bar&quot;</span><br><span class="line">augroup end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li><p>类似 <code>autocmd</code>，<em>vim</em> 不会忽略重复定义，但是可以通过 <code>:autocmd!</code> 清除一个组</p>
+<p>:augroup cmdgroup
+:    autocmd!
+:    autocmd bufwrite <em> :echom “foo”
+:    autocmd bufwrite </em> :echom “bar”
+:augroup end</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Vim安装"><a href="#Vim安装" class="headerlink" title="Vim安装"></a>Vim安装</h2><h3 id="安装选项"><a href="#安装选项" class="headerlink" title="安装选项"></a>安装选项</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./configure --with-features=huge\</span></span><br><span class="line"><span class="bash">	--enable-multibyte \</span></span><br><span class="line"><span class="bash">	--enable-python3interp \</span></span><br><span class="line"><span class="bash">	--with-python3-config-dir=/usr/lib64/python3.4/config-3.4m/ \</span></span><br><span class="line"><span class="bash">	--enable-pythoninterp \</span></span><br><span class="line"><span class="bash">	--with-python-config-dir=/usr/lib64/python2.7/config/ \</span></span><br><span class="line"><span class="bash">	--prefix=/usr/<span class="built_in">local</span></span></span><br><span class="line">	--enable-cscope</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>按照以上命令配置，编译出的Vim版本中是<strong>动态</strong>支持
+<code>+python/dyn</code>和 <code>+python3/dyn</code></p>
+</li>
+<li><p>此时Vim看似有python支持，但是在Vim内部
+<code>:echo has(&quot;python&quot;)</code>和<code>:echo has(&quot;python3&quot;)</code>都返回<code>0</code></p>
+</li>
+<li><p>之后无意中尝试去掉对<code>python</code>的支持，编译出来的Vim就是
+可用的<code>python3</code>，不直到为啥</p>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T17:52:54.000Z" title="8/1/2019, 1:52:54 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-31T17:52:54.000Z" title="8/1/2019, 1:52:54 AM">2019-08-01</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/Tool/">Tool</a><span> / </span><a class="link-muted" href="/categories/Linux/Tool/Vi/">Vi</a></span><span class="level-item">23 minutes read (About 3447 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/Tool/Vi/kmp_cmd.html">Vim KeyMapper CMD</a></h1><div class="content"><h2 id="Vim模式"><a href="#Vim模式" class="headerlink" title="Vim模式"></a>Vim模式</h2><h3 id="Normal模式"><a href="#Normal模式" class="headerlink" title="Normal模式"></a>Normal模式</h3><h3 id="Insert模式"><a href="#Insert模式" class="headerlink" title="Insert模式"></a>Insert模式</h3><h3 id="Visual模式"><a href="#Visual模式" class="headerlink" title="Visual模式"></a>Visual模式</h3><h3 id="Quickfix模式"><a href="#Quickfix模式" class="headerlink" title="Quickfix模式"></a>Quickfix模式</h3><p>quickfix模式主要思想时保存一个位置列表，然后提供一系列命令，
+实现在这个位置列表中的跳转</p>
+<ul>
+<li><p>位置列表来源</p>
+<ul>
+<li>编译器输出信息</li>
+<li><code>grep</code>命令输出信息（<code>cscope</code>命令）</li>
+<li><code>:vimgrep</code>命令</li>
+</ul>
+</li>
+<li><p>quickfix中常用的命令有</p>
+<ul>
+<li><code>:copen</code>/<code>:cw</code>：打开quickfix模式窗口</li>
+<li><code>:cclose</code>：关闭quickfix窗口</li>
+<li><code>:cc</code>：显示详细错误信息</li>
+<li><code>:cp</code>：跳至下一个错误</li>
+<li><code>:cn</code>：跳至上一个错误</li>
+<li><code>:cl</code>：列出所有错误</li>
+<li><code>:cw</code>：如果有错误列表，则打开quickfix窗口</li>
+<li><code>:colder/col</code>：到前一个旧错误列表</li>
+<li><code>:cnewer/cnew</code>：到后一个新错误列表</li>
+</ul>
+</li>
+</ul>
+<h3 id="Ex模式"><a href="#Ex模式" class="headerlink" title="Ex模式"></a>Ex模式</h3><p>底层编辑模型，normal下<code>Q</code>进入</p>
+<h3 id="Paste模式"><a href="#Paste模式" class="headerlink" title="Paste模式"></a>Paste模式</h3><h2 id="Motion快捷键"><a href="#Motion快捷键" class="headerlink" title="Motion快捷键"></a>Motion快捷键</h2><p>normal模式下移动，visual模式下选取，无特殊说明visual和normal
+模式通用 </p>
+<h3 id="固定移动"><a href="#固定移动" class="headerlink" title="固定移动"></a>固定移动</h3><h4 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h4><ul>
+<li><code>hjkl</code>：左、上、下、右</li>
+<li><code>gj/gk</code>：虚上、虚下（光标移动排版意义上行）
+（可以尝试<code>noremap</code>交换和<code>j/k</code>的逻辑方便使用）</li>
+<li><code>M</code>：窗口中间行首各非空白字符</li>
+<li><code>H</code>/<code>L</code>：窗口顶/底scrolloff处行首各非空白字符</li>
+<li><code>&lt;c-i&gt;</code>/<code>&lt;c-o&gt;</code>：跳至下一个/上一个编辑处
+（可以跨文件）</li>
+</ul>
+<h4 id="行内"><a href="#行内" class="headerlink" title="行内"></a>行内</h4><ul>
+<li><code>w</code>：下个单词开头</li>
+<li><code>aw</code>：整个单词</li>
+<li><code>b</code>/<code>e</code>：当前单词首/尾</li>
+<li><code>W</code>/<code>B</code>：下/上个非空格开头</li>
+<li><code>E</code>: 下个非空格结尾</li>
+<li><code>g_</code>：行尾，visual模式下不包括换行符</li>
+<li><code>$</code>：行尾，visual模式下包括换行符</li>
+<li><code>0</code>：行首</li>
+<li><code>^</code>：非空白字符行首</li>
+<li><code>|</code>：当前行第一列</li>
+<li><code>&lt;int&gt;|</code>：当前行第n列（不是字符）</li>
+</ul>
+<h4 id="全文"><a href="#全文" class="headerlink" title="全文"></a>全文</h4><ul>
+<li><code>gg</code>：文件首</li>
+<li><code>G</code>：文件尾</li>
+<li><code>&lt;int&gt;G</code>：第<code>&lt;int&gt;</code>行</li>
+<li><code>&#39;&lt;</code>：之前visual模式选取起始行（一直保存直至下次选取）</li>
+<li><code>&#39;&gt;</code>：之前visual模式选取结束行</li>
+<li><code>&#123;</code>/<code>&#125;</code>：下/上一个空行</li>
+<li><code>.</code>：当前行</li>
+<li><code>%</code>：全文<strong>选取</strong>???</li>
+</ul>
+<h3 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h3><p>这些快捷键的效果取决于当前状态</p>
+<h4 id="行内-1"><a href="#行内-1" class="headerlink" title="行内"></a>行内</h4><ul>
+<li><code>f</code>/<code>F</code>：向前/后移动到某字符（<code>;</code>、<code>,</code>同向、反向重复）</li>
+<li><code>t</code>/<code>T</code>：till，向前/后移动到某字符前</li>
+<li><code>i</code>：在某个区域（<code>(), [], &#123;&#125;, w</code>等）内（显然不能单独用
+于normal）</li>
+</ul>
+<h4 id="全文-1"><a href="#全文-1" class="headerlink" title="全文"></a>全文</h4><ul>
+<li><code>/</code>/<code>?</code>：命令行向前、向后查找（<code>n</code>、<code>N</code>同向、反向重复）</li>
+<li><code>*</code>/<code>#</code>：向前、向后查找当前单词</li>
+<li><code>g*</code>/<code>g#</code>：向前、向后查找当前字符串，包括非单独单词</li>
+</ul>
+<h2 id="Operation快捷键"><a href="#Operation快捷键" class="headerlink" title="Operation快捷键"></a>Operation快捷键</h2><p>对<strong>区域</strong>进行操作可以和motion连用</p>
+<h3 id="内容修改"><a href="#内容修改" class="headerlink" title="内容修改"></a>内容修改</h3><h4 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h4><ul>
+<li><code>i</code>：insert进入insert模式</li>
+<li><code>I(normal)</code>：行首insert进入insert模式</li>
+<li><code>I(visual block)</code>：选中区域同时插入</li>
+<li><code>a</code>：add进入insert模式</li>
+<li><code>A</code>：行尾add进入insert模式</li>
+<li><code>&lt;c-e&gt;</code>：insert模式下复制下行当前位置字符至当前行</li>
+</ul>
+<h4 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h4><ul>
+<li><code>d</code>：删除选取<strong>区域</strong></li>
+<li><code>c</code>：删除（修改）选中<strong>区域</strong>，进入insert模式</li>
+<li><code>x</code>/<code>X</code>：删除当前/前一个字符</li>
+<li><code>s</code>：删除字符，进入insert模式</li>
+<li><code>dd</code>：删除当前行</li>
+<li><code>D</code>：normal模式删除当前位置至行尾</li>
+<li><code>&lt;c-h&gt;/&lt;m-h&gt;</code>：insert模式backspace</li>
+</ul>
+<h4 id="复制、粘贴"><a href="#复制、粘贴" class="headerlink" title="复制、粘贴"></a>复制、粘贴</h4><ul>
+<li><code>[&quot;&lt;reg&gt;]y</code>：复制选中<strong>区域</strong>至寄存器<code>&lt;reg&gt;</code>，默认
+<code>&quot;&lt;reg&gt;</code></li>
+<li><code>yy</code>：复制当前行</li>
+<li><code>[&quot;&lt;reg&gt;]p</code>：粘贴<code>&quot;&lt;reg&gt;</code>寄存器中内容，默认<code>&quot;&lt;reg&gt;</code></li>
+</ul>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li><code>J</code>：合并下一行，<code>&lt;space&gt;</code>分隔</li>
+<li><code>u/U(visual)</code>：转换为小、大写</li>
+<li><code>~(normal)</code>：当前字符大、小写切换（光标移动至下个字符）</li>
+<li><code>~(visual)</code>：选中区域大、小写切换</li>
+<li><code>gu/gU(normal)</code>：<strong>区域</strong>转换为小、大写</li>
+<li><code>g~</code>：<strong>区域</strong>大、小写切换</li>
+<li><code>[num]&gt;/&lt;</code>：右/左移动<strong>区域</strong>num个<code>shiftwidth</code>单位</li>
+<li><code>=</code>：<strong>区域</strong>格式化（修改为标准缩进）</li>
+<li><code>&lt;c-d&gt;</code>/<code>&lt;c-i&gt;</code>：insert模式减少/增加缩进</li>
+<li><code>gc(visual/normal)</code>：选中区域按行注释/取消注释
+（应该是按vim的filetype确定注释格式）</li>
+<li><code>&lt;c-a&gt;</code>/<code>&lt;c-x&gt;</code>：将光标下数字增加/减少1，支持多种进制</li>
+</ul>
+<h3 id="功能性"><a href="#功能性" class="headerlink" title="功能性"></a>功能性</h3><h4 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h4><ul>
+<li><code>q&lt;reg&gt;</code>：宏记录，记录行为于寄存器<code>&lt;reg&gt;</code>中，按下<code>q</code>则
+停止记录</li>
+<li><code>@&lt;reg&gt;</code>：调用寄存器<code>&lt;reg&gt;</code>中的宏操作（不一定是<code>q&lt;reg&gt;</code>
+记录的结果）</li>
+<li><code>m&lt;char&gt;</code>：记录当前位置于<code>&lt;char&gt;</code>中（不是寄存器中未知）</li>
+<li><code>`\<char\></code>：回到<code>&lt;char&gt;</code>中记录的位置</li>
+</ul>
+<h4 id="撤销、redo"><a href="#撤销、redo" class="headerlink" title="撤销、redo"></a>撤销、redo</h4><ul>
+<li><code>.</code>：重复上一个操作</li>
+<li><code>u</code>：撤销上一个操作</li>
+<li><code>&lt;c-r&gt;</code>：继续执行，撤销<code>u</code></li>
+<li><code>&lt;c-m&gt;</code>：等同于<code>&lt;cr&gt;</code></li>
+</ul>
+<h4 id="外部功能"><a href="#外部功能" class="headerlink" title="外部功能"></a>外部功能</h4><ul>
+<li><code>K</code>：对当前单词调用<code>keywordprg</code>设置的外部程序，默认“man”</li>
+</ul>
+<h3 id="Diff"><a href="#Diff" class="headerlink" title="Diff"></a>Diff</h3><ul>
+<li><code>]c</code>/<code>[c</code>：比较窗口中移至下个不同的为止</li>
+<li><code>do</code>/<code>dp</code>：将当前比较窗口中不同区域，同步<strong>为/至</strong>另一个
+窗口该位置</li>
+</ul>
+<h3 id="其他-1"><a href="#其他-1" class="headerlink" title="其他"></a>其他</h3><ul>
+<li><code>q:</code>：vim命令历史窗口</li>
+</ul>
+<h2 id="界面变动"><a href="#界面变动" class="headerlink" title="界面变动"></a>界面变动</h2><h3 id="窗口"><a href="#窗口" class="headerlink" title="窗口"></a>窗口</h3><h4 id="Window"><a href="#Window" class="headerlink" title="Window"></a>Window</h4><ul>
+<li><code>&lt;c-w-h/j/k/l&gt;</code>：切换至左/下/上/右窗口</li>
+<li><code>&lt;c-w-w&gt;</code>：轮换窗口（切换活动窗口）</li>
+<li><code>&lt;c-w-t/b/p&gt;</code>：切换至最左上/右下/前个窗口</li>
+<li><code>&lt;c-w-+/-&gt;</code>：竖直方向扩展/收缩当前窗口</li>
+<li><code>&lt;c-w-&gt;/&lt;&gt;</code>：水平方向扩展/收缩当前窗口</li>
+<li><code>&lt;c-w-=&gt;</code>：恢复当前窗口高度</li>
+<li><code>&lt;c-w-H/J/K/L&gt;</code>：移动窗口至tab左/下/上/右，占据全部高/宽</li>
+<li><code>&lt;c-w-T&gt;</code>：移动窗口至新tab</li>
+<li><code>&lt;c-w-r/x&gt;</code>：交换窗口位置（具体逻辑未知）</li>
+<li><code>ZZ</code>：保存退出</li>
+<li><code>ZQ</code>：放弃保存退出</li>
+</ul>
+<h4 id="Tab"><a href="#Tab" class="headerlink" title="Tab"></a>Tab</h4><ul>
+<li><code>[n]gt</code>/<code>gT</code>：下/上一个tab；第n个tab</li>
+</ul>
+<h3 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h3><h4 id="折叠"><a href="#折叠" class="headerlink" title="折叠"></a>折叠</h4><ul>
+<li><p><code>foldmethod=marker</code>：<code>&#123;&#123;&#123;`、`&#125;&#125;&#125;</code>标记折叠区域（各花括号之间无空格）</p>
+<ul>
+<li><code>zf</code>：创建折叠（在选中区域前后添加标记）<ul>
+<li><code>zf[n]G</code>：创建当前行至第n行折叠</li>
+<li><code>[n]zf[+]</code>：创建当前行至后n行折叠</li>
+<li><code>[n]zf[-]</code>：创建当前行至前n行折叠</li>
+</ul>
+</li>
+<li><code>zd</code>：删除 <strong>包含</strong> 当前位置折叠</li>
+<li><code>zD</code>：<strong>递归</strong> 删除包含当前位置折叠、及子折叠</li>
+<li><code>zE</code>：删除窗口中所有折叠</li>
+<li><code>za</code>：折叠 toggle</li>
+<li><code>zo</code>：折叠展开</li>
+<li><code>zc</code>：折叠</li>
+</ul>
+</li>
+<li><p><code>foldmethod=indent</code>：缩进标记折叠</p>
+<ul>
+<li><code>zc</code>：折叠</li>
+<li><code>zC</code>：<strong>递归</strong> 折叠</li>
+<li><code>zo</code>：展开折叠</li>
+<li><code>zO</code>：递归展开折叠</li>
+<li><code>[z</code>：移至当前折叠开始</li>
+<li><code>]z</code>：移至当前折叠末尾</li>
+<li><code>zj</code>：移至下个折叠开始（包括关闭折叠）</li>
+<li><code>zk</code>：移至上个折叠结束（包括开闭折叠）</li>
+<li><code>zm</code>：提高折叠水平，即依次折叠当前最高水平缩进</li>
+<li><code>zr</code>：降低折叠水平，即依次展开当前最高水平缩进</li>
+<li><code>zn</code>：禁用折叠</li>
+<li><code>zN</code>：启用折叠</li>
+</ul>
+</li>
+<li><p><code>foldmethod=manual</code>：手动折叠</p>
+<ul>
+<li><code>zf&lt;range&gt;</code>：折叠选中区域<ul>
+<li><code>zf70j</code>：折叠之后70行</li>
+<li><code>zfa(</code>：折叠 <code>(</code> 包围区域</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>mkview</code>：保存折叠状态</p>
+</li>
+<li><code>loadview</code>：载入折叠状态</li>
+</ul>
+<h2 id="Vim-Cmd常用命令"><a href="#Vim-Cmd常用命令" class="headerlink" title="Vim Cmd常用命令"></a>Vim Cmd常用命令</h2><h3 id="内容相关"><a href="#内容相关" class="headerlink" title="内容相关"></a>内容相关</h3><h4 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h4><h5 id=""><a href="#" class="headerlink" title="//?"></a><code>/</code>/<code>?</code></h5><p><code>:/foo</code>向下查找，<code>:?foo</code>向上查找</p>
+<ul>
+<li><code>set ingorecase</code>时，不敏感查找；<code>set smartcase</code>时，如果
+查找中有大写字符则敏感；</li>
+<li><code>:/foo\c</code>手动强制大小写不敏感，<code>:/foo\C</code>强制敏感</li>
+<li><code>n</code>、<code>N</code>重复同向、反向之前查找</li>
+</ul>
+<h5 id="vimgrep"><a href="#vimgrep" class="headerlink" title=":vimgrep"></a><code>:vimgrep</code></h5><p>文件间搜索</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:vim[grep] /pattern/[g][j] files</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>选项</p>
+<ul>
+<li><code>g</code>：全局匹配（匹配每行全部）</li>
+<li><code>j</code>：查找完毕后，进更新quickfix列表，光标不跳转</li>
+</ul>
+</li>
+<li><p><code>files</code></p>
+<ul>
+<li><code>%</code>：当前文件</li>
+<li><code>*</code>：当前目录</li>
+<li><code>**/*</code>：仅子目录</li>
+<li><code>**/xxxx</code>：当前目录及子目录所有满足<code>xxxx</code>模式文件</li>
+<li><code>pattern</code>：满足<code>pattern</code>的文件</li>
+</ul>
+</li>
+</ul>
+<h5 id="global"><a href="#global" class="headerlink" title="global"></a><code>global</code></h5><ul>
+<li>在<code>[range]</code>范围（默认整个文件）中查找<code>&#123;pattern&#125;</code>，标记
+匹配行</li>
+<li>对匹配行执行命令<code>&#123;command&#125;</code>（默认<code>print</code>命令）<ul>
+<li>若标记行在被操作之前已经被删除、移动、合并等而消失，
+则不对器执行操作</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:[range]g[lobal][!]/&#123;pattern&#125;/&#123;command&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>选项<ul>
+<li><code>[!]</code>：对不匹配者执行草在</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">:g/^/m <span class="number">0</span></span><br><span class="line">	# 将文件反序</span><br><span class="line">:g/^/+<span class="number">1</span> d</span><br><span class="line">:%normal jdd</span><br><span class="line">	# 删除偶数行</span><br><span class="line">:g/^/d|m.</span><br><span class="line">:%normal jkdd</span><br><span class="line">	# 删除奇数行</span><br><span class="line">:g!/aaa/d</span><br><span class="line">	# 删除不包含`aaa`行</span><br><span class="line">:g/aaa/<span class="string">&quot;ay</span></span><br><span class="line"><span class="string">	# 复制包含`aaa`行至寄存器`&quot;</span>`</span><br></pre></td></tr></table></figure>
+<h4 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h4><h5 id="s"><a href="#s" class="headerlink" title=":s"></a><code>:s</code></h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:[start,end]s/foo/bar[/i][I][g]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>替换区域：默认只替换当前行<ul>
+<li>手动指定具体行号：<code>:2,4s/foo/bar</code>（左闭右开）</li>
+<li>特殊符号<ul>
+<li>全文替换<code>%</code>：<code>:%s/foo/bar</code></li>
+<li>第一行<code>^</code>：<code>:^,4s/foo/bar</code></li>
+<li>当前行<code>.</code>：<code>:.,6s/foo/bar</code></li>
+<li>末尾行<code>$</code>：<code>:4,$s/foo/bar</code></li>
+</ul>
+</li>
+<li>visual模式下，手动选择区域命令行自动补全为<code>:&#39;&lt;,&#39;&gt;</code></li>
+</ul>
+</li>
+<li>替换标志<ul>
+<li>大小写不敏感<code>/i</code>、<code>\c</code>：<code>:%s/foo/bar/i</code>或<code>:%s/foo\c/bar</code></li>
+<li>大小写敏感<code>/I</code>、<code>\C</code>：<code>%s/foo/bar/I</code>或<code>:%s/foo\C/bar</code></li>
+<li>全局替换<code>/g</code>（替换每行全部模式）：<code>:%s/foo/bar/g</code><ul>
+<li>默认情况下只替换首个模式：<code>foo,foobar</code>被替换为
+<code>bar,foobar</code></li>
+<li>全局替换模式下：<code>foo,foobar</code>被替换为<code>bar,barbar</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>交互（确认）替换：<code>:%s/foo/bar/c</code>，每次替换前会询问</li>
+<li>超级变量<ul>
+<li><code>&amp;</code>：代表被替换模式字串</li>
+</ul>
+</li>
+</ul>
+<h4 id="文本移动"><a href="#文本移动" class="headerlink" title="文本移动"></a>文本移动</h4><h5 id="gt-lt"><a href="#gt-lt" class="headerlink" title="&gt;/&lt;"></a><code>&gt;</code>/<code>&lt;</code></h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:[range]&gt;</span><br><span class="line">:[range]&lt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>范围内文本块右、左移动1个<code>shiftwidth</code></li>
+<li>移动num个<code>shiftwidth</code>添加num个<code>&gt;/&lt;</code></li>
+</ul>
+<h5 id="move"><a href="#move" class="headerlink" title="move"></a><code>move</code></h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:[range]m[ove] [n]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>移动范围内行至第<code>[n]</code>行<strong>后</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:m0</span><br><span class="line">	# 移动当前行至首行</span><br></pre></td></tr></table></figure>
+<h5 id="t"><a href="#t" class="headerlink" title="t"></a><code>t</code></h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:[range]t [n]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>复制范围内至第<code>[n]</code>行<strong>后</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:t.</span><br><span class="line">	# 复制当前行至下行</span><br></pre></td></tr></table></figure>
+<h3 id="文件相关"><a href="#文件相关" class="headerlink" title="文件相关"></a>文件相关</h3><h4 id="放弃修改、重新加载、保存"><a href="#放弃修改、重新加载、保存" class="headerlink" title="放弃修改、重新加载、保存"></a>放弃修改、重新加载、保存</h4><ul>
+<li><code>:w[rite]</code>：保存此次修改</li>
+<li><code>:e!</code>：放弃本次修改（和:q!不同在于不会退出vim）</li>
+<li><code>:bufdo e!</code>：放弃vim所有已打开文件修改</li>
+<li><code>:e</code>：重新加载文件</li>
+<li><code>:e#</code>：当前窗口加上个buffer（反复切换）</li>
+<li><code>:bufdo e</code>：重新加载vim所有已打开文件</li>
+<li><code>:saveas new_file_name</code>：另存为，不删除原文件</li>
+<li><code>:sb[n]</code>：split窗口加载第n个buffer</li>
+<li><code>:b[n]</code>：当前窗口加载第n个buffer</li>
+<li><code>:n[n]</code>：当前窗口加载下/第n个buffer</li>
+</ul>
+<h4 id="Window-1"><a href="#Window-1" class="headerlink" title="Window"></a>Window</h4><ul>
+<li><code>:sp[lit]</code>：水平分割当前窗口，展示当前文件</li>
+<li><code>:vs[plit]</code>：竖直分割当前窗口，展示当前文件</li>
+<li><code>:new</code>：水平分割当前窗口，新文件</li>
+<li><code>:vnew</code>：竖直分割当前窗口，新文件</li>
+<li><code>:sview</code>：水平分割当前窗口，只读[缺省当前]文件</li>
+<li><code>:[n]winc &gt;/&lt;</code>：水平方侧扩展/收缩</li>
+<li><code>:[n]winc +/-</code>：竖直方向扩展/收缩</li>
+<li><code>:res+/-[n]</code>：竖直方向扩展/收缩</li>
+<li><code>:vertical res+/-[n]</code>：水平方向扩展/收缩</li>
+<li><code>:ressize[n]</code>：高度设置为n单位</li>
+<li><code>:vertical res[n]</code>：宽度设置为n单位</li>
+<li><code>:q[uit][!]</code>：退出当前窗口<ul>
+<li><code>!</code>：强制退出，修改不保存</li>
+</ul>
+</li>
+<li><code>:close</code>：关闭当前窗口（不能关闭最后窗口）</li>
+<li><code>:only</code>：关闭其他窗口</li>
+<li><code>:qa</code>：退出所有窗口</li>
+<li><code>:wq</code>：保存、退出当前窗口</li>
+<li><code>:x</code>：类似于<code>wq</code>，但是未修改则<strong>不写入</strong></li>
+</ul>
+<p>注：</p>
+<ul>
+<li>水平方向：扩张优先左侧变化，收缩右侧变化</li>
+<li>竖直方向：扩展收缩均优先下侧变化</li>
+</ul>
+<h4 id="Tab-1"><a href="#Tab-1" class="headerlink" title="Tab"></a>Tab</h4><ul>
+<li><code>:tabnew [opt] [cmd] [file_name]</code>：打开新tab</li>
+<li><code>:tabc</code>：关闭当前tab</li>
+<li><code>:tabo</code>：关闭其他tab</li>
+<li><code>:tabs</code>：vim cmd区域查看所有打开的tab信息</li>
+<li><code>:tabp</code>：查看前一个tab</li>
+<li><code>:tabfirst</code>/<code>:tablast</code>：第一个/最后一个tab</li>
+<li><code>:tabn [num]</code>：查看下一个/第num个tab</li>
+</ul>
+<h4 id="Diff-1"><a href="#Diff-1" class="headerlink" title="Diff"></a>Diff</h4><ul>
+<li><p><code>:diffsplit [filename]</code>：上下分割窗口和当前窗口比较</p>
+<ul>
+<li>默认同当前文件进行diff</li>
+</ul>
+</li>
+<li><p><code>:difft</code>：将当前窗口变为比较窗口</p>
+<ul>
+<li>若没有其他比较窗口，则没有明显变化</li>
+<li>若存在其他比较窗口，则加入比较</li>
+</ul>
+</li>
+<li><p><code>:diffu[pdate][!]</code>：更新当前比较窗口</p>
+<ul>
+<li>比较状态下修改当前文件后，重新生成比较信息</li>
+<li><code>!</code>：重新载入文件后更新（外部修改文件）</li>
+</ul>
+</li>
+<li><p><code>:diffo[!]</code>：关闭当前窗口比较状态</p>
+<ul>
+<li><code>!</code>：关闭所有窗口比较状态</li>
+</ul>
+</li>
+</ul>
+<h4 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h4><ul>
+<li><code>:mksession[!] &lt;session-file-name&gt;</code>：将当前状态写入 <em>session</em> 文件</li>
+<li><code>:source &lt;session-file-name&gt;</code>：载入已有 <em>session</em> 文件</li>
+</ul>
+<h3 id="其他-2"><a href="#其他-2" class="headerlink" title="其他"></a>其他</h3><h4 id="多行语句"><a href="#多行语句" class="headerlink" title="多行语句"></a>多行语句</h4><p>“|”管道符可以用于隔开多个命令<code>:echom &quot;bar&quot; | echom &quot;foo&quot;</code></p>
+<h4 id="vertical"><a href="#vertical" class="headerlink" title=":vertical"></a><code>:vertical</code></h4><p><code>:vertical</code>基本可以用所和窗口有关命令之前，表示左右（分割）</p>
+<ul>
+<li><code>:vert split</code>/<code>:vs</code>：左右分割窗口</li>
+<li><code>:vert sb[n]</code>：左右分割窗口载入<code>buff[n]</code></li>
+<li><code>:vert diffs file_name</code>：左右分割窗口<code>diffs</code></li>
+<li><code>:vert res +/-[n]</code>：调整窗口大小</li>
+</ul>
+<h2 id="其他CMD命令"><a href="#其他CMD命令" class="headerlink" title="其他CMD命令"></a>其他CMD命令</h2><h3 id="编辑过程中使用shell"><a href="#编辑过程中使用shell" class="headerlink" title="编辑过程中使用shell"></a>编辑过程中使用shell</h3><ul>
+<li><p><code>:!&#123;shell command&#125;</code>即可直接执行shell命令并暂时跳出vim</p>
+<ul>
+<li><code>:r !&#123;shell command&#125;</code>可以将输出结果读取到当前编辑</li>
+<li><code>:w !&#123;sheel command&#125;</code>可以将输出结果输出到vim命令行</li>
+</ul>
+</li>
+<li><p><code>:shell</code>即可暂时进入到shell环境中，<code>$exit</code>即可回到vim中</p>
+</li>
+<li><p><code>&lt;c-z&gt;</code>暂时后台挂起vim回到shell环境中，<code>$fg</code>即可回到之前
+挂起的进程（此时为vim，详见fg命令）</p>
+</li>
+</ul>
+<h3 id="读取结果"><a href="#读取结果" class="headerlink" title="读取结果"></a>读取结果</h3><ul>
+<li><code>:read cmd</code>：读取<code>cmd</code>结果至光标下一行<ul>
+<li><code>:read !date</code>：读取系统<code>date</code>命令结果</li>
+</ul>
+</li>
+</ul>
+<h3 id="交换文件处理"><a href="#交换文件处理" class="headerlink" title="交换文件处理"></a>交换文件处理</h3><ul>
+<li><p>确认需要恢复：直接恢复<code>R</code></p>
+</li>
+<li><p>确认丢弃：直接删除<code>D</code></p>
+</li>
+<li><p>没有明确目标：只读打开<code>O</code></p>
+</li>
+<li><p>比较交换文件、现在文件差别</p>
+<ul>
+<li>恢复打开<code>R</code></li>
+<li>另存为其他文件<code>:saveas filname.bak</code></li>
+<li>与当前文件对比<code>:diffsplit filename</code></li>
+</ul>
+</li>
+<li><p>一般不会直接<code>E</code>（<em>edit anyway</em>）</p>
+</li>
+</ul>
+<h2 id="Vim命令行参数"><a href="#Vim命令行参数" class="headerlink" title="Vim命令行参数"></a>Vim命令行参数</h2><h3 id="vim"><a href="#vim" class="headerlink" title="vim"></a><code>vim</code></h3><ul>
+<li><code>$ vim [filname]</code>：打开一般窗口<ul>
+<li><code>-r [filename]</code>：常看交换文件（特定文件对应交换文件）</li>
+<li><code>-R [filename]</code>：只读方式打开文件</li>
+<li><code>-S session-file</code>：打开session的方式启动vim <ul>
+<li>需要 <code>:mksession[!] &lt;session-file&gt;</code> 先创建 <em>session</em> 文件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="vimdiff"><a href="#vimdiff" class="headerlink" title="vimdiff"></a><code>vimdiff</code></h3><ul>
+<li><code>$ vimdiff [file1] [file2]</code>：打开<strong>比较窗口</strong><ul>
+<li><code>-u</code>：合并模式比较</li>
+<li><code>-c</code>：上下文模式比较</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>后面两个模型可常用于输出重定向至新文件</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T17:48:22.000Z" title="8/1/2019, 1:48:22 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T07:06:49.000Z" title="7/16/2021, 3:06:49 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Theory/">ML Theory</a><span> / </span><a class="link-muted" href="/categories/ML-Theory/Loss/">Loss</a></span><span class="level-item">9 minutes read (About 1379 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Theory/Loss/func_loss.html">Loss Function</a></h1><div class="content"><h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><ul>
+<li>损失函数可以视为<strong>模型与真实的距离</strong>的度量<ul>
+<li>因此损失函数设计关键即，寻找可以代表模型与真实的距离的统计量</li>
+<li>同时为求解方便，应该损失函数最好应满足导数存在</li>
+</ul>
+</li>
+</ul>
+<h3 id="Surrogate-Loss"><a href="#Surrogate-Loss" class="headerlink" title="Surrogate Loss"></a>Surrogate Loss</h3><p>代理损失函数：用优化方便的损失函数代替难以优化的损失函数，间接达到优化原损失函数的目标</p>
+<ul>
+<li>如 0-1 损失难以优化，考虑使用二次损失、交叉熵损失替代</li>
+</ul>
+<h3 id="损失函数设计"><a href="#损失函数设计" class="headerlink" title="损失函数设计"></a>损失函数设计</h3><ul>
+<li><p>对有监督学习：<strong>真实</strong> 已知，可以直接设计损失函数</p>
+</li>
+<li><p>对无监督学习：<strong>真实</strong> 未知，需要给定 <strong>真实标准</strong></p>
+<ul>
+<li><em>NLP</em>：需要给出语言模型</li>
+<li><em>EM</em> 算法：熵最大原理</li>
+</ul>
+</li>
+</ul>
+<h2 id="常用损失函数"><a href="#常用损失函数" class="headerlink" title="常用损失函数"></a>常用损失函数</h2><p><img src="/imgs/01_se_ce_hinge_loss.png" alt="01_se_ce_hinge_loss"></p>
+<h3 id="0-1-Loss"><a href="#0-1-Loss" class="headerlink" title="0-1 Loss"></a>0-1 Loss</h3><script type="math/tex; mode=display">
+L(y, f(x)) = \left \{ \begin{array}{l}
+    1, & y \neq f(x) \\
+    0, & y = f(x)
+\end{array} \right.</script><ul>
+<li><p>0-1 损失函数梯度要么为 0、要么不存在，无法通过梯度下降方法优化 0-1 损失</p>
+</li>
+<li><p>适用场合</p>
+<ul>
+<li>二分类：<em>Adaboost</em></li>
+<li>多分类：<em>Adaboost.M1</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="Quadratic-Squared-Error-Loss"><a href="#Quadratic-Squared-Error-Loss" class="headerlink" title="Quadratic / Squared Error Loss"></a><em>Quadratic</em> / <em>Squared Error Loss</em></h3><script type="math/tex; mode=display">
+L(y, f(x)) = \frac 1 2 (y - f(x))^2</script><ul>
+<li><p>平方错误损失函数可导，可以基于梯度下降算法优化损失函数</p>
+</li>
+<li><p>适用场合</p>
+<ul>
+<li>回归预测：线性回归</li>
+<li>分类预测：0-1 二分类（根据预测得分、阈值划分）</li>
+</ul>
+</li>
+</ul>
+<h3 id="Logistic-SE"><a href="#Logistic-SE" class="headerlink" title="Logistic SE"></a><em>Logistic SE</em></h3><ul>
+<li><p>平方损失用于二分类时存在如下问题（模型输出无限制）</p>
+<ul>
+<li>若模型对某样本非常确信为正例，给出大于1预测值</li>
+<li>此时模型会进行不必要、开销较大的优化</li>
+</ul>
+</li>
+<li><p>考虑对模型输出进行 <em>sigmoid</em> 变换后作为预测值，再应用平方错误损失函数</p>
+<script type="math/tex; mode=display">
+L(y, f(x)) = \frac 1 2 (y - \sigma(f(x)))^2</script><ul>
+<li><em>Logistic SE</em> 损失函数曲线对 0-1 损失拟合优于平方损失</li>
+<li>但负区间存在饱和问题，损失最大只有 0.5</li>
+</ul>
+</li>
+</ul>
+<h3 id="Cross-Entropy"><a href="#Cross-Entropy" class="headerlink" title="Cross Entropy"></a><em>Cross Entropy</em></h3><p>交叉熵损失</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(y, f(x)) & = -ylog(f(x)) \\
+& = - \sum_{k=1}^K y_k log f(x)_k
+\end{align*}</script><blockquote>
+<ul>
+<li>$y$：样本实际值</li>
+<li>$f(x)$：各类别预测概率</li>
+<li>$K$：分类数目</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>交叉熵损失综合二次损失、<em>logistic SE</em> 优势，以正样本为例</p>
+<ul>
+<li>预测值较大时：损失接近 0，避免无效优化</li>
+<li>预测值较小时：损失偏导趋近于 -1，不会出现饱和现象</li>
+</ul>
+</li>
+<li><p>$y$ 为 <em>one-hot</em> 编码时实际值时</p>
+<ul>
+<li>分类问题仅某分量为 1：此时交叉熵损失同对数损失（负对数极大似然函数）</li>
+<li>标签问题则可有分量为 1</li>
+</ul>
+</li>
+<li><p>适合场合</p>
+<ul>
+<li>多分类问题</li>
+<li>标签问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="Hinge-Loss"><a href="#Hinge-Loss" class="headerlink" title="Hinge Loss"></a><em>Hinge Loss</em></h3><script type="math/tex; mode=display">\begin{align*}
+L(y, f(x)) & = [1 - yf(x)]_{+} \\
+[z]_{+} & = \left \{ \begin{array}{l}
+    z, & z > 0 \\
+    0, & z \leq 0
+\end{array} \right.
+\end{align*}</script><blockquote>
+<ul>
+<li>$y \in {-1, +1}$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>合页损失函数：0-1 损失函数的上界，效果类似交叉熵损失函数</p>
+<ul>
+<li>要求分类不仅正确，还要求确信度足够高损失才为 0</li>
+<li>即对学习有更高的要求</li>
+</ul>
+</li>
+<li><p>适用场合</p>
+<ul>
+<li>二分类：线性支持向量机</li>
+</ul>
+</li>
+</ul>
+<h3 id="收敛速度对比"><a href="#收敛速度对比" class="headerlink" title="收敛速度对比"></a>收敛速度对比</h3><ul>
+<li><p>指数激活函数时：相较于二次损失，收敛速度更快</p>
+</li>
+<li><p>二次损失对 $w$ 偏导</p>
+<script type="math/tex; mode=display">
+\frac {\partial L} {\partial w} = (\sigma(z) - y) \sigma^{'}(z) x</script><blockquote>
+<ul>
+<li>$\sigma$：<em>sigmoid</em>、<em>softmax</em> 激活函数</li>
+<li>$z = wx + b$</li>
+</ul>
+</blockquote>
+<ul>
+<li>考虑到 <em>sigmoid</em> 函数输入值绝对值较大时，其导数较小</li>
+<li>激活函数输入 $z=wx+b$ 较大时，$\sigma^{‘}(z)$ 较小，更新速率较慢</li>
+</ul>
+</li>
+<li><p><em>Softmax</em> 激活函数时，交叉熵对 $w$ 偏导</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac {\partial L} {\partial w} & = -y\frac 1 {\sigma(z)}
+   \sigma^{'}(z) x \\
+& = y(\sigma(z) - 1)x
+\end{align*}</script></li>
+<li><p>特别的，对 <em>sigmoid</em> 二分类</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac {\partial L} {\partial w_j} & = -(\frac y {\sigma(z)}
+   - \frac {(1-y)} {1-\sigma(z)}) \sigma^{'}(z) x \\
+& = -\frac {\sigma^{'}(z) x} {\sigma(z)(1-\sigma(z))}
+   (\sigma(z) - y) \\
+& = x(\sigma(z) - y)
+\end{align*}</script><ul>
+<li>考虑 $y \in {(0,1), (1,0)}$、$w$ 有两组</li>
+<li>带入一般形式多分类也可以得到二分类结果</li>
+</ul>
+</li>
+</ul>
+<h2 id="不常用损失函数"><a href="#不常用损失函数" class="headerlink" title="不常用损失函数"></a>不常用损失函数</h2><h3 id="Absolute-Loss"><a href="#Absolute-Loss" class="headerlink" title="Absolute Loss"></a><em>Absolute Loss</em></h3><p>绝对损失函数</p>
+<script type="math/tex; mode=display">
+L(y, f(x)) = |y-f(x)|</script><ul>
+<li>适用场合<ul>
+<li>回归预测</li>
+</ul>
+</li>
+</ul>
+<h3 id="Logarithmic-Loss"><a href="#Logarithmic-Loss" class="headerlink" title="Logarithmic Loss"></a><em>Logarithmic Loss</em></h3><p>对数损失函数（负对数极大似然损失函数）</p>
+<script type="math/tex; mode=display">
+L(y, P(y|x)) = -logP(y|x)</script><ul>
+<li>适用场合<ul>
+<li>多分类：贝叶斯生成模型、逻辑回归</li>
+</ul>
+</li>
+</ul>
+<h3 id="Exponential-Loss"><a href="#Exponential-Loss" class="headerlink" title="Exponential Loss"></a><em>Exponential Loss</em></h3><p>指数函数函数</p>
+<script type="math/tex; mode=display">
+L(y, f(x)) = exp\{-yf(x)\}</script><ul>
+<li>适用场合<ul>
+<li>二分类：前向分步算法</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pseudo-Loss"><a href="#Pseudo-Loss" class="headerlink" title="Pseudo Loss"></a><em>Pseudo Loss</em></h3><p>伪损失：考虑个体损失 $(x_i, y_i)$ 如下，据此构造伪损失</p>
+<ul>
+<li>$h(x_i, y_i)=1, \sum h(x_i, y)=0$：完全正确预测</li>
+<li>$h(x_i, y_i)=0, \sum h(x_i, y)=1$：完全错误预测</li>
+<li>$h(x_i, y_i)=1/M$：随机预测（M为分类数目）</li>
+</ul>
+<script type="math/tex; mode=display">
+L(y, f(x)) = \frac 1 2 \sum_{y^{(j)} \neq f(x)} w_j (1 - f(x, y) + f(x, y^{(j)}))</script><blockquote>
+<ul>
+<li>$w_j$：样本个体错误标签权重，对不同个体分布可不同</li>
+<li>$f(x, y^{(j)})$：分类器将输入 $x$ 预测为第 $j$ 类 $y^{(j)}$ 的置信度</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>伪损失函数考虑了预测 <strong>标签</strong> 的权重分布</p>
+<ul>
+<li>通过改变此分布，能够更明确的关注难以预测的个体标签，而不仅仅个体</li>
+</ul>
+</li>
+<li><p>伪损失随着分类器预测准确率增加而减小</p>
+<ul>
+<li>分类器 $f$ 对所有可能类别输出置信度相同时，伪损失最大达到 0.5，此时就是随机预测</li>
+<li>伪损失大于 0.5 时，应该将使用 $1-f$</li>
+</ul>
+</li>
+<li><p>适用场景</p>
+<ul>
+<li>多分类：<em>Adaboost.M2</em></li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T17:38:59.000Z" title="8/1/2019, 1:38:59 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-31T17:38:59.000Z" title="8/1/2019, 1:38:59 AM">2019-08-01</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3Ref/">Py3Ref</a></span><span class="level-item">22 minutes read (About 3283 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3Ref/lexical_analysis.html">Lexical Analysis</a></h1><div class="content"><ul>
+<li>python将读取的程序问题转换为Unicode码点<ul>
+<li>源文件的文本编码可由编码声明指定</li>
+<li>默认<em>UTF-8</em></li>
+</ul>
+</li>
+<li>词法分析器将文件拆分为token</li>
+<li>解释器以词法分析器生成的token流作为输入</li>
+</ul>
+<h2 id="行结构"><a href="#行结构" class="headerlink" title="行结构"></a>行结构</h2><h3 id="逻辑行"><a href="#逻辑行" class="headerlink" title="逻辑行"></a>逻辑行</h3><p>逻辑行：逻辑行的结束以<code>NEWLINE</code> token表示</p>
+<ul>
+<li>语句不能跨越逻辑行边集，除非其语法允许包含<code>NEWLINE</code>
+（如复合语句包含多个子语句）</li>
+<li>逻辑行可由一个、多个物理行按照明确、隐含行拼接规则
+构成</li>
+</ul>
+<blockquote>
+<p>python程序可以分为很多逻辑行</p>
+</blockquote>
+<h3 id="物理行"><a href="#物理行" class="headerlink" title="物理行"></a>物理行</h3><p>物理行：以行终止序列结束的字符序列</p>
+<ul>
+<li>源文件、字符串中可以使用任何标准平台上行终止序列<ul>
+<li>Unix：<code>\n</code>换行符<code>LF</code></li>
+<li>Win：<code>\r\n</code>回车加换行<code>CR LF</code></li>
+<li>Macintosh：<code>\r</code>回车<code>CR</code></li>
+</ul>
+</li>
+<li>输入结束会被作为最后物理行的隐含终止标志</li>
+</ul>
+<blockquote>
+<ul>
+<li>嵌入Python源码字符串应使用标准C传统换行符<code>\n</code></li>
+</ul>
+</blockquote>
+<h4 id="显式行拼接"><a href="#显式行拼接" class="headerlink" title="显式行拼接"></a>显式行拼接</h4><p>显式行拼接：两个、多个物理行使用<code>\</code>拼接为一个逻辑行</p>
+<ul>
+<li>物理行以<strong>不在字符串、注释内</strong>的反斜杠结尾时，将与下行
+拼接构成一个单独逻辑行<ul>
+<li>反斜杠、其后换行符将被删除</li>
+</ul>
+</li>
+<li>以反斜杠结束的行不能带有注释</li>
+<li>反斜杠不能用于<ul>
+<li>拼接注释</li>
+<li>拼接字符串外token</li>
+</ul>
+</li>
+<li>不允许原文字符串以外反斜杠存在于物理行其他位置</li>
+</ul>
+<h4 id="隐式行拼接"><a href="#隐式行拼接" class="headerlink" title="隐式行拼接"></a>隐式行拼接</h4><p>隐式行拼接</p>
+<ul>
+<li><p>圆括号、方括号、花括号内表达式允许被分为多个物理行，无需
+使用反斜杠</p>
+<ul>
+<li>拼接行可以带有注释</li>
+<li>后续行缩进不影响程序结构、允许为空白行</li>
+<li>拼接行之间不会有<code>NEWLINE</code> token</li>
+</ul>
+</li>
+<li><p>三引号<code>&quot;&quot;&quot;</code>/<code>&#39;&#39;&#39;</code>字符串允许被分为多个物理行</p>
+<ul>
+<li>拼接行中不允许带有注释</li>
+</ul>
+</li>
+</ul>
+<h4 id="空白行"><a href="#空白行" class="headerlink" title="空白行"></a>空白行</h4><p>空白行：只包含空格符、制表符、进纸符、注释的逻辑行会被忽略，
+不生成<code>NEWLINE</code> token</p>
+<ul>
+<li><p>交互式输入语句时，对空白行处理可能因为读取-求值-打印循环
+的<strong>具体实现</strong>而存在差异</p>
+<ul>
+<li>标准交互模式解释器中：完全空白逻辑行将会结束一条多行
+复合语句</li>
+</ul>
+</li>
+</ul>
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>注释：一不包含在字符串内的<code>#</code>开头，在物理行末尾结束</p>
+<ul>
+<li>注释标志逻辑行的结束，除非存在隐含行拼接规则</li>
+<li>注释在语法分析中被忽略，不属于token</li>
+</ul>
+<h3 id="编码声明"><a href="#编码声明" class="headerlink" title="编码声明"></a>编码声明</h3><p>编码声明：位于python脚本第一、第二行，匹配正则表达式
+<code>coding[=:]\s*([-\w.]+)</code>的注释将被作为编码声明处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: &lt;encoding-name&gt; -*-</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>表达式第一组指定了源码文件编码<ul>
+<li>编码声明指定编码名称必须是python所认可的编码</li>
+<li>词法分析将使用此编码：语义字符串、注释、标识符</li>
+</ul>
+</li>
+<li>编码声明须独占一行，若在第二行，则第一行也必须为注释</li>
+<li>没有编码声明，默认编码为<em>UTF-8</em><ul>
+<li>若文件首字节为<em>UTF-8</em>字节顺序标志<code>b\xef\xbb\xbf</code>，
+文件编码也声明为<em>UTF-8</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h3><p>缩进：<strong>逻辑行开头</strong>的空白（空格符、制表符）被用于计算该行
+的缩进等级，决定语句段落组织结构</p>
+<ul>
+<li>首个非空白字符之前的空格总数确定该行的缩进层次<ul>
+<li>缩进不能使用反斜杠进行拼接，首个反斜杠之前空格将确定
+缩进层次</li>
+</ul>
+</li>
+<li>制表符被替换为1-8个空白，使得缩进的空格总数为8倍数<ul>
+<li>源文件若混合使用制表符、空格符缩进，并使得确定缩进
+层次需要依赖于制表符对应空格数量设置，将引发
+<code>TabError</code></li>
+<li>由于非Unix平台上文本编辑器本身特性，源文件中混合使用
+制表符、空格符是不明智的</li>
+</ul>
+</li>
+<li>进纸符<ul>
+<li>在行首时：在缩进层级计算中被忽略</li>
+<li>行首空格内其他位置：效果未定义，可能导致空格计数重置
+为0</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>不同平台可能会显式限制最大缩进层级</li>
+</ul>
+</blockquote>
+<h4 id="INDENT-DEDENT-token"><a href="#INDENT-DEDENT-token" class="headerlink" title="INDENT/DEDENT token"></a><code>INDENT</code>/<code>DEDENT</code> token</h4><ul>
+<li>读取文件第一行前，向堆栈中压入零值，不再弹出</li>
+<li>被压入栈的层级数值从底至顶持续增加</li>
+<li>每个逻辑行开头的行缩进层级将和栈顶进行比较<ul>
+<li>相同：不做处理</li>
+<li>新行层级较高：压入栈中，生成<code>INDENT</code> token</li>
+<li>新行层级较低：应为栈中层级数值之一<ul>
+<li>栈中高于该层级所有数值被弹出</li>
+<li>每弹出一级数值生成一个<code>DEDENT</code> token</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>文件末尾，栈中剩余每个大于0数值生成一个<code>DEDENT</code> token</li>
+</ul>
+<h2 id="Tokens"><a href="#Tokens" class="headerlink" title="Tokens"></a>Tokens</h2><p>型符</p>
+<ul>
+<li>空白字符不属于token<ul>
+<li>除逻辑行开头、字符串内，空格符、制表符、进纸符等
+空白符均可分隔token</li>
+<li>否则彼此相连的token会被解析为一个不同的token</li>
+</ul>
+</li>
+<li>若存在二义性，将从左至右尽可能长读取合法字符串组成token</li>
+</ul>
+<h3 id="Indentifiers"><a href="#Indentifiers" class="headerlink" title="Indentifiers"></a>Indentifiers</h3><p>标识符/名称：python标识符语法基于Unicode标准附件UAX-31，有
+修改</p>
+<ul>
+<li><p>ASCII字符集内可用于标识符与py2一致</p>
+<ul>
+<li>大、小写字母</li>
+<li>下划线<code>_</code></li>
+<li>数字<code>0-9</code></li>
+</ul>
+</li>
+<li><p>py3中引入ASCII字符集以外的额外字符</p>
+<ul>
+<li>其分类使用包含于<code>unicodedata</code>模块中Unicode字符数据库
+版本</li>
+</ul>
+</li>
+<li><p>标识符没有长度限制、大小写敏感</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">identifier   ::=  xid_start xid_continue*</span><br><span class="line">id_start     ::=  &lt;all characters in general categories Lu, Ll, Lt, Lm, Lo, Nl, the underscore, and characters with the Other_ID_Start property&gt;</span><br><span class="line">id_continue  ::=  &lt;all characters in id_start, plus characters in the categories Mn, Mc, Nd, Pc and others with the Other_ID_Continue property&gt;</span><br><span class="line">xid_start    ::=  &lt;all characters in id_start whose NFKC normalization is in &quot;id_start xid_continue*&quot;&gt;</span><br><span class="line">xid_continue ::=  &lt;all characters in id_continue whose NFKC normalization is in &quot;id_continue*&quot;&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>Lu</code>：大写字母</li>
+<li><code>Ll</code>：小写字母</li>
+<li><code>Lt</code>：词首大写字母</li>
+<li><code>Lm</code>：修饰字母</li>
+<li><code>Lo</code>：其他字母</li>
+<li><code>Nl</code>：字母数字</li>
+<li><code>Mn</code>：非空白标识</li>
+<li><code>Mc</code>：含空白标识</li>
+<li><code>Nd</code>：十进制数字</li>
+<li><code>Pc</code>：连接标点</li>
+<li><code>Other_ID_Start</code>：由<code>PropList.txt</code>定义的显式字符列表，
+  用来支持向后兼容</li>
+<li><code>Other_ID_Continue</code>：同上</li>
+</ul>
+</blockquote>
+<h4 id="Keywords"><a href="#Keywords" class="headerlink" title="Keywords"></a>Keywords</h4><p>关键字：以下标识符作为语言的保留字、关键字，不能用作普通
+标识符</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">False      await      else       import     pass</span><br><span class="line">None       break      except     in         raise</span><br><span class="line">True       class      finally    is         return</span><br><span class="line">and        continue   for        lambda     try</span><br><span class="line">as         def        from       nonlocal   while</span><br><span class="line">assert     del        global     not        with</span><br><span class="line">async      elif       if         or         yield</span><br></pre></td></tr></table></figure>
+<h4 id="保留标识符类"><a href="#保留标识符类" class="headerlink" title="保留标识符类"></a>保留标识符类</h4><p>以下划线字符开头、结尾的标识符类：具有特殊函数</p>
+<ul>
+<li><p><code>_*</code>：不会被<code>from module import *</code>导入</p>
+<ul>
+<li>特殊标识符<code>_</code>：交互式解释器中用于存放最近一次求值
+结果，不处于交互模式时无特殊含义、无预定义</li>
+</ul>
+</li>
+<li><p><code>__*__</code>：系统定义名称</p>
+<ul>
+<li>由解释器极其实现（包括标准库）定义</li>
+<li>任何不遵循文档指定方式使用<code>__*__</code>行为可能导致无警告
+出错</li>
+</ul>
+</li>
+<li><p><code>__*</code>：类私有名称</p>
+<ul>
+<li>在类定义中使用</li>
+<li>会以<strong>混合形式</strong>重写避免基类、派生类私有属性之间出现
+名称冲突</li>
+</ul>
+</li>
+</ul>
+<h3 id="字面值"><a href="#字面值" class="headerlink" title="字面值"></a>字面值</h3><p>字面值：表示一些内置类型常量</p>
+<h4 id="字符串、字节串字面值"><a href="#字符串、字节串字面值" class="headerlink" title="字符串、字节串字面值"></a>字符串、字节串字面值</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">stringliteral   ::=  [stringprefix](shortstring | longstring)</span><br><span class="line">stringprefix    ::=  &quot;r&quot; | &quot;u&quot; | &quot;R&quot; | &quot;U&quot; | &quot;f&quot; | &quot;F&quot;</span><br><span class="line">                     | &quot;fr&quot; | &quot;Fr&quot; | &quot;fR&quot; | &quot;FR&quot; | &quot;rf&quot; | &quot;rF&quot; | &quot;Rf&quot; | &quot;RF&quot;</span><br><span class="line">shortstring     ::=  &quot;&#x27;&quot; shortstringitem* &quot;&#x27;&quot; | &#x27;&quot;&#x27; shortstringitem* &#x27;&quot;&#x27;</span><br><span class="line">longstring      ::=  &quot;&#x27;&#x27;&#x27;&quot; longstringitem* &quot;&#x27;&#x27;&#x27;&quot; | &#x27;&quot;&quot;&quot;&#x27; longstringitem* &#x27;&quot;&quot;&quot;&#x27;</span><br><span class="line">shortstringitem ::=  shortstringchar | stringescapeseq</span><br><span class="line">longstringitem  ::=  longstringchar | stringescapeseq</span><br><span class="line">shortstringchar ::=  &lt;any source character except &quot;\&quot; or newline or the quote&gt;</span><br><span class="line">longstringchar  ::=  &lt;any source character except &quot;\&quot;&gt;</span><br><span class="line">stringescapeseq ::=  &quot;\&quot; &lt;any source character&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bytesliteral   ::=  bytesprefix(shortbytes | longbytes)</span><br><span class="line">bytesprefix    ::=  &quot;b&quot; | &quot;B&quot; | &quot;br&quot; | &quot;Br&quot; | &quot;bR&quot; | &quot;BR&quot; | &quot;rb&quot; | &quot;rB&quot; | &quot;Rb&quot; | &quot;RB&quot;</span><br><span class="line">shortbytes     ::=  &quot;&#x27;&quot; shortbytesitem* &quot;&#x27;&quot; | &#x27;&quot;&#x27; shortbytesitem* &#x27;&quot;&#x27;</span><br><span class="line">longbytes      ::=  &quot;&#x27;&#x27;&#x27;&quot; longbytesitem* &quot;&#x27;&#x27;&#x27;&quot; | &#x27;&quot;&quot;&quot;&#x27; longbytesitem* &#x27;&quot;&quot;&quot;&#x27;</span><br><span class="line">shortbytesitem ::=  shortbyteschar | bytesescapeseq</span><br><span class="line">longbytesitem  ::=  longbyteschar | bytesescapeseq</span><br><span class="line">shortbyteschar ::=  &lt;any ASCII character except &quot;\&quot; or newline or the quote&gt;</span><br><span class="line">longbyteschar  ::=  &lt;any ASCII character except &quot;\&quot;&gt;</span><br><span class="line">bytesescapeseq ::=  &quot;\&quot; &lt;any ASCII character&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>stringprefix</code>、<code>bytesprefix</code>与字面值剩余部分之间不允许
+  由空白符</li>
+<li>源字符集由编码声明定义</li>
+<li>字节串字面值只允许ASCII字符（但允许存储不大于256）</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>两种字面值都可以使用成对（连续三个）单引号、双引号标示
+首尾</p>
+<ul>
+<li>单引号<code>&#39;&#39;</code>：允许包含双引号<code>&quot;&quot;</code></li>
+<li>双引号<code>&quot;&quot;</code>：允许包含单引号<code>&#39;&#39;</code></li>
+<li>三重引号<code>&#39;&#39;&#39;</code>、<code>&quot;&quot;&quot;</code><ul>
+<li>原样保留：未经转义的换行、（非三联）引号、空白符</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>反斜杠<code>\</code>用于对特殊含义字符进行转义</p>
+</li>
+</ul>
+<h5 id="字符串前缀"><a href="#字符串前缀" class="headerlink" title="字符串前缀"></a>字符串前缀</h5><ul>
+<li><p><code>b</code>/<code>B</code>前缀：字节串字面值</p>
+<ul>
+<li>创建<code>bytes</code>类型而非<code>str</code>类型实例</li>
+<li>只能包含ASCII字符</li>
+<li>字节对应数值大于128必须以转义形式表示</li>
+</ul>
+</li>
+<li><p><code>r</code>/<code>R</code>：原始字符串/字节串</p>
+<ul>
+<li>其中反斜杠<code>\</code>被当作其本身字面字符处理</li>
+<li>转换序列不在有效</li>
+<li>原始字面值不能以单个<code>\</code>结束，会转义之后引号字符</li>
+</ul>
+</li>
+<li><p><code>f</code>/<code>F</code>：格式化字符串字面值</p>
+</li>
+</ul>
+<h5 id="转义规则"><a href="#转义规则" class="headerlink" title="转义规则"></a>转义规则</h5><ul>
+<li><p>字符串、字节串字面值中转义序列基本类似标准C转义规则</p>
+<ul>
+<li><code>\xhh</code>：必须接受2个16进制数码</li>
+</ul>
+</li>
+<li><p>以下转义序列仅在字符串字面值中可用</p>
+<ul>
+<li><code>\N&#123;name&#125;</code>：Unicode数据库中名称为name的字符</li>
+<li><code>\uxxxx</code>：必须接受4个16进制数码</li>
+<li><code>\Uxxxxxxxx</code>：必须接受8个16进制数码</li>
+</ul>
+</li>
+<li><p>无法识别的转义序列</p>
+<ul>
+<li>py3.6之前将原样保留在字符串中</li>
+<li>py3.6开始，将引发<code>DeprecationWarning</code>，未来可能会
+引发<code>SyntaxError</code></li>
+</ul>
+</li>
+</ul>
+<h5 id="字符串字面值拼接"><a href="#字符串字面值拼接" class="headerlink" title="字符串字面值拼接"></a>字符串字面值拼接</h5><ul>
+<li><p>多个相邻字符串、字符串字面值（空白符分隔），含义等同于
+全部拼接为一体</p>
+<ul>
+<li>所用引号可以彼此不同（三引号风格也可用）</li>
+<li>每部分字符串可以分别加注释</li>
+<li>可以包括格式化字符串字面值</li>
+</ul>
+</li>
+<li><p>此特性是在<strong>句法层面定义</strong>，在编译时实现</p>
+<ul>
+<li>在运行时拼接字符串表达式必须使用<code>+</code>运算符</li>
+</ul>
+</li>
+</ul>
+<h5 id="格式化字符串字面值"><a href="#格式化字符串字面值" class="headerlink" title="格式化字符串字面值"></a>格式化字符串字面值</h5><p>格式化字符串字面值：带有<code>f/F</code>前缀的字符串字面值</p>
+<ul>
+<li><p>包含可替换字段，即以<code>&#123;&#125;</code>标示的格式表达式</p>
+<ul>
+<li>字符串<code>&#123;&#125;</code>以外部分按字面值处理</li>
+<li>双重花括号<code>&#123; &#123; &#125; &#125;</code>被替换为相应单个花括号</li>
+</ul>
+</li>
+<li><p>格式表达式<strong>被当作正常的包含在圆括号中python表达式</strong>处理
+，在运行时从左至右被求值</p>
+<ul>
+<li>不允许空表达式</li>
+<li><code>lambda</code>空表达式必须显式加上圆括号</li>
+<li>可以包含换行：如三引号字符串</li>
+<li>不能包含注释</li>
+<li>不能<code>\</code>反斜杠，考虑创建临时变量</li>
+</ul>
+</li>
+<li><p>格式化字符串字面值可以拼接，但是一个替换字段不能拆分到
+多个字面值中</p>
+</li>
+<li><p>格式化字符串不能用作文档字符串，即使其中没有包含表达式</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">f_string          ::=  (literal_char | &quot;&#123;&#123;&quot; | &quot;&#125;&#125;&quot; | replacement_field)*</span><br><span class="line">replacement_field ::=  &quot;&#123;&quot; f_expression [&quot;!&quot; conversion] [&quot;:&quot; format_spec] &quot;&#125;&quot;</span><br><span class="line">f_expression      ::=  (conditional_expression | &quot;*&quot; or_expr)</span><br><span class="line">                         (&quot;,&quot; conditional_expression | &quot;,&quot; &quot;*&quot; or_expr)* [&quot;,&quot;]</span><br><span class="line">                       | yield_expression</span><br><span class="line">conversion        ::=  &quot;s&quot; | &quot;r&quot; | &quot;a&quot;</span><br><span class="line">format_spec       ::=  (literal_char | NULL | replacement_field)*</span><br><span class="line">literal_char      ::=  &lt;any code point except &quot;&#123;&quot;, &quot;&#125;&quot; or NULL&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>!</code>：标识转换字段</p>
+<ul>
+<li><code>!s</code>：对结果调用<code>str()</code></li>
+<li><code>!r</code>：调用<code>repr()</code></li>
+<li><code>!a</code>：调用<code>ascii()</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name = <span class="string">&quot;Fred&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;he said his name is <span class="subst">&#123;name!r&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;he said his name is &#123;repr(name)&#125;&quot;</span>)</span><br><span class="line">	<span class="comment"># 二者等价</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>:</code>：标识格式说明符，结果使用<code>format()</code>协议格式化</p>
+<ul>
+<li>格式说明符被传入表达式或转换结果的<code>.__format__()</code>
+方法</li>
+<li>省略格式说明符则传入空字符串</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">width, precision = <span class="number">4</span>, <span class="number">10</span></span><br><span class="line">value = decimal.Deciaml(<span class="string">&quot;12.345&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;result: <span class="subst">&#123;value: &#123;width&#125;</span>.<span class="subst">&#123;precision&#125;</span>&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line">today = datetime(yeat=<span class="number">2017</span>, month=<span class="number">1</span>, day=<span class="number">27</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;today: %B %d, %Y&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">number = <span class="number">1024</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;number: #0x&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>顶层格式说明符可以包含嵌套替换字段</p>
+<ul>
+<li>嵌套字段可以包含有自身的转换字段、格式说明符，但不能
+包含更深层嵌套替换字段</li>
+</ul>
+</li>
+</ul>
+<h4 id="数字字面值"><a href="#数字字面值" class="headerlink" title="数字字面值"></a>数字字面值</h4><ul>
+<li>数字字面值不包括正负号<ul>
+<li>负数实际上是由单目运算符<code>-</code>和字面值组合而成</li>
+</ul>
+</li>
+<li>没有专门复数字面值<ul>
+<li>复数以一对浮点数表示</li>
+<li>取值范围同浮点数</li>
+</ul>
+</li>
+<li>数字字面值可以使用下划线<code>_</code>将数码分组提高可读性<ul>
+<li>确定数字大小时，字面值之间的下滑线被忽略</li>
+<li>下划线可以放在数码之间、基数说明符<code>0x</code>等之后</li>
+<li>浮点数中不能直接放在<code>.</code>后</li>
+</ul>
+</li>
+</ul>
+<h5 id="整形数字字面值"><a href="#整形数字字面值" class="headerlink" title="整形数字字面值"></a>整形数字字面值</h5><ul>
+<li>整形数字字面值没有长度限制，只受限于内存</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">integer      ::=  decinteger | bininteger | octinteger | hexinteger</span><br><span class="line">decinteger   ::=  nonzerodigit ([&quot;_&quot;] digit)* | &quot;0&quot;+ ([&quot;_&quot;] &quot;0&quot;)*</span><br><span class="line">bininteger   ::=  &quot;0&quot; (&quot;b&quot; | &quot;B&quot;) ([&quot;_&quot;] bindigit)+</span><br><span class="line">octinteger   ::=  &quot;0&quot; (&quot;o&quot; | &quot;O&quot;) ([&quot;_&quot;] octdigit)+</span><br><span class="line">hexinteger   ::=  &quot;0&quot; (&quot;x&quot; | &quot;X&quot;) ([&quot;_&quot;] hexdigit)+</span><br><span class="line">nonzerodigit ::=  &quot;1&quot;...&quot;9&quot;</span><br><span class="line">digit        ::=  &quot;0&quot;...&quot;9&quot;</span><br><span class="line">bindigit     ::=  &quot;0&quot; | &quot;1&quot;</span><br><span class="line">octdigit     ::=  &quot;0&quot;...&quot;7&quot;</span><br><span class="line">hexdigit     ::=  digit | &quot;a&quot;...&quot;f&quot; | &quot;A&quot;...&quot;F&quot;</span><br></pre></td></tr></table></figure>
+<h5 id="浮点数字字面值"><a href="#浮点数字字面值" class="headerlink" title="浮点数字字面值"></a>浮点数字字面值</h5><ul>
+<li>整形数部分、指数部分解析时总以10为计数</li>
+<li>浮点数字面值允许范围依赖于具体实现</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">floatnumber   ::=  pointfloat | exponentfloat</span><br><span class="line">pointfloat    ::=  [digitpart] fraction | digitpart &quot;.&quot;</span><br><span class="line">exponentfloat ::=  (digitpart | pointfloat) exponent</span><br><span class="line">digitpart     ::=  digit ([&quot;_&quot;] digit)*</span><br><span class="line">fraction      ::=  &quot;.&quot; digitpart</span><br><span class="line">exponent      ::=  (&quot;e&quot; | &quot;E&quot;) [&quot;+&quot; | &quot;-&quot;] digitpart</span><br></pre></td></tr></table></figure>
+<h5 id="虚数字面值"><a href="#虚数字面值" class="headerlink" title="虚数字面值"></a>虚数字面值</h5><ul>
+<li>序数字面值将生成实部为<code>0.0</code>的复数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">imagnumber ::=  (floatnumber | digitpart) (&quot;j&quot; | &quot;J&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+       -       *       **      /       //      %      @</span><br><span class="line">&lt;&lt;      &gt;&gt;      &amp;       |       ^       ~</span><br><span class="line">&lt;       &gt;       &lt;=      &gt;=      ==      !=</span><br></pre></td></tr></table></figure>
+<h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(       )       [       ]       &#123;       &#125;</span><br><span class="line">,       :       .       ;       @       =       -&gt;</span><br><span class="line">+=      -=      *=      /=      //=     %=      @=</span><br><span class="line">&amp;=      |=      ^=      &gt;&gt;=     &lt;&lt;=     **=</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以上列表中后半部分为<strong>增强赋值操作符</strong><ul>
+<li>在词法中作为分隔符，同时起运算作用</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;       &quot;       #       \</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以上可打印ASCII字符<ul>
+<li>作为其他token组成部分时有特殊意义</li>
+<li>或对词法分析器有特殊意义</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$       ?</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以上可打印ASCII字符不再Python词法中使用<ul>
+<li>出现在字符串字面值、注释之外将<strong>无条件引发错误</strong></li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T17:37:27.000Z" title="8/1/2019, 1:37:27 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-31T17:37:27.000Z" title="8/1/2019, 1:37:27 AM">2019-08-01</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/Bash-Programming/">Bash Programming</a></span><span class="level-item">12 minutes read (About 1755 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/Bash-Programming/flow_control.html">Shell执行控制</a></h1><div class="content"><h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><h3 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h3><ul>
+<li><p><code>;</code>：连续执行指令，分割多条命令</p>
+<ul>
+<li>所以如果不是在一行内执行，<code>;</code>是可以有任意多个</li>
+</ul>
+</li>
+<li><p><code>:</code>：内建空指令，返回值为0</p>
+</li>
+<li><p><code>&amp;&amp;, ||</code>：逻辑与、或，全部（任意）之前的命令执行成功才会
+执行下连接中的命令</p>
+</li>
+</ul>
+<h3 id="“转义”"><a href="#“转义”" class="headerlink" title="“转义”"></a>“转义”</h3><ul>
+<li><p><code>\\</code>：转义字符</p>
+<ul>
+<li>放在指令前，取消<code>alias</code></li>
+<li>特殊符号前转义，Shell将不对其后字符作特殊处理，当作
+普通字符（即<code>$, \&#39;, \&quot;</code>）</li>
+<li>行尾表示连接下一行，回车符只起换行作用，视为空格</li>
+</ul>
+</li>
+<li><p><code>$</code>：变量符号，表示其后字符串为一个变量</p>
+</li>
+<li><p><code>\&#39;, \&quot;</code>：内部视为字符串</p>
+</li>
+<li><p><code>--</code>：命令行中转义<code>-</code>，否则shell认为<code>-</code>是参数选项</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rm -- -file</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 删除文件`-file`</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>还可以在之前加上路径避免<code>-</code>被解释为参数选项</li>
+<li><code>\</code>、<code>&#39;&#39;</code>等均无效</li>
+</ul>
+</li>
+</ul>
+<h3 id="引号"><a href="#引号" class="headerlink" title="引号"></a>引号</h3><h4 id="单引号-39-39"><a href="#单引号-39-39" class="headerlink" title="单引号&#39;&#39;"></a>单引号<code>&#39;&#39;</code></h4><ul>
+<li><p>单引号括起字符都作为普通字符，变量无效</p>
+</li>
+<li><p>单引号字串中不能出现单独的单引号，使用转义符也不行，但是
+可以成对出现，作为字符串拼接使用</p>
+</li>
+</ul>
+<h4 id="双引号-quot-quot"><a href="#双引号-quot-quot" class="headerlink" title="双引号&quot;&quot;"></a>双引号<code>&quot;&quot;</code></h4><ul>
+<li>双引号字串中可以有变量、转义字符</li>
+</ul>
+<h4 id="反引号"><a href="#反引号" class="headerlink" title="反引号``"></a>反引号<code>``</code></h4><p>反引号扩起字符串表示<em>Shell解释命令</em>，执行时shell首先解释其，
+以标准输出替代整个反引号</p>
+<ul>
+<li><p>括号中语句为命令，分号连接</p>
+<ul>
+<li><code>``</code>中的表达式只需要符合C语言的运算规则
+即可，甚至可以使用三目预算符、逻辑表达式</li>
+</ul>
+</li>
+<li><p>命令和括号之间无空格</p>
+</li>
+<li><p><code>$``</code>可以将命令输出作为变量返回值，同<code>$()</code></p>
+</li>
+</ul>
+<h3 id="括号"><a href="#括号" class="headerlink" title="括号"></a>括号</h3><h4 id=""><a href="#" class="headerlink" title="()"></a><code>()</code></h4><ul>
+<li><p>命令组/运算表达式：其中的命令列表将在<strong>新子shell运行</strong></p>
+<ul>
+<li>其中变量之后不能使用，不影响当前shell环境</li>
+<li>多个命令之间分号分隔，最后命令可以省略</li>
+<li>命令和括号之间可以无空格</li>
+</ul>
+</li>
+<li><p>命令替换：等同于引号<code>``</code></p>
+<ul>
+<li>bash扫描命令行，执行<code>$()</code>结构中命令，将标准输出作为
+匿名变量值</li>
+<li><code>()</code>中出现<code>()</code>不需要转义，<code>``</code>需要转义</li>
+<li><code>()</code>中不能使用C风格的运算表达式</li>
+</ul>
+<blockquote>
+<ul>
+<li>部分shell可能不支持<code>()</code>，如：tcsh</li>
+</ul>
+</blockquote>
+</li>
+<li><p>初始化数组：参见<em>数组</em></p>
+</li>
+</ul>
+<h4 id="-1"><a href="#-1" class="headerlink" title="(())"></a><code>(())</code></h4><ul>
+<li><p>整数扩展：计算、扩展算数表达式结果</p>
+<ul>
+<li>表达式结果为0则退出状态为1、false</li>
+<li>表达式结果为1则退出状态为0、true</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a=5;((a++))			# 自增运算符</span><br><span class="line">b=$((16#5f))		# 进制转换</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>退出状态和<code>[]</code>完全相反</li>
+<li>其中可使用任何符合C语言的运算，包括三目运算符</li>
+</ul>
+</blockquote>
+</li>
+<li><p>算术比较：</p>
+<ul>
+<li>其中变量可以不使用<code>$</code>前缀、支持多个表达式逗号分隔</li>
+<li>可直接使用C风格表达式，如：<code>for</code>、<code>while</code>循环语句中</li>
+</ul>
+</li>
+</ul>
+<pre><code><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">for((i=0;i&lt;5;i++))</span><br><span class="line">for i in `seq 0 4`</span><br><span class="line">for i iin &#123;0..4&#125;</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 三者等价</span></span><br><span class="line">if ((i&lt;5))</span><br><span class="line">if [ $i -lt 5 ]</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 二者等价</span></span><br></pre></td></tr></table></figure>
+</code></pre><h4 id="、"><a href="#、" class="headerlink" title="[]、[[]]"></a><code>[]</code>、<code>[[]]</code></h4><ul>
+<li><p><code>[]</code></p>
+<ul>
+<li>条件测试表达式：参见<code>if</code></li>
+<li>数组索引</li>
+<li>正则表达式范围</li>
+</ul>
+</li>
+<li><p><code>[[]]</code></p>
+<ul>
+<li>条件测试表达式：参见<em><code>if</code></em></li>
+</ul>
+</li>
+</ul>
+<h4 id="-2"><a href="#-2" class="headerlink" title="{}"></a><code>&#123;&#125;</code></h4><ul>
+<li><p>创建匿名函数</p>
+<ul>
+<li>不开启新进程</li>
+<li>括号内变量之后可继续使用</li>
+<li>括号内命令分号分隔，最后一个语句也要有分号</li>
+<li><code>&#123;</code>和第一个语句之间要有空格</li>
+</ul>
+</li>
+<li><p>字符串</p>
+<ul>
+<li>默认值替换：参见<em>字符串默认值替换</em></li>
+<li>获取子串：参见<em>字符串子串</em></li>
+<li>获取切片：参见<em>字符串子串</em></li>
+<li>字符串替换：参见<em>字符串子串</em></li>
+</ul>
+</li>
+<li><p><code>$</code>后包括变量名精确分隔变量名，参见<em>变量使用</em></p>
+</li>
+</ul>
+<h3 id="其他符号"><a href="#其他符号" class="headerlink" title="其他符号"></a>其他符号</h3><h4 id="-3"><a href="#-3" class="headerlink" title="!"></a><code>!</code></h4><p>Shell中<code>!</code>称为事件提示符，可以方便的<strong>引用历史命令</strong>：当<code>!</code>
+后跟随字母不是空格、换行、回车、<code>=</code>、<code>(</code>时，做命令替换</p>
+<ul>
+<li><p><code>![-]n</code>：引用history中的正数/倒数第n个命令</p>
+<ul>
+<li><code>!!</code>：等同<code>!-1</code>，执行上条命令</li>
+</ul>
+</li>
+<li><p><code>!cmd</code>：引用最近以<code>cmd</code><strong>开头</strong>的命令，包括参数</p>
+<ul>
+<li><code>!cmd:gs/pattern/replace</code>：将上条<code>cmd</code>开头命令中
+<code>pattern</code>替换为<code>replace</code></li>
+</ul>
+</li>
+<li><p><code>!?str[?]</code>：引用最近<strong>包含</strong><code>str</code>的命令，<code>str</code>可以是参数</p>
+</li>
+<li><p>参数引用</p>
+<ul>
+<li><code>!$</code>：最后一个参数</li>
+<li><code>!:-</code>：除最后一个参数</li>
+<li><code>!*</code>：所有参数</li>
+</ul>
+</li>
+</ul>
+<h2 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h2><h3 id="if、"><a href="#if、" class="headerlink" title="if、[]"></a><code>if</code>、<code>[]</code></h3><p>用于条件控制结构，结构如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if test_expression; then</span><br><span class="line">	then command_1</span><br><span class="line">	else command_2</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>test &lt;expr&gt;</code>：bash内部命令，判断表达式是否为真</p>
+<ul>
+<li>其后只能有一个表达式判断，无法使用逻辑与、或连接</li>
+</ul>
+</li>
+<li><p><code>[ &lt;expr&gt; ]</code>：基本等同于<code>test</code></p>
+<ul>
+<li>整数比较：<code>-ne</code>、<code>-eq</code>、<code>-gt</code>、<code>-lt</code></li>
+<li>字符串比较：转义形式大、小号<code>\&lt;</code>、<code>/&gt;</code></li>
+<li>逻辑表达式连接：<code>-o</code>（或）、<code>-a</code>（与）、<code>!</code>（非）
+（不能使用<code>||</code>（或）、<code>&amp;&amp;</code>（与））</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if [ $? == 0 ]</span><br><span class="line">if test $? == 0</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 二者等价</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>注意内部<strong>两边要有空格</strong></li>
+<li>事实上是<code>[</code>等同于<code>test</code>，<code>]</code>表示关闭条件判断，新版
+ bash强制要求闭合</li>
+</ul>
+</blockquote>
+</li>
+<li><p><code>[[ &lt;expr&gt; ]]</code>条件测试</p>
+<ul>
+<li>整数比较：<code>!=</code>、<code>=</code>、<code>&lt;</code>、<code>&gt;</code></li>
+<li>字符串：支持模式匹配（此时右侧模式时不能加引号）</li>
+<li>逻辑表示式连接：<code>||</code>（或）、<code>&amp;&amp;</code>（与）、<code>!</code>（非）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if [[ $a != 0 &amp;&amp; $b == 1 ]]</span><br><span class="line">if [ $a -eq 0 ] &amp;&amp; [ $b -eq 1]</span><br><span class="line">if [ $a -eq 0 -a $b -eq 1]</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 三者等价</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>[[</code>：bash关键字，bash将其视为单独元素并返回退出
+ 状态码</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="case"><a href="#case" class="headerlink" title="case"></a><code>case</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">case chars in</span><br><span class="line">char_pattern_1)</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `)`是必要的</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 匹配即停止，不会下沉</span></span><br><span class="line">	command_1</span><br><span class="line">;;</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 每个模式字符串可以有多条命令，最后一条必须以`;;`结尾</span></span><br><span class="line">char_pattern_2 | char_pattern_3)</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `|`分隔，或，可以匹配其中一个模式即可</span></span><br><span class="line">	command_2</span><br><span class="line">;;</span><br><span class="line">*)</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 匹配所有字符串模式，捕获所有</span></span><br><span class="line">	command_3</span><br><span class="line">;;</span><br><span class="line">esac</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 返回值位最后执行命令的退出值，未执行命令则为0</span></span><br></pre></td></tr></table></figure>
+<h3 id="while"><a href="#while" class="headerlink" title="while"></a><code>while</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">while test_expression</span><br><span class="line"><span class="meta">	#</span><span class="bash"> test_expression是指`<span class="built_in">test</span>`、`[]`语句</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 测试条件为真进入循环体</span></span><br><span class="line">do</span><br><span class="line">	command_1</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h3 id="until"><a href="#until" class="headerlink" title="until"></a><code>until</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">until test_exprssion</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 测试条件为假进入循环体</span></span><br><span class="line">do</span><br><span class="line">	command_1</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h3 id="for"><a href="#for" class="headerlink" title="for"></a><code>for</code></h3><h4 id="CStyle"><a href="#CStyle" class="headerlink" title="CStyle"></a>CStyle</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for ((i=0; i&lt;limit; i++))</span><br><span class="line"><span class="meta">	#</span><span class="bash"> C-style <span class="keyword">for</span></span></span><br><span class="line">do</span><br><span class="line">	command_1</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h4 id="ListStyle"><a href="#ListStyle" class="headerlink" title="ListStyle"></a>ListStyle</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for var in var_arr</span><br><span class="line"><span class="meta">	#</span><span class="bash"> list-style <span class="keyword">for</span></span></span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h5 id="FileIterator"><a href="#FileIterator" class="headerlink" title="FileIterator"></a>FileIterator</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for var in /path/to/file_regex</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `var`依次取（当前）目录下的与正则表达式匹配的文件名</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 执行循环体语句</span></span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>/path/to/file_regex</code>注意<ul>
+<li>路径不存在：<code>$var</code>为该字符串</li>
+<li>不能用<code>&quot;&quot;</code>括起，否则：<code>$var</code>只取路径下所有匹配合并
+，空格分隔</li>
+</ul>
+</li>
+</ul>
+<h5 id="ParamsIterator"><a href="#ParamsIterator" class="headerlink" title="ParamsIterator"></a>ParamsIterator</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for var[ in $*]</span><br><span class="line"><span class="meta">	#</span><span class="bash"> `var`依次取位置参数的值，执行循环体中命令</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> `[ <span class="keyword">in</span> $*]`可以省略</span></span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h5 id="RangeIterator"><a href="#RangeIterator" class="headerlink" title="RangeIterator"></a>RangeIterator</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">for i in $(seq start end)</span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">for i in &#123;start..end&#125;</span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h3 id="break-continue-exit"><a href="#break-continue-exit" class="headerlink" title="break, continue, exit"></a><code>break, continue, exit</code></h3><ul>
+<li><code>break[n]</code>：跳出n层循环体，默认跳出一层循环体</li>
+<li><code>continue[n]</code>：跳过n层循环体在其之后的语句，回到循环开头
+，默认跳过一次循环体</li>
+<li><code>exit</code>：退出程序，后跟返回值</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T16:18:17.000Z" title="8/1/2019, 12:18:17 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-21T06:43:27.000Z" title="7/21/2021, 2:43:27 PM">2021-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/Bash-Programming/">Bash Programming</a></span><span class="level-item">a minute read (About 169 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/Bash-Programming/twists.html">Bash 编程技巧</a></h1><div class="content"><h3 id="检查命令是否成功"><a href="#检查命令是否成功" class="headerlink" title="检查命令是否成功"></a>检查命令是否成功</h3><ul>
+<li><p>原版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo abcdee | grep -q abcd</span><br><span class="line"></span><br><span class="line">if [ $? -eq 0 ]; then</span><br><span class="line">	echo &quot;found</span><br><span class="line">else</span><br><span class="line">	echo &quot;not found&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>简洁版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if echo abcdee | grep -q abc; then</span><br><span class="line">	echo &quot;found&quot;</span><br><span class="line">else</span><br><span class="line">	echo &quot;not found&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>精简版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo abcdee | grep -q abc &amp;&amp; echo &quot;found&quot; || echo &quot;not found&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="标准输出、错误输出重定向到-dev-null"><a href="#标准输出、错误输出重定向到-dev-null" class="headerlink" title="标准输出、错误输出重定向到/dev/null"></a>标准输出、错误输出重定向到<code>/dev/null</code></h3><ul>
+<li><p>原版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> grep <span class="string">&quot;abc&quot;</span> text.txt 1&gt;/dev/null 2&gt;&amp;1</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>简洁版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> grep <span class="string">&quot;abc&quot;</span> text.txt &amp;&gt; /dev/null</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="awk使用"><a href="#awk使用" class="headerlink" title="awk使用"></a><code>awk</code>使用</h3><ul>
+<li>原版<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo xm li | grep vm_name | awk `&#123;<span class="built_in">print</span> <span class="variable">$2</span>&#125;`</span></span><br></pre></td></tr></table></figure></li>
+<li>简洁版<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo xm li | awk `/vm_name/&#123;<span class="built_in">print</span> <span class="variable">$2</span>&#125;`</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="逗号连接所有行"><a href="#逗号连接所有行" class="headerlink" title="逗号连接所有行"></a>逗号连接所有行</h3><ul>
+<li><p>原版：<code>sed</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sed <span class="string">&quot;:a;$!N;s/\n/,;ta&quot;</span> test.txt</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>简洁：<code>paste</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> paste -sd, /tmp/test.txt</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="过滤重复行"><a href="#过滤重复行" class="headerlink" title="过滤重复行"></a>过滤重复行</h3><ul>
+<li><p>原版：<code>sort</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort text.txt | unique</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>简洁版</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -u text.txt</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T15:59:23.000Z" title="7/31/2019, 11:59:23 PM">2019-07-31</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-31T15:59:23.000Z" title="7/31/2019, 11:59:23 PM">2019-07-31</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/Bash-Programming/">Bash Programming</a></span><span class="level-item">16 minutes read (About 2377 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/Bash-Programming/execution.html">Bash 脚本执行</a></h1><div class="content"><h2 id="脚本执行"><a href="#脚本执行" class="headerlink" title="脚本执行"></a>脚本执行</h2><h3 id=""><a href="#" class="headerlink" title="#!"></a><code>#!</code></h3><p>脚本首行注释</p>
+<ul>
+<li>文件执行时，shell会将文件内容发送至<code>#!</code>之后的解释器上</li>
+<li>不限于shell脚本，也适合其他类型的脚本语言<ul>
+<li>当然要求<code>#</code>为脚本语言支持的注释符</li>
+</ul>
+</li>
+<li>建议在首行使用<code>env</code>命令而不是硬编码解释器路径，这样可以
+减少对机器的依赖<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env python</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env shell</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="4种执行方式"><a href="#4种执行方式" class="headerlink" title="4种执行方式"></a>4种执行方式</h3><ul>
+<li><p><code>$ file_name</code>：表示在当前shell执行文件，需要有文件的执行
+权限</p>
+</li>
+<li><p><code>$ source/. file_name</code>：<code>source</code>和<code>.</code>意义一致，表示读取
+文件内容在shell中，然后在shell里执行文件内容，需要读权限</p>
+</li>
+<li><p><code>$ sh file_name</code>：表示开启一个新的shell进程，并读取文件
+内容在新的shell中然后执行，同样的需读权限</p>
+</li>
+</ul>
+<h4 id="例"><a href="#例" class="headerlink" title="例"></a>例</h4><p>以下面的文件<code>test.sh</code>为例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;fisrt&quot;</span><br><span class="line">sleep 1000</span><br><span class="line">echo &quot;second&quot;</span><br><span class="line">slepp 1000</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>$ test.sh</code>：产生两个新进程test.sh和sleep，在second输出
+之前<code>&lt;ctrl-c&gt;</code>，会同时终止两个进程，不会继续输出second</p>
+</li>
+<li><p><code>$ sh test.sh</code>：产生两个新进程，shell和sleep，在second
+输出之前<code>&lt;ctrl-c&gt;</code>，同样的会同时终止两个进程，不会继续
+输出second（实际上first是在新的shell里输出的）</p>
+</li>
+<li><p><code>source/. test.sh</code>：产生一个新进程sleep，在second输出之前
+<code>&lt;ctrl-c&gt;</code>，只有sleep进程被终止，而test.sh的内容在当前
+shell里直接执行，当前shell没有被终止，second会继续输出</p>
+</li>
+</ul>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><ul>
+<li><p>如果需要对当前shell进行设置，应该使用source/.</p>
+</li>
+<li><p>否则这三种执行方式除了进程产生、权限要求应该没有差别</p>
+</li>
+</ul>
+<h2 id="Shell环境"><a href="#Shell环境" class="headerlink" title="Shell环境"></a>Shell环境</h2><h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><ul>
+<li><p>设置环境变量直接：<code>$ ENV_NAME=value</code>（<code>=</code>前后不能有空格）
+但是此时环境变量只能在当前shell中使用，需要<code>export</code>命令
+导出之后才可在子shell中使用</p>
+</li>
+<li><p>环境变量设置代理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export http_proxy=socks://ip</span><br><span class="line">export https_proxy=socks5://ip</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><ul>
+<li><code>0</code>：STDIN_FILENO，标准输入</li>
+<li><code>1</code>：STDOUT_FILENO，标准输出</li>
+<li><code>2</code>：STDERR_FILENO，标准错误</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li>标准输出和标准错误虽然都是在命令行上显示，但是两个是
+不同的流。输出重定向<code>&gt;</code>只能将标准输出重定向，不会将
+标准错误重定向，其仍然会在命令行显示</li>
+</ul>
+<h4 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h4><ul>
+<li><code>&lt;</code>：重定向标准输入</li>
+<li><code>&gt;</code>：标准输出write重定向</li>
+<li><code>&gt;&gt;</code>：标准输出add重定向</li>
+<li><code>2&gt;</code>：标准错误重定向</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li><p>输出重定向就是<code>1 &gt; output</code>，<code>command &gt; output</code>只是省略
+<code>1</code>的简写</p>
+<ul>
+<li>命名自己不是输出，不能重定向</li>
+<li>是命令产生的标准输出重定向</li>
+</ul>
+</li>
+<li><p>可以通过<code>2&gt;&amp;1</code>将标准错误重定向到标准输出，从而将命令的
+标准输出、错误输出同时输出</p>
+<ul>
+<li><code>&amp;</code>这里表示<strong>等效于标准输出（标准输出的引用）</strong></li>
+<li><code>command&gt;a 2&gt;a</code>和<code>command&gt;a 2&gt;&amp;1</code>看起来类似，实际上
+前者写法会打开两次<code>a</code>，stderr覆盖stdout，而后者是
+引用，不会覆盖、IO效率更高</li>
+<li><code>2&gt;&amp;1</code>放在后面大概是因为需要获取stdout的引用，所以
+需要标准输出先给出重定向</li>
+<li>这种写法还有个<strong>简写</strong><code>&amp;&gt;</code>、<code>&gt;&amp;</code></li>
+</ul>
+</li>
+<li><p>可以重定向到设备，在*nix系统中，设备也被视为文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;hello&quot;</span> &gt; /dev/tty01</span></span><br></pre></td></tr></table></figure>
+<p>特别的设备<code>/dev/null</code>可以作为不需要输出的重定向目标</p>
+</li>
+</ul>
+<h4 id="HereDoc-Format"><a href="#HereDoc-Format" class="headerlink" title="HereDoc Format"></a>HereDoc Format</h4><p>HereDoc Format：特殊的重定向，指示shell从标准输入读取输入
+直至遇到<strong>标记</strong>行（前后不能有空白符）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;CMD&gt; &lt;&lt; &lt;EOF&gt;</span><br><span class="line">here-doc</span><br><span class="line">&lt;EOF&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>EOF</code>：标记字符串，常用<code>EOF</code>、<code>STOP</code>等</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若标记中含有字符被quote（如被引号包括）</p>
+<ul>
+<li>结束标记为去除quotation结果</li>
+<li><code>here-doc</code>中不执行参数扩展、命令替换、算数扩展</li>
+</ul>
+</li>
+<li><p>若标记中没有quotation</p>
+<ul>
+<li><code>here-doc</code>中执行参数扩展、命令替换、算数扩展</li>
+<li>此时<code>\</code>、<code>$</code>、反引号需要<code>\</code>转义</li>
+</ul>
+</li>
+</ul>
+<h4 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h4><p><code>|</code>：将一个程序的标准输出发送到另一个程序的标准输入</p>
+<ul>
+<li>一些平台会并行启动以管道连接的程序，此时使用类似迭代器
+输出、输入能提高效率</li>
+</ul>
+<h3 id="Shell内置命令"><a href="#Shell内置命令" class="headerlink" title="Shell内置命令"></a>Shell内置命令</h3><blockquote>
+<ul>
+<li><code>which</code>命令无法找到的命令</li>
+</ul>
+</blockquote>
+<h4 id="set"><a href="#set" class="headerlink" title="set"></a><code>set</code></h4><p><code>set</code>：设置所使用的shell选项、列出shell变量</p>
+<ul>
+<li><code> </code>：不带参数，显示<strong>全部</strong>shell变量</li>
+<li><code>-a</code>：输出之后所有至<code>export</code>（环境变量）</li>
+<li><code>-b</code>：使被终止后台程序立即汇报执行状态</li>
+<li><code>-B</code>：执行括号扩展</li>
+<li><code>-C</code>：重定向所产生的文件无法覆盖已存在文件</li>
+<li><code>-d</code>：shell默认使用hash表记忆已使用过的命令以加速
+执行，此设置取消该行为</li>
+<li><code>-e</code>：若指令回传值不为0，立即退出shell</li>
+<li><code>-f</code>：取消使用通配符</li>
+<li><code>-h</code>：寻找命令时记录其位置???</li>
+<li><code>-H</code>：（默认）允许使用<code>!</code>加<em>&lt;编号&gt;</em>方式执行<code>history</code>中
+记录的命令</li>
+<li><code>-k</code>：命令<strong>后</strong>的<code>=</code><strong>也</strong>被视为设置命令的环境变量</li>
+<li><code>-m</code>：监视器模式，启动任务控制<ul>
+<li>后台进程已单独进程组运行</li>
+<li>每次完成任务时显示包含退出的状态行</li>
+</ul>
+</li>
+<li><code>-n</code>：读取命令但不执行<ul>
+<li>通常用于检查脚本句法错误</li>
+</ul>
+</li>
+<li><code>-p</code>：允许<em>set-user/group-id</em><ul>
+<li>禁止处理<code>$ENV</code>文件、从文件中继承shell函数</li>
+</ul>
+</li>
+<li><code>-P</code>：处理<code>cd</code>等改变当前目录的命令时，不解析符号链接</li>
+<li><code>-t</code>：读取、执行下条命令后退出</li>
+<li><code>-u</code>：使用未设置变量作为错误处理</li>
+<li><code>-v</code>：输入行被读取时，显示shell输出行</li>
+<li><code>-x</code>：显示简单命令的PS4扩展值（包括所有参数）、当前命令
+的环境变量</li>
+<li><code>-o</code>：option-name，下列之一<ul>
+<li><code>allexport</code>：同<code>-a</code></li>
+<li><code>braceexpand shell</code>：（默认）执行花括号扩展</li>
+<li><code>emacs</code>：（默认）使用emacs风格命令行编辑接口</li>
+<li><code>errexit</code>：同<code>-e</code></li>
+<li><code>errtrace</code>：同<code>-E</code></li>
+<li><code>functrace</code>：同<code>-T</code></li>
+<li><code>hashall</code>：同<code>-h</code></li>
+<li><code>histexpand</code>：同<code>-H</code></li>
+<li><code>history</code>：记录命令历史</li>
+<li><code>ignoreeof</code>：读取EOF时不退出shell</li>
+<li><code>interactive-comments</code>：允许交互式命令中出现注释</li>
+<li><code>keyword</code>：同<code>-k</code></li>
+<li><code>monitor</code>：同<code>-m</code></li>
+<li><code>noclobber</code>：同<code>-C</code></li>
+<li><code>noexec</code>：同<code>-n</code></li>
+<li><code>noglob</code>：同<code>-f</code></li>
+<li><code>noglob</code>：currently accepted but ignored</li>
+<li><code>nohash</code>：同<code>-d</code></li>
+<li><code>notify</code>：同<code>-b</code></li>
+<li><code>nounset</code>：同<code>-u</code></li>
+<li><code>physical</code>：同<code>-P</code></li>
+<li><code>pipfail</code>：管道命令返回值为最后返回值非0命令的状态，
+若没有非0返回值返回0</li>
+<li><code>posix</code>：改变shell属性以匹配标准，默认操作不同于
+POSIX1003.2标准</li>
+<li><code>priviledged</code>：同<code>-p</code></li>
+<li><code>verbose</code>：同<code>-v</code></li>
+<li><code>vi</code>：使用vi风格的命令编辑接口</li>
+<li><code>xtrace</code>：同<code>-x</code></li>
+</ul>
+</li>
+<li><code>+</code>：加以上参数取消标志位设置（包括<code>o</code>参数）</li>
+<li><code>--</code>：给所有剩余参数设置标志位，没有剩余参数则unset</li>
+<li><code>-</code>：给所有剩余参数设置标志位</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>$-</code>中存放有当前已设置标志位</li>
+</ul>
+</blockquote>
+<h4 id="let"><a href="#let" class="headerlink" title="let"></a><code>let</code></h4><p><code>let</code>：执行计算的工具，用于执行一个、多个表达式</p>
+<ul>
+<li>变量计算中不需要<code>$</code>标识变量</li>
+<li>表达式中包含特殊字符，需要引起来</li>
+</ul>
+<h4 id="declare"><a href="#declare" class="headerlink" title="declare"></a><code>declare</code></h4><p><code>declare</code>：声明变量内容</p>
+<ul>
+<li><code>-a</code>：声明变量为普通数组</li>
+<li><code>-A</code>：声明变量为关联数组（下标支持字符串，类似字典）</li>
+<li><code>-i</code>：声明变量为整形</li>
+<li><code>-r</code>：声明变量只读</li>
+<li><code>-x</code>：设置为环境变量（<code>export</code>）</li>
+<li><code>-g</code>：在函数中创建全局变量</li>
+<li><p><code>+</code>：和以上联合使用，取消定义的变量类型</p>
+</li>
+<li><p><code>-f</code>：列出脚本中定义的函数名称、函数体</p>
+</li>
+<li><code>-F</code>：列出脚本中定义的函数名称</li>
+<li><code>-p</code>：查看变量属性、值</li>
+</ul>
+<h4 id="read"><a href="#read" class="headerlink" title="read"></a><code>read</code></h4><p><code>read</code>：从标准输入读入变量内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">read</span> [&lt;option&gt;] &lt;var&gt;[ &lt;var2&gt;...]</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">read</span> -p <span class="string">&quot;Enter names: &quot;</span> name1, nem</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>读取值数目大于变量数目时，多余值均赋给最后变量</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>-p</code>：命令行提示内容</li>
+<li><code>-n</code>：不换行</li>
+<li><code>-d</code>：分隔标记</li>
+<li><code>-t</code>：阻塞等待时常，之后返回非零</li>
+<li><code>-s</code>：隐藏输入</li>
+<li><code>-r</code>：反折号不被视为转义标记</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat README | while read -r line; do</span><br><span class="line">	echo $line</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h4 id="shift"><a href="#shift" class="headerlink" title="shift"></a><code>shift</code></h4><p><code>shift</code>：移除参数列表中头部部分参数，缺省移除1个</p>
+<blockquote>
+<ul>
+<li><code>shift</code>移除从<code>$1</code>开始，无法移除<code>$0</code></li>
+</ul>
+</blockquote>
+<h4 id="getopts"><a href="#getopts" class="headerlink" title="getopts"></a><code>getopts</code></h4><p><code>getopts</code>：逐个读取解析单字符指示的参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function func ()&#123;</span><br><span class="line">	echo OPTIND: $OPTIND</span><br><span class="line">	while getopts &quot;:a:B:cdef&quot; opt; do</span><br><span class="line">	  case $opt in</span><br><span class="line">		a) echo &quot;this is -a the arg is ! $OPTARG at $OPTIND&quot; ;;</span><br><span class="line">		B) echo &quot;this is -B the arg is ! $OPTARG at $OPTIND&quot; ;;</span><br><span class="line">		c) echo &quot;this is -c the arg is ! $OPTARG at $OPTIND&quot; ;;</span><br><span class="line">		\?) echo &quot;Invalid option: -$OPTARG&quot; ;;</span><br><span class="line">	  esac</span><br><span class="line">	done</span><br><span class="line">	echo OPTIND: $OPTIND</span><br><span class="line">	echo $@</span><br><span class="line">	shift $(($OPTIND - 1))</span><br><span class="line">	echo $@</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">func -a 23 -B 1904-03-04 343 age</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>$OPTARG</code>：参数值</li>
+<li><code>$OPTIND</code>：在参数列表中位移，初始值为1，常配合<code>shift</code>
+  使用剔除已处理参数</li>
+<li>遇到未指定option则返回0</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>option字符后<code>:</code>：字符可以带有参数，赋给<code>$OPTARG</code>；否则
+仅表示标志，仅该字符被处理</p>
+</li>
+<li><p>option_string开头<code>:</code>可以避免错误输出</p>
+<ul>
+<li><code>:</code>标记option不带参数时<ul>
+<li>待匹配值设为<code>:</code></li>
+<li><code>$OPTARG</code>设为option</li>
+</ul>
+</li>
+<li>option无效时<ul>
+<li>待匹配值设为<code>?</code></li>
+<li><code>$OPTARG</code>设为option</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>函数内部处理函数参数，否则处理脚本参数</li>
+<li>参数标识<code>-</code>可省略</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T13:11:52.000Z" title="7/31/2019, 9:11:52 PM">2019-07-31</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-02-19T09:20:02.000Z" title="2/19/2019, 5:20:02 PM">2019-02-19</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/Configuration/">Configuration</a></span><span class="level-item">4 minutes read (About 606 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/Configuration/linux_intro.html">Linux介绍</a></h1><div class="content"><h2 id="Linux版本"><a href="#Linux版本" class="headerlink" title="Linux版本"></a>Linux版本</h2><h3 id="内核版本"><a href="#内核版本" class="headerlink" title="内核版本"></a>内核版本</h3><p>内核版本号由3个数字组成<code>X.Y.Z-P</code></p>
+<ul>
+<li><code>X</code>：主版本号，比较稳定，短时间不会改变</li>
+<li><code>Y</code>：次版本号，表示版本类型<ul>
+<li>偶数：稳定版</li>
+<li>奇数：测试版</li>
+</ul>
+</li>
+<li><code>Z</code>：发布号，数字越大，功能越完善</li>
+<li><code>P</code>：patch号</li>
+</ul>
+<h2 id="Linux分区"><a href="#Linux分区" class="headerlink" title="Linux分区"></a>Linux分区</h2><h3 id="boot引导分区目录"><a href="#boot引导分区目录" class="headerlink" title="/boot引导分区目录"></a><code>/boot</code>引导分区目录</h3><p>该分区（目录）存放系统内核、驱动模块引导程序，<strong>需要</strong>独立
+分区</p>
+<ul>
+<li>避免（根）文件系统损坏造成无法启动</li>
+<li>避使用<em>lilo</em>引导时1024柱面问题（<em>Grub</em>无此问题）</li>
+<li>方便管理多系统引导</li>
+</ul>
+<h4 id="boot修复"><a href="#boot修复" class="headerlink" title="/boot修复"></a><code>/boot</code>修复</h4><p>进入grub模式后#todo</p>
+<h4 id="swap分区目录"><a href="#swap分区目录" class="headerlink" title="/swap分区目录"></a><code>/swap</code>分区目录</h4><p>系统物理内存不足时，释放部分空间，其中数据被临时保存在
+<em>swap</em>空间中</p>
+<ul>
+<li><p>不是所有物理内存中交换的数据都会被放在交换空间中，有部分
+数据直接交换到文件系统</p>
+</li>
+<li><p>交换空间比内存慢</p>
+</li>
+<li><p>安装时，系统会尝试将交换分区安装到磁盘外端</p>
+</li>
+<li><p>有多个磁盘控制器时，在每个磁盘上都建立交换空间</p>
+</li>
+<li><p>尽量将交换空间安装在访问在频繁的数据区附近</p>
+</li>
+<li><p>交换空间大小一般设置为内存1-2倍</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>不推荐为交换空间划分单独分区，可以使用交换文件作为交换
+  空间，方便、容易扩展</li>
+</ul>
+</blockquote>
+<h5 id="交换文件"><a href="#交换文件" class="headerlink" title="交换文件"></a>交换文件</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> dd <span class="keyword">if</span>=/dev/zero of=/swapfile bs=1024 count=32000</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 或</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> fallocate -l 32G /swapfile</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 创建有连续空间的交换文件，大小为1024*32000=32G</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> chmod 600 /swapfile</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 修改交换文件权限</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkswap /swapfile</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 设置交换文件</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> /usr/sbin/swapon /swapfile</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 激活上步创建的`/swapfile`交换文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> /usr/sbin/swapoff swapfile</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 关闭交换文件</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>不需要交换文件时可以直接<code>rm</code>删除</li>
+<li>可以在<code>fstab</code>文件中添加交换文件，自动挂载，格式参见
+  <code>config_files</code></li>
+</ul>
+</blockquote>
+<h3 id="根分区目录"><a href="#根分区目录" class="headerlink" title="/根分区目录"></a><code>/</code>根分区目录</h3><ul>
+<li><code>/usr</code>：用户程序</li>
+<li><code>/sbin</code>：系统管理员执行程序</li>
+<li><code>/bin</code>：基本命令</li>
+<li><code>/lib</code>：基本共享库、核心模块</li>
+<li><code>/home</code>：用户目录</li>
+<li><code>/etc</code>：配置文件目录</li>
+<li><code>/opt</code>：附加应用程序包目录</li>
+<li><code>/mnt</code>：设备/文件系统挂载目录</li>
+<li><code>/dev</code>：设备</li>
+<li><code>/tmp</code>：临时文件</li>
+<li><code>/var</code>：可变信息区<ul>
+<li>file spool</li>
+<li>logs</li>
+<li>requests</li>
+<li>mail</li>
+</ul>
+</li>
+<li><code>/proc</code>：进程（映射）信息</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T13:11:41.000Z" title="7/31/2019, 9:11:41 PM">2019-07-31</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-23T04:35:17.000Z" title="7/23/2021, 12:35:17 PM">2021-07-23</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a></span><span class="level-item">6 minutes read (About 928 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Linux/terminal.html">Terminal、CLI、Shell、TTY</a></h1><div class="content"><h2 id="Terminal"><a href="#Terminal" class="headerlink" title="Terminal"></a><em>Terminal</em></h2><ul>
+<li><p><em>Termianl</em> 终端：计算机领域的终端是指用于 <strong>与计算机进行交互的输入输出设备</strong>，本身不提供运算处理功能</p>
+<ul>
+<li>大部分情况下，终端将用户的字符以外键盘输入转为控制序列</li>
+<li>但接收到 <code>&lt;C-C&gt;</code> 等特殊组合键时，发送特殊信号</li>
+</ul>
+</li>
+<li><p><em>Console</em> 控制台：和计算机一体的特殊终端，用于管理主机，比普通终端权限更高</p>
+<ul>
+<li>一台主机一般只有一个控制台，但可以连接多个普通终端</li>
+<li>Console、Terminal随着PC普及已经基本时同义词</li>
+</ul>
+</li>
+</ul>
+<h3 id="TTY"><a href="#TTY" class="headerlink" title="TTY"></a><em>TTY</em></h3><ul>
+<li><p><em>TTY</em>：原含义即为直电传打字机 <em>TeletypePrinter</em>、<em>TeletypeWriter</em>：键盘输入指令、纸带打印信号</p>
+<ul>
+<li><em>UNIX</em> 为支持电传打字机设计了名为 <em>tty</em> 的子系统</li>
+<li>之后 <em>tty</em> 名称被保留成为终端的统称（虽然终端设备不局限于 <em>tty</em>）</li>
+</ul>
+</li>
+<li><p>类 <em>UNIX</em> 系统中</p>
+<ul>
+<li>具体终端硬件设备抽象为操作系统内部 <code>/dev/tty*</code> 设备文件</li>
+<li><code>/dev/tty[1-6]</code> 即对应 6 个虚拟控制台</li>
+</ul>
+</li>
+<li><p>另外，早期计算机上 <em>Serial Port</em> 最大用途就是连接终端设备</p>
+<ul>
+<li>所以会把行端口上设备同样抽象为 <em>tty</em> 设备</li>
+<li><code>/dev/ttyS*</code> 对应串口设备</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000009082089">Linux TTY/PTS概述</a></li>
+<li><em>Linux</em> 系统中，<code>&lt;C-A—[F1-F6]&gt;</code> 可以切换终端</li>
+<li>可通过 <code>$ stty -a</code> 查看当前终端设置</li>
+</ul>
+</blockquote>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><ul>
+<li><p><em>Character/Text Terminal</em>：字符终端，只能接受、显示文本信息的终端</p>
+<ul>
+<li><em>Dumb Terminal</em>：哑终端</li>
+<li><em>Intelligent Terminal</em>：智能终端，相较于哑终端<ul>
+<li>理解转义序列</li>
+<li>定位光标、显示位置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>Graphical Terminal</em>：图形终端，可以显示图形、图像</p>
+<ul>
+<li>现在专门图形终端已经少见，基本被 <strong>全功能显示器</strong> 取代</li>
+</ul>
+</li>
+</ul>
+<h3 id="Terminal-Emulator"><a href="#Terminal-Emulator" class="headerlink" title="Terminal Emulator"></a><em>Terminal Emulator</em></h3><p>终端模拟器：默认传统终端行为的程序，用于与传统的、不兼容图形接口命令行程序（如：<em>GNU</em> 工具集）交互</p>
+<ul>
+<li>对 <em>CLI</em> 程序，终端模拟器假装为传统终端设备</li>
+<li>对现代图形接口，终端模拟器假装为 <em>GUI</em> 程序<ul>
+<li>捕获键盘输入</li>
+<li>将输入发送给 <em>CLI</em> 程序（<em>bash</em>）</li>
+<li>得到命令行程序输出结果</li>
+<li>调用图形接口（如：<em>X11</em>），将输出结果渲染至显示器</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>tty[1-6]</em> 也是终端模拟器，只是不运行在图形界面中、由内核直接提供，也称虚拟控制台</li>
+</ul>
+</blockquote>
+<h3 id="Shell-和-Terminal"><a href="#Shell-和-Terminal" class="headerlink" title="Shell 和 Terminal"></a><em>Shell</em> 和 <em>Terminal</em></h3><ul>
+<li><p><em>Shell</em> 更多指提供和内核交互入口的软件，提供</p>
+<ul>
+<li>命令提示符 <em>Prompt</em></li>
+<li>行编辑、输入历史、自动补全（但是也有些终端自己实现
+此功能）</li>
+</ul>
+</li>
+<li><p><em>Terminal</em> 更多指 <em>IO</em> 端口硬件，提供</p>
+<ul>
+<li>上、下翻页查看内容</li>
+<li>终端中复制、粘贴功能</li>
+</ul>
+</li>
+</ul>
+<h2 id="Shell"><a href="#Shell" class="headerlink" title="Shell"></a><em>Shell</em></h2><p><img src="/imgs/pc_architecture.png" alt="pc_architecture"></p>
+<p><em>Shell</em>：提供 <strong>用户界面</strong> 的程序，接受用户输入命令和内核沟通</p>
+<ul>
+<li><p><em>Shell</em> 向用户提供操作系统入口</p>
+<ul>
+<li>避免普通用户随意操作导致系统崩溃</li>
+<li>虽然Shell会调用其他应用程序，其他应用程序再调用系统调用，而不是直接与内核交互</li>
+</ul>
+</li>
+<li><p><em>Command-Line Interface</em>：命令行 <em>Shell</em>，通常不支持鼠标，通过键盘输入指令</p>
+<ul>
+<li><em>sh</em>：<em>Bourne Shell</em></li>
+<li><em>bash</em>：<em>Bourne-Again Shell</em></li>
+<li><em>zhs</em>：<em>Z Shell</em></li>
+<li><em>fish</em>：<em>Friendly Interactive Shell</em></li>
+<li><em>cmd.exe</em>：这个应该看作是 <em>Shell</em>，而不是 <em>Terminal</em><ul>
+<li>可与内核进行交互</li>
+<li>接受键盘输入是其宿主的功能（即宿主作为隐式 <em>Terminal Emulator</em>）</li>
+</ul>
+</li>
+<li><em>PowerShell</em></li>
+</ul>
+</li>
+<li><p><em>GUI</em>：<em>Graphic User Interface</em> 图形 <em>Shell</em></p>
+<ul>
+<li><em>Windows</em> 下的 <em>explorer.exe</em></li>
+</ul>
+</li>
+</ul>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/8/">Previous</a></div><div class="pagination-next"><a href="/page/10/">Next</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/8/">8</a></li><li><a class="pagination-link is-current" href="/page/9/">9</a></li><li><a class="pagination-link" href="/page/10/">10</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/40/">40</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

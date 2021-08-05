@@ -1,0 +1,2558 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: Machine Learning - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">Machine Learning</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T16:16:47.000Z" title="7/14/2019, 12:16:47 AM">2019-07-14</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-04T08:42:31.000Z" title="8/4/2021, 4:42:31 PM">2021-08-04</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Theory/">ML Theory</a><span> / </span><a class="link-muted" href="/categories/ML-Theory/Optimization/">Optimization</a></span><span class="level-item">8 minutes read (About 1136 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Theory/Optimization/robust_optimization.html">Robust Optimization</a></h1><div class="content"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>稳健优化：利用凸理论、对偶理论中概念，使得凸优化问题中的解
+对参数的<em>bounded uncertainty</em>有限不确定性（波动）不敏感</p>
+<ul>
+<li><p>稳健优化在机器学习涉及方面：不确定优化、过拟合</p>
+<ul>
+<li><em>Connecting Consistency</em></li>
+<li><em>Generalization Ability</em></li>
+<li><em>Sparsity</em></li>
+<li><em>Stability</em></li>
+</ul>
+</li>
+<li><p>不确定性来源</p>
+<ul>
+<li>模型选择错误</li>
+<li>假设不成立</li>
+<li>忽略必要因素</li>
+<li>经验分布、函数无法正确估计整体分布</li>
+</ul>
+</li>
+<li><p>过拟合判断依据</p>
+<ul>
+<li><em>metric entropy</em></li>
+<li><em>VC-dimension</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p>优化问题对问题参数的扰动非常敏感，以至于解经常不可行、次优</p>
+<ul>
+<li><p><em>Stochastic Programming</em>：使用概率描述参数不确定性，</p>
+</li>
+<li><p>稳健优化则假设问题参数在某个给定的先验范围内随意变动</p>
+<ul>
+<li><p>不考虑参数的分布</p>
+</li>
+<li><p>利用概率论的理论，而不用付出计算上的代价</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="策略（最优化问题）"><a href="#策略（最优化问题）" class="headerlink" title="策略（最优化问题）"></a>策略（最优化问题）</h3><script type="math/tex; mode=display">
+\begin{align*}
+\min_x & : f_0(x) \\
+s.t. & : f_i(x) \leq 0, i=1,2,\cdots,m
+\end{align*}</script><script type="math/tex; mode=display">
+\begin{align*}
+\min_x & : f_0(x) \\
+s.t. & : f_i(x, u_i) \leq 0, \forall u_i \in \mathcal{U}_i,
+    i=1,2,\cdots,m
+\end{align*}</script><ul>
+<li>$\mathcal{U}_i $：<em>uncertainty set</em>，不确定集</li>
+</ul>
+<h3 id="Computational-Tractablity"><a href="#Computational-Tractablity" class="headerlink" title="Computational Tractablity"></a><em>Computational Tractablity</em></h3><p>稳健优化易解性：在满足标准或一点违反
+<em>Slater-like regularity conditions</em>情况下，求解稳健优化问题
+等同于求解对以下凸集$\mathcal{X(U)}$的划分（求出凸集）</p>
+<script type="math/tex; mode=display">
+\mathcal{X(U)} \overset {\triangle} {=}
+    \{ x: f_i(x, u_i) \leq 0,
+    \forall u_i \in \mathcal{U}_i, i=1,2,\cdots,m \}</script><ul>
+<li><p>若存在高效算法能确定$x \in \mathcal{X(U)}$、或者能够提供
+分离超平面，那么问题可以在多项式时间中求解</p>
+</li>
+<li><p>即使所有的约束函数$f_i$都是凸函数，此时$\mathcal{X(U)}$
+也是凸集，也有可能没有高效算法能够划分出$\mathcal{X(U)}$</p>
+</li>
+<li><p>然而在大部分情况下，稳健化后的问题都能高效求解下，和原
+问题复杂度相当</p>
+</li>
+</ul>
+<h4 id="复杂度说明"><a href="#复杂度说明" class="headerlink" title="复杂度说明"></a>复杂度说明</h4><ul>
+<li>LP + Polyhedra Uncertainty：LP</li>
+<li>LP + Ellipsoidal Uncertainty：SOCP</li>
+<li>CQP + Ellipsoidal Uncertainty：SDP</li>
+<li>SDP + Ellipsoodal Uncertainty：NP-hard</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>LP</em>：Linear Program，线性规划</li>
+<li><em>SOCP</em>：Second-Order Cone Program，二阶锥规划</li>
+<li><em>CQP</em>：Convex Quadratic Program，凸二次规划</li>
+<li><em>SDP</em>：Semidefinite Program，半定规划</li>
+<li><em>Polyhedra Uncertainty</em>：多项式类型不确定</li>
+<li><em>Ellipsodial Uncertainty</em>：椭圆类型不确定</li>
+<li><em>NP-hard</em>：NP难问题，至少和NPC问题一样困难得问题</li>
+</ul>
+</blockquote>
+<h4 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h4><p><em>Linear Programs with Polyhedral Uncertainty</em></p>
+<h3 id="概率解释、结果"><a href="#概率解释、结果" class="headerlink" title="概率解释、结果"></a>概率解释、结果</h3><ul>
+<li><p>稳健优化的计算优势很大程度上来源于，其形式是固定的，不再
+需要考虑概率分布，只需要考虑不确定集</p>
+</li>
+<li><p>计算优势使得，即使不确定性是随机、且分布已知，稳健优化
+仍然具有吸引力</p>
+</li>
+<li><p>在一些概率假定下，稳健优化可以给出稳健化问题解的某些
+概率保证，如：可行性保证（在给定约束下，解能以多大概率
+不超过约束）</p>
+</li>
+</ul>
+<h3 id="Uncertainty-Set"><a href="#Uncertainty-Set" class="headerlink" title="Uncertainty Set"></a><em>Uncertainty Set</em></h3><h4 id="Atomic-Uncertainty-Set"><a href="#Atomic-Uncertainty-Set" class="headerlink" title="Atomic Uncertainty Set"></a><em>Atomic Uncertainty Set</em></h4><p>原子不确定集</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+(I) & 0 \in \mathcal{U}_0 \\
+(II) & \forall w_0 \in R^n: \sup_{u \in \mathcal{U}_0
+    [-w_0^T u^{'} < +\infty
+\end{align}</script><h2 id="Robust-Optimization-and-Adversary-Resistant-Learning"><a href="#Robust-Optimization-and-Adversary-Resistant-Learning" class="headerlink" title="Robust Optimization and Adversary Resistant Learning"></a>Robust Optimization and Adversary Resistant Learning</h2><p>即稳健优化在机器学习中处理不确定性（随机的、对抗性的）</p>
+<ul>
+<li><p>稳健优化中在机器学习中应用</p>
+</li>
+<li><p>稳健学习在很多学习任务中都有提出</p>
+<ul>
+<li>学习和规划</li>
+<li>Fisher线性判别分析</li>
+<li>PCA</li>
+</ul>
+</li>
+</ul>
+<p>这里考虑经典的<strong>二分类软阈值SVM</strong></p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\min_{w,b,\xi}: \quad & \mathcal{ r(w,b) +
+    C\sum_{i=1}^m \xi_i} \\
+s.t.: & \xi_i \geq [1-y_i(<w,x_i> + b)], i=1,\cdots,m; \\
+    & \xi_i \geq 0, i=1,\cdots,m;
+\end{align*}</script><h3 id="Corrupted-Location"><a href="#Corrupted-Location" class="headerlink" title="Corrupted Location"></a>Corrupted Location</h3><ul>
+<li><p>椭圆不确定集：随机导致的</p>
+</li>
+<li><p>正则化项使用</p>
+<ul>
+<li>传统的二范数，一范数同样使用的稀疏的解</li>
+</ul>
+</li>
+<li><p>概率解释：风险控制</p>
+</li>
+</ul>
+<h3 id="Missing-Data"><a href="#Missing-Data" class="headerlink" title="Missing Data"></a>Missing Data</h3><ul>
+<li><p>多项式不确定：对抗删除数据（alpha go）</p>
+</li>
+<li><p>使用无效特征消去偏置</p>
+</li>
+<li><p>对max损失取对偶得到min带入得到SOCP</p>
+</li>
+</ul>
+<h2 id="Robust-Optimization-and-Regularization"><a href="#Robust-Optimization-and-Regularization" class="headerlink" title="Robust Optimization and Regularization"></a>Robust Optimization and Regularization</h2><ul>
+<li><p>统一从稳健优化的角度解释学习算法中的优秀性质</p>
+<ul>
+<li>正则化</li>
+<li>稀疏</li>
+<li>一致性</li>
+</ul>
+</li>
+<li><p>指导寻找新的算法</p>
+<ul>
+<li><p>大数定理、中心极限定理表明即使各个特征上随机不确定项
+是独立的，其本身也会有强烈的耦合倾向，表现出相同特征
+、像会相互影响一样</p>
+</li>
+<li><p>这促使寻找新的稳健算法，其中随机不确定项是耦合的</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="SVM"><a href="#SVM" class="headerlink" title="SVM"></a>SVM</h3><ul>
+<li></li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:26:47.000Z" title="7/13/2019, 11:26:47 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:07:49.000Z" title="7/16/2021, 4:07:49 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Unsupervised-Model/">Unsupervised Model</a></span><span class="level-item">a minute read (About 143 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Unsupervised-Model/auto_encoder.html">Auto-Encoders</a></h1><div class="content"><p>自编码机/稀疏编码/堆栈自编码器</p>
+<ul>
+<li><p>起源：编码理论可以应用于视觉皮层感受野，大脑主要视觉皮层
+使用稀疏原理创建可以用于重建输入图像的最小基函数子集</p>
+</li>
+<li><p>优点</p>
+<ul>
+<li>简单技术：重建输入</li>
+<li>可堆栈多层</li>
+<li>直觉型，基于神经科学研究</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>贪婪训练每层</li>
+<li>没有全局优化</li>
+<li>表现较监督学习差</li>
+<li>多层容易失效</li>
+<li>输入的重建可能不是学习通用表征的理想<em>metric</em></li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:26:35.000Z" title="7/13/2019, 11:26:35 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:09:43.000Z" title="7/16/2021, 4:09:43 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Unsupervised-Model/">Unsupervised Model</a></span><span class="level-item">25 minutes read (About 3774 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Unsupervised-Model/expectation_maximization.html">EM算法</a></h1><div class="content"><h2 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h2><p><em>expectation maximization algorithm</em>：含有隐变量的概率模型
+参数的极大似然估计法、极大后验概率估计法</p>
+<ul>
+<li><p>模型含有<em>latent variable</em>（潜在变量）、<em>hidden variable</em>
+（隐变量）似然函数将没有解析解</p>
+</li>
+<li><p>所以EM算法需要迭代求解，每次迭代由两步组成</p>
+<ul>
+<li>E步：求期望expectation</li>
+<li>M步：求极大maximization</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>模型变量都是<em>observable variable</em>、给定数据情况下，可以
+  直接使用极大似然估计、贝叶斯估计</li>
+</ul>
+</blockquote>
+<h2 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h2><p>对含有隐变量的概率模型，目标是极大化观测数据（不完全数据）
+$Y$关于参数$\theta$的对数似然函数，即极大化</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta) & = log P(Y|\theta) \\
+& = log \sum_Z P(Y, Z|\theta) \\
+& = log \left(\sum_Z P(Y|Z,\theta) P(Z|\theta) \right)
+\end{align*}</script><blockquote>
+<ul>
+<li>$Y$：观测变量数据</li>
+<li>$Z$：隐随机变量数据（未知）</li>
+<li>$Y,Z$合在一起称为完全数据</li>
+<li>$P(Y,Z|\theta)$：联合分布</li>
+<li>$P(Z|Y,\theta)$：条件分布</li>
+</ul>
+</blockquote>
+<ul>
+<li>但是极大化目标函数中包括未观测数据$Z$、求和（积分）的
+对数，直接求极大化非常困难</li>
+<li>EM算法通过<strong>迭代</strong>逐步近似极大化$L(\theta)$</li>
+</ul>
+<h3 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h3><ul>
+<li><p>假设第i次迭代后$\theta$的估计值是$\theta^{(i)}$，希望
+新估计值$\theta$能使$L(\theta)$增加，并逐步增加到极大值
+，考虑两者之差</p>
+<script type="math/tex; mode=display">
+L(\theta) - L(\theta^{(i)}) = log (\sum_Z P(Y|Z,\theta)
+   P(Z|\theta)) - log P(Y|\theta^{(i)})</script></li>
+<li><p>利用Jensen不等式有</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta) - L(|\theta^{(i)}) & = log(\sum_Z P(Y|Z,
+   \theta^{(i)}) \frac {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Y|Z,\theta^{(i)})}) - log P(Y|\theta^{(i)}) \\
+& \geq \sum_Z P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)} {P(Z|Y,\theta^{(i)})}
+   - log P(Y|\theta^{(i)}) \\
+& = \sum_z P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}
+\end{align*}</script></li>
+<li><p>令</p>
+<script type="math/tex; mode=display">
+B(\theta, \theta^{(i)}) = L(\theta^{(i)}) + \sum_Z
+   P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})}</script><p>则$B(\theta, \theta^{(i)})$是$L(\theta)$的一个下界，即</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta) & \geq B(\theta, \theta^{(i)}) \\
+\end{align*}</script><p>并根据$B(\theta, \theta^{(i)})$定义有</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(\theta^{(i)}) = B(\theta^{(i)}, \theta^{(i)})
+\end{align*}</script></li>
+<li><p>则任意$\theta$满足
+$B(\theta,\theta^{(i)}) &gt; B(\theta^{(i)},\theta^{(i)})$
+，将满足$L(\theta) &gt; L(\theta^{(i)})$，应选择
+$\theta^{(i+1)}$使得$B(\theta,\theta^{(i)})$达到极大</p>
+<script type="math/tex; mode=display">\begin{align*}
+\theta^{(i+1)} & = \arg\max_{\theta}
+   B(\theta,\theta^{(i)}) \\
+& = \arg\max_{\theta} L(\theta^{(i)}) + \sum_Z
+   P(Z|Y,\theta^{(i)}) log \frac
+   {P(Y|Z,\theta) P(Z|\theta)}
+   {P(Z|Y,\theta^{(i)}) P(Y|\theta^{(i)})} \\
+& = \arg\max_{\theta} (\sum_Z P(Z|Y,\theta^{(i)})
+   log(P(Y|Z,\theta)P(Z|\theta))) \\
+& = \arg\max_{\theta} (\sum_Z P(Z|Y,\theta^{(i)})
+   log P(Y,Z|\theta)) \\
+& = \arg\max_{\theta} Q(\theta, \theta^{(i)})
+\end{align*}</script><blockquote>
+<ul>
+<li>和$\theta$无关的常数项全部舍去</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>$Q(\theta, \theta^{(i)})$：Q函数，完全数据的对数似然函数
+  $logP(Y,Z|\theta)$，关于在给定观测$Y$和当前参数
+  $\theta^{(i)}$下，对未观测数据Z的条件概率分布
+  $P(Z|Y,\theta^{(i)})$<script type="math/tex; mode=display">
+  Q(\theta, \theta^{(i)}) = E_z
+      [logP(Y,Z|\theta)|Y,\theta^{(i)}]</script></li>
+</ul>
+</blockquote>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ol>
+<li><p>选择参数初值$\theta^{0}$，开始迭代</p>
+</li>
+<li><p>E步：记$\theta^{(i)}$为第$i$迭代时，参数$\theta$的估计值
+，在第$i+1$步迭代的E步时，计算Q函数
+$Q(\theta, \theta^{(i)})$</p>
+</li>
+<li><p>M步：求使得Q函数极大化$\theta$作为第$i+1$次估计值
+$\theta^{(i+1)}$</p>
+<script type="math/tex; mode=display">
+\theta^{(i+1)} = \arg\max_{\theta} Q(\theta, \theta^{(i)})</script></li>
+<li><p>重复E步、M步直到待估参数收敛</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li><p>算法初值可以任意选择，但EM算法对初值敏感</p>
+</li>
+<li><p>E步：参数值估计缺失值分布，计算Q函数（似然函数）</p>
+</li>
+<li><p>M步：Q函数取极大得新参数估计值</p>
+</li>
+<li><p>收敛条件一般是对较小正数$\epsilon$，满足
+  $|\theta^{(i+1)} - \theta^{(i)}| &lt; \epsilon$或
+  $|Q(\theta^{(i+1)},\theta^{(i)}) - Q(\theta^{(i)},\theta^{(i)})| &lt; \epsilon$</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="EM算法特点"><a href="#EM算法特点" class="headerlink" title="EM算法特点"></a>EM算法特点</h3><h4 id="EM算法优点"><a href="#EM算法优点" class="headerlink" title="EM算法优点"></a>EM算法优点</h4><ul>
+<li>EM算法可以用于估计含有隐变量的模型参数</li>
+<li>非常简单，稳定上升的步骤能非常可靠的找到最优估计值</li>
+<li>应用广泛，能应用在多个领域中<ul>
+<li>生成模型的非监督学习</li>
+</ul>
+</li>
+</ul>
+<h4 id="EM算法缺点"><a href="#EM算法缺点" class="headerlink" title="EM算法缺点"></a>EM算法缺点</h4><ul>
+<li>EM算法计算复杂、受外较慢，不适合高维数据、大规模数据集</li>
+<li>参数估计结果依赖初值，不够稳定，不能保证找到全局最优解</li>
+</ul>
+<h3 id="算法收敛性"><a href="#算法收敛性" class="headerlink" title="算法收敛性"></a>算法收敛性</h3><h4 id="定理1"><a href="#定理1" class="headerlink" title="定理1"></a>定理1</h4><blockquote>
+<ul>
+<li>设$P(Y|\theta)$为观测数据的似然函数，$\theta^{(i)}$为
+  EM算法得到的参数估计序列，$P(Y|\theta^{(i)}),i=1,2,…$
+  为对应的似然函数序列，则$P(Y|\theta^{(i)})$是单调递增的<script type="math/tex; mode=display">
+  P(Y|\theta^{(i+1)}) \geq P(Y|\theta^{(i)})</script></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由条件概率</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(Y|\theta) & = \frac {P(Y,Z|\theta)} {P(Z|Y,\theta)} \\
+logP(Y|\theta) & = logP(Y,Z|\theta) - logP(Z|Y,\theta)
+\end{align*}</script></li>
+</ul>
+<ul>
+<li><p>则对数似然函数有</p>
+<script type="math/tex; mode=display">
+logP(Y|\theta) = Q(\theta, \theta^{(i)}) -
+   H(\theta, \theta^{(i)})</script><blockquote>
+<ul>
+<li>$H(\theta, \theta^{(i)}) = \sum_Z log P(Z|Y,\theta) P(Z|Y,\theta)$</li>
+<li>$Q(\theta, \theta^{(i)})$：前述Q函数</li>
+<li>$logP(Y|\theta)$和$Z$无关，可以直接提出</li>
+</ul>
+</blockquote>
+</li>
+<li><p>分别取$\theta^{(i+1)}, \theta^{(i)}$带入，做差</p>
+<script type="math/tex; mode=display">
+logP(Y|\theta^{(i+1)}) - logP(Y|\theta^{(i)}) =
+   [Q(\theta^{(i+1)}, \theta^{(i)}) - 
+   Q(\theta^{(i)}, \theta^{(i)}] -
+   [H(\theta^{(i+1)}, \theta^{(i)}) -
+   H(\theta^{(i)}, \theta^{(i)})]</script><ul>
+<li><p>$\theta^{(i+1)}$使得$Q(\theta, \theta^{(i)})$取极大</p>
+</li>
+<li><p>又有</p>
+<script type="math/tex; mode=display">\begin{align*}
+& H(\theta^{(i+1)}, \theta^{(i)}) -
+  H(\theta^{(i)}, \theta^{(i)}) \\
+= & \sum_Z (log \frac {P(Z|Y,\theta^{(i+1)})}
+  {P(Z|Y,\theta^{(I)})}) P(Z|Y,\theta^{(i)}) \\
+\leq & log (\sum_Z \frac {P(Z|Y,\theta^{(i+1)})}
+  {P(Z|Y,\theta^{(I)})} P(Z|Y,\theta^{(i)})) \\
+= & log \sum_Z P(Z|Y,\theta^{(i+1)}) = 0
+\end{align*}</script></li>
+</ul>
+</li>
+</ul>
+<h4 id="定理2"><a href="#定理2" class="headerlink" title="定理2"></a>定理2</h4><blockquote>
+<ul>
+<li>设$L(\theta)=log P(Y|\theta)$为观测数据的对数似然函数，
+  $\theta^{(i)},i=1,2,…$为EM算法得到的参数估计序列，
+  $L(\theta^{(i)}),i=1,2,…$为对应的对数似然函数序列<blockquote>
+<ul>
+<li>若$P(Y|\theta)$有上界，则$L(\theta^{(i)})$收敛到某
+ 定值$L^{*}$</li>
+<li>Q函数$Q(\theta, \theta^{‘})$与$L(\theta)$满足一定
+ 条件的情况下，由EM算法得到的参数估计序列
+ $\theta^{(i)}$的收敛值$\theta^{*}$是$L(\theta)$的
+ 稳定点</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>结论1由序列单调、有界显然</li>
+</ul>
+<blockquote>
+<ul>
+<li>Q函数$Q(\theta, \theta^{‘})$与$L(\theta)$的条件在大多数
+  情况下是满足的</li>
+<li>EM算法收敛性包含对数似然序列$L(\theta^{(i)})$、参数估计
+  序列$\theta^{(i)}$的收敛性，前者不蕴含后者</li>
+<li>此定理只能保证参数估计序列收敛到对数似然序列的稳定点，
+  不能保证收敛到极大点，可选取多个不同初值迭代，从多个结果
+  中选择最好的</li>
+</ul>
+</blockquote>
+<h2 id="Gaussion-Mixture-Model"><a href="#Gaussion-Mixture-Model" class="headerlink" title="Gaussion Mixture Model"></a><em>Gaussion Mixture Model</em></h2><blockquote>
+<ul>
+<li>高斯混合模型是指具有如下概率分布模型<script type="math/tex; mode=display">
+  P(y|\theta) = \sum_{k=1}^K \alpha_k \phi(y|\theta_k)</script><blockquote>
+<ul>
+<li>$\alpha<em>k \geq 0, \sum</em>{k=1}^K \alpha_k=1$：系数</li>
+<li>$\phi(y|\theta_k)$：高斯分布密度函数</li>
+<li>$\theta_k=(\mu_k, \sigma_k)$：第k个分模型参数</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>用EM算法估计高斯混合模型参数
+$\theta=(\alpha_1,…,\alpha_2,\theta_1,…,\theta_K)$</li>
+</ul>
+<h3 id="推导-1"><a href="#推导-1" class="headerlink" title="推导"></a>推导</h3><h4 id="明确隐变量"><a href="#明确隐变量" class="headerlink" title="明确隐变量"></a>明确隐变量</h4><p>明确隐变量，写出完全数据对数似然函数</p>
+<ul>
+<li><p>反映观测数据$y_j$来自第k个分模型的数据是未知的</p>
+<script type="math/tex; mode=display">\gamma_{j,k} = \left \{ \begin{array}{l}
+1, & 第j个观测来自第k个分模型 \\
+0, & 否则
+\end{array} \right.</script><blockquote>
+<ul>
+<li>$j=1,2,\cdots,N$：观测编号</li>
+<li>$k=1,2,\cdots,K$：模型编号</li>
+</ul>
+</blockquote>
+</li>
+<li><p>则完全数据为</p>
+<script type="math/tex; mode=display">(y_j,\gamma_{j,1},\cdots,\gamma_{j,K}), j=1,2,...,N</script></li>
+<li><p>完全数据似然函数为</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(y,\gamma|\theta) & = \prod_{j=1}^N
+   P(y_j,\gamma_{j,1},\cdots,\gamma_{j,N}|\theta) \\
+& = \prod_{k=1}^{K} \prod_{j=1}^N
+   [\alpha_k \phi(y_j|\theta_k)]^{\gamma _{j,k}} \\
+& = \prod_{k=1}^{K} \alpha_k^{n_k} \prod_{j=1}^N
+   [\phi(y_j|\theta_k)]^{\gamma _{j,k}} \\
+\end{align*}</script><blockquote>
+<ul>
+<li>$n<em>k = \sum</em>{j=1}^{N} \gamma_{j,k}$</li>
+<li>$\sum_{k=1}^K n_k = N$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>完全数据的对数似然函数为</p>
+<script type="math/tex; mode=display">
+logP(y, \gamma|\theta) = \sum_{k=1}^K \left \{
+   n_k log \alpha_k + \sum_{j=1}^N \gamma_{j,k}
+   [log \frac 1 {\sqrt {2\pi}} - log \sigma_k -
+   \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \}</script></li>
+</ul>
+<h4 id="E步：确定Q函数"><a href="#E步：确定Q函数" class="headerlink" title="E步：确定Q函数"></a>E步：确定Q函数</h4><script type="math/tex; mode=display">\begin{align*}
+Q(\theta, \theta^{(i)}) & =
+    E_z[logP(y,\gamma|\theta)|Y,\theta^{(i)}] \\
+& = E \sum_{k=1}^K \left \{ n_k log\alpha_k + \sum_{j=1}^N
+    \gamma_{j,k} [log \frac 1 {\sqrt {2\pi}} - log \sigma_k
+    - \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \} \\
+& = \sum_{k=1}^K \left \{ \sum_{k=1}^K (E\gamma_{j,k})
+    log\alpha_k + \sum_{j=1}^N (E\gamma_{j,k})
+    [log \frac 1 {\sqrt {2\pi}} - log \sigma_k
+    - \frac 1 {2\sigma_k}(y_j - \mu_k)^2] \right \}
+\end{align*}</script><blockquote>
+<ul>
+<li>$E\gamma<em>{j,k} = E(\gamma</em>{j,k}|y,\theta)$：记为
+  $\hat \gamma_{j,k}$</li>
+</ul>
+</blockquote>
+<script type="math/tex; mode=display">\begin{align*}
+\hat \gamma_{j,k} & = E(\gamma_{j,k}|y,\theta) =
+    P(\gamma_{j,k}|y,\theta) \\
+& = \frac {P(\gamma_{j,k}=1, y_j|\theta)}
+    {\sum_{k=1}^K P(\gamma_{j,k}=1,y_j|\theta)} \\
+& = \frac {P(y_j|\gamma_{j,k}=1,\theta)
+    P(\gamma_{j,k}=1|\theta)} {\sum_{k=1}^K
+    P(y_j|\gamma_{j,k}=1,\theta) P(\gamma_{j,k}|\theta)} \\
+& = \frac {\alpha_k \phi(y_j|\theta _k)}
+    {\sum_{k=1}^K \alpha_k \phi(y_j|\theta_k)}
+\end{align*}</script><p>带入可得</p>
+<script type="math/tex; mode=display">
+Q(\theta, \theta^{(i)}) = \sum_{k=1}^K \left\{
+    n_k log\alpha_k + \sum_{k=1}^N \hat \gamma_{j,k}
+    [log \frac 1 {\sqrt{2\pi}} - log \sigma_k -
+    \frac 1 {2\sigma^2}(y_j - \mu_k)^2] \right \}</script><h4 id="M步"><a href="#M步" class="headerlink" title="M步"></a>M步</h4><p>求新一轮模型参数
+$\theta^{(i+1)}=(\hat \alpha_1,…,\hat \alpha_2,\hat \theta_1,…,\hat \theta_K)$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\theta^{(i+1)} & = \arg\max_{\theta} Q(\theta,\theta^{(i)}) \\
+\hat \mu_k & = \frac {\sum_{j=1}^N \hat \gamma_{j,k} y_j}
+    {\sum_{j=1}^N \hat \gamma_{j,k}} \\
+\hat \sigma_k^2 & = \frac {\sum_{j=1}^N \hat \gamma_{j,k}
+    (y_j - \mu_p)^2} {\sum_{j=1}^N \hat \gamma_{j,k}} \\
+\hat \alpha_k & = \frac {n_k} N = \frac {\sum_{j=1}^N
+    \hat \gamma_{j,k}} N
+\end{align*}</script><blockquote>
+<ul>
+<li>$\hat \theta_k = (\hat \mu_k, \hat \sigma_k^2)$：直接求
+  偏导置0即可得</li>
+<li>$\hat \alpha<em>k$：在$\sum</em>{k=1}^K \alpha_k = 1$条件下求
+  偏导置0求得</li>
+</ul>
+</blockquote>
+<h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><blockquote>
+<ul>
+<li>输入：观测数据$y_1, y_2,\cdots, y_N$，N个高斯混合模型</li>
+<li>输出：高斯混合模型参数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>取参数初始值开始迭代</p>
+</li>
+<li><p>E步：依据当前模型参数，计算分模型k对观测数据$y_j$响应度</p>
+<script type="math/tex; mode=display">
+\hat \gamma_{j,k} = \frac {\alpha \phi(y_k|\theta_k)}
+  {\sum_{k=1}^N \alpha_k \phi(y_j|\theta)}</script></li>
+<li><p>M步：计算新一轮迭代的模型参数
+$\hat mu_k, \hat \sigma_k^2, \hat \alpha_k$</p>
+</li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>GMM模型的参数估计的EM算法非常类似K-Means算法<blockquote>
+<ul>
+<li>E步类似于K-Means中计算各点和各聚类中心之间距离，不过
+ K-Means将点归类为离其最近类，而EM算法则是算期望</li>
+<li>M步根据聚类结果更新聚类中心</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h2 id="GEM"><a href="#GEM" class="headerlink" title="GEM"></a>GEM</h2><h3 id="Maximization-Maximization-Algorithm"><a href="#Maximization-Maximization-Algorithm" class="headerlink" title="Maximization-Maximization Algorithm"></a><em>Maximization-Maximization Algorithm</em></h3><h4 id="Free-Energy函数"><a href="#Free-Energy函数" class="headerlink" title="Free Energy函数"></a><em>Free Energy</em>函数</h4><blockquote>
+<ul>
+<li>假设隐变量数据Z的概率分布为$\tilde P(Z)$，定义分布
+  $\tilde P$与参数$\theta$的函数$F(\tilde P, \theta)$如下<script type="math/tex; mode=display">
+  F(\tilde P, \theta) = E_{\tilde P}
+      [log P(Y,Z|\theta)] + H(\tilde P)</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>$H(\tilde P)=-E_{\tilde P} log \tilde P(Z)$：分布
+   $\tilde P(Z)$的熵</li>
+<li>通常假设$P(Y,Z|\theta)$是$\theta$的连续函数，则函数
+   $F(\tilde P,\theta)$是$\tilde P, \theta$的连续函数</li>
+</ul>
+</blockquote>
+</blockquote>
+<h4 id="定理1-1"><a href="#定理1-1" class="headerlink" title="定理1"></a>定理1</h4><blockquote>
+<ul>
+<li>对于固定$\theta$，存在唯一分布$\tilde P<em>\theta$，极大化
+  $F(\tilde P, \theta)$，这时$\tilde P</em>\theta$由下式给出<script type="math/tex; mode=display">
+  \tilde P_\theta(Z) = P(Z|Y,\theta)</script>  并且$\tilde P_{\theta}$随$\theta$连续变化</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对于固定的$\theta$，求使得$F(\tilde P, \theta)$的极大，
+构造Lagrange函数</p>
+<script type="math/tex; mode=display">
+L(\tilde P, \lambda, \mu) = F(\tilde P, \theta) +
+   \lambda(1 - \sum_Z \tilde P(Z)) - \mu \tilde P(Z)</script><p>因为$\tilde P(Z)$是概率密度，自然包含两个约束</p>
+<script type="math/tex; mode=display">\left \{ \begin{array}{l}
+\sum_Z \tilde P(Z) = 1 \\
+\tilde P(Z) \geq 0
+\end{array} \right.</script><p>即Lagrange方程中后两项</p>
+</li>
+<li><p>对$\tilde P(Z)$求偏导，得</p>
+<script type="math/tex; mode=display">
+\frac {\partial L} {\partial \tilde P(Z)} =
+   log P(Y,Z|\theta) - log \tilde P(Z) - \lambda - \mu</script><p>令偏导为0，有</p>
+<script type="math/tex; mode=display">\begin{align*}
+log P(Y,Z|\theta) - log \tilde P(Z) & = \lambda + \mu \\
+\frac {P(Y,Z|\theta)} {\tilde P(Z)} & = e^{\lambda + \mu}
+\end{align*}</script></li>
+<li><p>则使得$F(\tilde P, \theta)$极大的$\tilde P_\theta(Z)$
+应该和$P(Y,Z|\theta)$成比例，由概率密度自然约束有</p>
+<script type="math/tex; mode=display">\tilde P_\theta(Z) = P(Y,Z|\theta)</script><p>而由假设条件，$P(Y,Z|\theta)$是$\theta$的连续函数</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>这里概率密度函数$\tilde P(Z)$是作为自变量出现</p>
+</li>
+<li><p>理论上对$\tilde P(Z)$和一般的<strong>复合函数求导</strong>没有区别，
+  但$E_{\tilde P}, \sum_Z$使得整体看起来非常不和谐</p>
+<script type="math/tex; mode=display">\begin{align*}
+  E_{\tilde P} f(Z) & = \sum_Z f(Z) \tilde P(Z) \\
+  & = \int f(Z) d(\tilde P(Z))
+  \end{align*}</script></li>
+</ul>
+</blockquote>
+<h4 id="定理2-1"><a href="#定理2-1" class="headerlink" title="定理2"></a>定理2</h4><blockquote>
+<ul>
+<li>若$\tilde P_\theta(Z) = P(Z|Y, \theta)$，则<script type="math/tex; mode=display">
+  F(\tilde P, \theta) = log P(Y|\theta)</script></li>
+</ul>
+</blockquote>
+<h4 id="定理3"><a href="#定理3" class="headerlink" title="定理3"></a>定理3</h4><blockquote>
+<ul>
+<li>设$L(\theta)=log P(Y|\theta)$为观测数据的对数似然函数，
+  $\theta^{(i)}, i=1,2,\cdots$为EM算法得到的参数估计序列，
+  函数$F(\tilde P,\theta)$如上定义<blockquote>
+<ul>
+<li>若$F(\tilde P,\theta)$在$\tilde P^{<em>}, \theta^{</em>}$
+ 上有局部极大值，则$L(\theta)$在$\theta^{*}$也有局部
+ 最大值</li>
+<li>若$F(\tilde P,\theta)$在$\tilde P^{<em>}, \theta^{</em>}$
+ 达到全局最大，则$L(\theta)$在$\theta^{*}$也达到全局
+ 最大</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由定理1、定理2有</p>
+<script type="math/tex; mode=display">
+L(\theta) = logP(Y|\theta) = F(\tilde P_\theta, \theta)</script><p>特别的，对于使$F(\tilde P,\theta)$极大$\theta^{8}$有</p>
+<script type="math/tex; mode=display">
+L(\theta^{*}) = logP(Y|\theta^{*}) =
+   F(\tilde P_\theta^{*}, \theta{*})</script></li>
+<li><p>由$\tilde P_\theta$关于$\theta$连续，局部点域内不存在点
+$\theta^{<strong>}$使得$L(\theta^{</strong>}) &gt; L(\theta^{<em>})$，否则
+与$F(\tilde P, \theta^{</em>})$矛盾</p>
+</li>
+</ul>
+<h4 id="定理4"><a href="#定理4" class="headerlink" title="定理4"></a>定理4</h4><blockquote>
+<ul>
+<li>EM算法的依次迭代可由F函数的极大-极大算法实现</li>
+<li>设$\theta^{(i)}$为第i次迭代参数$\theta$的估计，
+  $\tilde P^{(i)}$为第i次迭代参数$\tilde P$的估计，在第
+  i+1次迭代的两步为<blockquote>
+<ul>
+<li>对固定的$\theta^{(i)}$，求$\tilde P^{(i)}$使得
+ $F(\tilde P, \theta^{(i)})$极大</li>
+<li>对固定的$\tilde P^{(i+1)}$，求$\theta^{(i+1)}$使
+ $F(\tilde P^{(t+1)}, \theta)$极大化</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>固定$\theta^{(i)}$</p>
+<script type="math/tex; mode=display">\begin{align*}
+F(\tilde P^{(i+1)}, \theta^{(i)} & = E_{\tilde P^{(t+1)}}
+   [log P(Y,Z|\theta)] + H(\tilde P^{(i+1)}) \\
+& = \sum_Z log P(Y,Z|\theta) P(Z|Y,\theta^{(i)}) +
+   H(\tilde P^{(i+1)}) \\
+& = Q(\theta, \theta^{(i)}) + H(\tilde P^{(i+1)})
+\end{align*}</script></li>
+<li><p>则固定$\tilde P^{(i+1)}$求极大同EM算法M步</p>
+</li>
+</ul>
+<h3 id="GEM算法"><a href="#GEM算法" class="headerlink" title="GEM算法"></a>GEM算法</h3><blockquote>
+<ul>
+<li>输入：观测数据，F函数</li>
+<li>输出：模型参数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>初始化$\theta^{(0)}$，开始迭代</p>
+</li>
+<li><p>第i+1次迭代：记$\theta^{(i)}$为参数$\theta$的估计值，
+$\tilde P^{(i)}$为函数$\tilde P$的估计，求
+$\tilde P^{(t+1)}$使$\tilde P$极大化$F(\tilde P,\theta)$</p>
+</li>
+<li><p>求$\theta^{(t+1)}$使$F(\tilde P^{(t+1)l}, \theta)$极大化</p>
+</li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+<h3 id="次优解代替最优解"><a href="#次优解代替最优解" class="headerlink" title="次优解代替最优解"></a>次优解代替最优解</h3><blockquote>
+<ul>
+<li>输入：观测数据，Q函数</li>
+<li>输出：模型参数</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>初始化参数$\theta^{(0)}$，开始迭代</p>
+</li>
+<li><p>第i+1次迭代，记$\theta^{(i)}$为参数$\theta$的估计值，
+计算</p>
+<script type="math/tex; mode=display">\begin{align*}
+Q(\theta, \theta^{(i)}) & = E_Z [
+  log P(Y,Z|\theta)|Y,\theta^{(i)}] \\
+& = \sum_Z P(Z|Y, \theta^{(i)}) log P(Y,Z|\theta)
+\end{align*}</script></li>
+<li><p>求$\theta^{(i+1)}$使</p>
+<script type="math/tex; mode=display">
+Q(\theta^{(i+1)}, \theta^{(i)}) >
+  Q(\theta^{(i)}, \theta^{(i)})</script></li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>有时候极大化$Q(\theta, \theta^{(i)})$非常困难，此算法
+  仅寻找使目标函数值上升方向</li>
+</ul>
+</blockquote>
+<h3 id="ADMM求次优解"><a href="#ADMM求次优解" class="headerlink" title="ADMM求次优解"></a>ADMM求次优解</h3><blockquote>
+<ul>
+<li>输入：观测数据，Q函数</li>
+<li>输出：函数模型</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>初始化参数
+$\theta^{(0)} = (\theta_1^{(0)},…,\theta_d^{(0)})$，
+开始迭代</p>
+</li>
+<li><p>第i次迭代，记
+$\theta^{(i)} = (\theta_1^{(i)},…,\theta_d^{(i)})$，
+为参数$\theta = (\theta_1,…,\theta_d)$的估计值，计算</p>
+<script type="math/tex; mode=display">\begin{align*}
+Q(\theta, \theta^{(i)}) & = E_Z [
+  log P(Y,Z|\theta)|Y,\theta^{(i)}] \\
+& = \sum_Z P(Z|Y, \theta^{(i)}) log P(Y,Z|\theta)
+\end{align*}</script></li>
+<li><p>进行d次条件极大化</p>
+<ol>
+<li><p>在$\theta<em>1^{(i)},…,\theta</em>{j-1}^{(i)},\theta_{j+1}^{(i)},…,\theta_d^{(i)}$
+保持不变条件下
+，求使$Q(\theta, \theta^{(i)})$达到极大的
+$\theta_j^{(i+1)}$</p>
+</li>
+<li><p>j从1到d，进行d次条件极大化的，得到
+$\theta^{(i+1)} = (\theta_1^{(i+1)},…,\theta_d^{(i+1)})$
+使得</p>
+<script type="math/tex; mode=display">
+Q(\theta^{(i+1)}, \theta^{(i)}) >
+Q(\theta^{(i)}, \theta^{(i)})</script></li>
+</ol>
+</li>
+<li><p>重复2、3直到收敛</p>
+</li>
+</ol>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:25:01.000Z" title="7/13/2019, 11:25:01 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:05:22.000Z" title="7/16/2021, 4:05:22 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Nolinear-Model/">Nolinear Model</a></span><span class="level-item">15 minutes read (About 2279 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Nolinear-Model/k_nearest_neighbors.html">K-Nearest Neighor</a></h1><div class="content"><h2 id="K-NN"><a href="#K-NN" class="headerlink" title="K-NN"></a>K-NN</h2><ul>
+<li><p>输入：p维实例特征向量</p>
+<ul>
+<li>将样本点视为p维特征空间的中点</li>
+</ul>
+</li>
+<li><p>输出：实例类别，可以取多类别</p>
+</li>
+<li><p>基本思想</p>
+<ul>
+<li>在已有数据中找到与$X_0$相似的若干个观测
+$(X_1, X_2, …, X_k)$，称为$X_0$的近邻</li>
+<li>对近邻$(X_1, X_2, …, X_k)$的输出变量
+$(y_1, y_2, …, y_k)$，计算诸如算术平均值
+（加权平均值、中位数、众数），作为新观测$X_0$输出
+变量取值$y_0$的预测值</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li>k近邻不具有显式学习过程、简单、直观</li>
+<li>不需要假设$y=f(X)$函数体形式，实际上是利用训练数据集
+对特征空间进行划分</li>
+</ul>
+</li>
+</ul>
+<h3 id="局部方法"><a href="#局部方法" class="headerlink" title="局部方法"></a>局部方法</h3><p>k-NN是一种“局部”方法，仅适合特征空间维度较低的情况</p>
+<ul>
+<li><p>给定k的情况下，在高维空间中，需要到更远的区域寻找近邻，
+局部性逐渐丧失，近似误差变大</p>
+</li>
+<li><p>如：n个观测均匀分布在超立方体中，确定k后即确定$X_0$需要
+寻找的近邻个数占总观测的比率r，即近邻覆盖的体积</p>
+<ul>
+<li><p>考虑$X_0$在原点，则近邻分布的小立方体边期望长度为</p>
+<script type="math/tex; mode=display">
+Ed_p(r) = r^{1/p} \\
+Ed_3(0.1) = 0.1^{1/3} = 0.46 \\
+Ed_10(0.1)d = 0.1^{1/10} = 0.79 \\
+Ed_10(0.01) = 0.1^{1/10} = 0.63 \\</script></li>
+<li><p>可以看出：减少近邻比例（数量）没有帮助，还会使得近似
+误差变大，只能通过增大样本量解决</p>
+</li>
+</ul>
+</li>
+<li><p>特征选择有必要</p>
+</li>
+</ul>
+<h3 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h3><ul>
+<li><p>变量本身考察</p>
+<ul>
+<li><em>low variance filter</em>：剔除标准差小于阈值数值型变量</li>
+<li><em>missing values ratio</em>：剔除缺失值大于阈值的变量</li>
+<li>剔除众数比率大于阈值的分类型变量</li>
+</ul>
+</li>
+<li><p>变量与输出变量相关性角度考察</p>
+<ul>
+<li><em>high correlation filter</em></li>
+</ul>
+</li>
+<li><p>对预测误差影响角度考察</p>
+<ul>
+<li>Wrapper方法：逐个选择使错误率、均方误差下降最快变量
+，可使用<em>Forward Feature Elimination</em></li>
+</ul>
+</li>
+</ul>
+<h2 id="k-NN模型"><a href="#k-NN模型" class="headerlink" title="k-NN模型"></a>k-NN模型</h2><p>K-NN是使用模型：实际上对应于特征空间的划分</p>
+<ul>
+<li>模型包括3个基本要素，据此划分特征空间，确定特征空间中
+每个点所属类<ul>
+<li>k值选择</li>
+<li>距离度量：参见<em>data_science/ref/functions</em></li>
+<li>分类决策规则</li>
+</ul>
+</li>
+</ul>
+<h3 id="k值选择"><a href="#k值选择" class="headerlink" title="k值选择"></a>k值选择</h3><p>k值选择对k-NN方法有重大影响</p>
+<ul>
+<li><p>较小k值：相当于使用较小邻域中训练实例进行预测</p>
+<ul>
+<li>复杂模型，容易发生过拟合</li>
+<li><em>approximation error</em>较小：只有于输入实例近、相似的
+训练实例才会对预测结果有影响</li>
+<li><em>estimation error</em>较大：预测结果对近邻实例点非常敏感</li>
+</ul>
+</li>
+<li><p>较大k值：相当于使用较大邻域中训练实例进行预测</p>
+<ul>
+<li>简单模型</li>
+<li>估计误差较小</li>
+<li>近似误差较大：同输如实例远、相似程度差的训练实例也会
+对预测结果有影响</li>
+</ul>
+</li>
+</ul>
+<h4 id="k-1"><a href="#k-1" class="headerlink" title="k=1"></a>k=1</h4><p>只使用一个近邻做预测</p>
+<ul>
+<li><p>找到距离$X_0$最近的近邻$X_i$，用其取值作为预测值</p>
+</li>
+<li><p>模型简单、效果较理想</p>
+<ul>
+<li>尤其适合特征空间维度较低、类别边界不规则情况</li>
+<li>只根据单个近邻预测，预测结果受近邻差异影响极大，预测
+波动（方差）大，稳健性低</li>
+</ul>
+</li>
+<li><p>预测错误的概率不高于普通贝叶斯方法的两倍</p>
+<script type="math/tex; mode=display">\begin{align*}
+P_e & = (1-p(y=1|X=X_0))P(y=1|X=X_0) +
+       (1-p(y=0|X=X_0))P(y=0|X=X_0) \\
+   & = 2P(y=1|X=X_0)(1-P(y=1|X=X_0)) \\
+   & \leq 2(1-P(y=1|X=X_0)) \\
+\end{align*}</script><blockquote>
+<ul>
+<li>$P(y=1|X=X_0)$：普通贝叶斯方法做分类预测，预测结果
+ 为1的概率</li>
+<li>1-NN方法犯错的概率就是$X_0$、$X_i$二者实际值不同的
+ 概率？？？？</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="k-N"><a href="#k-N" class="headerlink" title="k=N"></a>k=N</h4><p>使用训练样本整体做预测</p>
+<ul>
+<li><p>无论输入实例，预测结果完全相同</p>
+<ul>
+<li>对分类预测，预测结果为“众数”</li>
+<li>对回归预测，预测结果为“平均数”</li>
+</ul>
+</li>
+<li><p>模型过于简单、效果不好</p>
+<ul>
+<li>忽略训练实例中大量信息</li>
+<li>“稳健性”极好：预测值基本不受近邻影响，无波动</li>
+</ul>
+</li>
+</ul>
+<h3 id="决策规则"><a href="#决策规则" class="headerlink" title="决策规则"></a>决策规则</h3><h4 id="分类决策规则"><a href="#分类决策规则" class="headerlink" title="分类决策规则"></a>分类决策规则</h4><h5 id="Majority-Voting-Rule"><a href="#Majority-Voting-Rule" class="headerlink" title="Majority Voting Rule"></a><em>Majority Voting Rule</em></h5><p>多数表决规则：等价于经验风险最小化</p>
+<ul>
+<li><p>分类损失函数为0-1损失函数，分类函数为
+$f: \mathcal{R^n} \rightarrow {c_1, c_2, \cdots}$</p>
+</li>
+<li><p>误分类概率$P(Y \neq f(X)) = 1 - P(Y=f(X))$</p>
+</li>
+<li><p>给定实例$x \in \mathcal{X}$的误分率为</p>
+<script type="math/tex; mode=display">
+\frac 1 k \sum_{x \in N_k(x)} I(y_i \neq c_j) = 
+1 - \frac 1 k \sum_{x \in N_k(x)} I(y_i = c_j)</script><blockquote>
+<ul>
+<li>$N_k(x)$：最近邻k个实例构成集合</li>
+<li>$c_j$：涵盖$N_k(x)$区域的类别</li>
+<li>$I$：指示函数</li>
+</ul>
+</blockquote>
+</li>
+<li><p>为使误分率（经验风险）最小，应选择众数</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>经验风险的构造中，前提是近邻被认为属于相同类别$c_j$，</li>
+<li>当然这个假设是合理的，因为k-NN方法就是认为近邻类别相同，
+  并使用近邻信息预测</li>
+<li>$c_j$的选择、选择方法是模型选择的一部分，不同的$c_j$会
+  有不同的经验风险</li>
+</ul>
+</blockquote>
+<h3 id="数值决策规则"><a href="#数值决策规则" class="headerlink" title="数值决策规则"></a>数值决策规则</h3><h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ul>
+<li><p>实现k近邻法时，主要问题是对训练数据进行快速k近邻搜索，
+尤在特征空间维数大、训练数据量大</p>
+</li>
+<li><p>考虑使用特殊的结构存储训练数据，减少计算距离次数，提高
+k近邻搜索效率</p>
+</li>
+</ul>
+<h4 id="linear-scan"><a href="#linear-scan" class="headerlink" title="linear scan"></a><em>linear scan</em></h4><p>线性扫描：最简单的实现方法</p>
+<ul>
+<li>需要计算输入实例与每个训练实例的距离，训练集较大时计算
+非常耗时</li>
+</ul>
+<h4 id="kd树最近邻搜索"><a href="#kd树最近邻搜索" class="headerlink" title="kd树最近邻搜索"></a>kd树最近邻搜索</h4><blockquote>
+<ul>
+<li>输入：已构造kd树</li>
+<li>输出：x的最近邻</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>在kd树种找出包含目标点x的叶节点的</p>
+<ul>
+<li><p>从根节点出发，比较对应坐标，递归进行访问，直到叶节点
+为止</p>
+</li>
+<li><p>目标点在训练样本中不存在，必然能够访问到叶节点</p>
+</li>
+</ul>
+</li>
+<li><p>以此叶节点为“当前最近点”</p>
+<ul>
+<li>目标点在此叶节点中点所在的区域内，且区域内只有该
+叶节点中点</li>
+</ul>
+</li>
+<li><p>回溯，并在每个节点上检查</p>
+<ul>
+<li><p>如果当前节点保存实例点比当前最近点距离目标的更近，
+更新该实例点为“当前最近点”</p>
+</li>
+<li><p>检查该节点另一子区域是否可能具有更近距离的点</p>
+<ul>
+<li>即其是否同以目标点为圆心、当前最短距离为半径圆
+相交</li>
+<li>只需要比较目标点和相应坐标轴距离和最短距离即可</li>
+</ul>
+</li>
+<li><p>若二者相交，则将目标节点视为<strong>属于</strong>该子区域中点，
+进行最近邻搜索，<strong>递归向下</strong>查找到相应叶节点，重新
+开始回退</p>
+</li>
+<li><p>若二者不相交，则继续回退</p>
+</li>
+</ul>
+</li>
+<li><p>退回到根节点时，搜索结束，最后“当前最近点”即为最近邻点</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>这里涉及到回溯过程中，另一侧子域是否访问过问题，可以通过
+  标记、比较相应轴坐标等方式判断</li>
+<li>k&gt;1的情况类似，不过检测时使用最远近邻，新近邻需要和所有
+  原近邻依次比较</li>
+</ul>
+</blockquote>
+<h2 id="加权k-NN"><a href="#加权k-NN" class="headerlink" title="加权k-NN"></a>加权k-NN</h2><h3 id="变量重要性"><a href="#变量重要性" class="headerlink" title="变量重要性"></a>变量重要性</h3><p>计算变量的加权距离，重要变量赋予较高权重</p>
+<ul>
+<li><p>变量重要性：<em>Backward Feature Elimination</em>得到各变量
+重要性排序</p>
+<script type="math/tex; mode=display">
+FI_{(i)} = e_i + \frac {1} {p} \quad \\
+w_{(i)} = \frac {FI_{(i)}} {\sum_{j=1}^p FI_{(j)}}</script><blockquote>
+<ul>
+<li>$e_i$：剔除变量i之后的均方误差（错误率）</li>
+</ul>
+</blockquote>
+</li>
+<li><p>加权距离：$d<em>w(x,y)=\sqrt {\sum</em>{i=1}^{p} w^{(i)}(x_i - y_i)^2}$</p>
+</li>
+</ul>
+<h3 id="观测相似性"><a href="#观测相似性" class="headerlink" title="观测相似性"></a>观测相似性</h3><p>目标点的k个近邻对预测结果不应有“同等力度”的影响，与$X_0$越
+相似的观测，预测时重要性（权重）越大</p>
+<ul>
+<li><p>权重：用函数$K(d)$将距离d转换相似性，$K(d)$应该有特性</p>
+<blockquote>
+<ul>
+<li>非负：$K(d) \geqslant 0, d \in R^n$</li>
+<li>0处取极大：$max K(d) = K(0)$</li>
+<li>单调减函数，距离越远，相似性越小</li>
+</ul>
+</blockquote>
+<ul>
+<li>核函数符合上述特征</li>
+<li>且研究表明除均匀核外，其他核函数预测误差差异均不明显</li>
+</ul>
+</li>
+</ul>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li><p>依据函数距离函数$d(Z_{(i)}, Z_0)$找到$X_0$的k+1个近邻</p>
+<ul>
+<li>使用第k+1个近邻距离作为最大值，调整距离在0-1之间<script type="math/tex; mode=display">
+D(Z_{(i)}, Z_0) = \frac {d(Z_{(i)}, Z_0)}
+  {d(Z_{(k+1)}, Z_0)}, \quad i=1,2,...,k</script></li>
+</ul>
+</li>
+<li><p>依据函数$w_i=K(d)$确定k各近邻的权重</p>
+</li>
+<li><p>预测</p>
+<ul>
+<li>回归预测<script type="math/tex; mode=display">\hat{y}_0 = \frac 1 k (\sum_{i=1}^k w_iy_i)</script></li>
+<li>分类预测：多数表决原则<script type="math/tex; mode=display">
+\hat{y}_0 = max_r (\sum_{i=1}^k w_iI(y_i=r)) \\
+P(\hat{y}_0=r|X_0)= \frac
+  {\sum_{i=1}^k w_iI(y_i=r)} {\sum_{i=1}^k w_i}</script></li>
+</ul>
+</li>
+</ul>
+<h2 id="Approximate-Nearest-Neighbor"><a href="#Approximate-Nearest-Neighbor" class="headerlink" title="Approximate Nearest Neighbor"></a><em>Approximate Nearest Neighbor</em></h2><p>相似最近邻</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:25:01.000Z" title="7/13/2019, 11:25:01 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:01:46.000Z" title="7/16/2021, 4:01:46 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Nolinear-Model/">Nolinear Model</a></span><span class="level-item">31 minutes read (About 4647 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Nolinear-Model/decision_tree.html">Decision Tree</a></h1><div class="content"><h2 id="决策树概述"><a href="#决策树概述" class="headerlink" title="决策树概述"></a>决策树概述</h2><h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><blockquote>
+<ul>
+<li>决策树分析结论、展示方式类似一棵倒置的树</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>决策树由 <em>node</em>、<em>directed edge</em> 组成</p>
+<ul>
+<li><em>internal node</em>：内部节点，表示特征、属性</li>
+<li><em>leaf node</em>：叶子节点，表示一个类</li>
+</ul>
+</li>
+<li><p>对训练数据进行分类</p>
+<ul>
+<li>从根节点开始，对实例某特征进行测试，根据测试结果将实例分配到其子节点，对应该特征一个取值</li>
+<li>递归地对实例进行分配，直至到达叶子节点，将实例分到叶节点地类中</li>
+</ul>
+</li>
+<li><p>对新数据的预测</p>
+<ul>
+<li>从决策树的树根到树叶搜索，确定数所的叶子节点</li>
+<li>利用叶子节点中训练数据集预测<ul>
+<li>分类型：众数</li>
+<li>数值型：均值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="本质"><a href="#本质" class="headerlink" title="本质"></a>本质</h3><p>决策树：本质上是从训练数据中归纳出一组分类规则</p>
+<ul>
+<li>与训练数据不矛盾的分类规则（即能对训练数据正确分类）可能有多个、没有，需要找到矛盾较小、泛化能力较好的</li>
+<li>决策树学习也是由训练数据集估计条件概率模型，需要寻找对训练数据有很好拟合、对未知数据有很好预测的模型</li>
+</ul>
+<h4 id="分类规则集合"><a href="#分类规则集合" class="headerlink" title="分类规则集合"></a>分类规则集合</h4><blockquote>
+<ul>
+<li>决策树可以看作是 <em>if-then</em> 规则的集合：体现输入、输出变量逻辑关系</li>
+</ul>
+</blockquote>
+<ul>
+<li>决策树根节点到叶节点每条路径构成一条规则</li>
+<li>路径上内部节点的特征对应规则的条件，叶节点对应规则结论</li>
+<li>决策树的路径或其对应的 <em>if-then</em> 规则集合 <strong>互斥且完备</strong>，即每个实例有且仅有一条路径覆盖</li>
+</ul>
+<h4 id="条件概率分布"><a href="#条件概率分布" class="headerlink" title="条件概率分布"></a>条件概率分布</h4><blockquote>
+<ul>
+<li>决策树可以表示定义在特征空间、类空间上的条件概率分布</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>此条件概率分布定义在特征空间的一个划分（有限）上</p>
+<ul>
+<li>决策树中一条路径（叶节点）对应划分中一个单元</li>
+<li>每个单元定义的概率分布就构成一个条件概率分布</li>
+</ul>
+</li>
+<li><p>条件概率分布由 <strong>各单元的给定条件下</strong>，各类的条件概率分布组成</p>
+<ul>
+<li>$P(Y|X)$：$X$ 为表示特征的随机变量（取值各个单元），$Y$ 表示类的随机变量</li>
+<li>各叶节点上的条件概率往往偏向于某类，决策树分类时将属于该节点实例分为该类</li>
+</ul>
+</li>
+</ul>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li><p>优势</p>
+<ul>
+<li>能有效处理分类型输入变量</li>
+<li>能够实现非线性分割</li>
+<li>模型具有可读性，分类速度块</li>
+</ul>
+</li>
+<li><p>问题</p>
+<ul>
+<li>充分生长的决策有高方差，预测不稳定</li>
+<li>剪枝可以提高预测稳健性，但是预测精度可能会下降</li>
+</ul>
+</li>
+</ul>
+<h2 id="决策树构建"><a href="#决策树构建" class="headerlink" title="决策树构建"></a>决策树构建</h2><ul>
+<li><p>从所有可能决策树中选取最优决策树是NP完全问题</p>
+<ul>
+<li>所以实际决策树算法通常采用 <strong>启发式</strong> 算法、贪心算法，近似求解最优化问题，得到 <em>sub-optimal</em> 决策树</li>
+<li>从包含所有数据的根节点开始，递归的选择 <strong>当前</strong> 最优特征、分割点对训练数据进行分割，使得各子数据集有当前最好分类</li>
+<li>此样本不断分组过程对应特征空间的划分、决策树的构建</li>
+</ul>
+</li>
+<li><p>原则：使节点/组内观测取值异质性下降最大，从而确定</p>
+<ul>
+<li>最佳划分特征</li>
+<li>特征的最佳分割点</li>
+</ul>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th><em>ID3</em></th>
+<th><em>C4.5</em></th>
+<th><em>CART</em></th>
+<th><em>CHAID</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>特征</td>
+<td>分类</td>
+<td>分类、连续</td>
+<td>同左</td>
+<td>同左</td>
+</tr>
+<tr>
+<td>输出</td>
+<td>分类</td>
+<td>分类</td>
+<td>分类、回归</td>
+<td>分类</td>
+</tr>
+<tr>
+<td>连续值处理</td>
+<td>-</td>
+<td>二分法</td>
+<td>同左</td>
+<td>等距分组</td>
+</tr>
+<tr>
+<td>分叉</td>
+<td>多叉</td>
+<td>多叉</td>
+<td>二叉</td>
+<td>多叉</td>
+</tr>
+<tr>
+<td>分裂指标</td>
+<td>信息增益</td>
+<td>信息增益比</td>
+<td><em>GINI</em> 不纯度</td>
+<td>相关性</td>
+</tr>
+<tr>
+<td>前剪枝</td>
+<td>-</td>
+<td>叶节点数量</td>
+<td>树深度、节点样本数量</td>
+<td>-</td>
+</tr>
+<tr>
+<td>后剪枝</td>
+<td>-</td>
+<td>置信度、减少-误差法</td>
+<td><em>MCCP</em></td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="异质性衡量：划分准则"><a href="#异质性衡量：划分准则" class="headerlink" title="异质性衡量：划分准则"></a>异质性衡量：划分准则</h3><ul>
+<li>信息增益</li>
+<li>信息增益比：避免信息增益倾向于取值较多特征<ul>
+<li>若样本类别严格服从分布，则信息增益和信息增益比选择应完全相同</li>
+<li>但由于偶然性、样本数量等原因，各特征取值的样本数量往往不完全符合分布</li>
+<li>由信息增益定义可看出，各特征取值样本数量较小时，数量变动影响更大，而特征取值较多更可能出现各取值对应样本数量较小</li>
+</ul>
+</li>
+<li><em>GINI</em> 指数</li>
+</ul>
+<blockquote>
+<ul>
+<li>研究表明，不同决策树的划分准则对泛化性能影响有限，信息增益和 <em>GINI</em> 指数理念分析表明，其仅在 2% 情况下有所不同</li>
+</ul>
+</blockquote>
+<h3 id="特征变量处理"><a href="#特征变量处理" class="headerlink" title="特征变量处理"></a>特征变量处理</h3><ul>
+<li><p>离散值处理</p>
+<ul>
+<li>全分类：各类别分别独立作为分支，构建节点</li>
+<li>切分二分：将类别分为的两组</li>
+<li>是否二分：某取值作为一个分支，其余作为另一分支</li>
+</ul>
+</li>
+<li><p>连续值处理</p>
+<ul>
+<li>二分法：选择阈值，按照阈值将连续值分为两部分<ul>
+<li>精确阈值选取：检查所有可能阈值点，即所有不同取值点的中间点</li>
+<li>近似阈值选取</li>
+</ul>
+</li>
+<li>近似分裂算法：选取一组阈值，将特征划分至不同桶内，类似分类值处理<ul>
+<li>等频阈值：分位数</li>
+<li>等距阈值：<em>linespace</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="缺失值处理"><a href="#缺失值处理" class="headerlink" title="缺失值处理"></a>缺失值处理</h3><blockquote>
+<ul>
+<li>缺失值处理需要解决：异质性衡量指标计算、特征缺失样本划分问题</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>异质性衡量指标计算：使用特征未缺失样本权重对指标加权（以信息增益为例）</p>
+<script type="math/tex; mode=display">\begin{align*}
+g(Y|X) &= \rho * g(\tilde Y | X) \\
+& = \rho * (H(\tilde D) - \sum_v^V \tilde {r_v} H(\tilde {D^v})) \\
+H(\tilde V) &= - \sum_k^K \tilde {p_k} log \tilde {p_k} \\
+\rho &= \frac {\sum_{x \in \tilde D} w_x} {\sum_{x \in D} w_x}\\
+\tilde {p_x} &= \frac {\sum_{x \in \tilde {D_k}} w_x} {\sum_{x \in \tilde D} w_x} \\
+\tilde {r_v} &= \frac {\sum_{x \in \tilde {D^v}} w_x} {\sum_{x \in \tilde D} w_x}
+\end{align*}</script><blockquote>
+<ul>
+<li>$Y, X, w_x$：样本类别，特征，样本权重</li>
+<li>$D, \tilde D, \tilde {D_k}, \tilde {D^v}$：样本全集，在特征 $X$ 上无缺失样本子集，属于 $k$ 类样本子集，在特征 $X$ 上取 $v$ 样本子集</li>
+</ul>
+</blockquote>
+</li>
+<li><p>特征缺失样本划分</p>
+<ul>
+<li>划分至所有节点，其权重设置为 $\tilde {r_v} * w_x$<ul>
+<li>$\tilde {r_v}$ 为节点 $v$ 的权重</li>
+<li>即将特征缺失样本节点权重比例划分至各节点</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="剪枝"><a href="#剪枝" class="headerlink" title="剪枝"></a>剪枝</h2><p>树剪枝：在决策树的学习过程中，将已生成的树进行简化的过程</p>
+<ul>
+<li><p>最小化 <em>RSS</em>、最大化置信目标下，会导致庞大的树</p>
+<ul>
+<li>对训练数据拟合好</li>
+<li>模型复杂度越高</li>
+<li>推广能力差</li>
+<li>比较难理解、解释</li>
+</ul>
+</li>
+<li><p>通过剪枝得到恰当的树，具备一定的预测精度、复杂程度恰当，代价（误差）和复杂度之间的权衡是必要的</p>
+</li>
+<li><p><em>Pre-pruning</em> 预剪枝：在决策树分裂过程中，不分裂不满足分裂条件的节点，限制决策树充分生长</p>
+<ul>
+<li>分裂条件<ul>
+<li>最大深度</li>
+<li>叶节点数量</li>
+<li>样本量最小值</li>
+<li>异质性下降阈值</li>
+</ul>
+</li>
+<li>预剪枝基于“贪心”的禁止划分，可能降低过拟合、减少时间开销，但也可能导致欠拟合</li>
+</ul>
+</li>
+<li><p><em>Post-pruning</em> 后剪枝：决策分裂完成后，根据一定规则剪去不具备普遍性的子树</p>
+<ul>
+<li>比预剪枝决策保留更多分支，欠拟合风险小、泛化性能好</li>
+<li><strong>决策树生成局部模型，决策树剪枝学习整体模型</strong></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>剪枝方法、程度对泛化性能影响显著，尤其是数据带有噪声</li>
+</ul>
+</blockquote>
+<h3 id="自底向上剪枝"><a href="#自底向上剪枝" class="headerlink" title="自底向上剪枝"></a>自底向上剪枝</h3><ul>
+<li><p>自底向上剪去所有无法改善评价准则的非叶节点分支（转为叶节点）</p>
+<ul>
+<li>最简单后剪枝策略</li>
+<li>若已使用一定预剪策略，则该策略价值不大</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li>须在生成完全决策树之后自底向上逐个考察非叶节点，时间开销大</li>
+</ul>
+</li>
+</ul>
+<h3 id="Minimal-Cost-Complexity-Pruning"><a href="#Minimal-Cost-Complexity-Pruning" class="headerlink" title="Minimal Cost Complexity Pruning"></a><em>Minimal Cost Complexity Pruning</em></h3><script type="math/tex; mode=display">\begin{align*}
+C_\alpha(T) & = C(T) + \alpha |T| \\
+    & = \sum_{t=1}^{|T|} N_t H_t(T) + \alpha |T| \\
+    & = -\sum_{t=1}^{|T|} \sum_{k=1}^K \frac {N_{t,k}} {N_t} log \frac {N_{t,k}} {N_t}  + \alpha|T| \\
+H_t(T) & = -\sum_k (\frac {N_{t,k}} {N_t} log \frac {N_{t,k}} {N_t})
+\end{align*}</script><blockquote>
+<ul>
+<li>$N_t$：树 $T$ 的第 $t$ 个叶子节点中样本点数量</li>
+<li>$N_{t,k}$：树 $T$ 的第 $t$ 个叶子节点第 $k$ 类样本点数量</li>
+<li>$H_t(T)$：树 $T$ 的第 $t$ 个叶子节点熵</li>
+<li>$C(T)$：模型对训练数据的预测误差</li>
+<li>$|T|$：用叶节点数量衡量的模型复杂度</li>
+<li>$\alpha \geq 0$：控制模型复杂度对模型总损失影响，每个叶节点带来的复杂度</li>
+</ul>
+</blockquote>
+<ul>
+<li>极小化损失复杂度剪枝<ul>
+<li>损失函数：正则化的极大似然函数</li>
+<li>此策略即在给定 $\alpha$ 的情况下，选择损失函数最小树</li>
+</ul>
+</li>
+</ul>
+<h4 id="剪枝步骤"><a href="#剪枝步骤" class="headerlink" title="剪枝步骤"></a>剪枝步骤</h4><blockquote>
+<ul>
+<li>输入：生成算法产生的整个树 $T$，参数 $\alpha$</li>
+<li>输出：修剪后的子数 $T_\alpha$</li>
+</ul>
+</blockquote>
+<ul>
+<li>计算每个节点的经验熵</li>
+<li>递归的从树的叶节点向上回缩<ul>
+<li>若 $C<em>\alpha(T</em>{before}) \geq C<em>\alpha(T</em>{after})$，则剪枝</li>
+<li>不断回缩直到根节点，选取损失函数最小的子树 $T_\alpha$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>算法只需要比较节点、节点子树之间损失函数之差即可，计算可以在局部进行</li>
+<li>算法可以由动态规划算法实现</li>
+</ul>
+</blockquote>
+<h4 id="超参选择"><a href="#超参选择" class="headerlink" title="超参选择"></a>超参选择</h4><ul>
+<li><p>对给定超参 $\alpha$，存在使损失函数 $C<em>\alpha(T)$ 最小子树 $T</em>\alpha$，且此最优子树唯一</p>
+<ul>
+<li>$\alpha$ 偏大时，最优子树 $T_\alpha$ 偏小</li>
+<li>$\alpha=0$ 时完整树最优，$\alpha \rightarrow \infty$ 时单节点树最优</li>
+</ul>
+</li>
+<li><p>对决策树种每个节点 $t$，通过以下策略生成 $g(t)$</p>
+<ul>
+<li>$C_{\alpha}(T^t) = C(T^t) + \alpha|T^t|$：以 $t$ 为根节点的子树 $T^t$ 损失</li>
+<li>$C_{\alpha}(t) = C(t) + \alpha$：对 $t$ 剪枝之后，仅包含单个节点 $t$ 的正则损失</li>
+<li>则 $\alpha=g(t) = \frac {C(t)-C(T^t)} {|T^t|-1}$ 时，单节点 $t$ 和子树 $T^t$ 损失相同</li>
+</ul>
+</li>
+<li><p>考虑以上 $g(t)$ 序列</p>
+<ul>
+<li>$\alpha^t=g(t)$ 表示对 $T^{(0)}$ 中每个内部节点 $t$ 剪枝后，整体损失函数值减少程度</li>
+<li>可以证明，对以上 $\alpha &gt; 0$ 序列排序，按 $0, \alpha^{(1)}, \cdots, \alpha^{(N)}$ 依次进行剪枝，对应最优子树序列 $T^{(0)}, T^{(1)},\cdots, T^{(N)}$ 嵌套</li>
+<li>通过交叉验证法在独立的验证数据集上对子树进行测试，选择最优决策树</li>
+</ul>
+</li>
+</ul>
+<h4 id="完整剪枝-超参选择"><a href="#完整剪枝-超参选择" class="headerlink" title="完整剪枝+超参选择"></a>完整剪枝+超参选择</h4><blockquote>
+<ul>
+<li>输入：<em>CART</em> 算法生成决策树 $T^{(0)}$</li>
+<li>输出：最优决策树 $T_\alpha$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>自下而上地计算各内部节点 $t$ 对应 $C(T^t), |T^t|, g(t)$，对 $g(t)$ 升序排列得到 $\alpha^{(1)},\cdots,\alpha^{(N)}$</p>
+</li>
+<li><p>置：$k=1, \alpha=\alpha^{(k)}, T=T^{(0)}$</p>
+</li>
+<li><p>自上而下访问内部节点，若有 $g(t)=\alpha$，剪枝并计算新叶节点 $t$ 取值，得到对应最优树 $T^{(k)}$</p>
+<ul>
+<li>对于节点 $t$，其子树 $T^t$ 最大有效 $\alpha$ 也只是根节点对应 $g(t)$，更大没有价值</li>
+<li>自上而下剪枝避免无效剪枝</li>
+</ul>
+</li>
+<li><p>置：$k+=1, \alpha=\alpha^{(k)}, T=T^{(k)}$</p>
+</li>
+<li><p>若 $T$ 不是单节点树，则重复以上</p>
+</li>
+<li><p>采用交叉验证法在子树序列中选取最优子树 $T_\alpha$</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>也可从 $\alpha \leftarrow \infty$ 开始，逐渐减少，<strong>添枝</strong> 得到子树序列</li>
+</ul>
+</blockquote>
+<h2 id="决策树构建算法"><a href="#决策树构建算法" class="headerlink" title="决策树构建算法"></a>决策树构建算法</h2><ul>
+<li><p>以下是一些经典的决策树（算法），但实际实现中往往不会严格按其构建决策树</p>
+</li>
+<li><p>决策树算法常用递归描述、构建，完全决策树中止条件如下
+（往往不会应用，而是以预剪枝条件作为中止条件）</p>
+<ul>
+<li>节点中样本属于同一类</li>
+<li>所有特征利用完毕</li>
+<li>无法找到满足划分阈值的特征、划分点</li>
+</ul>
+</li>
+</ul>
+<h3 id="Iterative-Dichotomiser-3"><a href="#Iterative-Dichotomiser-3" class="headerlink" title="Iterative Dichotomiser 3"></a><em>Iterative Dichotomiser 3</em></h3><h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><blockquote>
+<ul>
+<li>输入：训练数据集 $D$，特征集 $A$，阈值 $\epsilon$</li>
+<li>输出：决策树 $T$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>以下情况下 $T$ 为单节点树，以 $D$ 中实例数最大的类（众数） $C_k$ 作为该节点的类标记，返回 $T$</p>
+<ul>
+<li>$D$ 中所有实例属于同一类 $C_k$</li>
+<li>$A = \varnothing$</li>
+</ul>
+</li>
+<li><p>计算 $A$ 中各特征对 $D$ 的信息增益，选择信息增益最大的特征 $A_g$</p>
+<ul>
+<li>若 $A_g$ 的信息增益小于阈值 $\epsilon$，则置 $T$ 为单节点树，并将 $D$ 中实例数最大的类 $C_k$ 作为节点类标记，返回 $T$</li>
+<li>否则，对 $A_g$ 每个可能值 $a_m$，将 $D$ 分割为若干非空子集 $D_i$<ul>
+<li>将 $D_i$ 中实例数最多的类作为标记，构建子节点</li>
+<li>对第 $i$ 个子节点，以 $D_i$ 为训练集，以 $A-{A_g}$ 为特征集，递归的构造子树 $T_i$ 并返回</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>只允许分类型特征，且每个特征只会被用于划分一次</p>
+<ul>
+<li>每次所有取值都会被用于建立子节点</li>
+<li><em>ID3</em> 树是多叉树，各个节点的分叉个数取决于使用特征</li>
+</ul>
+</li>
+<li><p>只有树的生成，容易产生过拟合</p>
+</li>
+<li><p>以信息增益作为划分训练数据集的特征，倾向于选择取值较多的特征进行划分</p>
+<ul>
+<li>理论上若特征取值严格符合分布，取值数量多寡，对信息增益没有影响</li>
+<li>由于各种误差的存在，样本不可能严格符合总体分布，取值数量较多特征，各取值对应样本数量较少，误差会使得条件经验熵倾向于偏小
+（假设误差随机，可以大概证明）</li>
+</ul>
+</li>
+<li><p>相当于用 <strong>极大似然法</strong> 进行概率模型的选择</p>
+</li>
+</ul>
+<h3 id="C4-5"><a href="#C4-5" class="headerlink" title="C4.5"></a><em>C4.5</em></h3><p><em>C4.5</em>算法：<em>ID3</em> 算法继承者</p>
+<ul>
+<li><p>与 <em>ID3</em> 差别</p>
+<ul>
+<li>用信息增益比代替信息增益用于选择特征，并且也被用于 <strong>前剪枝</strong><ul>
+<li>修正 <em>ID3</em> 倾向于使用取值较多的特征值分裂结点</li>
+</ul>
+</li>
+<li>兼容数值型特征，使用二分法处理</li>
+</ul>
+</li>
+<li><p><em>C4.5</em> 算法还包含 <em>C4.5Rules</em> 将 <em>C4.5</em> 决策树转化为符号规则 -    各分支被重写为规则，并进行前件合并、删减</p>
+<ul>
+<li>最终规则集泛化性能可能优于原决策树</li>
+</ul>
+</li>
+</ul>
+<h3 id="Classification-and-Regression-Tree"><a href="#Classification-and-Regression-Tree" class="headerlink" title="Classification and Regression Tree"></a><em>Classification and Regression Tree</em></h3><p><em>CART</em> 树：可用于分类和回归的二叉树</p>
+<ul>
+<li><p>特点</p>
+<ul>
+<li>二叉树</li>
+<li>可以用于分类、回归<ul>
+<li>分类：众数代表节点，<em>GINI</em> 指数选择特征</li>
+<li>回归：均值代表节点，<em>MSE</em> 选择特征</li>
+</ul>
+</li>
+<li>能较好的处理缺失值</li>
+</ul>
+</li>
+<li><p><em>CART</em> 回归：平方误差最小化准则</p>
+<script type="math/tex; mode=display">
+f(x) = \sum_{m=1} \hat c_m I(x \in R_m)</script><blockquote>
+<ul>
+<li>$R_m$：空间划分出的第 $m$ 单元</li>
+<li>$\hat c_m=avg(y_i|x_i \in R_m)$：第 $m$ 个单元上所有实例输出变量均值，此时平方误差最小</li>
+</ul>
+</blockquote>
+</li>
+<li><p><em>CART</em> 分类：最小化基尼指数准则</p>
+<script type="math/tex; mode=display">
+Gini(D, X=a) = \frac {|D_1|} {|D|} Gini(D_1) + \frac {|D_2|} {|D|} Gini(D_2)</script><blockquote>
+<ul>
+<li>$D_1 = {(x,y) \in D, X = a}$</li>
+<li>$D_2 = D - D_1$</li>
+<li><em>CART</em> 树是二叉树，对分类变量只选择是否</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="CART回归步骤"><a href="#CART回归步骤" class="headerlink" title="CART回归步骤"></a>CART回归步骤</h4><blockquote>
+<ul>
+<li>输入：训练数据集 $D$</li>
+<li>输出：回归树 $f(x)$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>选择最优切变量 $j$、切分点 $s$，即求解</p>
+<script type="math/tex; mode=display">
+\arg\min_{j,s} [\min_{c_1} \sum_{x_i \in R_1(j,s)}
+   (y_i - c_1)^2 + \min_{c_2}
+   \sum_{x_i \in R_2(j,s)} (y_i - c_2)^2
+]</script><blockquote>
+<ul>
+<li>$R_1(j,s) = {x|x^{(j)} \leq s}$</li>
+<li>$R_2(j,s) = {x|x^{(j)} \geq s}$</li>
+<li>$c_m = avg(y_i|x_i \in R_m)$：使得区域 $R_m$ 中平方误差最小，即其中样本点 $y_i$ 均值</li>
+<li>这里通过 <strong>遍历</strong> 得到</li>
+</ul>
+</blockquote>
+</li>
+<li><p>对两个子区域 $R_1(j,s), R_2(j,s)$ 继续重复以上步骤，直至满足停止条件</p>
+</li>
+<li><p>将输入空间划分为 $M$ 个区域 $R_1, R_2, \cdots, R_M$，生成决策
+树</p>
+<script type="math/tex; mode=display">
+f(x) = \sum_{m=1} \hat c_m I(x \in R_m)</script></li>
+</ul>
+<h4 id="CART-分类步骤"><a href="#CART-分类步骤" class="headerlink" title="CART 分类步骤"></a><em>CART</em> 分类步骤</h4><blockquote>
+<ul>
+<li>输入：训练数据集 $D$，停止计算条件</li>
+<li>输出：<em>CART</em> 决策树</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>选择最优切变量 $j$、切分点 $s$</p>
+<script type="math/tex; mode=display">
+Gini(D, X=a) = \frac {|D_1|} {|D|} Gini(D_1) + \frac {|D_2|} {|D|} Gini(D_2)</script><ul>
+<li>对每个特征 $X$，对其所有取值 $a$ 计算条件基尼指数</li>
+<li>选择条件基尼指数最小的特征、对应的切分点，将训练数据依特征分配到两个子结点中</li>
+</ul>
+</li>
+<li><p>对生成两个子节点递归分裂，直至满足停止条件</p>
+</li>
+<li><p>生成 <em>CART</em> 决策树</p>
+</li>
+</ul>
+<h3 id="Chi-squared-Automatic-Interaction-Detector"><a href="#Chi-squared-Automatic-Interaction-Detector" class="headerlink" title="Chi-squared Automatic Interaction Detector"></a><em>Chi-squared Automatic Interaction Detector</em></h3><p><em>CHAID</em> 卡方自动交叉检验法：类似 <em>ID3</em> 算法，但利用卡方统计确定特征变量</p>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/bdd3e60abed5b9f3f90f1cd6.html">https://wenku.baidu.com/view/bdd3e60abed5b9f3f90f1cd6.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://sefiks.com/2020/03/18/a-step-by-step-chaid-decision-tree-example/">https://sefiks.com/2020/03/18/a-step-by-step-chaid-decision-tree-example/</a></li>
+</ul>
+</blockquote>
+<h4 id="特点-2"><a href="#特点-2" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>通过卡方统计量选择最显著特征变量作为划分特征</p>
+<ul>
+<li>分类目标变量：列联分析，卡方检验</li>
+<li>数值目标变量：回归分析，F检验</li>
+</ul>
+</li>
+<li><p>特征预处理</p>
+<ul>
+<li>分类型特征变量：根据卡方统计量显著性、组数量等考虑拆分、合并分组</li>
+<li>数值型特征变量：均分分组</li>
+</ul>
+</li>
+<li><p>是从相关性显著角度确定特征变量</p>
+<ul>
+<li>对决策树分支优化明显</li>
+<li>可用特征变量与目标相关性显著显著性作为停止分裂的标准</li>
+</ul>
+</li>
+</ul>
+<h3 id="QUEST"><a href="#QUEST" class="headerlink" title="QUEST"></a><em>QUEST</em></h3><p><em>Quick Unbiased Efficient Statical Tree</em>：类似 <em>CHAID</em> 算法，但对选择特征、划分点依据不同，仅能处理分类目标变量</p>
+<h4 id="特点-3"><a href="#特点-3" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>类似 <em>CHAID</em>，选择最显著（<em>p</em> 值）的特征变量作为划分特征</p>
+<ul>
+<li>分类特征变量：连列分析，卡方检验</li>
+<li>数值特征变量：方差分析，F检验</li>
+</ul>
+</li>
+<li><p>划分点选择</p>
+<ul>
+<li>分类特征变量：映射为 <em>one-hot</em> 向量后，用判别分析求解划分向量，再映射回划分取值</li>
+</ul>
+</li>
+<li><p>目标变量多分类</p>
+<ul>
+<li>为每个类别计算特征均值，使用均值聚类将其简化为二分类</li>
+<li>只需要为节点内样本的、用待划分特征计算均值</li>
+</ul>
+</li>
+<li><p>运行速度快于 <em>CART</em> 树</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.mclover.cn/blog/index.php/archives/60.html">http://www.mclover.cn/blog/index.php/archives/60.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://www3.stat.sinica.edu.tw/statistica/oldpdf/A7n41.pdf">http://www3.stat.sinica.edu.tw/statistica/oldpdf/A7n41.pdf</a></li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:24:10.000Z" title="7/13/2019, 11:24:10 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:56:09.000Z" title="7/16/2021, 2:56:09 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Linear-Model/">Linear Model</a></span><span class="level-item">12 minutes read (About 1859 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Linear-Model/naive_bayes.html">Naive Bayes</a></h1><div class="content"><h2 id="Naive-Bayes-Classifier"><a href="#Naive-Bayes-Classifier" class="headerlink" title="Naive Bayes Classifier"></a><em>Naive Bayes Classifier</em></h2><p>朴素贝叶斯：在训练数据集上学习联合概率分布$P(X,Y)$，利用后验
+分布作为结果</p>
+<ul>
+<li>朴素：条件概率分布有<strong>条件独立性假设</strong>，即特征在类别确定
+下条件独立</li>
+</ul>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><ul>
+<li><p>输出<strong>Y的先验概率分布</strong>为</p>
+<script type="math/tex; mode=display">
+P(Y = c_k), k = 1,2,\cdots,K</script><blockquote>
+<ul>
+<li>先验概率是指输出变量，即待预测变量的先验概率分布，
+ 反映其在无条件下的各取值可能性</li>
+<li>同理所有的条件概率中也是以输出变量取值作为条件</li>
+</ul>
+</blockquote>
+</li>
+<li><p>条件概率分布为</p>
+<script type="math/tex; mode=display">
+P(X=x|Y=c_k) = P(X^{(1)}=x^{(1)},\cdots,X^{(D)}=x^{(D)}|
+   Y=c_k)</script><blockquote>
+<ul>
+<li>$D$：用于分类特征数量</li>
+</ul>
+</blockquote>
+<p>其中有指数数量级的参数（每个参数的每个取值都需要参数）</p>
+</li>
+<li><p>因此对条件概率分布做<strong>条件独立性假设</strong>，即分类特征在类别
+确定条件下是独立的</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(X=x|Y=c_k) & = P(X^{(1)}=x^{(1)},\cdots,X^{(D)}=x^{(D)}
+   |Y=c_k) \\
+& = \prod_{j=1}^D P(X^{(j)}=x^{(j)}|Y=c_k)
+\end{align*}</script><ul>
+<li>条件独立性假设是比较强的假设，也是<strong>朴素</strong>的由来</li>
+<li><p>其使得朴素贝叶斯方法变得简单，但有时也会牺牲准确率</p>
+</li>
+<li><p>以上即可得到联合概率分布$P(X,Y)$</p>
+</li>
+<li><p>朴素贝叶斯学习到的联合概率分布$P(X,Y)$是数据生成的
+机制，即其为生成模型</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h3><p>策略：选择使得后验概率最大化的类$c_k$作为最终分类结果</p>
+<script type="math/tex; mode=display">
+P(Y=c_k|X=x) = \frac {P(Y=c_k, X=x)} {\sum_{i=1}^K
+    P(Y=c_k, X=x)}</script><blockquote>
+<ul>
+<li>$K$：输出类别数量</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>后验概率根计算根据贝叶斯定理计算</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(Y=c_k|X=x) & = \frac {P(X=x|Y=c_k)P(Y=c_k)}
+   {\sum_{k=1}^K P(X=x|Y=c_k) P(Y=c_k)} \\
+& = \frac {P(Y=c_k) \prod_{j=1}^D P(X^{(j)}|Y=c_k)}
+   {\sum_{k=1}^K P(Y=c_k) \prod_{j=1}^D P(X^{(j)}|Y=c_k)}
+\end{align*}</script></li>
+<li><p>考虑上式中分母对所有$c_k$取值均相等，则最终分类器为</p>
+<script type="math/tex; mode=display">
+y = \arg\max_{c_k} P(Y=c_k) \prod_{j=1}^D
+   P(X^{(j)} = x^{(j)}|Y=c_k)</script><ul>
+<li>即分类时，对给定输入$x$，将其归类为后验概率最大的类</li>
+</ul>
+</li>
+</ul>
+<h4 id="策略性质"><a href="#策略性质" class="headerlink" title="策略性质"></a>策略性质</h4><p>后验概率最大化等价于0-1损失的经验风险最小化</p>
+<ul>
+<li><p>经验风险为</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+R_{emp}(f) & = E[L(Y, f(X))] \\
+& = E_x \sum_{k=1}^K L(y, c_k) P(c_k | X)
+\end{align*}</script></li>
+<li><p>为使经验风险最小化，对训练集中每个$X=x$取极小化，对每个
+个体$(x,y)$有</p>
+<script type="math/tex; mode=display">\begin{align*}
+f(x) & = \arg\min_{c_k} \sum_{k=1}^K L(y, c_k)
+   P(c_k|X=x) \\
+& = \arg\min_{c_k} \sum_{k=1}^K P(y \neq c_k|X=x) \\
+& = \arg\min_{c_k} (1-P(y=c_k|X=x)) \\
+& = \arg\max_{c_k} P(y=c_k|X=x)
+\end{align*}</script><p>即后验概率最大化</p>
+</li>
+</ul>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><h4 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h4><ul>
+<li><p>先验概率的极大似然估计为</p>
+<script type="math/tex; mode=display">
+P(Y=c_k) = \frac {\sum_{i=1}^N I(y_i = c_k)} N,
+   k=1,2,\cdots,K</script></li>
+<li><p>条件概率的极大似然估计为</p>
+<script type="math/tex; mode=display">
+P(X^{(j)}=a_{j,l}|Y=c_k) = \frac {\sum_{i=1}^N
+   I(x_i^{(j)}=a_{j,l}, y_i=c_k)}
+   {\sum_{i=1}^N I(y_i=c_k)} \\
+   j=1,2,\cdots,N;l=1,2,\cdots,S_j;k=1,2,\cdots,K</script><blockquote>
+<ul>
+<li>$a_{j,l}$；第j个特征的第l个可能取值</li>
+<li>$S_j$：第j个特征的可能取值数量</li>
+<li>$I$：特征函数，满足条件取1、否则取0</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h5 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h5><blockquote>
+<ul>
+<li>输入：训练数据T</li>
+<li>输出：朴素贝叶斯分类器</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>依据以上公式计算先验概率、条件概率</p>
+</li>
+<li><p>将先验概率、条件概率带入，得到朴素贝叶斯分类器</p>
+<script type="math/tex; mode=display">
+y = \arg\max_{c_k} P(Y=c_k) \prod_{j=1}^D
+  P(X^{(j)} = x^{(j)}|Y=c_k)</script></li>
+</ol>
+<h4 id="贝叶斯估计"><a href="#贝叶斯估计" class="headerlink" title="贝叶斯估计"></a>贝叶斯估计</h4><ul>
+<li><p>条件概率贝叶斯估计</p>
+<script type="math/tex; mode=display">
+P(X^{(j)}=a_{j,l}|Y=c_k) = \frac {\sum_{i=1}^N
+   I(x_i^{(j)}=a_{j,l}, y_i=c_k) + \lambda}
+   {\sum_{i=1}^N I(y_i=c_k) + S_j \lambda} \\
+   j=1,2,\cdots,N;l=1,2,\cdots,S_j;k=1,2,\cdots,K</script><blockquote>
+<ul>
+<li>$\lambda \geq 0$</li>
+</ul>
+</blockquote>
+<ul>
+<li>$\lambda=0$时就是极大似然估计</li>
+<li>常取$\lambda=1$，此时称为<em>Laplace Smoothing</em></li>
+<li>以上设计满足概率分布性质<script type="math/tex; mode=display">\begin{align*}
+P_{\lambda}(X^{(j)}=a_{j,l}|Y=c_k) \geq 0 \\
+\sum_{l=1}^{S_j} P_{\lambda}(X^{(j)}=a_{j,l}|Y=c_k)
+  = 1
+\end{align*}</script></li>
+</ul>
+</li>
+<li><p>先验概率贝叶斯估计</p>
+<script type="math/tex; mode=display">
+P_{\lambda}(Y=c_k) = \frac {\sum_{i=1}^N I(y_i = c_i)
+   + \lambda} {N + K\lambda}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>极大似然估计可能出现所需估计概率值为0，影响后验概率计算
+  结果，贝叶斯估计能够避免这点</li>
+</ul>
+</blockquote>
+<h2 id="Semi-Naive-Bayes-Classifier"><a href="#Semi-Naive-Bayes-Classifier" class="headerlink" title="Semi-Naive Bayes Classifier"></a><em>Semi-Naive Bayes Classifier</em></h2><p>半朴素贝叶斯分类器：适当考虑部分特征之间的相互依赖信息</p>
+<ul>
+<li><p><em>Semi-Naive Bayes</em>可以视为是<strong>利用规则对变量加权</strong>，以
+此来体现相关变量的协同影响</p>
+<script type="math/tex; mode=display">
+y = \arg\max_{c_k} P(Y=c_k) \prod_{j=1}^D
+   \beta_j P(X^{(j)} = x^{(j)}|Y=c_k)</script><ul>
+<li>特别的：权值为0/1即为变量筛选</li>
+</ul>
+</li>
+</ul>
+<h3 id="One-Depentdent-Estimator"><a href="#One-Depentdent-Estimator" class="headerlink" title="One-Depentdent Estimator"></a><em>One-Depentdent Estimator</em></h3><p>独依赖估计：假设特征在类别之外最多依赖一个其他特征，这是半
+朴素贝叶斯分类器中最常用的一种策略</p>
+<script type="math/tex; mode=display">
+P(X=x|Y=c_k) = \prod_{j=1}^D P(X^{(j)}=x^{(j)} | Y=c_k, pa_j)</script><blockquote>
+<ul>
+<li>$pa_j$：特征$X^{(j)}$依赖的父特征</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若父特征已知，同样可以使用条件概率计算
+$P(X^{(j)}=x^{(j)} | Y=c_k, pa_j)$</p>
+<script type="math/tex; mode=display">
+P(X^{(j)}=x^{(j)} | Y=c_k, pa_j) = \frac 
+{P(X^{(j)}=x^{(j)}, Y=c_k, pa_j)} {P(Y=c_k, pa_j)}</script></li>
+<li><p>ODE形式半朴素贝叶斯分类器相应的策略为</p>
+<script type="math/tex; mode=display">
+y = \arg\max_{c_k} P(Y=c_k) \prod_{j=1}^D
+   P(X^{(j)} = x^{(j)}|Y=c_k, pa_j)</script></li>
+<li><p>根据确定各特征父特征的不同做法，可以分为不同类型的独依赖
+分类器</p>
+<ul>
+<li><em>Super-Parent ODE</em>：假设所有特征都依赖同一父特征</li>
+<li><em>Averaged ODE</em>：类似随机森林方法，尝试将每个属性作为
+超父特征构建<em>SPODE</em></li>
+<li><em>Tree Augmented Naive Bayes</em>：基于最大带权生成树发展</li>
+</ul>
+</li>
+</ul>
+<h4 id="SPODE"><a href="#SPODE" class="headerlink" title="SPODE"></a>SPODE</h4><p>SPODE：每个特征只与其他唯一一个特征有依赖关系</p>
+<script type="math/tex; mode=display">
+y = \arg\max_{c_k} P(Y=c_k, pa) \prod_{j=1}^D
+    P(X^{(j)} = x^{(j)}|Y=c_k, pa)</script><blockquote>
+<ul>
+<li>$pa$：所有特征共有的依赖父特征</li>
+</ul>
+</blockquote>
+<h4 id="AODE"><a href="#AODE" class="headerlink" title="AODE"></a>AODE</h4><p>AODE：以所有特征依次作为超父特征构建SPODE，以具有足够训练
+数据支撑的SPODE集群起来作为最终结果</p>
+<script type="math/tex; mode=display">
+y = \arg\max_{c_k} (\sum_{i=1}^D P(Y=c_k, X^{(i)})
+    \prod_{j=1}^D P(X^{(j)} = x^{(j)}|Y=c_k, X^{(i)}))</script><ul>
+<li>这里只选取训练数据足够，即取特征$X^{(i)}$某个取值的样本
+数量大于某阈值的SPODE加入结果</li>
+</ul>
+<h4 id="TAN"><a href="#TAN" class="headerlink" title="TAN"></a>TAN</h4><h5 id="TAN步骤"><a href="#TAN步骤" class="headerlink" title="TAN步骤"></a>TAN步骤</h5><ul>
+<li><p>计算任意特征之间的互信息</p>
+<script type="math/tex; mode=display">
+g(X^{(i)}, X^{(j)}| Y) = \sum P(X^{(i)}, X^{(j)} | Y=c_k)
+   log \frac {P(X^{(i)}, X^{(j)} | Y=c_k)}
+   {P(X^{(i)} | Y=c_k) P(X^{(j)} | Y=c_k)}</script></li>
+<li><p>以特征为节点构建完全图，节点边权重设为相应互信息</p>
+</li>
+<li><p>构建此完全图的最大带权生成树</p>
+<ul>
+<li>挑选根变量</li>
+<li>将边设置为有向</li>
+</ul>
+</li>
+<li><p>加入预测节点$Y$，增加从$Y$到每个属性的有向边</p>
+</li>
+</ul>
+<h5 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h5><ul>
+<li><p>条件互信息$g(X^{(i)}, X^{(j)}| Y)$刻画了特征在已知类别
+情况下的相关性</p>
+</li>
+<li><p>通过最大生成树算法，TAN仅保留了强相关属性之间的依赖性</p>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:24:07.000Z" title="7/13/2019, 11:24:07 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:50:43.000Z" title="7/16/2021, 2:50:43 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Linear-Model/">Linear Model</a></span><span class="level-item">7 minutes read (About 1080 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Linear-Model/linear_regression.html">回归变量选择</a></h1><div class="content"><h2 id="子集回归"><a href="#子集回归" class="headerlink" title="子集回归"></a>子集回归</h2><blockquote>
+<ul>
+<li>特征子集选择独立于回归模型拟合，属于封装器特征选择</li>
+</ul>
+</blockquote>
+<h3 id="最优子集"><a href="#最优子集" class="headerlink" title="最优子集"></a>最优子集</h3><ul>
+<li>特点<ul>
+<li>可以得到稀疏的模型</li>
+<li>但搜索空间离散，可变性大，稳定性差</li>
+</ul>
+</li>
+</ul>
+<h3 id="Forward-Feature-Elimination"><a href="#Forward-Feature-Elimination" class="headerlink" title="Forward Feature Elimination"></a><em>Forward Feature Elimination</em></h3><p>前向变量选择</p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>初始变量集合$S_0 = \varnothing$</li>
+<li>选择具有某种最优特性的变量进入变量集合，得到$S_1$</li>
+<li>第j步时，从剩余变量中选择最优变量进入集合，得到$S_{j+1}$</li>
+<li>若满足终止条件，则结束，否则重复上步添加变量<ul>
+<li>j达到上限</li>
+<li>添加剩余变量均无法满足要求</li>
+</ul>
+</li>
+</ul>
+<h3 id="Backward-Feature-Elimination"><a href="#Backward-Feature-Elimination" class="headerlink" title="Backward Feature Elimination"></a><em>Backward Feature Elimination</em></h3><p>后向变量选择</p>
+<h4 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>初始变量集合$S_0$包含全部变量</li>
+<li>从变量集合中剔除具有某种最差特性变量，得到$S_1$</li>
+<li>第j步时，从剩余变量中剔除最差变量，得到$S_{j+1}$</li>
+<li>若满足终止条件，则结束，否则重复上步添加变量<ul>
+<li>j达到上限</li>
+<li>剔除剩余变量均无法满足要求</li>
+</ul>
+</li>
+</ul>
+<h2 id="范数正则化约束"><a href="#范数正则化约束" class="headerlink" title="范数正则化约束"></a>范数正则化约束</h2><blockquote>
+<ul>
+<li>回归过程中自动选择特征，属于集成特征选择</li>
+</ul>
+</blockquote>
+<h3 id="Ridge-Regression"><a href="#Ridge-Regression" class="headerlink" title="Ridge Regression"></a><em>Ridge Regression</em></h3><script type="math/tex; mode=display">
+\min_{\beta \in R^n} \left\{ ||y - X\beta||_2^2 +
+    \lambda ||\beta||_2^2 \right\}</script><ul>
+<li>在L2范数约束下最小化残差平方</li>
+<li>作为连续收缩方法<ul>
+<li>通过<em>bias-variance trade-off</em>，岭回归较普通最小二乘
+预测表现更好</li>
+<li>倾向于保留所有特征，无法产生疏系数模型</li>
+</ul>
+</li>
+</ul>
+<h3 id="LASSO"><a href="#LASSO" class="headerlink" title="LASSO"></a>LASSO</h3><script type="math/tex; mode=display">
+\min_{\beta \in R^n} \left\{ ||y - X\beta||_2^2 +
+    \lambda||\beta||_1 \right\}</script><p>能够选择部分特征，产生疏系数模型</p>
+<ul>
+<li>p &gt; n时，即使所有特征都有用，LASSO也只能从中挑选n个</li>
+<li>如果存在相关性非常高的特征，LASSO倾向于只从该组中选择
+一个特征，而且是随便挑选的<ul>
+<li>极端条件下，两个完全相同的特征函数，严格凸的罚函数
+（如Ridge）可以保证最优解在两个特征的系数相等，而
+LASSO的最优解甚至不唯一</li>
+</ul>
+</li>
+</ul>
+<h3 id="Elastic-Net"><a href="#Elastic-Net" class="headerlink" title="Elastic Net"></a>Elastic Net</h3><h4 id="Naive-Elastic-Net"><a href="#Naive-Elastic-Net" class="headerlink" title="Naive Elastic Net"></a>Naive Elastic Net</h4><script type="math/tex; mode=display">
+\begin{align*}
+& \min_{\beta \in R^n} \left\{ ||y - X\beta||_2^2 +
+    \lambda_1||\beta||_1 + \lambda_2||\beta||_2^2 \right\} \\
+
+\Rightarrow &
+\min_{\beta^* \in R^p} \left\{ ||y - X^*\beta^*||_2^2 +
+    \lambda^*||\beta^*||_1 \right\} \\
+
+where: & y^* = \begin{pmatrix}
+        y \\ \vec 0_p
+    \end{pmatrix}    \\
+& X^* = \frac 1 {\sqrt {1+\lambda^2}}
+    \begin{pmatrix}
+        X \\ \sqrt {\lambda_2} I_p
+    \end{pmatrix} \\
+& \beta^* = \sqrt {1+\lambda_2} \beta \\
+& \lambda^* = \frac {\lambda_1} {1+\lambda_2} \\
+\end{align*}</script><ul>
+<li><p>弹性网在Lasso的基础上添加系数的二阶范数</p>
+<ul>
+<li>能同时做变量选择和连续收缩</li>
+<li>并且可以选择一组变量</li>
+</ul>
+</li>
+<li><p>传统的估计方法通过二阶段估计找到参数</p>
+<ul>
+<li>首先设置ridge系数$\lambda_2$求出待估参数$\beta$，
+然后做lasso的收缩</li>
+<li>这种方法有两次收缩，会导致估计偏差过大，估计不准</li>
+</ul>
+</li>
+<li><p>弹性网可以变换为LASSO，因而lasso的求解方法都可以用于
+elastic net</p>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="http://www.stat.purdue.edu/~tlzhang/mathstat/ElasticNet.pdf">elastic_net</a></p>
+<h2 id="Least-Angle-Regression"><a href="#Least-Angle-Regression" class="headerlink" title="Least Angle Regression"></a><em>Least Angle Regression</em></h2><ul>
+<li>线性回归即找的一组系数能够用自变量的线性组合表示
+因变量</li>
+</ul>
+<h3 id="Forward-Selection-Forward-Stepwise-Regression"><a href="#Forward-Selection-Forward-Stepwise-Regression" class="headerlink" title="Forward Selection/Forward Stepwise Regression"></a>Forward Selection/Forward Stepwise Regression</h3><ul>
+<li><p>从所有给定predictors中选择和y相关系数绝对值最大的变量
+$x_{j1}$，做线性回归</p>
+<ul>
+<li>对于标准化后的变量，相关系数即为变量之间的内积</li>
+<li>变量之间相关性越大，变量的之间的夹角越小，单个变量
+能解释得效果越好</li>
+<li>此时残差同解释变量正交</li>
+</ul>
+</li>
+<li><p>将上一步剩余的残差作为reponse，将剩余变量投影到残差上
+重复选择步骤</p>
+<ul>
+<li>k步之后即可选出一组变量，然后用于建立普通线性模型</li>
+</ul>
+</li>
+<li><p>前向选择算法非常贪心，可能会漏掉一些有效的解释变量，只是
+因为同之前选出向量相关</p>
+</li>
+</ul>
+<h3 id="Forward-Stagewise"><a href="#Forward-Stagewise" class="headerlink" title="Forward Stagewise"></a>Forward Stagewise</h3><p>前向选择的catious版本</p>
+<ul>
+<li><p>和前向选择一样选择和y夹角最小的变量，但是每次只更新较小
+步长，每次更新完确认和y夹角最小的变量，使用新变量进行
+更新</p>
+<ul>
+<li>同一个变量可能会被多次更新，即系数会逐渐增加</li>
+<li>每次更新一小步，避免了前向选择的可能会忽略关键变量</li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:23:48.000Z" title="7/13/2019, 11:23:48 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:58:22.000Z" title="7/16/2021, 2:58:22 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Linear-Model/">Linear Model</a></span><span class="level-item">9 minutes read (About 1347 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Linear-Model/perceptron.html">Perceptron</a></h1><div class="content"><ul>
+<li>输入：实例的特征向量</li>
+<li>输出：实例类别+1、-1</li>
+</ul>
+<h2 id="感知机模型"><a href="#感知机模型" class="headerlink" title="感知机模型"></a>感知机模型</h2><p>感知机：线性二分类模型（判别模型）</p>
+<script type="math/tex; mode=display">
+f(x) = sign(wx + b)</script><blockquote>
+<ul>
+<li>$x \in \chi \subseteq R^n$：输入空间</li>
+<li>$y \in \gamma \subseteq R^n$：输出空间</li>
+<li>$w \in R^n, b \in R$：<em>weight vector</em>、<em>bias</em></li>
+<li>也常有$\hat w = (w^T, b^T)^T, \hat x = (x^T + 1)^T$，
+  则有$\hat w \hat x = wx + b$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>感知机模型的假设空间是定义在特征空间的所有
+<em>linear classification model/linear classifier</em>，即函数
+集合${f|f(x)=wx+b}$</p>
+</li>
+<li><p>线性方程$wx+b=0$：对应特征空间$R^n$中一个<em>hyperplane</em></p>
+<blockquote>
+<ul>
+<li>$w$：超平面法向量</li>
+<li>$b$：超平面截距</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>超平面将特征空间划分为两个部分，其中分别被分为正、负
+两类</p>
+</li>
+<li><p>也被称为<em>separating hyperplane</em></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Linearly-Separable-Data-Set"><a href="#Linearly-Separable-Data-Set" class="headerlink" title="Linearly Separable Data Set"></a><em>Linearly Separable Data Set</em></h3><blockquote>
+<ul>
+<li>对数据集$T={(x_1,y_1),\cdots,(x_N,y_N)}$，若存在超平面
+  $S: wx + b=0$能够将正、负实例点，完全正确划分到超平面
+  两侧，即<script type="math/tex; mode=display">\begin{align*}
+  wx_i + b > 0, & \forall y_i > 0 \\
+  wx_i + b < 0, & \forall y_i < 0
+  \end{align*}</script>  则称数据集T为线性可分数据集</li>
+</ul>
+</blockquote>
+<h2 id="感知机学习策略"><a href="#感知机学习策略" class="headerlink" title="感知机学习策略"></a>感知机学习策略</h2><p>感知机学习策略：定义适当损失函数，并将经验风险极小化，确定
+参数$w, b$</p>
+<h3 id="0-1损失"><a href="#0-1损失" class="headerlink" title="0-1损失"></a>0-1损失</h3><p>经验风险：误分率（误分点总数）</p>
+<ul>
+<li>不是参数$w, b$的连续可导函数，不易优化</li>
+</ul>
+<h3 id="绝对值损失"><a href="#绝对值损失" class="headerlink" title="绝对值损失"></a>绝对值损失</h3><p>经验风险：误分类点到超平面距离</p>
+<ul>
+<li><p>对误分类数据$(x_i, y_i)$，有$-y_i(wx_i + b) &gt; 0$</p>
+</li>
+<li><p>则误分类点$(x_i, y_i)$到超平面S距离</p>
+<script type="math/tex; mode=display">\begin{align*}
+d_i & = \frac 1 {\|w\|} |wx_i + b| \\
+   & =-\frac 1 {\|w\|} y_i(wx_i + b)
+\end{align*}</script></li>
+<li><p>则感知机损失函数可定义为
+$L(w,b) = -\sum_{x_i \in M} y_i(wx_i + b)$</p>
+<blockquote>
+<ul>
+<li>$M$：误分类点集合</li>
+<li>损失函数是$w, b$的连续可导函数：使用$y_i$替代绝对值</li>
+</ul>
+</blockquote>
+</li>
+<li><p>损失函数$L(w,b)$梯度有</p>
+<script type="math/tex; mode=display">\begin{align*}
+\bigtriangledown_wL(w, b) & = -\sum_{x_i \in M} y_ix_i \\
+\bigtriangledown_bL(w, b) & = -\sum_{x_i \in M} y_i
+\end{align*}</script></li>
+</ul>
+<h2 id="学习算法"><a href="#学习算法" class="headerlink" title="学习算法"></a>学习算法</h2><h3 id="Stochastic-Gradient-Descent"><a href="#Stochastic-Gradient-Descent" class="headerlink" title="Stochastic Gradient Descent"></a><em>Stochastic Gradient Descent</em></h3><p>随机梯度下降法</p>
+<blockquote>
+<ul>
+<li>输入：数据集$T$、学习率$\eta, 0 \leq \eta \leq 1$</li>
+<li>输出：$w,b$、感知模型$f(x)=sgn(wx+b)$</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>选取初值$w_0, b_0$</p>
+</li>
+<li><p>随机选取一个误分类点$(x_i, y_i)$，即$y_i(wx_i+b) \leq 0$
+，对$w, b$进行更新</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(n+1)} & \leftarrow w^{(n)} + \eta y_ix_i \\
+b^{(n+1)} & \leftarrow b^{(n)} + \eta y_i
+\end{align*}</script><blockquote>
+<ul>
+<li>$0 &lt; \eta \leq 1$：<em>learning rate</em>，学习率，步长</li>
+</ul>
+</blockquote>
+</li>
+<li><p>转2，直至训练集中无误分类点</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>不同初值、随机取点顺序可能得到不同的解</li>
+<li>训练数据线性可分时，算法迭代是收敛的</li>
+<li>训练数据不线性可分时，学习算法不收敛，迭代结果发生震荡</li>
+<li>直观解释：当实例点被误分类，应该调整$w, b$值，使得分离
+  超平面向<strong>误分类点方向</strong>移动，减少误分类点与超平面距离，
+  直至被正确分类</li>
+</ul>
+</blockquote>
+<h3 id="学习算法对偶形式"><a href="#学习算法对偶形式" class="headerlink" title="学习算法对偶形式"></a>学习算法对偶形式</h3><h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1><h3 id="算法收敛性"><a href="#算法收敛性" class="headerlink" title="算法收敛性"></a>算法收敛性</h3><p>为方便做如下记号</p>
+<blockquote>
+<ul>
+<li>$\hat w = (w^T, b^T)^T, \hat w \in R^{n+1}$</li>
+<li>$\hat x = (x^T, 1)^T, \hat x \in R^{n+1}$</li>
+</ul>
+</blockquote>
+<p>此时，感知模型可以表示为</p>
+<script type="math/tex; mode=display">
+xw + b = \hat w \hat x = 0</script><blockquote>
+<ul>
+<li>数据集$T={(x_1, y_1), (x_2, y_2),…}$线性可分，其中：
+$x_i \in \mathcal{X = R^n}$，
+$y_i \in \mathcal{Y = {-1, +1}}$，则</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>存在满足条件$|\hat w<em>{opt}|=1$超平面
+   $\hat w</em>{opt} \hat x = 0$将训练数据完全正确分开，且
+   $\exists \gamma &gt; 0, y<em>i(\hat w</em>{opt} x_i) \geq \gamma$</p>
+</li>
+<li><p>令$R = \arg\max_{1\leq i \leq N} |\hat x_i|$，则
+   随机梯度感知机误分类次数$k \leq (\frac R \gamma)^2$</p>
+</li>
+</ul>
+</blockquote>
+</blockquote>
+<h4 id="超平面存在性"><a href="#超平面存在性" class="headerlink" title="超平面存在性"></a>超平面存在性</h4><ul>
+<li><p>训练集线性可分，存在超平面将训练数据集完全正确分开，可以
+取超平面为$\hat w_{opt} \hat x = 0$</p>
+</li>
+<li><p>令$|\hat w_{opt}| = 1$，有</p>
+<script type="math/tex; mode=display">\forall i, y_i(\hat w_{opt} \hat x_i) > 0</script><p>可取</p>
+<script type="math/tex; mode=display">\gamma = \min_i \{ y_i (\hat w_{opt} \hat x) \}</script><p>满足条件</p>
+</li>
+</ul>
+<h4 id="感知机算法收敛性"><a href="#感知机算法收敛性" class="headerlink" title="感知机算法收敛性"></a>感知机算法收敛性</h4><ul>
+<li><p>给定学习率$\eta$，随机梯度下降法第k步更新为
+$\hat w<em>k = \hat w</em>{k-1} + \eta y_i \hat x_i$</p>
+</li>
+<li><p>可以证明</p>
+<ul>
+<li><p>$\hat w<em>k \hat w</em>{opt} \geq k\eta\gamma$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\hat w_k \hat w_{opt} & =
+  \hat w_{k-1} \hat w_{opt} +
+      \eta y_i \hat w_{opt} \hat x_i \\ 
+  & \geq \hat w_{k-1} \hat w_{opt} +
+      \eta\gamma \\
+  & \geq k\eta\gamma
+\end{align*}</script></li>
+<li><p>$|\hat w_k|^2 \leq k \eta^2 R^2$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\|\hat w_k\|^2 & = \|\hat w_{k-1} +
+  \eta y_i x_i \|^2 \\
+& = \|\hat w_{k-1}\|^2 + 2\eta y_i \hat w_{k-1}
+  \hat x_i + \eta^2 \|\hat x_i\|^2 \\
+& \leq \|w_{k-1}\|^2 + \eta^2 \|\hat x_i\|^2 \\
+& \leq \|w_{k-1}\|^2 + \eta^2 R^2 \\
+& \leq k\eta^2 R^2
+\end{align*}</script></li>
+</ul>
+</li>
+<li><p>则有</p>
+<script type="math/tex; mode=display">\begin{align*}
+k \eta \gamma & \leq \hat w_k \hat w_{opt} \leq
+   \|\hat w\| \|\hat w_{opt}\| = \|\hat w\|
+   \leq \sqrt k \eta R \\
+k^2 \gamma^2 & \leq k R^2
+\end{align*}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li><p>直观理解就是超平面<strong>最大移动次数</strong>不大于<strong>最大移动距离</strong>
+  除以<strong>最小移动步长</strong></p>
+<blockquote>
+<ul>
+<li>$\eta \gamma^2$：超平面法向量最小增加量（移动步长）</li>
+<li>$\eta R^2$：超平面法向最大增加量（移动距离）</li>
+<li>但是超平面不可能将所有点都归为同一侧</li>
+</ul>
+</blockquote>
+</li>
+<li><p>误分类次数有上界，经过有限次搜索可以找到将训练数据完全
+  正确分开的分离超平面，即训练数据集线性可分时，算法的迭代
+  形式是收敛的</p>
+</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T04:03:12.000Z" title="7/13/2019, 12:03:12 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:12:15.000Z" title="7/16/2021, 4:12:15 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Specification/">ML Specification</a><span> / </span><a class="link-muted" href="/categories/ML-Specification/Computer-Vision/">Computer Vision</a></span><span class="level-item">4 minutes read (About 540 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Specification/Computer-Vision/local_binary_pattern.html">Local Binary Pattern</a></h1><div class="content"><h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><p>局部二值模式：描述图像局部纹理的特征算子</p>
+<ul>
+<li>具有旋转不变性、灰度不变性</li>
+<li>通过对窗口中心的、领域点关系进行比较，重新编码形成新特征
+以消除外界场景对图像影响，一定程度上解决了复杂场景下
+（光照变换）特征描述问题</li>
+<li>分类<ul>
+<li>经典LBP：3 * 3正方向窗口</li>
+<li>圆形LBP：任意圆形领域</li>
+</ul>
+</li>
+</ul>
+<h2 id="Classical-LBP"><a href="#Classical-LBP" class="headerlink" title="Classical LBP"></a>Classical LBP</h2><h3 id="Sobel-Operator"><a href="#Sobel-Operator" class="headerlink" title="Sobel Operator"></a><em>Sobel Operator</em></h3><h3 id="Laplace-Operator"><a href="#Laplace-Operator" class="headerlink" title="Laplace Operator"></a><em>Laplace Operator</em></h3><h3 id="Canny-Edge-Detector"><a href="#Canny-Edge-Detector" class="headerlink" title="Canny Edge Detector"></a><em>Canny Edge Detector</em></h3><h2 id="Circular-LBP"><a href="#Circular-LBP" class="headerlink" title="Circular LBP"></a>Circular LBP</h2><h2 id="缩略图Hash"><a href="#缩略图Hash" class="headerlink" title="缩略图Hash"></a>缩略图Hash</h2><ul>
+<li>对图像进行特征提取得到0、1特征向量</li>
+<li>通过比较图片向量特征间汉明距离即可计算图片之间相似度</li>
+</ul>
+<h3 id="Average-Hashing"><a href="#Average-Hashing" class="headerlink" title="Average Hashing"></a><em>Average Hashing</em></h3><p><em>aHash</em>：平均哈希算法</p>
+<ul>
+<li>将原始图片转换为64维0、1向量，即提取出的特征</li>
+</ul>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>缩放图片：将图像缩放到8 * 8=64像素<ul>
+<li>保留结构、去掉细节</li>
+<li>去除大小、纵横比差异</li>
+</ul>
+</li>
+<li>灰度化：把缩放后图转换为256阶灰度图</li>
+<li>计算平均值：计算灰度图像素点平均值</li>
+<li>二值化：遍历64个像素点，大于平均值者记为1、否则为0</li>
+</ul>
+<h3 id="Perceptual-Hashing"><a href="#Perceptual-Hashing" class="headerlink" title="Perceptual Hashing"></a><em>Perceptual Hashing</em></h3><p><em>pHash</em>：感知哈希算法</p>
+<ul>
+<li><p>利用离散余弦变换降低频率，去除成分较少的高频特征</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>相较于aHash更稳定</li>
+</ul>
+</li>
+</ul>
+<h4 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>缩放图片：将图片缩放至32 * 32</li>
+<li>灰度化：将缩放后图片转换为256阶灰度图</li>
+<li>计算DCT：把图片分离成频率集合</li>
+<li>缩小DCT：保留32 <em> 32左上角8 </em> 8代表图片最低频率</li>
+<li>计算平均值：计算缩小DCT均值</li>
+<li>二值化：遍历64个点，大于平均值者记为1、否则为0</li>
+</ul>
+<h3 id="Differential-Hashing"><a href="#Differential-Hashing" class="headerlink" title="Differential Hashing"></a><em>Differential Hashing</em></h3><p><em>dHash</em>：差异哈希算法</p>
+<ul>
+<li><p>基于渐变实现</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>相较于dHash非常快</li>
+<li>相较于aHash效果好</li>
+</ul>
+</li>
+</ul>
+<h4 id="步骤-2"><a href="#步骤-2" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>缩放图片：将图片缩放至9 * 8</li>
+<li>灰度化：将缩放后图片转换为256阶灰度图</li>
+<li>计算差异值：对每行像素计算和左侧像素点差异，得到8 * 8</li>
+<li>二值化：遍历64个点，大于0记为1、否则为0</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T04:03:12.000Z" title="7/13/2019, 12:03:12 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:15:30.000Z" title="7/16/2021, 4:15:30 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Specification/">ML Specification</a><span> / </span><a class="link-muted" href="/categories/ML-Specification/Computer-Vision/">Computer Vision</a></span><span class="level-item">13 minutes read (About 1986 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Specification/Computer-Vision/metric_space_features.html">传统图像特征提取</a></h1><div class="content"><h2 id="Scale-Invariant-Feature-Transform"><a href="#Scale-Invariant-Feature-Transform" class="headerlink" title="Scale-Invariant Feature Transform"></a><em>Scale-Invariant Feature Transform</em></h2><p><em>SIFT</em>：通过求图中<em>interest/corner point</em>、及其<em>scale</em>和
+<em>orientation</em>描述子得到特征，并进行图像特征点匹配</p>
+<ul>
+<li>SIFT是检测局部特征的算法<ul>
+<li>实质：在不同尺度空间查找关键点，计算关键点大小、方向
+、尺度信息，进而组成对关键点得描述</li>
+<li>SIFT查找的关键点为突出、稳定的特征点，不会因光照、
+仿射变换、噪声等因素而改变<ul>
+<li>角点</li>
+<li>边缘点</li>
+<li>暗区亮点</li>
+<li>亮区暗点</li>
+</ul>
+</li>
+<li>匹配过程就是对比特征点过程
+<img src="/imgs/sift_procedure.png" alt="sift_procedure"></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>优点</p>
+<ul>
+<li>稳定性：具有旋转、尺度、平移、视角、亮度不变性，
+利于对目标特征信息进行有效表达</li>
+<li>独特性：信息量丰富，适合海量特征数据中进行匹配</li>
+<li>多量性：少数物体也可以产生大量SIFT特征向量</li>
+<li>可扩展性：可以方便同其它形式特征向量联合</li>
+<li>对参数调整稳健性好：可以根据场景调整特征点数量进行
+特征描述、方便特征分析</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>不借助硬件加速、专门图像处理器难以实现</li>
+</ul>
+</li>
+</ul>
+<h3 id="构建尺度空间"><a href="#构建尺度空间" class="headerlink" title="构建尺度空间"></a>构建尺度空间</h3><p>图像的尺度空间：解决如何对图像在所有尺度下描述的问题</p>
+<ul>
+<li><p>思想：对原始图像进行尺度变换，获得多尺度空间下图像表示
+序列，<strong>模拟图像数据的多尺度特征</strong></p>
+<ul>
+<li>对序列进行尺度空间主轮的提取</li>
+<li>以主轮廓作为特征向量，实现边缘、角点检测、不同分辨率
+上<strong>稳定关键点</strong>提取</li>
+</ul>
+</li>
+<li><p>对高斯金字塔生成的O组、L层不同尺度图像，$(O, L)$就构成
+高斯金字塔的尺度空间</p>
+<ul>
+<li>即以高斯金字塔组$O$、层$L$作为坐标</li>
+<li>给定一对$(o,l)$即可唯一确定一幅图像</li>
+</ul>
+</li>
+</ul>
+<p><img src="/imgs/image_scale_space.png" alt="image_scale_space"></p>
+<h4 id="图像金字塔"><a href="#图像金字塔" class="headerlink" title="图像金字塔"></a>图像金字塔</h4><p>图像金字塔：以<strong>多分辨率解释</strong>图像的结构</p>
+<p><img src="/imgs/image_pyramid.png" alt="image_pyramid"></p>
+<ul>
+<li><p>通过对原始图像进行<strong>多尺度像素采样</strong>方式生成N个不同
+分辨率的图像</p>
+<ul>
+<li>图像分辨率从下至上逐渐减小</li>
+<li>直至金字塔顶部只包含一个像素</li>
+</ul>
+</li>
+<li><p>获取图像金字塔步骤</p>
+<ul>
+<li>利用低通滤波器平滑图像</li>
+<li>对平滑图像进行采样<ul>
+<li>上采样：分辨率逐渐升高</li>
+<li>下采样：分辨率逐渐降低</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="高斯金字塔"><a href="#高斯金字塔" class="headerlink" title="高斯金字塔"></a>高斯金字塔</h4><p>高斯金字塔：由很多组图像金字塔构成，每组金字塔包含若干层</p>
+<p><img src="/imgs/image_gaussian_pyramid.png" alt="image_gaussian_pyramid"></p>
+<ul>
+<li><p>同一组金字塔中</p>
+<ul>
+<li>每层图像尺寸相同</li>
+<li>仅高斯平滑系数$\sigma$不同，后一层图像是前一层$k$倍</li>
+</ul>
+</li>
+<li><p>不同组金字塔中</p>
+<ul>
+<li>后一组图像第一个图像是前一组倒数第三个图像二分之一
+采样</li>
+<li>图像大小是前一组一半</li>
+</ul>
+</li>
+</ul>
+<h5 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h5><ul>
+<li><p>构建第1组图像金字塔</p>
+<ul>
+<li><p>第1层：将原图扩大一倍得到</p>
+</li>
+<li><p>第2层：第1层图像经过高斯卷积得到</p>
+<blockquote>
+<ul>
+<li>SIFT算子中，高斯平滑参数$\sigma=1.6$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>第k层：</p>
+<ul>
+<li>$\sigma$乘以比例系数得到新平滑因子
+$\sigma = k\sigma$，</li>
+<li>使用平滑因子平滑第k层图像得到</li>
+</ul>
+</li>
+<li><p>不断重复得到L层图像</p>
+</li>
+</ul>
+</li>
+<li><p>构建第k组图像金字塔</p>
+<ul>
+<li><p>第1层：将第k-1组金字塔倒数第3层做比例因子为2的降采样
+得到</p>
+</li>
+<li><p>之后同第1组图像金字塔</p>
+</li>
+</ul>
+</li>
+<li><p>不断重复得到O组图像金字塔，共计O * L个图像</p>
+</li>
+</ul>
+<h4 id="Difference-of-Gaussian"><a href="#Difference-of-Gaussian" class="headerlink" title="Difference of Gaussian"></a><em>Difference of Gaussian</em></h4><p><em>DOG</em>金字塔：差分金字塔</p>
+<p><img src="/imgs/image_dog_pyramid.png" alt="image_dog_pyramid"></p>
+<ul>
+<li><p>DOG金字塔第0组第k层由高斯金字塔第0组第k+1层减去第k层得到</p>
+<ul>
+<li>DOG金字塔每组比高斯金字塔少一层</li>
+<li>按高斯金字塔逐组生成$O * (L-1)$个差分图像</li>
+</ul>
+</li>
+<li><p>DOG图像包含大量信息（需要归一化才能人眼可见）</p>
+<ul>
+<li>在不同DOG层（即不同模糊程度、不同尺度）都存在的特征
+即SIFT要提取的稳定特征</li>
+<li>后续SIFT特征点都是在DOG金字塔中进行</li>
+</ul>
+</li>
+</ul>
+<p><img src="/imgs/image_dog_pyramid_instance.png" alt="image_dog_pyramid_instance"></p>
+<h3 id="空间极值点检测"><a href="#空间极值点检测" class="headerlink" title="空间极值点检测"></a>空间极值点检测</h3><p>空间极值点检测：关键点初步查探</p>
+<ul>
+<li><p>寻找DOG图像极值点：每个像素点和其所有相邻点比较</p>
+<ul>
+<li>需要同时比较<strong>图像域、尺度空间域</strong>相邻点</li>
+<li>保证关键点在尺度空间、二维图像空间上都是局部极值点</li>
+</ul>
+</li>
+<li><p>对二维图像空间，对中心点</p>
+<ul>
+<li>图像域：与3 * 3领域内8个点比较</li>
+<li><strong>同组尺度空间</strong>：和上下两层图像中2 * 9个点比较</li>
+</ul>
+</li>
+<li><p>极值点是在不同尺度空间下提取的，保证了关键点尺度不变性</p>
+</li>
+</ul>
+<h3 id="精确定位"><a href="#精确定位" class="headerlink" title="精确定位"></a>精确定位</h3><p>稳定关键点精确定位</p>
+<ul>
+<li><p>DOG值对噪声、边缘敏感，需要对局部极值进一步筛选，去除
+不稳定、错误检测极值点</p>
+</li>
+<li><p>构建高斯金字塔时采用下采样图像，需要求出下采样图像中
+极值点对应在原始图像中确切位置</p>
+</li>
+</ul>
+<h3 id="方向信息分配"><a href="#方向信息分配" class="headerlink" title="方向信息分配"></a>方向信息分配</h3><p>稳定关键点方向信息分配</p>
+<ul>
+<li><p>为关键点分配方向信息赋予关键点旋转不变性</p>
+</li>
+<li><p>通过对稳定关键点求梯度实现方向分配</p>
+</li>
+</ul>
+<h4 id="计算方式"><a href="#计算方式" class="headerlink" title="计算方式"></a>计算方式</h4><ul>
+<li><p>梯度幅度值</p>
+<script type="math/tex; mode=display">
+m(x, y) = \sqrt {(L(x+1,y) - L(x-1,y))^2 +
+   (L(x,y+1) - L(x,y-1))^2}</script></li>
+<li><p>梯度方向</p>
+<script type="math/tex; mode=display">
+\theta(x,y) = tan^{-1} (\frac {L(x,y+1) - L(x,y-1)}
+   {L(x+1,y) - L(x-1,y)})</script></li>
+<li><p>通过梯度方向直方图给出关键点梯度方向</p>
+<p><img src="/imgs/gradient_orientation_histgram.png" alt="gradient_orientation_histgram"></p>
+<ul>
+<li>计算关键点为中心领域内所有点梯度方向，在0~360度范围</li>
+<li>把所有梯度方向划分到36个区域，每个方向代表10度</li>
+<li>累计每个方向关键点数目，生成梯度方向直方图</li>
+<li>将直方图中峰值代表方向作为关键点主方向</li>
+<li><p>若存在相当于峰值80%大小的方向，则作为辅方向</p>
+<ul>
+<li>辅方向可以增强匹配的鲁棒性</li>
+</ul>
+<blockquote>
+<ul>
+<li>Lowe指出：大概15%关键点具有辅方向，且这些关键点
+对稳定匹配起关键作用</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="关键点描述"><a href="#关键点描述" class="headerlink" title="关键点描述"></a>关键点描述</h3><p>关键点描述：以数学方式定义关键点的过程，包括关键点周围对其
+有贡献的领域点</p>
+<ul>
+<li><p>对关键点周围像素区域分块</p>
+<ul>
+<li>计算块内梯度直方图</li>
+<li>生成具有独特性的向量，作为对该区域图像信息的抽象表述</li>
+</ul>
+</li>
+<li><p>如下图</p>
+<p><img src="/imgs/descriptor_of_critical_point.png" alt="descriptor_of_critical_point"></p>
+<ul>
+<li>将关键点周围分为2 * 2块</li>
+<li>对每块所有像素点梯度做高斯加权（softmax拉开差距？）</li>
+<li>每块最终取8个方向，得到2 <em> 2 </em> 8维向量，作为中心
+关键点数学描述</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Lowe实验表明：采用4 <em> 4 </em> 8共128维描述子表征关键点，
+  综合效果最好
+  <img src="/imgs/descriptor_of_critical_point_by_lowe.png" alt="descriptor_of_critical_point_by_lowe"></li>
+</ul>
+</blockquote>
+<h3 id="特征点匹配"><a href="#特征点匹配" class="headerlink" title="特征点匹配"></a>特征点匹配</h3><p>特征点匹配：计算两组特征点128维描述向量的欧式距离</p>
+<ul>
+<li>欧式距离越小、相似度越高，小于指定阈值时既可认为匹配成功</li>
+</ul>
+<h2 id="Speeded-Up-Robust-Feature"><a href="#Speeded-Up-Robust-Feature" class="headerlink" title="Speeded Up Robust Feature"></a><em>Speeded Up Robust Feature</em></h2><p>SURF特征：对SIFT算法的改进，降低了时间复杂度，提高了稳健性</p>
+<ul>
+<li>主要是简化SIFT一些运算<ul>
+<li>高斯二阶维分模型简化，卷积平滑操作仅需要转换为加减
+运算</li>
+<li>最终生成特征向量维度从128维减少为64维</li>
+</ul>
+</li>
+</ul>
+<h2 id="Brief"><a href="#Brief" class="headerlink" title="Brief"></a><em>Brief</em></h2><h2 id="Oriented-Brief"><a href="#Oriented-Brief" class="headerlink" title="Oriented Brief"></a><em>Oriented Brief</em></h2><p><em>ORB</em>：Brief算法改进版</p>
+<ul>
+<li>比SIFT算法快100倍</li>
+</ul>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/tags/Machine-Learning/page/5/">Previous</a></div><div class="pagination-next"><a href="/tags/Machine-Learning/page/7/">Next</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/tags/Machine-Learning/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/tags/Machine-Learning/page/5/">5</a></li><li><a class="pagination-link is-current" href="/tags/Machine-Learning/page/6/">6</a></li><li><a class="pagination-link" href="/tags/Machine-Learning/page/7/">7</a></li><li><a class="pagination-link" href="/tags/Machine-Learning/page/8/">8</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

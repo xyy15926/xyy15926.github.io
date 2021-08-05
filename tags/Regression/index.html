@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: Regression - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">Regression</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:24:07.000Z" title="7/13/2019, 11:24:07 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:50:43.000Z" title="7/16/2021, 2:50:43 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Linear-Model/">Linear Model</a></span><span class="level-item">7 minutes read (About 1080 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Linear-Model/linear_regression.html">回归变量选择</a></h1><div class="content"><h2 id="子集回归"><a href="#子集回归" class="headerlink" title="子集回归"></a>子集回归</h2><blockquote>
+<ul>
+<li>特征子集选择独立于回归模型拟合，属于封装器特征选择</li>
+</ul>
+</blockquote>
+<h3 id="最优子集"><a href="#最优子集" class="headerlink" title="最优子集"></a>最优子集</h3><ul>
+<li>特点<ul>
+<li>可以得到稀疏的模型</li>
+<li>但搜索空间离散，可变性大，稳定性差</li>
+</ul>
+</li>
+</ul>
+<h3 id="Forward-Feature-Elimination"><a href="#Forward-Feature-Elimination" class="headerlink" title="Forward Feature Elimination"></a><em>Forward Feature Elimination</em></h3><p>前向变量选择</p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>初始变量集合$S_0 = \varnothing$</li>
+<li>选择具有某种最优特性的变量进入变量集合，得到$S_1$</li>
+<li>第j步时，从剩余变量中选择最优变量进入集合，得到$S_{j+1}$</li>
+<li>若满足终止条件，则结束，否则重复上步添加变量<ul>
+<li>j达到上限</li>
+<li>添加剩余变量均无法满足要求</li>
+</ul>
+</li>
+</ul>
+<h3 id="Backward-Feature-Elimination"><a href="#Backward-Feature-Elimination" class="headerlink" title="Backward Feature Elimination"></a><em>Backward Feature Elimination</em></h3><p>后向变量选择</p>
+<h4 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>初始变量集合$S_0$包含全部变量</li>
+<li>从变量集合中剔除具有某种最差特性变量，得到$S_1$</li>
+<li>第j步时，从剩余变量中剔除最差变量，得到$S_{j+1}$</li>
+<li>若满足终止条件，则结束，否则重复上步添加变量<ul>
+<li>j达到上限</li>
+<li>剔除剩余变量均无法满足要求</li>
+</ul>
+</li>
+</ul>
+<h2 id="范数正则化约束"><a href="#范数正则化约束" class="headerlink" title="范数正则化约束"></a>范数正则化约束</h2><blockquote>
+<ul>
+<li>回归过程中自动选择特征，属于集成特征选择</li>
+</ul>
+</blockquote>
+<h3 id="Ridge-Regression"><a href="#Ridge-Regression" class="headerlink" title="Ridge Regression"></a><em>Ridge Regression</em></h3><script type="math/tex; mode=display">
+\min_{\beta \in R^n} \left\{ ||y - X\beta||_2^2 +
+    \lambda ||\beta||_2^2 \right\}</script><ul>
+<li>在L2范数约束下最小化残差平方</li>
+<li>作为连续收缩方法<ul>
+<li>通过<em>bias-variance trade-off</em>，岭回归较普通最小二乘
+预测表现更好</li>
+<li>倾向于保留所有特征，无法产生疏系数模型</li>
+</ul>
+</li>
+</ul>
+<h3 id="LASSO"><a href="#LASSO" class="headerlink" title="LASSO"></a>LASSO</h3><script type="math/tex; mode=display">
+\min_{\beta \in R^n} \left\{ ||y - X\beta||_2^2 +
+    \lambda||\beta||_1 \right\}</script><p>能够选择部分特征，产生疏系数模型</p>
+<ul>
+<li>p &gt; n时，即使所有特征都有用，LASSO也只能从中挑选n个</li>
+<li>如果存在相关性非常高的特征，LASSO倾向于只从该组中选择
+一个特征，而且是随便挑选的<ul>
+<li>极端条件下，两个完全相同的特征函数，严格凸的罚函数
+（如Ridge）可以保证最优解在两个特征的系数相等，而
+LASSO的最优解甚至不唯一</li>
+</ul>
+</li>
+</ul>
+<h3 id="Elastic-Net"><a href="#Elastic-Net" class="headerlink" title="Elastic Net"></a>Elastic Net</h3><h4 id="Naive-Elastic-Net"><a href="#Naive-Elastic-Net" class="headerlink" title="Naive Elastic Net"></a>Naive Elastic Net</h4><script type="math/tex; mode=display">
+\begin{align*}
+& \min_{\beta \in R^n} \left\{ ||y - X\beta||_2^2 +
+    \lambda_1||\beta||_1 + \lambda_2||\beta||_2^2 \right\} \\
+
+\Rightarrow &
+\min_{\beta^* \in R^p} \left\{ ||y - X^*\beta^*||_2^2 +
+    \lambda^*||\beta^*||_1 \right\} \\
+
+where: & y^* = \begin{pmatrix}
+        y \\ \vec 0_p
+    \end{pmatrix}    \\
+& X^* = \frac 1 {\sqrt {1+\lambda^2}}
+    \begin{pmatrix}
+        X \\ \sqrt {\lambda_2} I_p
+    \end{pmatrix} \\
+& \beta^* = \sqrt {1+\lambda_2} \beta \\
+& \lambda^* = \frac {\lambda_1} {1+\lambda_2} \\
+\end{align*}</script><ul>
+<li><p>弹性网在Lasso的基础上添加系数的二阶范数</p>
+<ul>
+<li>能同时做变量选择和连续收缩</li>
+<li>并且可以选择一组变量</li>
+</ul>
+</li>
+<li><p>传统的估计方法通过二阶段估计找到参数</p>
+<ul>
+<li>首先设置ridge系数$\lambda_2$求出待估参数$\beta$，
+然后做lasso的收缩</li>
+<li>这种方法有两次收缩，会导致估计偏差过大，估计不准</li>
+</ul>
+</li>
+<li><p>弹性网可以变换为LASSO，因而lasso的求解方法都可以用于
+elastic net</p>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="http://www.stat.purdue.edu/~tlzhang/mathstat/ElasticNet.pdf">elastic_net</a></p>
+<h2 id="Least-Angle-Regression"><a href="#Least-Angle-Regression" class="headerlink" title="Least Angle Regression"></a><em>Least Angle Regression</em></h2><ul>
+<li>线性回归即找的一组系数能够用自变量的线性组合表示
+因变量</li>
+</ul>
+<h3 id="Forward-Selection-Forward-Stepwise-Regression"><a href="#Forward-Selection-Forward-Stepwise-Regression" class="headerlink" title="Forward Selection/Forward Stepwise Regression"></a>Forward Selection/Forward Stepwise Regression</h3><ul>
+<li><p>从所有给定predictors中选择和y相关系数绝对值最大的变量
+$x_{j1}$，做线性回归</p>
+<ul>
+<li>对于标准化后的变量，相关系数即为变量之间的内积</li>
+<li>变量之间相关性越大，变量的之间的夹角越小，单个变量
+能解释得效果越好</li>
+<li>此时残差同解释变量正交</li>
+</ul>
+</li>
+<li><p>将上一步剩余的残差作为reponse，将剩余变量投影到残差上
+重复选择步骤</p>
+<ul>
+<li>k步之后即可选出一组变量，然后用于建立普通线性模型</li>
+</ul>
+</li>
+<li><p>前向选择算法非常贪心，可能会漏掉一些有效的解释变量，只是
+因为同之前选出向量相关</p>
+</li>
+</ul>
+<h3 id="Forward-Stagewise"><a href="#Forward-Stagewise" class="headerlink" title="Forward Stagewise"></a>Forward Stagewise</h3><p>前向选择的catious版本</p>
+<ul>
+<li><p>和前向选择一样选择和y夹角最小的变量，但是每次只更新较小
+步长，每次更新完确认和y夹角最小的变量，使用新变量进行
+更新</p>
+<ul>
+<li>同一个变量可能会被多次更新，即系数会逐渐增加</li>
+<li>每次更新一小步，避免了前向选择的可能会忽略关键变量</li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-10T16:51:41.000Z" title="7/11/2019, 12:51:41 AM">2019-07-11</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-19T01:01:22.000Z" title="7/19/2021, 9:01:22 AM">2021-07-19</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Spark/">Spark</a></span><span class="level-item">6 minutes read (About 869 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/Spark/spark_mllib.html">Spark MLLib</a></h1><div class="content"><h2 id="MLLib"><a href="#MLLib" class="headerlink" title="MLLib"></a>MLLib</h2><p><em>Spark MLLib</em>：Spark平台的机器学习库</p>
+<ul>
+<li><p>能直接操作RDD数据集，可以和其他BDAS其他组件无缝集成，
+使得在全量数据上进行学习成为可能</p>
+</li>
+<li><p>实现包括以下算法</p>
+<ul>
+<li>Classification</li>
+<li>Regression</li>
+<li>Clustering</li>
+<li>Collaborative Filtering</li>
+<li>Dimensionality Reduction</li>
+</ul>
+</li>
+<li><p>MLLib是MLBase中的一部分</p>
+<ul>
+<li>MLLib</li>
+<li>MLI</li>
+<li>MLOptimizer</li>
+<li>MLRuntime</li>
+</ul>
+</li>
+<li><p>从Spark1.2起被分为两个模块</p>
+<ul>
+<li><code>spark.mllib</code>：包含基于RDD的原始算法API</li>
+<li><code>spark.ml</code>：包含基于DataFrame的高层次API<ul>
+<li>可以用于构建机器学习PipLine</li>
+<li>ML PipLine API可以方便的进行数据处理、特征转换、
+正则化、联合多个机器算法，构建单一完整的机器学习
+流水线</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>MLLib算法代码可以在<code>examples</code>目录下找到，数据则在<code>data</code>
+  目录下</li>
+<li>机器学习算法往往需要多次迭代到收敛为止，Spark内存计算、
+  DAG执行引擎象相较MapReduce更理想</li>
+<li>由于Spark核心模块的高性能、通用性，Mahout已经放弃
+  MapReduce计算模型，选择Spark作为执行引擎</li>
+</ul>
+</blockquote>
+<h2 id="mllib-classification"><a href="#mllib-classification" class="headerlink" title="mllib.classification"></a><code>mllib.classification</code></h2><h3 id="Classification"><a href="#Classification" class="headerlink" title="Classification"></a>Classification</h3><h4 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.mllib.classification <span class="keyword">import</span> \</span><br><span class="line">	LogisticRegressionWithLBFGS, LogisticRegressionModel</span><br><span class="line"><span class="keyword">from</span> pyspark.mllib.regression <span class="keyword">import</span> LabledPoint</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_point</span>(<span class="params">line</span>):</span></span><br><span class="line">	value = [<span class="built_in">float</span>(i) <span class="keyword">for</span> i line.split(<span class="string">&quot;, \r\n\t&quot;</span>)</span><br><span class="line"></span><br><span class="line">data = sc.textFile(<span class="string">&quot;data/mllib/sample_svm_data.txt&quot;</span>)</span><br><span class="line">parsed_data = data.<span class="built_in">map</span>(parse_point)</span><br><span class="line">	<span class="comment"># map `parse_point` to all data</span></span><br><span class="line"></span><br><span class="line">model = LogisticRegressionWithLBFGS.train(parsed_data)</span><br><span class="line">labels_and_preds = parsed_data.<span class="built_in">map</span>(<span class="keyword">lambda</span> p: (p.label, model.predict(p.features)))</span><br><span class="line">train_err = labels_and_preds \</span><br><span class="line">	.<span class="built_in">filter</span>(<span class="keyword">lambda</span> lp: lp[<span class="number">0</span>] != lp[<span class="number">1</span>]) \</span><br><span class="line">	.count() / <span class="built_in">float</span>(parsed_data.count())</span><br><span class="line"></span><br><span class="line">model.save(sc, <span class="string">&quot;model_path&quot;</span>)</span><br><span class="line">same_model = LogisticRegressionModel.load(sc, <span class="string">&quot;model.path&quot;</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Decision Tree</li>
+<li>Random Forest</li>
+<li>Gradient</li>
+<li>boosted tree</li>
+<li>Multilaye Perceptron</li>
+<li>Support Vector Machine</li>
+<li>One-vs-Rest Classifier</li>
+<li>Naive Bayes</li>
+</ul>
+<h3 id="Clustering"><a href="#Clustering" class="headerlink" title="Clustering"></a>Clustering</h3><h4 id="K-means"><a href="#K-means" class="headerlink" title="K-means"></a>K-means</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> pyspark.mllib.clustering <span class="keyword">import</span> KMeans, KMeansModel</span><br><span class="line"></span><br><span class="line">data = sc.textFile(<span class="string">&quot;data/mllib/kmeans_data.txt&quot;</span>)</span><br><span class="line">parsed_data = data.<span class="built_in">map</span>(<span class="keyword">lambda</span> line: np.array([<span class="built_in">float</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> line.split()]))</span><br><span class="line"></span><br><span class="line">cluster_model = KMeans.train(</span><br><span class="line">	parsed_data,</span><br><span class="line">	maxIteration=<span class="number">10</span>,</span><br><span class="line">	initializationMode=<span class="string">&quot;random&quot;</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">error</span>(<span class="params">point</span>):</span></span><br><span class="line">	center = cluster_model.centers[cluster.predict(point)]</span><br><span class="line">	<span class="keyword">return</span> np.sqrt(<span class="built_in">sum</span>([i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> (point - center)]))</span><br><span class="line">WSSSE = parsed_data \</span><br><span class="line">	.<span class="built_in">map</span>(<span class="keyword">lambda</span> point.error(point)) \</span><br><span class="line">	.reduce(lambd x, y: x + y)</span><br><span class="line"></span><br><span class="line">cluster_model.save(sc, <span class="string">&quot;model_path&quot;</span>)</span><br><span class="line">same_model = KMeansModel.load(sc, <span class="string">&quot;model_path&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="Gaussian-Mixture-Model-GMM"><a href="#Gaussian-Mixture-Model-GMM" class="headerlink" title="Gaussian Mixture Model(GMM)"></a>Gaussian Mixture Model(GMM)</h4><ul>
+<li>混合密度模型<ul>
+<li>有限混合模型：正态分布混合模型可以模拟所有分布</li>
+<li>迪利克莱混合模型：类似于泊松过程</li>
+</ul>
+</li>
+<li>应用<ul>
+<li>聚类：检验聚类结果是否合适</li>
+<li>预测：<h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">from pyspark.mllib.clustering import GussianMixture, \</span><br><span class="line"><span class="code">	GussianMixtureModel</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">data = sc.textFile(&quot;data/mllib/gmm<span class="emphasis">_data.txt&quot;)</span></span><br><span class="line"><span class="emphasis">parsed_</span>data = data.map(lambda line: np.array[float(i) for i in line.strip()]))</span><br><span class="line"></span><br><span class="line">gmm = GaussianMixture.train(parsed<span class="emphasis">_data, 2)</span></span><br><span class="line"><span class="emphasis">for w, g in zip(gmm.weights, gmm.gaussians):</span></span><br><span class="line"><span class="emphasis">	print(&quot;weight = &quot;, w,</span></span><br><span class="line"><span class="emphasis">		&quot;mu = &quot;, g.mu,</span></span><br><span class="line"><span class="emphasis">		&quot;sigma = &quot;, g.sigma.toArray())</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">gmm.save(sc, &quot;model_</span>path&quot;)</span><br><span class="line">same<span class="emphasis">_model = GussainMixtureModel.load(sc, &quot;model_</span>path&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="Latent-Dirichlet-Allocation-LDA"><a href="#Latent-Dirichlet-Allocation-LDA" class="headerlink" title="Latent Dirichlet Allocation(LDA)"></a>Latent Dirichlet Allocation(LDA)</h4><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">from pyspark.mllib.clustering import LDA, LDAModel</span><br><span class="line">from pyspark.mllib.linalg import Vectors</span><br><span class="line"></span><br><span class="line">data = sc.textFile(&quot;data/mllib/sample<span class="emphasis">_lda_</span>data.txt&quot;)</span><br><span class="line">parsed<span class="emphasis">_data = data.map(lambda line: Vector.dense([float(i) for i in line.strip()]))</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">corpus = parsed_</span>data.zipWithIndex() \</span><br><span class="line"><span class="code">	.map(lambda x: [x[1], x[0]).cache()</span></span><br><span class="line"><span class="code">ldaModel = LDA.train(corpus, k=3)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">topics = ldaModel.topicsMatrix()</span><br><span class="line"></span><br><span class="line">for word in range(0, ldaModel.vocabSize()):</span><br><span class="line"><span class="code">	for topic in word:</span></span><br><span class="line"><span class="code">		print(topic)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">ldaModel.save(sc, &quot;model<span class="emphasis">_path&quot;)</span></span><br><span class="line"><span class="emphasis">same_</span>model = LDAModel.load(&quot;model<span class="emphasis">_path&quot;)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Disecting K-means</li>
+</ul>
+<h3 id="Regression"><a href="#Regression" class="headerlink" title="Regression"></a>Regression</h3><h4 id="Linear-Regression"><a href="#Linear-Regression" class="headerlink" title="Linear Regression"></a>Linear Regression</h4><ul>
+<li>耗时长、无法计算解析解（无意义）</li>
+<li>使用MSE作为极小化目标函数，使用SGD算法求解</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.mllib.regression <span class="keyword">import</span> LabledPoint, \</span><br><span class="line">	LinearRegressionWithSGD, LinearRegressionModel</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_point</span>(<span class="params">line</span>):</span></span><br><span class="line">	value = [<span class="built_in">float</span>(i) <span class="keyword">for</span> i line.split(<span class="string">&quot;, \r\n\t&quot;</span>)</span><br><span class="line"></span><br><span class="line">data = sc.textFile(<span class="string">&quot;data/mllib/ridge-data/lpsa.data&quot;</span>)</span><br><span class="line">parsed_data = data.<span class="built_in">map</span>(parse_point)</span><br><span class="line">	<span class="comment"># map `parse_point` to all data</span></span><br><span class="line"></span><br><span class="line">model = LinearRegressionWithSGD.train(</span><br><span class="line">	parsed_data,</span><br><span class="line">	iteration=<span class="number">100</span>,</span><br><span class="line">	step=<span class="number">0.00000001</span></span><br><span class="line">)</span><br><span class="line">values_and_preds = parsed_data.<span class="built_in">map</span>(<span class="keyword">lambda</span> p:(p.label, model.predict(p.features)))</span><br><span class="line">MSE = values_and_preds \</span><br><span class="line">	.<span class="built_in">map</span>(<span class="keyword">lambda</span> vp: (vp[<span class="number">0</span>] - vp[<span class="number">1</span>]) ** <span class="number">2</span>) \</span><br><span class="line">	.reduce(<span class="keyword">lambda</span> x, y: x + y) / values_and_preds.count()</span><br><span class="line"></span><br><span class="line">model.save(sc, <span class="string">&quot;model_path&quot;</span>)</span><br><span class="line">	<span class="comment"># save model</span></span><br><span class="line">same_model = LinearRegressionModel.load(sc, <span class="string">&quot;model_path&quot;</span>)</span><br><span class="line">	<span class="comment"># load saved model</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Generalized Linear Regression</li>
+<li>Decision Tree Regression</li>
+<li>Random Forest Regression</li>
+<li>Gradient-boosted Tree Regression</li>
+<li>Survival Regression</li>
+<li>Isotonic Regression</li>
+</ul>
+<h3 id="Collaborative-Filtering"><a href="#Collaborative-Filtering" class="headerlink" title="Collaborative Filtering"></a>Collaborative Filtering</h3></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-02-17T03:57:08.000Z" title="2/17/2019, 11:57:08 AM">2019-02-17</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Mixin/">Math Mixin</a><span> / </span><a class="link-muted" href="/categories/Math-Mixin/Time-Series/">Time Series</a></span><span class="level-item">8 minutes read (About 1227 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Mixin/Time-Series/co_integration.html">协整与误差修正模型</a></h1><div class="content"><h2 id="Spurious-Regression"><a href="#Spurious-Regression" class="headerlink" title="Spurious Regression"></a><em>Spurious Regression</em></h2><ul>
+<li><p>多变量分析中，平稳性非常重要，忽略序列平稳性判断，容易出现伪回归现象</p>
+</li>
+<li><p><em>Granger</em>、<em>Newbold</em> 的非平稳序列的伪回归随机模型实验（两个独立随机游走模型）表明</p>
+<ul>
+<li>非平稳场合，参数显著性检验犯弃真错误的概率远大于 $\alpha$，伪回归显著成立</li>
+<li>即 $P(|t| \geqslant t_{\alpha/2}(n) | 非平稳序列) \leqslant \alpha$</li>
+</ul>
+</li>
+</ul>
+<h3 id="Cointegration-协整关系"><a href="#Cointegration-协整关系" class="headerlink" title="Cointegration 协整关系"></a><em>Cointegration</em> 协整关系</h3><script type="math/tex; mode=display">
+y_t = \beta_0 + \sum_{i=1}^k \beta_i x_{it} + \epsilon_t</script><blockquote>
+<ul>
+<li>${x_1}, {x_2}, \cdots, {x_k}$：自变量序列</li>
+<li>$y_t$：响应变量序列</li>
+<li>${\epsilon_t}$：平稳回归残差序列</li>
+</ul>
+</blockquote>
+<h4 id="协整检验"><a href="#协整检验" class="headerlink" title="协整检验"></a>协整检验</h4><ul>
+<li><p>假设条件</p>
+<ul>
+<li>$H_0: \epsilon_t ~ I(k), k \geqslant 1$：多元非平稳序列之间不存在协整关系</li>
+<li>$H_1: \epsilon_t ~ I(0)$：多元非平稳序列之间存在协整关系</li>
+</ul>
+</li>
+<li><p>建立响应序列与输入序列之间的回归模型</p>
+</li>
+<li>对回归残差序列进行 <em>EG</em> 平稳性检验</li>
+</ul>
+<h3 id="Error-Correction-Model"><a href="#Error-Correction-Model" class="headerlink" title="Error Correction Model"></a><em>Error Correction Model</em></h3><p><em>ECM</em>：误差修正模型，解释序列短期波动关系</p>
+<ul>
+<li><em>Granger</em> 证明协整模型、误差修正模型具有 <em>1-1</em> 对应关系<ul>
+<li>协整模型度量序列之间长期均衡关系</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>实务中，响应序列与解释序列很少处于均衡点上，实际观测的是序列间短期或非均衡关系</li>
+</ul>
+</blockquote>
+<h4 id="Granger-表述定理"><a href="#Granger-表述定理" class="headerlink" title="Granger 表述定理"></a><em>Granger</em> 表述定理</h4><blockquote>
+<ul>
+<li>如果变量 $X$、$Y$ 是协整的，则他们之间的短期非均衡关系总能用一个误差修正模型表述 $$<pre><code>  \Delta Y_t = lagged(\Delta Y, \Delta X) - \lambda ECM_&#123;t-1&#125; + \epsilon_t
+</code></pre>  $$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对关系 $y_t = \beta x_t + \epsilon_t$</p>
+<script type="math/tex; mode=display">\begin{align*}
+y_t - y_{t-1} & = \beta x_t - \beta x_{t-1} - \epsilon_{t-1} + \epsilon_t \\
+\Delta y_t & = \beta \delta x_t - ECM_{t-1} + \epsilon_t
+\end{align*}</script></li>
+<li><p>响应序列当期波动 $\Delta y_t$ 主要受到三方面短期波动影响</p>
+<ul>
+<li>$\Delta x_t$：输出序列当前波动</li>
+<li>$ECM_{t-1}$：上一期误差</li>
+<li>$\epsilon_t$：纯随机波动</li>
+</ul>
+</li>
+</ul>
+<h4 id="误差修正模型"><a href="#误差修正模型" class="headerlink" title="误差修正模型"></a>误差修正模型</h4><script type="math/tex; mode=display">
+\Delta y_t = \beta_0 \Delta x_t + \beta_1 ECM_{t-1} + \epsilon_t</script><ul>
+<li>$\beta_1 &lt; 0$：表示负反馈机制<ul>
+<li>$ECM_{t-1} &gt; 0$：正向误差，则会导致下一期值负向变化</li>
+<li>$ECM_{t-1} &lt; 0$：负向误差，则会导致下一期值正向变化</li>
+</ul>
+</li>
+</ul>
+<h3 id="Granger-因果关系"><a href="#Granger-因果关系" class="headerlink" title="Granger 因果关系"></a><em>Granger</em> 因果关系</h3><ul>
+<li><p>因果关系：原因导致结果</p>
+<ul>
+<li>时间角度：原因发生在前，结果发生在后</li>
+<li>影响效果：$X$ 事件发生在前，且对 $Y$ 事件发展结果有意义</li>
+</ul>
+</li>
+<li><p><em>Granger</em> 检验可检验统计学意义上的 <em>Granger</em> 因果关系</p>
+<ul>
+<li>统计意义上的因果关系和现实意义上因果关系不同</li>
+<li>现实意义上变量因果关系强调逻辑自洽</li>
+</ul>
+</li>
+</ul>
+<h4 id="Granger-因果关系-1"><a href="#Granger-因果关系-1" class="headerlink" title="Granger 因果关系"></a><em>Granger</em> 因果关系</h4><blockquote>
+<ul>
+<li><p>序列 $X$ 是序列 $Y$ 的 <em>Granger</em> 原因，当且仅当最优线性预测函数使得下式成立 $$</p>
+<pre><code>  \theta^2(y_&#123;t+1&#125;|I_t) \leq \theta^2(y_&#123;t+1&#125;|I_t-X_t)
+</code></pre><p>  $$</p>
+</li>
+<li><p>$I<em>t = { x_t, x</em>{t-1}, \cdots, y<em>t, y</em>{t-1}, \cdots }$：$t$ 时刻所有有用信息集合</p>
+</li>
+<li>$X<em>t = { x_t, x</em>{t-1}, \cdots }$：t时刻所有序列信息集合</li>
+<li>$\theta^2(y_{t+1}|I_t)$：使用所有可获得历史信息 （包括 ${x}$ 序列历史信息）得到的一期预测值方差</li>
+<li>$\theta^2(y_{t+1}|I_t-X_t)$：从所有信息中刻意扣除 ${x}$ 序列历史信息得到的一期预测值方差</li>
+</ul>
+</blockquote>
+<ul>
+<li><em>Granger</em> 因果关系分类<ul>
+<li>$(x, y)$：相互独立</li>
+<li>$(x \leftarrow y)$：$x$ 是 $y$ 的 <em>Granger</em> 原因</li>
+<li>$(x \rightarrow y)$：$y$ 是 $x$ 的 <em>Granger</em> 原因</li>
+<li>$(x \leftrightarrow y)$：互为因果</li>
+</ul>
+</li>
+</ul>
+<h4 id="Granger-因果检验"><a href="#Granger-因果检验" class="headerlink" title="Granger 因果检验"></a><em>Granger</em> 因果检验</h4><ul>
+<li><p>建立回归方程</p>
+<script type="math/tex; mode=display">
+y_t = \alpha_0 + \sum_{i=1}^m \alpha_i x_{t-i} +
+   \sum_{j=1}^n b_j y_{t-j} + \sum_k cz_{t-k} +
+   \epsilon_t</script><blockquote>
+<ul>
+<li>$z_t$：其他解释变量集合</li>
+<li>$\epsilon_t \sim I(0)$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>假设</p>
+<ul>
+<li>$H_0: \alpha_1 = \alpha_2 = \cdots = \alpha_m = 0$</li>
+<li>$H_1: \alpha_i 不全为0$</li>
+</ul>
+</li>
+<li><p>检验统计量：F统计量</p>
+<script type="math/tex; mode=display">
+F = \frac {(SSE_r - SSE_u) / q} {SSE_u/n-q-p-1} \sim F(q, n-p-q-1)</script></li>
+</ul>
+<h4 id="Granger-因果检验说明"><a href="#Granger-因果检验说明" class="headerlink" title="Granger 因果检验说明"></a><em>Granger</em> 因果检验说明</h4><ul>
+<li><p><em>Granger</em> 因果检验思想：对响应变量预测精度有显著提高的自变量，就视为响应变量的因</p>
+<ul>
+<li>因果性可以推出预测精度提高，但预测精度提高不能等价推出因果性</li>
+<li>即使检验结果显著拒绝原假设，也不能说明两个序列之间有真正因果关系</li>
+</ul>
+</li>
+<li><p><em>Granger</em> 因果检验是处理复杂变量关系时的工具</p>
+<ul>
+<li>借助因果检验信息，可以帮助思考模型结果</li>
+<li>不一定准确，但是提供信息比完全没有信息好</li>
+</ul>
+</li>
+<li><p><em>Granger</em> 因果结果说明</p>
+<ul>
+<li>检验结果严重依赖解释变量的延迟阶数，不同延迟阶数可能会得到不同的检验结果</li>
+<li>检验结果会受到样本随机性影响，样本容量越小随机性越大，所以最好在样本容量比较大时进行检验</li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-12T12:45:58.000Z" title="7/12/2021, 8:45:58 PM">2021-07-12</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Mixin/">Math Mixin</a><span> / </span><a class="link-muted" href="/categories/Math-Mixin/Time-Series/">Time Series</a></span><span class="level-item">5 minutes read (About 810 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Mixin/Time-Series/stat_time_series.html">时间序列分析</a></h1><div class="content"><h2 id="时间序列分析"><a href="#时间序列分析" class="headerlink" title="时间序列分析"></a>时间序列分析</h2><ul>
+<li><p>时间序列数据：在不同时间点收集到的数据，反映某事物、现象随实际变化状态、程度</p>
+</li>
+<li><p>描述性时序分析：通过直观的数据比较、绘图观测，寻找序列中蕴含的发展规律</p>
+<ul>
+<li>操作简单、直观有效，是时序分析的第一步</li>
+<li>但是只能展示非常明显的规律性</li>
+<li>最早的时序分析方法，所有时序分析的基础</li>
+<li>帮助人们找到自然规律<ul>
+<li>尼罗河的泛滥</li>
+<li>范蠡稳定粮价</li>
+<li>小麦价格指数序列</li>
+<li>太阳黑子运动规律</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>确定性时序分析：根据序列的观察特征，先构想一个序列运行的理论，默认序列按照此理论确定性运作</p>
+<ul>
+<li>侧重于确定性信息的提取</li>
+<li>通常不能通过分析误差自行修正模型，只能通过新的模型假定，
+推翻旧模型实现分析方法的改进</li>
+<li>假定条件决定了序列的拟合精度，如果确定性的假定条件不对，
+误差将很大，因此限制其使用范围</li>
+</ul>
+</li>
+</ul>
+<h3 id="时域分析"><a href="#时域分析" class="headerlink" title="时域分析"></a>时域分析</h3><h3 id="确定性时域分析"><a href="#确定性时域分析" class="headerlink" title="确定性时域分析"></a>确定性时域分析</h3><ul>
+<li><p>原理：事件的发展通常具有一定的<strong>惯性</strong>，用统计语言描述就是序列值之间存在一定的相关关系，即某种统计规律</p>
+</li>
+<li><p>目的：寻找序列值之间的相关关系的统计规律，并拟合适当数学模型描述，进而用于预测</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>理论基础扎实</li>
+<li>操作步骤规范</li>
+<li>分析结果易于解释</li>
+</ul>
+</li>
+</ul>
+<h4 id="常用领域"><a href="#常用领域" class="headerlink" title="常用领域"></a>常用领域</h4><ul>
+<li><p>宏观经济领域的 <em>Time Series Decomposition</em></p>
+</li>
+<li><p>确定性趋势预测</p>
+<ul>
+<li>趋势预测：线性趋势预测、非线性趋势预测</li>
+<li>指数平滑预测：简单、两参、三参指数平滑</li>
+</ul>
+</li>
+</ul>
+<h3 id="随机性时域分析"><a href="#随机性时域分析" class="headerlink" title="随机性时域分析"></a>随机性时域分析</h3><ul>
+<li><p>原理：假设序列为随机变量序列，利用对随机变量分析方法研究序列</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>预测精度更高</li>
+<li>分析结果可解释性差</li>
+<li>是目前时域分析的主流方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="频域分析"><a href="#频域分析" class="headerlink" title="频域分析"></a>频域分析</h3><ul>
+<li>思想：假设任何一种无趋势的实现序列，都可以分解成若干不同频率的周期波动（借助傅里叶变换，用三角函数逼近）</li>
+</ul>
+<h2 id="时域分析发展"><a href="#时域分析发展" class="headerlink" title="时域分析发展"></a>时域分析发展</h2><h3 id="启蒙阶段"><a href="#启蒙阶段" class="headerlink" title="启蒙阶段"></a>启蒙阶段</h3><ul>
+<li><em>AR</em> 模型：<em>George Undy Yule</em></li>
+<li><em>MA</em> 模型、<em>Yule-Walker</em> 方程：<em>Sir Gilbert Thomas Walker</em></li>
+</ul>
+<h3 id="核心阶段"><a href="#核心阶段" class="headerlink" title="核心阶段"></a>核心阶段</h3><ul>
+<li><em>ARIMA</em>：经典时间序列分析方法，是时域分析的核心内容<ul>
+<li><em>Box &amp; Jenkins</em> 书中系统的阐述了ARIMA模型的识别、估计、检验、预测原理和方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="完善阶段"><a href="#完善阶段" class="headerlink" title="完善阶段"></a>完善阶段</h3><ul>
+<li><p>异方差场合</p>
+<ul>
+<li><em>ARCH</em>：<em>Robert Fry Engle</em></li>
+<li><em>GARCH</em>：<em>Bollerslov</em></li>
+<li><em>GARCH</em> 衍生模型<ul>
+<li><em>EGARH</em></li>
+<li><em>IGARCH</em></li>
+<li><em>GARCH-M</em></li>
+<li><em>NGARCH</em></li>
+<li><em>QGARCH</em></li>
+<li><em>TGARCH</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>多变量场合</p>
+<ul>
+<li><em>ARIMAX</em>：<em>Box &amp; Jenkins</em></li>
+<li><em>Co-intergration and error correction model</em>：<em>C.Granger</em>，协整理论</li>
+<li><em>SYSLIN</em>：<em>Klein</em>，宏观经济连理方程组模型</li>
+<li><em>Vector Autoregressive Model</em>：<em>Sims</em>，货币政策及其影响</li>
+</ul>
+</li>
+<li><p>非线性场合</p>
+<ul>
+<li><em>Threshold Autoregressive Model</em></li>
+<li><em>Artificical Neural Network</em></li>
+<li><em>Hebbian Learning</em>：神经可塑性假说</li>
+<li><em>Multivariate Adaptive Regression Splines</em></li>
+<li><em>Linear Classifier</em></li>
+<li><em>Support Vector Machines</em></li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-12T12:42:40.000Z" title="7/12/2021, 8:42:40 PM">2021-07-12</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Mixin/">Math Mixin</a><span> / </span><a class="link-muted" href="/categories/Math-Mixin/Time-Series/">Time Series</a></span><span class="level-item">14 minutes read (About 2167 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Mixin/Time-Series/stat_var.html">Vector Auto-regression Model</a></h1><div class="content"><h2 id="Vector-Auto-regression-Model"><a href="#Vector-Auto-regression-Model" class="headerlink" title="Vector Auto-regression Model"></a><em>Vector Auto-regression Model</em></h2><p><em>VAR</em> 模型：向量自回归模型</p>
+<ul>
+<li><p>模型特点</p>
+<ul>
+<li>不以经济理论为基础</li>
+<li>结构简介明了</li>
+<li>预测精度高</li>
+</ul>
+</li>
+<li><p>模型方程特点</p>
+<ul>
+<li>采用多方程联立的形式</li>
+<li>需要估计 $m(mp+1)$ 个参数的，对样本数量要求高</li>
+<li>模型的每个方程中，<strong>内生变量</strong> 对模型的全部内生变量滞后项进行回归，估计全部内生变量的动态关系</li>
+</ul>
+</li>
+<li><p>模型用途</p>
+<ul>
+<li>脉冲响应分析</li>
+<li>方差分解</li>
+</ul>
+</li>
+</ul>
+<h3 id="VAR-模型参数"><a href="#VAR-模型参数" class="headerlink" title="VAR 模型参数"></a><em>VAR</em> 模型参数</h3><ul>
+<li><p><em>VAR</em> 模型系数由统计相关性估计</p>
+<ul>
+<li>不具有逻辑上的因果关系</li>
+<li>通常不直接解读 <em>VAR</em> 模型每个方程的经济学意义</li>
+</ul>
+</li>
+<li><p><em>VAR</em> 模型参数不进行参数显著性检验，但是允许研究人员对参数施加特殊约束</p>
+</li>
+<li><p><em>VAR</em> 模型通常是由一系列 <strong>非平稳序列构造的平稳系统</strong></p>
+<ul>
+<li>所以若包含非平稳变量，其中至少存在 1 个协整关系</li>
+<li>协整关系具有经济学意义，可以解读系数（所以需要进行协整检验）</li>
+</ul>
+</li>
+</ul>
+<h2 id="VAR模型形式"><a href="#VAR模型形式" class="headerlink" title="VAR模型形式"></a>VAR模型形式</h2><h3 id="两变量-VAR-1"><a href="#两变量-VAR-1" class="headerlink" title="两变量 VAR(1)"></a>两变量 <em>VAR(1)</em></h3><ul>
+<li><p>方程组形式</p>
+<script type="math/tex; mode=display">\begin{cases}
+& y_{1,t} = c_1 + \pi_{1,1}y_{1,t-1} + \pi_{1,2}y_{2,t-1}
+   + u_{1t} \\
+& y_{2,t} = c_2 + \pi_{2,1}y_{1,t-1} + \pi_{2,2}y_{2,t-1}
+   + u_{2t} \\
+\end{cases}</script></li>
+<li><p>矩阵形式</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix} y_{1,t} \\ y_{2,t} \end{bmatrix} =
+\begin{bmatrix} c_1 \\ c_2 \end{bmatrix} +
+\begin{bmatrix}
+   \pi_{1,1} & \pi_{1,2} \\
+   \pi_{2,1} & \pi_{2,2} \\
+\end{bmatrix}
+\begin{bmatrix} y_{1,t-1} \\ y_{2,t-1} \end{bmatrix} +
+\begin{bmatrix} u_{1,t} \\ u_{2,t} \end{bmatrix}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>$u<em>{1,t}, u</em>{2,t} \overset {i.i.d.} {\sim} (0, \theta^2)$：随机波动项，$Cov(u<em>{1,t}, u</em>{2,t}) = 0$</li>
+</ul>
+</blockquote>
+<h3 id="多变量的-VAR-k-（含外生变量）"><a href="#多变量的-VAR-k-（含外生变量）" class="headerlink" title="多变量的 VAR(k)（含外生变量）"></a>多变量的 <em>VAR(k)</em>（含外生变量）</h3><script type="math/tex; mode=display">
+Y_t = C + \Pi_1 Y_{t-1} + \Pi_2 Y_{t-2} + \cdots + \Pi_k Y_{t-k} + U_t + \Phi Z_t</script><blockquote>
+<ul>
+<li>$Y<em>t = (y</em>{1,t}, y<em>{2,t}, \cdots, y</em>{N,t})^T$：内生变量</li>
+<li>$C = (c_1, c_2, \cdots, c_N)^T$：常数项</li>
+<li>$\Pi_j = \begin{bmatrix}<pre><code>  \pi_&#123;11,j&#125; &amp; \pi_&#123;12,j&#125; &amp; \cdots &amp; \pi_&#123;1N,j&#125; \\
+  \pi_&#123;21,j&#125; &amp; \pi_&#123;22,j&#125; &amp; \cdots &amp; \pi_&#123;2N,j&#125; \\
+  \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+  \pi_&#123;N1,j&#125; &amp; \pi_&#123;N2,j&#125; &amp; \cdots &amp; \pi_&#123;NN,j&#125; \\
+</code></pre>  \end{bmatrix}$：内生变量待估参数</li>
+<li>$U<em>t = (u</em>{1,t}, u<em>{2,t}, \cdots, u</em>{N,t})^T \overset {i.i.d.} {\sim} (0, \Omega)$：随机波动项</li>
+<li>$Z<em>t = (z</em>{1,t}, z<em>{2,t}, \cdots, z</em>{N, t})^T$：外生变量</li>
+</ul>
+</blockquote>
+<h4 id="VAR-k-变换"><a href="#VAR-k-变换" class="headerlink" title="VAR(k) 变换"></a><em>VAR(k)</em> 变换</h4><blockquote>
+<ul>
+<li><em>VAR(k)</em> 模型可通过变换附加伴随矩阵式，改写为 <em>VAR(1)</em></li>
+</ul>
+</blockquote>
+<script type="math/tex; mode=display">\begin{align*}
+ Y_t & = \Pi_1 Y_{t-1} + \Pi_2 Y_{t-2} + \cdots + \Pi_k Y_{t-k} + U_t \\
+& = \begin{bmatrix} \Pi_1 & \Pi_2 & \cdots & \Pi_k \end{bmatrix}
+    \begin{bmatrix}
+        Y_{t-1} \\ Y_{t-2} \\
+        \vdots \\ Y_{t-k}
+    \end{bmatrix} + U_t \\
+& = AY + U_t
+\end{align*}</script><h3 id="Structured-VAR"><a href="#Structured-VAR" class="headerlink" title="Structured VAR"></a><em>Structured VAR</em></h3><p><em>SVAR</em>：结构 <em>VAR</em> 模型，在 <em>VAR</em> 模型基础上加入内生变量当期值</p>
+<ul>
+<li>即解释变量中含有当期变量</li>
+</ul>
+<h4 id="两变量-SVAR-1"><a href="#两变量-SVAR-1" class="headerlink" title="两变量 SVAR(1)"></a>两变量 <em>SVAR(1)</em></h4><script type="math/tex; mode=display">
+\begin{cases}
+& y_{1t} = c_1 + \pi_{11}y_{2t} + \pi_{12}y_{1,t-1} +
+    \pi_{13}y_{1,t-2} + u_1 \\
+& y_{2t} = c_2 + \pi_{21}y_{1t} + \pi_{22}y_{1,t-1} +
+    \pi_{23}y_{1,t-2} + u_2 \\
+\end{cases}</script><h3 id="含外生变量-VAR-1"><a href="#含外生变量-VAR-1" class="headerlink" title="含外生变量 VAR(1)"></a>含外生变量 <em>VAR(1)</em></h3><script type="math/tex; mode=display">\begin{align*}
+AY_t & = D + BY_{t-1} + FZ_t + V_t \\
+Y_t & = A^{-1}D + A^{-1}BY_{t-1} + A^{-1}FZ_t + A^{-1}v_t \\
+    & = C + \Pi_1 Y_{t-1} + HZ_t + U_t
+\end{align*}</script><blockquote>
+<ul>
+<li>$Y_t, Z_t, V_t$：内生变量向量、外生变量向量、误差项向量</li>
+<li>$A, D, B, F$：模型结构参数</li>
+<li>$C=A^{-1}D, \Pi_1=A^{-1}B, H=A^{-1}F, U_t=A^{-1}V_t$</li>
+</ul>
+</blockquote>
+<h2 id="VAR-模型稳定性"><a href="#VAR-模型稳定性" class="headerlink" title="VAR 模型稳定性"></a><em>VAR</em> 模型稳定性</h2><ul>
+<li>把脉冲施加在 <em>VAR</em> 模型中某个方程的 <em>Iinnovation</em> 过程上<ul>
+<li>随着时间推移，冲击会逐渐消失，则模型稳定</li>
+<li>冲击不消失的则模型不稳定</li>
+</ul>
+</li>
+</ul>
+<h3 id="一阶-VAR-模型分析"><a href="#一阶-VAR-模型分析" class="headerlink" title="一阶 VAR 模型分析"></a>一阶 <em>VAR</em> 模型分析</h3><script type="math/tex; mode=display">\begin{align*}
+Y_t & = C + \Pi_1Y_{t-1} + U_t \\
+    & = (I + \Pi_1 + \Pi_1^2 + \cdots + \Pi_1^{t-1})C +
+        \Pi_1^tY_0 + \sum_{i=0}^{t-1} \Pi_1^i U_{t-i}
+\end{align*}</script><blockquote>
+<ul>
+<li>$\mu = (I + \Pi_1 + \Pi_2^2 + \cdots + \Pi_1^{t-1})C$：漂移向量</li>
+<li>$Y_0$：初始向量</li>
+<li>$U_t$：新息向量</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>$t \rightarrow \infty$ 时有</p>
+<script type="math/tex; mode=display">
+I + \Pi_1 + \Pi_2^2 + \cdots + \Pi_1^{t-1} = (I-\Pi_1)^{-1}</script></li>
+</ul>
+<h4 id="两变量-VAR-1-稳定条件"><a href="#两变量-VAR-1-稳定条件" class="headerlink" title="两变量 VAR(1) 稳定条件"></a>两变量 <em>VAR(1)</em> 稳定条件</h4><script type="math/tex; mode=display">
+Y_t = C + \Pi_1 Y_{t-1} + U_t</script><ul>
+<li>稳定条件<ul>
+<li>特征方程$|\Pi_1 - \lambda I|=0$根都在单位圆内</li>
+<li>相反的特征方程$|I - L\Pi_1|=0$根都在单位圆外</li>
+</ul>
+</li>
+</ul>
+<h4 id="VAR-k-稳定条件"><a href="#VAR-k-稳定条件" class="headerlink" title="VAR(k) 稳定条件"></a><em>VAR(k)</em> 稳定条件</h4><script type="math/tex; mode=display">\begin{align*}
+\begin{bmatrix} Y_t \\ Y_{t-1} \\ Y_{t-2} \\ \vdots \\
+    Y_{t-k+1} \end{bmatrix} & =
+\begin{bmatrix} C \\ 0 \\0 \\ \vdots \\ 0 \end{bmatrix} +
+\begin{bmatrix}
+    \Pi_1 & \Pi_2 & \cdots & \Pi_{k-1} & \Pi_{k} \\
+    I & 0 & \cdots & 0 & 0 \\
+    0 & I & \cdots & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & \cdots & I & 0
+\end{bmatrix}
+\begin{bmatrix} Y_{t-1} \\ Y_{t-2} \\ Y_{t-3} \\ \vdots \\
+    Y_{t-k} \end{bmatrix} +
+\begin{bmatrix} U_t \\ 0 \\ 0 \\ \vdots \\ 0 \end{bmatrix} \\
+    & = [C|0]^T + AY + U
+\end{align*}</script><blockquote>
+<ul>
+<li>$A$：$Nk$ 阶方阵</li>
+<li>$N$：回归向量维度</li>
+<li>$k$：自回归阶数</li>
+</ul>
+</blockquote>
+<ul>
+<li>稳定条件<ul>
+<li>特征方程 $|A - \lambda I| = 0$ 根全在单位圆内</li>
+<li>相反的特征方程 $|I - LA| = 0$ 根全在单位圆外</li>
+</ul>
+</li>
+</ul>
+<h2 id="VEC-模型"><a href="#VEC-模型" class="headerlink" title="VEC 模型"></a><em>VEC</em> 模型</h2><h3 id="N-变量-VEC-k"><a href="#N-变量-VEC-k" class="headerlink" title="N 变量 VEC(k)"></a><em>N</em> 变量 <em>VEC(k)</em></h3><script type="math/tex; mode=display">\begin{align*}
+\Delta Y_t & = y_{t-1} + \Pi Y_{t-1} + \Gamma_1 \Delta Y_{t-2}
+    + \cdots + \Gamma_{k-1} \Delta Y_{t-p+1} + U_t + \Phi Z_t
+\end{align*}</script><blockquote>
+<ul>
+<li>$\Pi = \sum_{i=1}^k \Pi_i - I$：影响矩阵</li>
+<li>$\Gamma<em>i = -\sum</em>{j=i+1}^k$</li>
+</ul>
+</blockquote>
+<h3 id="VEC-1"><a href="#VEC-1" class="headerlink" title="VEC(1)"></a>VEC(1)</h3><script type="math/tex; mode=display">\begin{align*}
+\Delta Y_{t} & = \Pi Y_{t-1} + \Gamma \Delta Y_{t-1} \\
+    & = \alpha \beta^{'} Y_{t-1} + \Gamma \Delta Y_{t-1} \\
+    & = \alpha ECM_{t-1} + \Gamma \Delta Y_{t-1}
+\end{align*}</script><h2 id="Impulse-Response-Function"><a href="#Impulse-Response-Function" class="headerlink" title="Impulse-Response Function"></a><em>Impulse-Response Function</em></h2><p>脉冲响应函数：描述内生变量对误差冲击的反应</p>
+<ul>
+<li><p>脉冲响应函数含义</p>
+<ul>
+<li>在随机误差下上施加标准查大小的冲击后，对内生变量当期值和未来值所带来的影响</li>
+<li>即将 <em>VAR</em> 模型表示为无限阶的向量 $MA(\infty)$ 过程</li>
+</ul>
+</li>
+<li><p>对脉冲响应函数的解释的困难源于，实际中各方程对应误差项不是完全非相关</p>
+<ul>
+<li>误差相关时，其有一个共同组成部分，不能被任何特定变量识别</li>
+<li>故，左乘变换矩阵 $M$ 得到 $V_t =  MU_t$ 修正相关性（常用 <em>Cholesky</em> 分解求解）<ul>
+<li>即将其协方差矩阵变换为对角矩阵 $V_t = MU_t \sim (0, \Omega)$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="VAR-1-转换为-MA"><a href="#VAR-1-转换为-MA" class="headerlink" title="VAR(1) 转换为 MA"></a><em>VAR(1)</em> 转换为 <em>MA</em></h3><script type="math/tex; mode=display">
+\begin{align*}
+Y_t & = AY_{t-1} + U_t \\
+(I - LA)Y_t & = U_t \\
+Y_t & = (I-LA)^{-1} U_t \\
+    & = U_t + AU_{t-1} + A^2U_{t-2} + \cdots + A^sU_t + \cdots\\
+Y_{t+s} & = U_{t+s} + \Psi_1U_{t+s-1} + \Psi_2U_{t+s-2}
+    + \cdots + \Psi_sU_t + \cdots
+\end{align*}</script><blockquote>
+<ul>
+<li>$\Psi<em>s = A^s = \frac {\partial Y</em>{t+s}} {\partial U_t}$</li>
+<li>$\Psi<em>s[i, j] = \frac {\partial y</em>{i,t+s}} {\partial u<em>{j,t}}$：脉冲响应函数，表示其他误差项在任何时期都不变条件下，第 $j$ 个变量 $y</em>{j,t}$ 在对应误差项 $u<em>{j,t}$ 在 $t$ 期受到一个单位冲击后，对第 $i$ 个内生变量 $y</em>{i,t}$ 在 $t+s$ 期造成的影响</li>
+</ul>
+</blockquote>
+<h2 id="方差分解"><a href="#方差分解" class="headerlink" title="方差分解"></a>方差分解</h2><p>方差分解：分析未来 $t+s$ 期 $y_{j, t+s}$ 的预测误差受不同新息冲击影响比例</p>
+<h3 id="均方误差"><a href="#均方误差" class="headerlink" title="均方误差"></a>均方误差</h3><ul>
+<li><p>误差可以写为 <em>MA</em> 形式</p>
+<script type="math/tex; mode=display">
+Y_{t+s} - \hat Y_{t+s|t} = U_{t+s} + \Psi_1U_{t+s-1} +
+   \Psi_2U_{t+s-2} + \cdots + \Psi_{s-1}U_{t+1}</script></li>
+<li><p>则预测s期的均方误差为</p>
+<script type="math/tex; mode=display">\begin{align*}
+MSE(\hat Y_{t+s|t}) & = E[(Y_{t+s} - \hat Y_{t+s|t})
+   (Y_{t+s} - \hat Y_{t+s|t})^T] \\
+& = \Omega + \Psi_1\Omega\Psi_1^T + \cdots +
+   \Psi_{s-1}\Omega\Psi_{s-1}^T
+\end{align*}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>$\Omega = E(U_tU_t^T)$：不同期 $U_t$ 协方差阵为 0</li>
+</ul>
+</blockquote>
+<h3 id="计算比例"><a href="#计算比例" class="headerlink" title="计算比例"></a>计算比例</h3><script type="math/tex; mode=display">\begin{align*}
+U_t &=  MV_t  \\
+    &= m_1v_{1,t} + m_2v_{2,t} + \cdots + m_Nv_{N,t} \\
+\Omega & = E(U_t, U_t^T) \\
+    & = (MV_t)(MV_t)^T \\
+    & = m_1m_1^TVar(v_{1,t} + \cdots + m_Nm_N^TVar(v_{N,t})
+\end{align*}</script><blockquote>
+<ul>
+<li>$v<em>{1,t}, v</em>{2,t}, \cdots, v_{N,t}$不相关</li>
+</ul>
+</blockquote>
+<ul>
+<li>将 $\Omega$ 带入 <em>MSE</em> 表达式中，既可以得到第 $j$ 个新息对 $s$ 期预测量 $\hat Y_{t+s|t}$ 的方差贡献比例</li>
+</ul>
+<h2 id="VAR-建模"><a href="#VAR-建模" class="headerlink" title="VAR 建模"></a><em>VAR</em> 建模</h2><p><img src="/imgs/var_procedure.png" alt="var_procedure"></p>
+<ul>
+<li><p>进行单变量平稳性检验</p>
+</li>
+<li><p>拟合 <em>VAR(p)</em> 模型</p>
+<ul>
+<li>确定模型阶数<ul>
+<li>理论上初步模型阶数可以任意确定</li>
+<li>然后根据 <em>AIC</em>、<em>BIC</em>、对数似然函数值选择相对最优阶数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>若所有变量平稳，则 <em>Granger</em> 因果检验</p>
+<ul>
+<li><em>VAR</em> 模型通过平稳性检验，理论上就可以利用模型进行分析、预测</li>
+<li>但 <em>VAR</em> 模型是超系数模型，默认所有内生变量互为因果<ul>
+<li>但实际上变量之间因果关系复杂</li>
+<li>可通过 <em>Granger</em> 因果检验判断变量之间长期、短期因果关系</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>若有变量非平稳</p>
+<ul>
+<li>检验模型平稳性</li>
+<li><em>Granger</em> 因果检验</li>
+<li>协整检验：<em>JJ</em> 检验<ul>
+<li>非平稳系统必然存在协整关系，具有经济学意义</li>
+<li>所以需要找出存在的基础协整关系，解读其代表的长期、短期相关影响</li>
+</ul>
+</li>
+<li>构建 <em>VEC</em> 模型<ul>
+<li>如果协整检验显示基本协整关系满秩，说明系统中每个序列都是平稳序列，直接建立VAR模型</li>
+<li>如果协整检验限制基本协整关系为 0 秩，则系统不存在协整关系，通常说明系统不平稳，需要重新选择变量， 或者适当差分后建模</li>
+<li>最常见情况是协整检验显示基本协整关系数量处于 0 至满秩中间，此时建立 $VEC$ 模型</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>脉冲响应分析</p>
+</li>
+<li><p>方差分析</p>
+</li>
+<li><p>模型预测</p>
+</li>
+</ul>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

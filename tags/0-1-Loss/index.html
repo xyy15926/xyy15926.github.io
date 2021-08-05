@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: 0-1 Loss - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">0-1 Loss</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T17:48:22.000Z" title="8/1/2019, 1:48:22 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T07:06:49.000Z" title="7/16/2021, 3:06:49 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Theory/">ML Theory</a><span> / </span><a class="link-muted" href="/categories/ML-Theory/Loss/">Loss</a></span><span class="level-item">9 minutes read (About 1379 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Theory/Loss/func_loss.html">Loss Function</a></h1><div class="content"><h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><ul>
+<li>损失函数可以视为<strong>模型与真实的距离</strong>的度量<ul>
+<li>因此损失函数设计关键即，寻找可以代表模型与真实的距离的统计量</li>
+<li>同时为求解方便，应该损失函数最好应满足导数存在</li>
+</ul>
+</li>
+</ul>
+<h3 id="Surrogate-Loss"><a href="#Surrogate-Loss" class="headerlink" title="Surrogate Loss"></a>Surrogate Loss</h3><p>代理损失函数：用优化方便的损失函数代替难以优化的损失函数，间接达到优化原损失函数的目标</p>
+<ul>
+<li>如 0-1 损失难以优化，考虑使用二次损失、交叉熵损失替代</li>
+</ul>
+<h3 id="损失函数设计"><a href="#损失函数设计" class="headerlink" title="损失函数设计"></a>损失函数设计</h3><ul>
+<li><p>对有监督学习：<strong>真实</strong> 已知，可以直接设计损失函数</p>
+</li>
+<li><p>对无监督学习：<strong>真实</strong> 未知，需要给定 <strong>真实标准</strong></p>
+<ul>
+<li><em>NLP</em>：需要给出语言模型</li>
+<li><em>EM</em> 算法：熵最大原理</li>
+</ul>
+</li>
+</ul>
+<h2 id="常用损失函数"><a href="#常用损失函数" class="headerlink" title="常用损失函数"></a>常用损失函数</h2><p><img src="/imgs/01_se_ce_hinge_loss.png" alt="01_se_ce_hinge_loss"></p>
+<h3 id="0-1-Loss"><a href="#0-1-Loss" class="headerlink" title="0-1 Loss"></a>0-1 Loss</h3><script type="math/tex; mode=display">
+L(y, f(x)) = \left \{ \begin{array}{l}
+    1, & y \neq f(x) \\
+    0, & y = f(x)
+\end{array} \right.</script><ul>
+<li><p>0-1 损失函数梯度要么为 0、要么不存在，无法通过梯度下降方法优化 0-1 损失</p>
+</li>
+<li><p>适用场合</p>
+<ul>
+<li>二分类：<em>Adaboost</em></li>
+<li>多分类：<em>Adaboost.M1</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="Quadratic-Squared-Error-Loss"><a href="#Quadratic-Squared-Error-Loss" class="headerlink" title="Quadratic / Squared Error Loss"></a><em>Quadratic</em> / <em>Squared Error Loss</em></h3><script type="math/tex; mode=display">
+L(y, f(x)) = \frac 1 2 (y - f(x))^2</script><ul>
+<li><p>平方错误损失函数可导，可以基于梯度下降算法优化损失函数</p>
+</li>
+<li><p>适用场合</p>
+<ul>
+<li>回归预测：线性回归</li>
+<li>分类预测：0-1 二分类（根据预测得分、阈值划分）</li>
+</ul>
+</li>
+</ul>
+<h3 id="Logistic-SE"><a href="#Logistic-SE" class="headerlink" title="Logistic SE"></a><em>Logistic SE</em></h3><ul>
+<li><p>平方损失用于二分类时存在如下问题（模型输出无限制）</p>
+<ul>
+<li>若模型对某样本非常确信为正例，给出大于1预测值</li>
+<li>此时模型会进行不必要、开销较大的优化</li>
+</ul>
+</li>
+<li><p>考虑对模型输出进行 <em>sigmoid</em> 变换后作为预测值，再应用平方错误损失函数</p>
+<script type="math/tex; mode=display">
+L(y, f(x)) = \frac 1 2 (y - \sigma(f(x)))^2</script><ul>
+<li><em>Logistic SE</em> 损失函数曲线对 0-1 损失拟合优于平方损失</li>
+<li>但负区间存在饱和问题，损失最大只有 0.5</li>
+</ul>
+</li>
+</ul>
+<h3 id="Cross-Entropy"><a href="#Cross-Entropy" class="headerlink" title="Cross Entropy"></a><em>Cross Entropy</em></h3><p>交叉熵损失</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(y, f(x)) & = -ylog(f(x)) \\
+& = - \sum_{k=1}^K y_k log f(x)_k
+\end{align*}</script><blockquote>
+<ul>
+<li>$y$：样本实际值</li>
+<li>$f(x)$：各类别预测概率</li>
+<li>$K$：分类数目</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>交叉熵损失综合二次损失、<em>logistic SE</em> 优势，以正样本为例</p>
+<ul>
+<li>预测值较大时：损失接近 0，避免无效优化</li>
+<li>预测值较小时：损失偏导趋近于 -1，不会出现饱和现象</li>
+</ul>
+</li>
+<li><p>$y$ 为 <em>one-hot</em> 编码时实际值时</p>
+<ul>
+<li>分类问题仅某分量为 1：此时交叉熵损失同对数损失（负对数极大似然函数）</li>
+<li>标签问题则可有分量为 1</li>
+</ul>
+</li>
+<li><p>适合场合</p>
+<ul>
+<li>多分类问题</li>
+<li>标签问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="Hinge-Loss"><a href="#Hinge-Loss" class="headerlink" title="Hinge Loss"></a><em>Hinge Loss</em></h3><script type="math/tex; mode=display">\begin{align*}
+L(y, f(x)) & = [1 - yf(x)]_{+} \\
+[z]_{+} & = \left \{ \begin{array}{l}
+    z, & z > 0 \\
+    0, & z \leq 0
+\end{array} \right.
+\end{align*}</script><blockquote>
+<ul>
+<li>$y \in {-1, +1}$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>合页损失函数：0-1 损失函数的上界，效果类似交叉熵损失函数</p>
+<ul>
+<li>要求分类不仅正确，还要求确信度足够高损失才为 0</li>
+<li>即对学习有更高的要求</li>
+</ul>
+</li>
+<li><p>适用场合</p>
+<ul>
+<li>二分类：线性支持向量机</li>
+</ul>
+</li>
+</ul>
+<h3 id="收敛速度对比"><a href="#收敛速度对比" class="headerlink" title="收敛速度对比"></a>收敛速度对比</h3><ul>
+<li><p>指数激活函数时：相较于二次损失，收敛速度更快</p>
+</li>
+<li><p>二次损失对 $w$ 偏导</p>
+<script type="math/tex; mode=display">
+\frac {\partial L} {\partial w} = (\sigma(z) - y) \sigma^{'}(z) x</script><blockquote>
+<ul>
+<li>$\sigma$：<em>sigmoid</em>、<em>softmax</em> 激活函数</li>
+<li>$z = wx + b$</li>
+</ul>
+</blockquote>
+<ul>
+<li>考虑到 <em>sigmoid</em> 函数输入值绝对值较大时，其导数较小</li>
+<li>激活函数输入 $z=wx+b$ 较大时，$\sigma^{‘}(z)$ 较小，更新速率较慢</li>
+</ul>
+</li>
+<li><p><em>Softmax</em> 激活函数时，交叉熵对 $w$ 偏导</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac {\partial L} {\partial w} & = -y\frac 1 {\sigma(z)}
+   \sigma^{'}(z) x \\
+& = y(\sigma(z) - 1)x
+\end{align*}</script></li>
+<li><p>特别的，对 <em>sigmoid</em> 二分类</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac {\partial L} {\partial w_j} & = -(\frac y {\sigma(z)}
+   - \frac {(1-y)} {1-\sigma(z)}) \sigma^{'}(z) x \\
+& = -\frac {\sigma^{'}(z) x} {\sigma(z)(1-\sigma(z))}
+   (\sigma(z) - y) \\
+& = x(\sigma(z) - y)
+\end{align*}</script><ul>
+<li>考虑 $y \in {(0,1), (1,0)}$、$w$ 有两组</li>
+<li>带入一般形式多分类也可以得到二分类结果</li>
+</ul>
+</li>
+</ul>
+<h2 id="不常用损失函数"><a href="#不常用损失函数" class="headerlink" title="不常用损失函数"></a>不常用损失函数</h2><h3 id="Absolute-Loss"><a href="#Absolute-Loss" class="headerlink" title="Absolute Loss"></a><em>Absolute Loss</em></h3><p>绝对损失函数</p>
+<script type="math/tex; mode=display">
+L(y, f(x)) = |y-f(x)|</script><ul>
+<li>适用场合<ul>
+<li>回归预测</li>
+</ul>
+</li>
+</ul>
+<h3 id="Logarithmic-Loss"><a href="#Logarithmic-Loss" class="headerlink" title="Logarithmic Loss"></a><em>Logarithmic Loss</em></h3><p>对数损失函数（负对数极大似然损失函数）</p>
+<script type="math/tex; mode=display">
+L(y, P(y|x)) = -logP(y|x)</script><ul>
+<li>适用场合<ul>
+<li>多分类：贝叶斯生成模型、逻辑回归</li>
+</ul>
+</li>
+</ul>
+<h3 id="Exponential-Loss"><a href="#Exponential-Loss" class="headerlink" title="Exponential Loss"></a><em>Exponential Loss</em></h3><p>指数函数函数</p>
+<script type="math/tex; mode=display">
+L(y, f(x)) = exp\{-yf(x)\}</script><ul>
+<li>适用场合<ul>
+<li>二分类：前向分步算法</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pseudo-Loss"><a href="#Pseudo-Loss" class="headerlink" title="Pseudo Loss"></a><em>Pseudo Loss</em></h3><p>伪损失：考虑个体损失 $(x_i, y_i)$ 如下，据此构造伪损失</p>
+<ul>
+<li>$h(x_i, y_i)=1, \sum h(x_i, y)=0$：完全正确预测</li>
+<li>$h(x_i, y_i)=0, \sum h(x_i, y)=1$：完全错误预测</li>
+<li>$h(x_i, y_i)=1/M$：随机预测（M为分类数目）</li>
+</ul>
+<script type="math/tex; mode=display">
+L(y, f(x)) = \frac 1 2 \sum_{y^{(j)} \neq f(x)} w_j (1 - f(x, y) + f(x, y^{(j)}))</script><blockquote>
+<ul>
+<li>$w_j$：样本个体错误标签权重，对不同个体分布可不同</li>
+<li>$f(x, y^{(j)})$：分类器将输入 $x$ 预测为第 $j$ 类 $y^{(j)}$ 的置信度</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>伪损失函数考虑了预测 <strong>标签</strong> 的权重分布</p>
+<ul>
+<li>通过改变此分布，能够更明确的关注难以预测的个体标签，而不仅仅个体</li>
+</ul>
+</li>
+<li><p>伪损失随着分类器预测准确率增加而减小</p>
+<ul>
+<li>分类器 $f$ 对所有可能类别输出置信度相同时，伪损失最大达到 0.5，此时就是随机预测</li>
+<li>伪损失大于 0.5 时，应该将使用 $1-f$</li>
+</ul>
+</li>
+<li><p>适用场景</p>
+<ul>
+<li>多分类：<em>Adaboost.M2</em></li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-13T15:23:48.000Z" title="7/13/2019, 11:23:48 PM">2019-07-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:58:22.000Z" title="7/16/2021, 2:58:22 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Model/">ML Model</a><span> / </span><a class="link-muted" href="/categories/ML-Model/Linear-Model/">Linear Model</a></span><span class="level-item">9 minutes read (About 1347 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Model/Linear-Model/perceptron.html">Perceptron</a></h1><div class="content"><ul>
+<li>输入：实例的特征向量</li>
+<li>输出：实例类别+1、-1</li>
+</ul>
+<h2 id="感知机模型"><a href="#感知机模型" class="headerlink" title="感知机模型"></a>感知机模型</h2><p>感知机：线性二分类模型（判别模型）</p>
+<script type="math/tex; mode=display">
+f(x) = sign(wx + b)</script><blockquote>
+<ul>
+<li>$x \in \chi \subseteq R^n$：输入空间</li>
+<li>$y \in \gamma \subseteq R^n$：输出空间</li>
+<li>$w \in R^n, b \in R$：<em>weight vector</em>、<em>bias</em></li>
+<li>也常有$\hat w = (w^T, b^T)^T, \hat x = (x^T + 1)^T$，
+  则有$\hat w \hat x = wx + b$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>感知机模型的假设空间是定义在特征空间的所有
+<em>linear classification model/linear classifier</em>，即函数
+集合${f|f(x)=wx+b}$</p>
+</li>
+<li><p>线性方程$wx+b=0$：对应特征空间$R^n$中一个<em>hyperplane</em></p>
+<blockquote>
+<ul>
+<li>$w$：超平面法向量</li>
+<li>$b$：超平面截距</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>超平面将特征空间划分为两个部分，其中分别被分为正、负
+两类</p>
+</li>
+<li><p>也被称为<em>separating hyperplane</em></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Linearly-Separable-Data-Set"><a href="#Linearly-Separable-Data-Set" class="headerlink" title="Linearly Separable Data Set"></a><em>Linearly Separable Data Set</em></h3><blockquote>
+<ul>
+<li>对数据集$T={(x_1,y_1),\cdots,(x_N,y_N)}$，若存在超平面
+  $S: wx + b=0$能够将正、负实例点，完全正确划分到超平面
+  两侧，即<script type="math/tex; mode=display">\begin{align*}
+  wx_i + b > 0, & \forall y_i > 0 \\
+  wx_i + b < 0, & \forall y_i < 0
+  \end{align*}</script>  则称数据集T为线性可分数据集</li>
+</ul>
+</blockquote>
+<h2 id="感知机学习策略"><a href="#感知机学习策略" class="headerlink" title="感知机学习策略"></a>感知机学习策略</h2><p>感知机学习策略：定义适当损失函数，并将经验风险极小化，确定
+参数$w, b$</p>
+<h3 id="0-1损失"><a href="#0-1损失" class="headerlink" title="0-1损失"></a>0-1损失</h3><p>经验风险：误分率（误分点总数）</p>
+<ul>
+<li>不是参数$w, b$的连续可导函数，不易优化</li>
+</ul>
+<h3 id="绝对值损失"><a href="#绝对值损失" class="headerlink" title="绝对值损失"></a>绝对值损失</h3><p>经验风险：误分类点到超平面距离</p>
+<ul>
+<li><p>对误分类数据$(x_i, y_i)$，有$-y_i(wx_i + b) &gt; 0$</p>
+</li>
+<li><p>则误分类点$(x_i, y_i)$到超平面S距离</p>
+<script type="math/tex; mode=display">\begin{align*}
+d_i & = \frac 1 {\|w\|} |wx_i + b| \\
+   & =-\frac 1 {\|w\|} y_i(wx_i + b)
+\end{align*}</script></li>
+<li><p>则感知机损失函数可定义为
+$L(w,b) = -\sum_{x_i \in M} y_i(wx_i + b)$</p>
+<blockquote>
+<ul>
+<li>$M$：误分类点集合</li>
+<li>损失函数是$w, b$的连续可导函数：使用$y_i$替代绝对值</li>
+</ul>
+</blockquote>
+</li>
+<li><p>损失函数$L(w,b)$梯度有</p>
+<script type="math/tex; mode=display">\begin{align*}
+\bigtriangledown_wL(w, b) & = -\sum_{x_i \in M} y_ix_i \\
+\bigtriangledown_bL(w, b) & = -\sum_{x_i \in M} y_i
+\end{align*}</script></li>
+</ul>
+<h2 id="学习算法"><a href="#学习算法" class="headerlink" title="学习算法"></a>学习算法</h2><h3 id="Stochastic-Gradient-Descent"><a href="#Stochastic-Gradient-Descent" class="headerlink" title="Stochastic Gradient Descent"></a><em>Stochastic Gradient Descent</em></h3><p>随机梯度下降法</p>
+<blockquote>
+<ul>
+<li>输入：数据集$T$、学习率$\eta, 0 \leq \eta \leq 1$</li>
+<li>输出：$w,b$、感知模型$f(x)=sgn(wx+b)$</li>
+</ul>
+</blockquote>
+<ol>
+<li><p>选取初值$w_0, b_0$</p>
+</li>
+<li><p>随机选取一个误分类点$(x_i, y_i)$，即$y_i(wx_i+b) \leq 0$
+，对$w, b$进行更新</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(n+1)} & \leftarrow w^{(n)} + \eta y_ix_i \\
+b^{(n+1)} & \leftarrow b^{(n)} + \eta y_i
+\end{align*}</script><blockquote>
+<ul>
+<li>$0 &lt; \eta \leq 1$：<em>learning rate</em>，学习率，步长</li>
+</ul>
+</blockquote>
+</li>
+<li><p>转2，直至训练集中无误分类点</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>不同初值、随机取点顺序可能得到不同的解</li>
+<li>训练数据线性可分时，算法迭代是收敛的</li>
+<li>训练数据不线性可分时，学习算法不收敛，迭代结果发生震荡</li>
+<li>直观解释：当实例点被误分类，应该调整$w, b$值，使得分离
+  超平面向<strong>误分类点方向</strong>移动，减少误分类点与超平面距离，
+  直至被正确分类</li>
+</ul>
+</blockquote>
+<h3 id="学习算法对偶形式"><a href="#学习算法对偶形式" class="headerlink" title="学习算法对偶形式"></a>学习算法对偶形式</h3><h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1><h3 id="算法收敛性"><a href="#算法收敛性" class="headerlink" title="算法收敛性"></a>算法收敛性</h3><p>为方便做如下记号</p>
+<blockquote>
+<ul>
+<li>$\hat w = (w^T, b^T)^T, \hat w \in R^{n+1}$</li>
+<li>$\hat x = (x^T, 1)^T, \hat x \in R^{n+1}$</li>
+</ul>
+</blockquote>
+<p>此时，感知模型可以表示为</p>
+<script type="math/tex; mode=display">
+xw + b = \hat w \hat x = 0</script><blockquote>
+<ul>
+<li>数据集$T={(x_1, y_1), (x_2, y_2),…}$线性可分，其中：
+$x_i \in \mathcal{X = R^n}$，
+$y_i \in \mathcal{Y = {-1, +1}}$，则</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>存在满足条件$|\hat w<em>{opt}|=1$超平面
+   $\hat w</em>{opt} \hat x = 0$将训练数据完全正确分开，且
+   $\exists \gamma &gt; 0, y<em>i(\hat w</em>{opt} x_i) \geq \gamma$</p>
+</li>
+<li><p>令$R = \arg\max_{1\leq i \leq N} |\hat x_i|$，则
+   随机梯度感知机误分类次数$k \leq (\frac R \gamma)^2$</p>
+</li>
+</ul>
+</blockquote>
+</blockquote>
+<h4 id="超平面存在性"><a href="#超平面存在性" class="headerlink" title="超平面存在性"></a>超平面存在性</h4><ul>
+<li><p>训练集线性可分，存在超平面将训练数据集完全正确分开，可以
+取超平面为$\hat w_{opt} \hat x = 0$</p>
+</li>
+<li><p>令$|\hat w_{opt}| = 1$，有</p>
+<script type="math/tex; mode=display">\forall i, y_i(\hat w_{opt} \hat x_i) > 0</script><p>可取</p>
+<script type="math/tex; mode=display">\gamma = \min_i \{ y_i (\hat w_{opt} \hat x) \}</script><p>满足条件</p>
+</li>
+</ul>
+<h4 id="感知机算法收敛性"><a href="#感知机算法收敛性" class="headerlink" title="感知机算法收敛性"></a>感知机算法收敛性</h4><ul>
+<li><p>给定学习率$\eta$，随机梯度下降法第k步更新为
+$\hat w<em>k = \hat w</em>{k-1} + \eta y_i \hat x_i$</p>
+</li>
+<li><p>可以证明</p>
+<ul>
+<li><p>$\hat w<em>k \hat w</em>{opt} \geq k\eta\gamma$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\hat w_k \hat w_{opt} & =
+  \hat w_{k-1} \hat w_{opt} +
+      \eta y_i \hat w_{opt} \hat x_i \\ 
+  & \geq \hat w_{k-1} \hat w_{opt} +
+      \eta\gamma \\
+  & \geq k\eta\gamma
+\end{align*}</script></li>
+<li><p>$|\hat w_k|^2 \leq k \eta^2 R^2$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\|\hat w_k\|^2 & = \|\hat w_{k-1} +
+  \eta y_i x_i \|^2 \\
+& = \|\hat w_{k-1}\|^2 + 2\eta y_i \hat w_{k-1}
+  \hat x_i + \eta^2 \|\hat x_i\|^2 \\
+& \leq \|w_{k-1}\|^2 + \eta^2 \|\hat x_i\|^2 \\
+& \leq \|w_{k-1}\|^2 + \eta^2 R^2 \\
+& \leq k\eta^2 R^2
+\end{align*}</script></li>
+</ul>
+</li>
+<li><p>则有</p>
+<script type="math/tex; mode=display">\begin{align*}
+k \eta \gamma & \leq \hat w_k \hat w_{opt} \leq
+   \|\hat w\| \|\hat w_{opt}\| = \|\hat w\|
+   \leq \sqrt k \eta R \\
+k^2 \gamma^2 & \leq k R^2
+\end{align*}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li><p>直观理解就是超平面<strong>最大移动次数</strong>不大于<strong>最大移动距离</strong>
+  除以<strong>最小移动步长</strong></p>
+<blockquote>
+<ul>
+<li>$\eta \gamma^2$：超平面法向量最小增加量（移动步长）</li>
+<li>$\eta R^2$：超平面法向最大增加量（移动距离）</li>
+<li>但是超平面不可能将所有点都归为同一侧</li>
+</ul>
+</blockquote>
+</li>
+<li><p>误分类次数有上界，经过有限次搜索可以找到将训练数据完全
+  正确分开的分离超平面，即训练数据集线性可分时，算法的迭代
+  形式是收敛的</p>
+</li>
+</ul>
+</blockquote>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

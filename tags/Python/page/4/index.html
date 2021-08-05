@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: Python - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">Python</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T16:08:54.000Z" title="6/10/2019, 12:08:54 AM">2019-06-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-06-09T16:08:54.000Z" title="6/10/2019, 12:08:54 AM">2019-06-10</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">11 minutes read (About 1595 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/interproc_com.html">网络、进程间通信</a></h1><div class="content"><h1 id="asyncio"><a href="#asyncio" class="headerlink" title="asyncio"></a><code>asyncio</code></h1><h2 id="协程与任务"><a href="#协程与任务" class="headerlink" title="协程与任务"></a>协程与任务</h2><blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3.10/library/asyncio-task.html">https://docs.python.org/zh-cn/3.10/library/asyncio-task.html</a></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>协程包含两层概念</p>
+<ul>
+<li>协程函数：定义形式为<code>async def</code>的函数</li>
+<li>协程对象：调用协程函数返回的对象</li>
+</ul>
+</li>
+<li><p>可等待对象：可在<code>await</code>语句种使用的对象</p>
+<ul>
+<li>协程对象</li>
+<li><code>asyncio.Future</code>：异步调用结果的占位符<ul>
+<li>以便通过<code>async/await</code>使用基于回调的代码</li>
+<li>通过情况下无需在应用层级代码中显式创建<code>Future</code>
+对象</li>
+</ul>
+</li>
+<li><code>asyncio.Task</code>：<code>Future</code>子类，包装coroutine的future</li>
+</ul>
+</li>
+<li><p>运行协程（对象）的三种方式</p>
+<ul>
+<li><code>await</code>阻塞式等待协程执行完毕<ul>
+<li>只能在<code>async def</code>函数中使用</li>
+<li><code>await</code>同样是在事件循环中阻塞执行</li>
+</ul>
+</li>
+<li>将协程对象包装为可并发运行的<code>asyncio.Task</code>，并在事件
+循环中并发执行<ul>
+<li><code>asyncio.create_task</code></li>
+</ul>
+</li>
+<li><code>asyncio.run()</code>创建、管理事件循环的高层API<ul>
+<li>启动事件循环执行是真正运行协程对象的开始</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="asyncio-run"><a href="#asyncio-run" class="headerlink" title="asyncio.run"></a><code>asyncio.run</code></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">asyncio</span>.<span class="title">run</span>(<span class="params">coro, *, debug=<span class="literal">False</span></span>);</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>功能：创建新的事件循环并在结束时关闭</p>
+<ul>
+<li>执行传入的协程，并返回结果</li>
+<li>管理asyncio事件循环、终结异步生成器、关闭线程池</li>
+</ul>
+</li>
+<li><p>应当被用作asyncio程序的主入口点，理想情况下只被调用一次</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>同一线程中只能有一个asyncio事件循环运行，若同线程中有
+  其他事件循环运行，此函数不能被调用</li>
+</ul>
+</blockquote>
+<h3 id="Task"><a href="#Task" class="headerlink" title="Task"></a>Task</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">asyncio</span>.<span class="title">Task</span>(<span class="params">Future</span>):</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">coro,*,loop=<span class="literal">None</span>,name=<span class="literal">None</span></span>);</span></span><br><span class="line"><span class="function">	# 1、此方法仅在下轮事件循环中`<span class="title">raise</span> <span class="title">asyncio</span>.<span class="title">CancelledError</span>`</span></span><br><span class="line"><span class="function">	#	给被封包协程，协程自行选择是否取消</span></span><br><span class="line"><span class="function">	# 2、协程等待的`<span class="title">Future</span>`对象同样会被取消</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">cancel</span>(<span class="params">msg=<span class="literal">None</span></span>);</span></span><br><span class="line"><span class="function">	<span class="title">bool</span> <span class="title">cancelled</span>();</span></span><br><span class="line"><span class="function">	<span class="title">bool</span> <span class="title">done</span>();</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">result</span>();</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">exception</span>();</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">add_done_callback</span>(<span class="params">callback, *, context=<span class="literal">None</span></span>);</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">remove_done_callback</span>(<span class="params">callback</span>);</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">get_stack</span>(<span class="params">*, limit=<span class="literal">None</span></span>);</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">print_stack</span>(<span class="params">*, limit=<span class="literal">None</span>, file=<span class="literal">None</span></span>);</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">get_coro</span>();</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">get_name</span>();</span></span><br><span class="line"><span class="function">	<span class="title">def</span> <span class="title">set_name</span>(<span class="params">value</span>);</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Task</code>：用于在事件循环中运行协程，非线程安全<ul>
+<li>若协程在等待<code>Future</code>对象，<code>Task</code>对象会挂起该协程执行
+并等待该<code>Future</code>对象完成再执行</li>
+<li>事件循环使用协同日程调度，事件循环每次运行一个<code>Task</code>
+对象，<code>Task</code>对象会等待<code>Future</code>对象完成，事件循环会
+运行其他<code>Task</code>、回调、执行IO操作</li>
+<li>不建议手动实例化<code>Task</code>对象，可以使用高层级的
+<code>asyncio.create_task()</code>，或低层级的
+<code>loop.create_task()</code>、<code>ensure_future()</code>创建</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>asyncio.Task</code>从<code>Future</code>继承了除<code>Future.set_result()</code>、
+  <code>Future.set_exception()</code>外的所有API</li>
+</ul>
+</blockquote>
+<h4 id="create-task"><a href="#create-task" class="headerlink" title="create_task"></a><code>create_task</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">asyncio</span>.<span class="title">create_task</span>(<span class="params">coro, *, name=<span class="literal">None</span></span>);</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>功能：将协程打包为task，排入日程准备执行</p>
+</li>
+<li><p>任务会在<code>get_running_loop()</code>返回的循环中执行</p>
+<ul>
+<li>若线程中没有在运行的循环则引发<code>RuntimeError</code></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>python3.7加入，之前版本可以使用<code>asyncio.ensure_future()</code></li>
+</ul>
+</blockquote>
+<h4 id="gather"><a href="#gather" class="headerlink" title="gather"></a><code>gather</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awaitable asyncio.gather(*aws, return_exception=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>功能：并发运行<code>aws</code>序列中的可等待对象</p>
+<ul>
+<li>若<code>aws</code>中的某个可等待对象为协程对象，则会自动作为
+任务加入日程</li>
+<li>若所有等待对象都成功完成，结果将是所有返回值列表，
+结果顺序同<code>aws</code>中对象顺序</li>
+<li>若<code>gather</code>被取消，被提交的可等待对象也被取消</li>
+<li>若<code>aws</code>中task、future被取消，将被当作引发
+<code>CancelledError</code>处理，<code>gather</code>也不会被取消</li>
+</ul>
+</li>
+<li><p>参数说明</p>
+<ul>
+<li><code>return_exception</code><ul>
+<li><code>False</code>：首个异常被传播给等待<code>gather()</code>的任务</li>
+<li><code>True</code>：异常和成功结果一样处理并被聚合至结果列表</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="shield"><a href="#shield" class="headerlink" title="shield"></a><code>shield</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awaitable asyncio.shield(aw);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>功能：保护可等待对象防止其被取消</p>
+<ul>
+<li>若<code>aw</code>是协程，则将自动作为任务加入日程</li>
+<li>包含<code>shield</code>的协程被取消，<code>aw</code>中的任务不会被取消，
+但若<code>aw</code>的调用者被取消，<code>await</code>表达式仍然会
+<code>raise CancelledError</code></li>
+<li>若通过其他方式取消<code>aw</code>，则<code>shield</code>也会被取消</li>
+</ul>
+</li>
+<li><p>希望完全忽略取消操作则需要配合<code>try/except</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	res = <span class="keyword">await</span> shield(aw)</span><br><span class="line"><span class="keyword">except</span> CancelledError:</span><br><span class="line">	res = <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li><p>Task内省</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 返回当前运行Task实例，没有则返回`None`</span></span><br><span class="line">Task = asyncio.current_task(loop=<span class="literal">None</span>)</span><br><span class="line"> <span class="comment"># 返回`loop`事件循环未完成Task对象</span></span><br><span class="line"><span class="type">Set</span>(Task) = asyncio.current_task(loop=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Sleep</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">coroutine asyncio.sleep(delay, result=<span class="literal">None</span>, *, loop=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="等待超时"><a href="#等待超时" class="headerlink" title="等待超时"></a>等待超时</h3><h4 id="wait-for"><a href="#wait-for" class="headerlink" title="wait_for"></a><code>wait_for</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">coroutine asyncio.wait_for(aw, timeout);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>功能：等待<code>aw</code>可等待对象完成<ul>
+<li>发生超时则取消任务并<code>raise asyncio.TimeoutError</code></li>
+<li>函数会等待直到<code>aw</code>实际被取消，则总等待时间可能会超过
+<code>timeout</code></li>
+<li>可以通过<code>shield</code>避免任务被取消</li>
+<li>若等待被取消，则<code>aw</code>也被取消</li>
+</ul>
+</li>
+</ul>
+<h4 id="wait"><a href="#wait" class="headerlink" title="wait"></a><code>wait</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(done, pending) asyncio.wait(aws, *, timeout=<span class="literal">None</span>,</span><br><span class="line">	return_when=ALL_COMPELTED);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>功能：并发运行<code>aws</code>并阻塞线程直到满足<code>return_when</code>指定
+的条件</p>
+<ul>
+<li>超时不会<code>raise asyncio.TimeoutError</code>，而会在返回未
+完成的<code>Future</code>、<code>Task</code></li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>return_when</code><ul>
+<li><code>FIRST_COMPLETED</code>：任意可等待对象结束、取消时
+返回</li>
+<li><code>ALL_COMPLETED</code>：所有可等待对象结束、取消时返回</li>
+<li><code>FIRST_EXCEPTION</code>：任意可等待对象引发异常结束时
+返回，否则同<code>ALL_COMPLETED</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="as-completed"><a href="#as-completed" class="headerlink" title="as_completed"></a><code>as_completed</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iterator asyncio.as_completed(aws, timeout=<span class="literal">None</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>功能：并发运行<code>aws</code>中可等待对象，返回协程迭代器，返回的
+每个协程可被等待以从剩余可等待对象集合中获得最早下个结果<ul>
+<li>超时则<code>raise asyncio.TimeoutError</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> coro <span class="keyword">in</span> asyncio.as_completed(aws):</span><br><span class="line">	earliest_result = <span class="keyword">await</span> coro</span><br></pre></td></tr></table></figure>
+<h3 id="其他线程中执行"><a href="#其他线程中执行" class="headerlink" title="其他线程中执行"></a>其他线程中执行</h3><h4 id="to-thread"><a href="#to-thread" class="headerlink" title="to_thread"></a><code>to_thread</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">coroutine asyncio.to_thread(func, *args, **kwargs);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>功能：在不同线程中异步运行函数<code>func</code><ul>
+<li><code>args</code>、<code>kwargs</code>会被直接传给<code>func</code></li>
+<li>当前<code>contextvars.Context</code>被传播，允许在不同线程中
+访问来自事件循环的上下文变量</li>
+<li>主要用于执行可能会阻塞事件循环的函数<ul>
+<li>对于CPython实现，由于GIL存在，此函数一般只能将
+IO密集型函数变为非阻塞</li>
+<li>对于会释放GIL的扩展模块、无此限制的替代性python
+实现，此函数也可以被用于CPU密集型函数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="run-coroutine-threadsafe"><a href="#run-coroutine-threadsafe" class="headerlink" title="run_coroutine_threadsafe"></a><code>run_coroutine_threadsafe</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">concurrent.futures.Future asyncio.run_coroutine_threadsafe(coro, loop)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>功能：向事件循环<code>loop</code>提交协程<code>coro</code><ul>
+<li>线程安全</li>
+<li>此函数应该从另一个系统线程中调用</li>
+</ul>
+</li>
+</ul>
+<h1 id="socket"><a href="#socket" class="headerlink" title="socket"></a><code>socket</code></h1><h1 id="ssl"><a href="#ssl" class="headerlink" title="ssl"></a><code>ssl</code></h1><h1 id="select"><a href="#select" class="headerlink" title="select"></a><code>select</code></h1><h1 id="selectors"><a href="#selectors" class="headerlink" title="selectors"></a><code>selectors</code></h1><h1 id="asyncore"><a href="#asyncore" class="headerlink" title="asyncore"></a><code>asyncore</code></h1><h1 id="asynchat"><a href="#asynchat" class="headerlink" title="asynchat"></a><code>asynchat</code></h1><h1 id="signal"><a href="#signal" class="headerlink" title="signal"></a><code>signal</code></h1><h1 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a><code>mmap</code></h1></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T16:04:03.000Z" title="6/10/2019, 12:04:03 AM">2019-06-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-06-09T16:04:03.000Z" title="6/10/2019, 12:04:03 AM">2019-06-10</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">a few seconds read (About 54 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/python_lang.html">Python语言服务</a></h1><div class="content"><h2 id="parser"><a href="#parser" class="headerlink" title="parser"></a><code>parser</code></h2><h2 id="ast"><a href="#ast" class="headerlink" title="ast"></a><code>ast</code></h2><h2 id="symtable"><a href="#symtable" class="headerlink" title="symtable"></a><code>symtable</code></h2><h2 id="token"><a href="#token" class="headerlink" title="token"></a><code>token</code></h2><h2 id="keyword"><a href="#keyword" class="headerlink" title="keyword"></a><code>keyword</code></h2><h2 id="tokenize"><a href="#tokenize" class="headerlink" title="tokenize"></a><code>tokenize</code></h2><h2 id="tabnanny"><a href="#tabnanny" class="headerlink" title="tabnanny"></a><code>tabnanny</code></h2><h2 id="pyclbr"><a href="#pyclbr" class="headerlink" title="pyclbr"></a><code>pyclbr</code></h2><h2 id="py-compile"><a href="#py-compile" class="headerlink" title="py_compile"></a><code>py_compile</code></h2><h2 id="compileall"><a href="#compileall" class="headerlink" title="compileall"></a><code>compileall</code></h2><h2 id="dis"><a href="#dis" class="headerlink" title="dis"></a><code>dis</code></h2><h3 id="dis-dis"><a href="#dis-dis" class="headerlink" title="dis.dis"></a><code>dis.dis</code></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dis</span>.<span class="title">dis</span>(<span class="params">func</span>)</span></span><br><span class="line"><span class="function">	# 打印可拆解函数语句对应机器指令</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>将多条语句包装为函数，方便查看对应指令</li>
+</ul>
+</blockquote>
+<h2 id="pickletools"><a href="#pickletools" class="headerlink" title="pickletools"></a><code>pickletools</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T16:00:27.000Z" title="6/10/2019, 12:00:27 AM">2019-06-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-06-09T16:00:27.000Z" title="6/10/2019, 12:00:27 AM">2019-06-10</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">a few seconds read (About 17 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/i18n.html">国际化</a></h1><div class="content"><h2 id="locale"><a href="#locale" class="headerlink" title="locale"></a><code>locale</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> locale</span><br><span class="line"></span><br><span class="line">locale.getpreferredencoding()</span><br><span class="line">	# 获取平台默认编码方案</span><br></pre></td></tr></table></figure>
+<h2 id="gettext"><a href="#gettext" class="headerlink" title="gettext"></a><code>gettext</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T15:58:05.000Z" title="6/9/2019, 11:58:05 PM">2019-06-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T03:50:46.000Z" title="8/2/2021, 11:50:46 AM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">3 minutes read (About 422 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/file_dir_access.html">文件、目录访问</a></h1><div class="content"><h2 id="pathlib"><a href="#pathlib" class="headerlink" title="pathlib"></a><code>pathlib</code></h2><h2 id="os-path"><a href="#os-path" class="headerlink" title="os.path"></a><code>os.path</code></h2><h3 id="判断存在"><a href="#判断存在" class="headerlink" title="判断存在"></a>判断存在</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">os.path.isdir(<span class="string">r&quot;C:\Users&quot;</span>)</span><br><span class="line">os.path.isfile(<span class="string">r&quot;C:\Users&quot;</span>)</span><br><span class="line">	<span class="comment"># 判断路径名是简单文件、目录</span></span><br><span class="line">os.path.exists(<span class="string">r&quot;C:\Users&quot;</span>)</span><br><span class="line">	<span class="comment"># 判断路径名是否存在</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>os.stat</code>配合<code>stat</code>模块有更丰富的功能</li>
+</ul>
+</blockquote>
+<h3 id="路径操作"><a href="#路径操作" class="headerlink" title="路径操作"></a>路径操作</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">pfile = os.path.join(<span class="string">r&quot;C:\temp&quot;</span>, <span class="string">&quot;output.txt&quot;</span>)</span><br><span class="line">	<span class="comment"># 连接文件名、目录</span></span><br><span class="line"></span><br><span class="line">os.path.split(pfile)</span><br><span class="line">	<span class="comment"># 分离文件名、目录</span></span><br><span class="line"></span><br><span class="line">os.path.dirname(pfile)</span><br><span class="line">	<span class="comment"># 返回路径中目录</span></span><br><span class="line">os.path.basename(pfile)</span><br><span class="line">	<span class="comment"># 返回路径中</span></span><br><span class="line">os.path.splitext(pfile)</span><br><span class="line">	<span class="comment"># 返回文件扩展名</span></span><br><span class="line"></span><br><span class="line">os.path.normpath(<span class="string">r&quot;C:\temp/index.html&quot;</span>)</span><br><span class="line">	<span class="comment"># 调整路径为当前平台标准，尤其是分隔符混用时</span></span><br><span class="line">os.path.abspath(<span class="string">&quot;index.html&quot;</span>)</span><br><span class="line">	<span class="comment"># 返回文件的**完整绝对路径名**</span></span><br><span class="line">	<span class="comment"># 扩展`.`、`..`等语法</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>os.sep</code>配合字符串<code>.join</code>、<code>.split</code>方法可以实现基本相同
+  效果</li>
+</ul>
+</blockquote>
+<h2 id="fileinput"><a href="#fileinput" class="headerlink" title="fileinput"></a><code>fileinput</code></h2><h2 id="stat"><a href="#stat" class="headerlink" title="stat"></a><code>stat</code></h2><p><code>stat</code>：包含<code>os.stat</code>信息相关常量、函数以便<strong>跨平台</strong>使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> stat</span><br><span class="line"></span><br><span class="line">info = os.stat(filename)</span><br><span class="line">info[stat.ST_MODE]</span><br><span class="line">	<span class="comment"># `stat.ST_MODE`就是字符串</span></span><br><span class="line">	<span class="comment"># 只是这样封装易于跨平台</span></span><br><span class="line">stat.S_ISDIR(info.st_mode)</span><br><span class="line">	<span class="comment"># 通过整数`info.st_mode`判断是否是目录</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>os.path</code>中包含常用部分相同功能函数</li>
+</ul>
+</blockquote>
+<h2 id="glob"><a href="#glob" class="headerlink" title="glob"></a><code>glob</code></h2><h3 id="glob-glob"><a href="#glob-glob" class="headerlink" title="glob.glob"></a><code>glob.glob</code></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">glob</span>.<span class="title">glob</span>(<span class="params">pathname,*,recursive=<span class="literal">False</span></span>)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><code>pathname</code>：文件名模式<ul>
+<li>接受shell常用文件名模式语法<ul>
+<li><code>?</code>：单个字符</li>
+<li><code>*</code>：任意字符</li>
+<li><code>[]</code>：字符选集</li>
+</ul>
+</li>
+<li><code>.</code>开头路径不被以上<code>?</code>、<code>*</code>匹配</li>
+</ul>
+</li>
+<li><code>recursive</code><ul>
+<li><code>False</code>：默认</li>
+<li><code>True</code>：<code>**</code>将递归匹配所有子目录、文件</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>返回值：匹配文件名列表</p>
+<ul>
+<li>目录前缀层次同参数</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>glob.glob</code>是利用<code>glob.fnmatch</code>模块匹配名称模式</li>
+</ul>
+</blockquote>
+<h2 id="shutil"><a href="#shutil" class="headerlink" title="shutil"></a><code>shutil</code></h2><p><code>shutil</code>模块：包含文件操作相关</p>
+<h2 id="fnmatch"><a href="#fnmatch" class="headerlink" title="fnmatch"></a><code>fnmatch</code></h2><h2 id="linecache"><a href="#linecache" class="headerlink" title="linecache"></a><code>linecache</code></h2><h2 id="macpath"><a href="#macpath" class="headerlink" title="macpath"></a><code>macpath</code></h2><h2 id="filecmp"><a href="#filecmp" class="headerlink" title="filecmp"></a><code>filecmp</code></h2><h2 id="tempfile"><a href="#tempfile" class="headerlink" title="tempfile"></a><code>tempfile</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T15:57:08.000Z" title="6/9/2019, 11:57:08 PM">2019-06-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-06-09T15:57:08.000Z" title="6/9/2019, 11:57:08 PM">2019-06-09</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">17 minutes read (About 2608 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/generic_os.html">通用操作系统服务</a></h1><div class="content"><h2 id="os"><a href="#os" class="headerlink" title="os"></a><code>os</code></h2><p><code>os</code>：与Python所在<strong>底层操作系统相对应变量、函数</strong></p>
+<ul>
+<li><p><code>os</code>模块提供了<em>POSIX</em>工具</p>
+<ul>
+<li><strong>操作系统调用的跨平台移至标准</strong></li>
+<li>不依赖平台的目录处理工具<ul>
+<li><code>os.path</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>包含在C程序、shell脚本中经常用到的所有操作系统调用，涉及
+目录、进程、shell变量</p>
+</li>
+<li><p>实践中，<code>os</code>基本可以作为计算机系统调用的<strong>可移植</strong>接口
+使用</p>
+<ul>
+<li>只要技术上可行，<code>os</code>模块都能跨平台</li>
+<li>但在某些平台，<code>os</code>提供专属该平台的工具</li>
+</ul>
+</li>
+</ul>
+<h3 id="Shell变量"><a href="#Shell变量" class="headerlink" title="Shell变量"></a>Shell变量</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">os.environ</span><br><span class="line">	<span class="comment"># 获取、设置shell环境变量，类似字典</span></span><br><span class="line">os.putenv()</span><br><span class="line">	<span class="comment"># 修改进程对应shell环境变量</span></span><br><span class="line">os.getenv()</span><br></pre></td></tr></table></figure>
+<h4 id="os-environ"><a href="#os-environ" class="headerlink" title="os.environ"></a><code>os.environ</code></h4><p><code>os.environ</code>可以向普通字典一样键索引、赋值</p>
+<ul>
+<li><p>默认继承系统所有环境变量、命令行临时环境变量</p>
+</li>
+<li><p>在最新的python中，对<code>os.environ</code>的键值修改将自动导出
+到应用的其他部分</p>
+<ul>
+<li><code>os.environ</code>对象</li>
+<li>进程对应shell环境变量：通过后台调用<code>os.putenv</code>生效，
+反之不会更新<code>os.environ</code></li>
+</ul>
+</li>
+<li><p>python进程、链入C模块、该进程派生子进程都可以获取新的
+赋值</p>
+<ul>
+<li>子进程一般会继承父进程的环境变量设定</li>
+<li>可以作为传递信息的方式</li>
+</ul>
+</li>
+</ul>
+<h4 id="os-putenv"><a href="#os-putenv" class="headerlink" title="os.putenv"></a><code>os.putenv</code></h4><ul>
+<li><p><code>os.putenv</code>同时会调用C库中的<code>putenv</code>（若在系统中可用）
+导出设置到python链接的C库</p>
+<ul>
+<li>底层C库没有<code>putenv</code>则可将<code>os.environ</code>作为参数传递</li>
+</ul>
+</li>
+</ul>
+<h3 id="管理工具"><a href="#管理工具" class="headerlink" title="管理工具"></a>管理工具</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">os.getpid()</span><br><span class="line">	<span class="comment"># 调用函数的进程id</span></span><br><span class="line">os.getcwd()</span><br><span class="line">	<span class="comment"># 当前工作目录CWD</span></span><br><span class="line">os.chdir(<span class="string">r&quot;C:\Users&quot;</span>)</span><br><span class="line">	<span class="comment"># 更改当前工作目录CWD</span></span><br></pre></td></tr></table></figure>
+<h3 id="移植工具"><a href="#移植工具" class="headerlink" title="移植工具"></a>移植工具</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">os.sep</span><br><span class="line">	<span class="comment"># python底层运行平台采用的**目录组**分隔符号</span></span><br><span class="line">	<span class="comment"># linux: `/`、win：`\`、某些mac：`:`</span></span><br><span class="line">os.pathsep</span><br><span class="line">	<span class="comment"># 目录列表（字符串形式）中分隔目录的字符</span></span><br><span class="line">	<span class="comment"># posix机：`:`、win：`;`</span></span><br><span class="line">os.curdir</span><br><span class="line">	<span class="comment"># 当前目录代表</span></span><br><span class="line">	<span class="comment"># linux：`.`</span></span><br><span class="line">os.pardir</span><br><span class="line">	<span class="comment"># 父目录代表</span></span><br><span class="line">	<span class="comment"># linux：`..`</span></span><br><span class="line">os.linesep</span><br><span class="line">	<span class="comment"># 换行符</span></span><br><span class="line">	<span class="comment"># linux：`\n`</span></span><br></pre></td></tr></table></figure>
+<p>||Linux|Win|Unix|
+|———|——————|———|———|
+|sep|<code>/</code>|<code>\</code>|<code>/</code>（某些MAC<code>:</code>）|
+|pathsep|<code>:</code>|<code>;</code>||
+|curdir|<code>.</code>|||
+|pardir|<code>..</code>|||
+|linesep|<code>\n</code>|<code>\r\n</code>||</p>
+<ul>
+<li>借助这些变量可以系统相关字符串操作的跨平台</li>
+</ul>
+<blockquote>
+<ul>
+<li>win下目录组分隔符是<code>\</code>，大部分情况下看到<code>\\</code>是作为<code>\</code>
+  转义字符，防止<code>\</code>和之后字符转义<blockquote>
+<ul>
+<li>确认不会转义时，直接使用<code>\</code>也是可以的</li>
+<li>使用<code>r&#39;&#39;</code>表示不转义也可以直接使用<code>\</code></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h3 id="目录、文件操作"><a href="#目录、文件操作" class="headerlink" title="目录、文件操作"></a>目录、文件操作</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">os.mkdir(dirname)</span><br><span class="line">os.rename(ori_name, dest_name)</span><br><span class="line">os.remove(filename)</span><br><span class="line">os.unlink(filename)</span><br><span class="line">	<span class="comment"># unix下文件删除，同`os.remove`</span></span><br><span class="line">os.chmod(filename, previlideges)</span><br><span class="line">info = os.stat(filename)</span><br><span class="line">	<span class="comment"># 命名元组表示的文件底层信息</span></span><br><span class="line">	<span class="comment"># 可使用`stat`模块处理、解释信息</span></span><br><span class="line">os.listdir(dirpath)</span><br><span class="line">os.walk(rootdir, topdown=<span class="literal">True</span>/<span class="literal">False</span>)</span><br><span class="line">	<span class="comment"># 遍历根目录下的整个目录树</span></span><br></pre></td></tr></table></figure>
+<h4 id="os-listdir"><a href="#os-listdir" class="headerlink" title="os.listdir"></a><code>os.listdir</code></h4><ul>
+<li><p>返回值：包含目录中所有条目名称的列表</p>
+<ul>
+<li>名称不带目录路径前缀</li>
+</ul>
+</li>
+<li><p>需要注意的是：文件名同样有编码</p>
+<ul>
+<li>若参数为字节串，返回文件名列表也是字节串</li>
+<li>参数为字符串，返回文件名列表也是字符串</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>open</code>函数也可以类似使用字节串确定需要打开的文件</li>
+<li><code>glob.glob</code>，<code>os.walk</code>内部都是通过调用<code>os.listdir</code>
+ 实现，行为相同</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>glob</code>模块也有遍历目录的能力</li>
+</ul>
+</blockquote>
+<h4 id="os-walk"><a href="#os-walk" class="headerlink" title="os.walk"></a><code>os.walk</code></h4><ul>
+<li><p>返回值：返回迭代器</p>
+<ul>
+<li>每个元素为<code>(dirname, subdirs, subfile)</code></li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>topdown</code>：默认<code>True</code>，自顶向下返回</li>
+</ul>
+</li>
+</ul>
+<h3 id="文件描述符、文件锁"><a href="#文件描述符、文件锁" class="headerlink" title="文件描述符、文件锁"></a>文件描述符、文件锁</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">descriptor = os.<span class="built_in">open</span>(path, flags, mode)</span><br><span class="line">	<span class="comment"># 打开文件并返回底层描述符</span></span><br><span class="line">os.read(descriptor, N)</span><br><span class="line">	<span class="comment"># 最多读取N个字节，返回一个字节串</span></span><br><span class="line">os.write(descriptor, string)</span><br><span class="line">	<span class="comment"># 将字节串写入文件</span></span><br><span class="line">os.lseek(descriptor, position, how)</span><br><span class="line">	<span class="comment"># 移动文件游标位置</span></span><br><span class="line">descriptor.flush()</span><br><span class="line">	<span class="comment"># 强制刷出缓冲</span></span><br><span class="line"></span><br><span class="line">new_fd = os.dup(fd)</span><br><span class="line">	<span class="comment"># 创建文件描述符副本</span></span><br><span class="line">os.dup2(fd_src, fd_dest)</span><br><span class="line">	<span class="comment"># 将文件描述符`fd_src`复制至`fd_dest`</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>os</code>通过调用文件的描述符来处理文件</p>
+</li>
+<li><p>基于文件描述符的文件以字节流形式处理</p>
+<ul>
+<li>没有字符解码、编码、换行符转换</li>
+<li>除了缓冲等额外性能，基于描述符的文件和二进制文件模式
+对象类似</li>
+</ul>
+</li>
+<li><p>文件流对象、工具仅仅是在基于描述符的文件的封装</p>
+<ul>
+<li><p>可以通过<code>.fileno()</code>获得文件流对象对应文件描述符，
+<code>sys.stdin</code>、<code>sys.stdout</code>、<code>sys.stderr</code>对应文件
+描述符是：0、1、2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">os.write(<span class="number">1</span>, <span class="string">b&quot;hello world\n&quot;</span>)</span><br><span class="line">sys.stdout.write(<span class="string">&quot;hello world\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以通过<code>os.fdopen</code>把文件描述符封装进文件流对象</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fdfile = os.<span class="built_in">open</span>(<span class="string">&quot;filename&quot;</span>, (os.O_RDWR|os.O_BINARY))</span><br><span class="line">filstream = os.fdopen(fdfile, <span class="string">&quot;r&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>,</span><br><span class="line">	closefd=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="os-open"><a href="#os-open" class="headerlink" title="os.open"></a><code>os.open</code></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def os.open(path,</span><br><span class="line">	flags,</span><br><span class="line">	mode=511, *,</span><br><span class="line">	dir_fd=None</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><p><code>mode</code>：需要模式标识符进行二进制操作以得到需要的模式</p>
+<ul>
+<li><code>os.O_RDWR</code></li>
+<li><code>os.O_RDONLY</code></li>
+<li><code>os.O_WRONLY</code></li>
+<li><code>os.O_BINARY</code></li>
+<li><code>os.O_EXCL</code>：唯一访问权，是python在并发、进程
+同步情况下锁定文件最便捷的方法</li>
+<li><code>os.O_NONBLOCK</code>：非阻塞访问</li>
+</ul>
+<blockquote>
+<ul>
+<li>其他模式选项参见<code>os</code>模块</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>返回值：文件描述符</p>
+<ul>
+<li>整数代码、句柄，代表操作系统的中文件</li>
+</ul>
+</li>
+</ul>
+<h3 id="退出进程"><a href="#退出进程" class="headerlink" title="退出进程"></a>退出进程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">os._exit(<span class="number">0</span>)</span><br><span class="line">	# 调用进程立即退出，不输出流缓冲、不运行清理处理器</span><br></pre></td></tr></table></figure>
+<h2 id="io"><a href="#io" class="headerlink" title="io"></a><code>io</code></h2><h2 id="time"><a href="#time" class="headerlink" title="time"></a><code>time</code></h2><h2 id="argparse"><a href="#argparse" class="headerlink" title="argparse"></a><code>argparse</code></h2><p><code>argparse</code>：编写用户友好的命令行接口</p>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/argparse.html">https://docs.python.org/zh-cn/3/library/argparse.html</a></li>
+</ul>
+</blockquote>
+<h3 id="argparse-ArgumentParser"><a href="#argparse-ArgumentParser" class="headerlink" title="argparse.ArgumentParser"></a><code>argparse.ArgumentParser</code></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">argparse</span>.<span class="title">ArgumentParser</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">		prog=<span class="literal">None</span>,				<span class="comment"># 程序名，可用`$(prog)s`引用</span></span></span></span><br><span class="line"><span class="params"><span class="function">		usage=<span class="literal">None</span>,				<span class="comment"># 用法字符串</span></span></span></span><br><span class="line"><span class="params"><span class="function">		description=<span class="literal">None</span>,		<span class="comment"># 程序描述</span></span></span></span><br><span class="line"><span class="params"><span class="function">		epilog=<span class="literal">None</span>,			<span class="comment"># 程序尾描述</span></span></span></span><br><span class="line"><span class="params"><span class="function">		parents=[],				<span class="comment"># 父解析器，共用当前参数</span></span></span></span><br><span class="line"><span class="params"><span class="function">		formatter_class=argparse.HelpFormatter,</span></span></span><br><span class="line"><span class="params"><span class="function">		prefix_chars=<span class="string">&quot;-&quot;</span>/<span class="built_in">str</span>,	<span class="comment"># 参数前缀（可包含多个可选）</span></span></span></span><br><span class="line"><span class="params"><span class="function">		fromfile_prefix_chars=<span class="literal">None</span>,		<span class="comment"># 指定其后参数为存储参数文件名</span></span></span></span><br><span class="line"><span class="params"><span class="function">		argument_default=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">		conflict_handler=<span class="string">&quot;error&quot;</span>/<span class="string">&quot;resolve&quot;</span>	<span class="comment"># 默认不允许相同选项字符串</span></span></span></span><br><span class="line"><span class="params"><span class="function">											<span class="comment"># 有不同行为，可设置为</span></span></span></span><br><span class="line"><span class="params"><span class="function">											<span class="comment"># &quot;resolve&quot;表示允许覆盖</span></span></span></span><br><span class="line"><span class="params"><span class="function">		add_help=<span class="literal">True</span>,			<span class="comment"># 符解释器中应禁止</span></span></span></span><br><span class="line"><span class="params"><span class="function">		allow_abbrev=<span class="literal">True</span>,		<span class="comment"># 允许前缀匹配（若不存在重复前缀）</span></span></span></span><br><span class="line"><span class="params"><span class="function">	</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 打印、输出信息至标准输出</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">print_usage</span>(<span class="params">self, file=<span class="literal">None</span>/IO</span>) -&gt; <span class="literal">None</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">print_help</span>(<span class="params">self, file=<span class="literal">None</span>/IO</span>) -&gt; <span class="literal">None</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">format_usage</span>(<span class="params">self</span>) -&gt; <span class="built_in">str</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">format_help</span>(<span class="params">self</span>) -&gt; <span class="built_in">str</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 退出</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">exit</span>(<span class="params">self, exit=<span class="number">0</span>, message=<span class="literal">None</span></span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">error</span>(<span class="params">self, message</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h4 id="添加参数"><a href="#添加参数" class="headerlink" title="添加参数"></a>添加参数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 添加参数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_argument</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	?*name_or_flag=*[<span class="built_in">str</span>],			<span class="comment"># 选项名（无前缀表示位置参数）</span></span></span></span><br><span class="line"><span class="params"><span class="function">	action=<span class="string">&quot;store&quot;</span>/<span class="string">&quot;store_const&quot;</span>/	<span class="comment"># 参数动作</span></span></span></span><br><span class="line"><span class="params"><span class="function">		<span class="string">&quot;store_true&quot;</span>/<span class="string">&quot;store_false&quot;</span>/</span></span></span><br><span class="line"><span class="params"><span class="function">		<span class="string">&quot;append&quot;</span>/<span class="string">&quot;append_const&quot;</span>/</span></span></span><br><span class="line"><span class="params"><span class="function">		<span class="string">&quot;count&quot;</span>/<span class="string">&quot;help&quot;</span>/<span class="string">&quot;version&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">	nargs=<span class="literal">None</span>/<span class="built_in">int</span>/<span class="string">&quot;?&quot;</span>/<span class="string">&quot;*&quot;</span>/<span class="string">&quot;+&quot;</span></span></span></span><br><span class="line"><span class="params"><span class="function">	const=<span class="literal">None</span>,						<span class="comment"># `action`、`nargs`所需常数</span></span></span></span><br><span class="line"><span class="params"><span class="function">	default=<span class="literal">None</span>,					<span class="comment"># 未指定参数默认值</span></span></span></span><br><span class="line"><span class="params"><span class="function">	<span class="built_in">type</span>=<span class="built_in">str</span>/<span class="built_in">type</span>,					<span class="comment"># 参数被转换类型、内建函数</span></span></span></span><br><span class="line"><span class="params"><span class="function">	choices=<span class="literal">None</span>,					<span class="comment"># 参数类型</span></span></span></span><br><span class="line"><span class="params"><span class="function">	required=<span class="literal">None</span>,					<span class="comment"># 选项候选集</span></span></span></span><br><span class="line"><span class="params"><span class="function">	<span class="built_in">help</span>=<span class="literal">None</span>,						<span class="comment"># 选项描述</span></span></span></span><br><span class="line"><span class="params"><span class="function">	metavar=<span class="literal">None</span>,					<span class="comment"># 参数值示例</span></span></span></span><br><span class="line"><span class="params"><span class="function">	dest=<span class="literal">None</span>,						<span class="comment"># `parse_args()`返回的参数属性名</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>):</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># 添加参数组，参数选项将可以注册至此</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_argument_group</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	title=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">	description=<span class="literal">None</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>) -&gt; argparse._ArgumentGroup:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># 添加互斥参数组，互斥组内仅有一个参数可用</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_mutally_exclusive_group</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	rquired=<span class="literal">False</span>				<span class="comment"># 互斥组中至少有一个参数</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>) -&gt; argparse._MutaullyExclusiveGroup:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># 设置默认值，优先级高于选项中默认值</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_defaults</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	**kwargs: &#123;参数属性名: 默认值&#125;</span></span></span><br><span class="line"><span class="params"><span class="function"></span>):</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># 获取默认值</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_default</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	**kwargs: &#123;参数属性名: 默认值&#125;</span></span></span><br><span class="line"><span class="params"><span class="function"></span>):</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数<ul>
+<li><code>action</code>：关联命令行参数、动作，除以下预定义行为，
+还可以传递<code>argparse.Action</code>子类、相同接口类<ul>
+<li><code>store</code>：存储值，默认行为</li>
+<li><code>store_const</code>：存储<code>const</code>指定值，通常用于在
+选项中指定标志</li>
+<li><code>store_true</code>/<code>&quot;store_false&quot;</code>：类上</li>
+<li><code>append</code>：存储列表，适合多次使用选项</li>
+<li><code>append_const</code>：将<code>const</code>参数值追加至列表，
+适合<strong>多个选项需要在同一列表中存储常数</strong>
+（即多个<code>dest</code>参数相同）</li>
+<li><code>count</code>：计算选项出现次数</li>
+<li><code>help</code>：打印完整帮助信息</li>
+<li><code>version</code>：打印<code>version</code>参数值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>-    `nargs`：参数消耗数目，指定后`pare_args`返回列表，
+    否则参数消耗由`action`决定
+
+    -    `int`：消耗参数数目，`nargs=1`产生单元素列表，
+        和默认不同
+    -    `?/*/+`：类似普通正则，`+`会在没有至少一个参数时
+        报错
+    -    `argparse.REMAINDER`：所有剩余参数，适合用于从
+        命令行传递参数至另一命令行
+
+-    `const`：保存不从命令行读取、被各种动作需求的常数
+    -    `action=&quot;store_const&quot;/&quot;append_const&quot;`：必须给出
+    -    `nargs=?`：气候选项没有参数时，使用`const`替代
+
+-    `type`：允许任何类型检查、类型转换，一般内建类型、
+    函数可以直接使用
+    -    `argparse.FiltType(&quot;w&quot;)`：为文件读写方便，预定义
+        类型转换
+
+-    `dest`：`parse_args()`返回的参数属性名
+    -    位置选项：缺省为首个选项名
+    -    关键字选项：优秀首个`--`开头长选项名，选项目中间
+        `-`被替换为`_`
+</code></pre><h4 id="参数解析"><a href="#参数解析" class="headerlink" title="参数解析"></a>参数解析</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 解析参数，无法解析则报错</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_args</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	args=<span class="literal">None</span>/<span class="built_in">list</span>,			<span class="comment"># 需要解析参数列表，默认`sys.argv`</span></span></span></span><br><span class="line"><span class="params"><span class="function">	namespace=<span class="literal">None</span>			<span class="comment"># 存放属性的`Namespace`对象，缺省创建新空对象</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>) -&gt; argparse.Namespace:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># 解析部分参数，无法解析则返回</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_known_args</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	args=<span class="literal">None</span>/<span class="built_in">list</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">	namespace=<span class="literal">None</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>) -&gt; (argparse.Namespace, [ ]):</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># 允许混合位置参数、关键字参数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_intermixed_args</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	args=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">	namespace=<span class="literal">None</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>) -&gt; argparse.Namespace:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_known_intermixed_args</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	args=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">	namespace=<span class="literal">None</span></span></span></span><br><span class="line"><span class="params"><span class="function"></span>) -&gt; argparse.Namespace:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>说明<ul>
+<li>仅不包含类似负数的选项名，参数才会被尝试解释为负数
+位置参数</li>
+<li>前缀无歧义时，可以前缀匹配</li>
+</ul>
+</li>
+</ul>
+<h4 id="添加子命令"><a href="#添加子命令" class="headerlink" title="添加子命令"></a>添加子命令</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_subparsers</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">	title,</span></span></span><br><span class="line"><span class="params"><span class="function">	description,</span></span></span><br><span class="line"><span class="params"><span class="function">	prog,</span></span></span><br><span class="line"><span class="params"><span class="function">	parser_class,</span></span></span><br><span class="line"><span class="params"><span class="function">	action,</span></span></span><br><span class="line"><span class="params"><span class="function">	option_string,</span></span></span><br><span class="line"><span class="params"><span class="function">	dest,</span></span></span><br><span class="line"><span class="params"><span class="function">	required,</span></span></span><br><span class="line"><span class="params"><span class="function">	<span class="built_in">help</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">	metavar</span></span></span><br><span class="line"><span class="params"><span class="function"></span>):</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h3 id="辅助类"><a href="#辅助类" class="headerlink" title="辅助类"></a>辅助类</h3><h4 id="动作类"><a href="#动作类" class="headerlink" title="动作类"></a>动作类</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">argparse</span>.<span class="title">Action</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, option_string, dest, nargs=<span class="literal">None</span>, **kwargs</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, parser, namespace, values, option_string=<span class="literal">None</span></span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h4 id="格式化类"><a href="#格式化类" class="headerlink" title="格式化类"></a>格式化类</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">argparse</span>.<span class="title">ArgumentDefaultHelpFormatter</span></span></span><br><span class="line"><span class="class"> # 认为两程序描述已被正确格式化，保留原样输出</span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">argparse</span>.<span class="title">RawDescriptionHelpFormatter</span></span></span><br><span class="line"><span class="class"> # 保留所有种类文字的空格，包括参数描述</span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">argparse</span>.<span class="title">RawTextHelpFormatter</span></span></span><br><span class="line"><span class="class"> # 为每个参数使用`<span class="title">type</span>`参数名作为其显示名，而不是`<span class="title">dest</span>`</span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">argparse</span>.<span class="title">MetavarTypeHelpFormatter</span></span></span><br></pre></td></tr></table></figure>
+<h4 id="其他类"><a href="#其他类" class="headerlink" title="其他类"></a>其他类</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 容纳属性的类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">argparse</span>.<span class="title">Namespace</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"> <span class="comment"># IO接口简化类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">argparse</span>.<span class="title">FileType</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function">		mode=<span class="string">&quot;r&quot;</span>/<span class="string">&quot;w&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">		bufsize=-<span class="number">1</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">		encoding=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">		errors=<span class="literal">None</span></span></span></span><br><span class="line"><span class="params"><span class="function">	</span>):</span></span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h2 id="getopt"><a href="#getopt" class="headerlink" title="getopt"></a><code>getopt</code></h2><h2 id="optparse"><a href="#optparse" class="headerlink" title="optparse"></a><code>optparse</code></h2><h2 id="logging"><a href="#logging" class="headerlink" title="logging"></a><code>logging</code></h2><h2 id="logging-config"><a href="#logging-config" class="headerlink" title="logging.config"></a><code>logging.config</code></h2><h2 id="logging-handlers"><a href="#logging-handlers" class="headerlink" title="logging.handlers"></a><code>logging.handlers</code></h2><h2 id="getpass"><a href="#getpass" class="headerlink" title="getpass"></a><code>getpass</code></h2><h2 id="curses"><a href="#curses" class="headerlink" title="curses"></a><code>curses</code></h2><h2 id="curses-textpad"><a href="#curses-textpad" class="headerlink" title="curses.textpad"></a><code>curses.textpad</code></h2><h2 id="curses-ascii"><a href="#curses-ascii" class="headerlink" title="curses.ascii"></a><code>curses.ascii</code></h2><h2 id="curses-panel"><a href="#curses-panel" class="headerlink" title="curses.panel"></a><code>curses.panel</code></h2><h2 id="platform"><a href="#platform" class="headerlink" title="platform"></a><code>platform</code></h2><h2 id="errno"><a href="#errno" class="headerlink" title="errno"></a><code>errno</code></h2><h2 id="ctypes"><a href="#ctypes" class="headerlink" title="ctypes"></a><code>ctypes</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T15:47:28.000Z" title="6/9/2019, 11:47:28 PM">2019-06-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T03:51:04.000Z" title="8/2/2021, 11:51:04 AM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">a few seconds read (About 6 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/file_formats.html">文件打包</a></h1><div class="content"><h2 id="zlib"><a href="#zlib" class="headerlink" title="zlib"></a><code>zlib</code></h2><h2 id="gzip"><a href="#gzip" class="headerlink" title="gzip"></a><code>gzip</code></h2><h2 id="bz2"><a href="#bz2" class="headerlink" title="bz2"></a><code>bz2</code></h2><h2 id="lzma"><a href="#lzma" class="headerlink" title="lzma"></a><code>lzma</code></h2><h2 id="zipfile"><a href="#zipfile" class="headerlink" title="zipfile"></a><code>zipfile</code></h2><h2 id="tarfile"><a href="#tarfile" class="headerlink" title="tarfile"></a><code>tarfile</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T15:42:37.000Z" title="6/9/2019, 11:42:37 PM">2019-06-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-06-09T15:42:37.000Z" title="6/9/2019, 11:42:37 PM">2019-06-09</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">a few seconds read (About 13 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/concurrent_exec.html">Python并行</a></h1><div class="content"><h2 id="threding"><a href="#threding" class="headerlink" title="threding"></a><code>threding</code></h2><h2 id="thread"><a href="#thread" class="headerlink" title="_thread"></a><code>_thread</code></h2><h2 id="dummy-thread"><a href="#dummy-thread" class="headerlink" title="_dummy_thread"></a><code>_dummy_thread</code></h2><h2 id="dummy-threading"><a href="#dummy-threading" class="headerlink" title="dummy_threading"></a><code>dummy_threading</code></h2><h2 id="multiprocessing"><a href="#multiprocessing" class="headerlink" title="multiprocessing"></a><code>multiprocessing</code></h2><h2 id="concurrent"><a href="#concurrent" class="headerlink" title="concurrent"></a><code>concurrent</code></h2><h2 id="concurrent-futures"><a href="#concurrent-futures" class="headerlink" title="concurrent.futures"></a><code>concurrent.futures</code></h2><h2 id="subprocess"><a href="#subprocess" class="headerlink" title="subprocess"></a><code>subprocess</code></h2><h2 id="sched"><a href="#sched" class="headerlink" title="sched"></a><code>sched</code></h2><h2 id="queue"><a href="#queue" class="headerlink" title="queue"></a><code>queue</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T15:33:54.000Z" title="6/9/2019, 11:33:54 PM">2019-06-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T06:45:49.000Z" title="8/2/2021, 2:45:49 PM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">a few seconds read (About 7 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/numeric_math.html">数字、数学</a></h1><div class="content"><h2 id="numbers"><a href="#numbers" class="headerlink" title="numbers"></a><code>numbers</code></h2><h2 id="math"><a href="#math" class="headerlink" title="math"></a><code>math</code></h2><h2 id="cmath"><a href="#cmath" class="headerlink" title="cmath"></a><code>cmath</code></h2><h2 id="decimal"><a href="#decimal" class="headerlink" title="decimal"></a><code>decimal</code></h2><h2 id="fractions"><a href="#fractions" class="headerlink" title="fractions"></a><code>fractions</code></h2><h2 id="random"><a href="#random" class="headerlink" title="random"></a><code>random</code></h2><h2 id="statics"><a href="#statics" class="headerlink" title="statics"></a><code>statics</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T15:32:39.000Z" title="6/9/2019, 11:32:39 PM">2019-06-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-06-09T15:32:39.000Z" title="6/9/2019, 11:32:39 PM">2019-06-09</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">a few seconds read (About 8 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/text_processing.html">文本处理服务</a></h1><div class="content"><h2 id="string"><a href="#string" class="headerlink" title="string"></a><code>string</code></h2><h2 id="re"><a href="#re" class="headerlink" title="re"></a><code>re</code></h2><h2 id="difflib"><a href="#difflib" class="headerlink" title="difflib"></a><code>difflib</code></h2><h2 id="textwrap"><a href="#textwrap" class="headerlink" title="textwrap"></a><code>textwrap</code></h2><h2 id="unicodedata"><a href="#unicodedata" class="headerlink" title="unicodedata"></a><code>unicodedata</code></h2><h2 id="stringrep"><a href="#stringrep" class="headerlink" title="stringrep"></a><code>stringrep</code></h2><h2 id="readline"><a href="#readline" class="headerlink" title="readline"></a><code>readline</code></h2><h2 id="rlcompleter"><a href="#rlcompleter" class="headerlink" title="rlcompleter"></a><code>rlcompleter</code></h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-09T15:31:24.000Z" title="6/9/2019, 11:31:24 PM">2019-06-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T03:49:19.000Z" title="8/2/2021, 11:49:19 AM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3std/">Py3std</a></span><span class="level-item">a few seconds read (About 14 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Python/Py3std/builtin_exceptions.html">内置异常</a></h1><div class="content"><h2 id="基类"><a href="#基类" class="headerlink" title="基类"></a>基类</h2><h2 id="具体警告"><a href="#具体警告" class="headerlink" title="具体警告"></a>具体警告</h2><h2 id="警告"><a href="#警告" class="headerlink" title="警告"></a>警告</h2><h2 id="异常层次服务"><a href="#异常层次服务" class="headerlink" title="异常层次服务"></a>异常层次服务</h2></div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/tags/Python/page/3/">Previous</a></div><div class="pagination-next"><a href="/tags/Python/page/5/">Next</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/tags/Python/">1</a></li><li><a class="pagination-link" href="/tags/Python/page/2/">2</a></li><li><a class="pagination-link" href="/tags/Python/page/3/">3</a></li><li><a class="pagination-link is-current" href="/tags/Python/page/4/">4</a></li><li><a class="pagination-link" href="/tags/Python/page/5/">5</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/tags/Python/page/9/">9</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

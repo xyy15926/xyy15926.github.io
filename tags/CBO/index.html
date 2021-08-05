@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: CBO - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">CBO</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-05-25T11:55:48.000Z" title="5/25/2019, 7:55:48 PM">2019-05-25</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T09:30:14.000Z" title="8/2/2021, 5:30:14 PM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a></span><span class="level-item">23 minutes read (About 3403 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/optimizer_physical.html">物理查询优化</a></h1><div class="content"><h2 id="查询代价估算"><a href="#查询代价估算" class="headerlink" title="查询代价估算"></a>查询代价估算</h2><h3 id="代价模型"><a href="#代价模型" class="headerlink" title="代价模型"></a>代价模型</h3><p>代价估计模型：基于CPU代价、IO代价</p>
+<script type="math/tex; mode=display">\begin{align*}
+总代价 &= IO代价 + CPU代价 \\
+COST &= P * CPUTimePerPage + W * T
+\end{align*}</script><blockquote>
+<ul>
+<li>$P$：计划访问的页面数</li>
+<li>$CPUTimePerPage$：读取每个页面的时间花费</li>
+<li>$T$：访问的元组数，索引扫描应包括索引读取花费<blockquote>
+<ul>
+<li>反映CPU代价，因为访问页面上的元组需要解析元组结构，
+ 消耗CPU</li>
+</ul>
+</blockquote>
+</li>
+<li>$W$：<em>selectivity</em>，选择率/权重因子，表明IO、CPU的相关性</li>
+</ul>
+</blockquote>
+<h3 id="Selectivity"><a href="#Selectivity" class="headerlink" title="Selectivity"></a><em>Selectivity</em></h3><p>选择率：在关系R中，满足<strong>条件</strong><code>A &lt;cond_op&gt; a</code>的元组数R和
+所有元组数N的比值</p>
+<ul>
+<li>在CBO中占有重要地位</li>
+<li>其精确程度直接影响最优计划的选择</li>
+</ul>
+<h4 id="估计方法"><a href="#估计方法" class="headerlink" title="估计方法"></a>估计方法</h4><ul>
+<li><p><em>Non-Parametric Method</em>：非参方法，使用ad-hoc数据结构、
+直方图维护属性值分布</p>
+</li>
+<li><p><em>Parametric Method</em>：参数方法，使用预先估计的分布函数
+逼近真实分布</p>
+</li>
+<li><p><em>Curve Fitting</em>：曲线拟合法，使用多项式函数、最小标准差
+逼近属性值分布</p>
+</li>
+<li><p><em>Sampling</em>：抽样法，从数据库中抽取部分元组，针对样本进行
+查询，收集统计数据</p>
+<ul>
+<li>需要足够多样本被测试才能达到足够精度</li>
+</ul>
+</li>
+<li><p>综合法</p>
+</li>
+</ul>
+<h2 id="单表扫描算法"><a href="#单表扫描算法" class="headerlink" title="单表扫描算法"></a>单表扫描算法</h2><h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><h2 id="两表联接算法"><a href="#两表联接算法" class="headerlink" title="两表联接算法"></a>两表联接算法</h2><h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1><h3 id="Nested-Loop"><a href="#Nested-Loop" class="headerlink" title="Nested Loop"></a><em>Nested Loop</em></h3><p>嵌套循环联接算法：扫描外表，读取记录根据<code>join</code>字段上的
+<strong>索引</strong>去内表中查询</p>
+<ul>
+<li>适合场景<ul>
+<li>外表记录较少（&lt;1w）</li>
+<li>内表已经创建索引、性能较好</li>
+<li>inner、left outer、left semi、left antisemi join</li>
+</ul>
+</li>
+</ul>
+<h4 id="嵌套循环联接算法"><a href="#嵌套循环联接算法" class="headerlink" title="嵌套循环联接算法"></a>嵌套循环联接算法</h4><ul>
+<li>搜索时扫描整个表、索引</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> each row R1 in the outer table:</span><br><span class="line">	<span class="keyword">for</span> each row R2 in the inner table:</span><br><span class="line">		<span class="keyword">if</span> R1 join with R2:</span><br><span class="line">			<span class="keyword">return</span> (R1, R2)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>外部循环逐行消耗外部输入表，当其数据量很大时可以并行扫描
+  内表</li>
+<li>内表被外表驱动：内部循环为每个外部行执行，在内表中搜索
+  匹配行</li>
+</ul>
+</blockquote>
+<h4 id="基于块嵌套循环联接算法"><a href="#基于块嵌套循环联接算法" class="headerlink" title="基于块嵌套循环联接算法"></a>基于块嵌套循环联接算法</h4><ul>
+<li>每次IO申请以“块”为单位尽量读入多个页面</li>
+<li>改进获取元组的方式</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> each chunk c1 of t1</span><br><span class="line">	<span class="keyword">if</span> c1 <span class="keyword">not</span> in memory:</span><br><span class="line">		read chunk c1 to memory</span><br><span class="line">	<span class="keyword">for</span> each row r1 in chunk c1:</span><br><span class="line">		<span class="keyword">for</span> each chunk c2 of t2:</span><br><span class="line">			<span class="keyword">if</span> c2 <span class="keyword">not</span> in memory:</span><br><span class="line">				read chunk c2 into memory</span><br><span class="line">			<span class="keyword">for</span> each row r2 in c2:</span><br><span class="line">				<span class="keyword">if</span> r1 join with r2:</span><br><span class="line">					<span class="keyword">return</span>(R1, R2)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>内存循环最后一个块使用后作为下次循环循环使用的第一个块
+  可以节省一次IO</li>
+</ul>
+</blockquote>
+<h4 id="索引嵌套循环联接算法"><a href="#索引嵌套循环联接算法" class="headerlink" title="索引嵌套循环联接算法"></a>索引嵌套循环联接算法</h4><ul>
+<li>索引嵌套循环连结：在内表中搜索时使用索引，可以加快联接
+速度</li>
+<li>临时索引嵌套循环连结：为查询临时生成索引作为查询计划的
+一部分，查询完成后立刻将索引破坏</li>
+</ul>
+<h3 id="Sort-Merge-Join"><a href="#Sort-Merge-Join" class="headerlink" title="(Sort)Merge Join"></a><em>(Sort)Merge Join</em></h3><p>排序归并联接算法</p>
+<ul>
+<li>适合场景<ul>
+<li>联接字段已经排序，如B+树索引</li>
+<li>inner、left outer、left semi、left anti semi、
+right outer、right semi、right anti semi join、union</li>
+<li>等值、非等值联接，除<code>!=/&lt;&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><ul>
+<li><p>确保两个关联表都是按照关联字段进行排序</p>
+<ul>
+<li>若关联字段已经有排序一致的可用索引，可以利用索引直接
+进行merge join操作</li>
+<li>否则先对关联字段进行排序，表过大无法一次载入内存时
+需要分块载入</li>
+</ul>
+</li>
+<li><p>从每个表分别取记录开始匹配（升序）</p>
+<ul>
+<li>若符合关联条件，放入结果集</li>
+<li>否则丢关联字段较小记录，取对应表中下条记录继续
+匹配，直到整个循环结束</li>
+<li>对于多对join，通常需要使用临时表进行操作<h1 id="todo-1"><a href="#todo-1" class="headerlink" title="todo"></a>todo</h1></li>
+</ul>
+</li>
+</ul>
+<h3 id="Hash-Join"><a href="#Hash-Join" class="headerlink" title="Hash Join"></a><em>Hash Join</em></h3><p>哈希联接：利用Hash Match联接</p>
+<ul>
+<li><p>HJ处理代价非常高，是服务器内存、CPU头号杀手，需要对数据
+进行分区时，还会造成大量异步磁盘I/O，避免大数据的HJ，
+尽量转化为高效的SMJ、NLJ</p>
+<ul>
+<li>表结构设计：冗余字段</li>
+<li>索引调整设计</li>
+<li>SQL优化</li>
+<li>冗余表：静态表存储统计结果</li>
+</ul>
+</li>
+<li><p>类似任何hash算法，内存小、数据偏斜严重时，散列冲突会比较
+严重，此时应该考虑使用NIJ</p>
+</li>
+<li><p>适合场景</p>
+<ul>
+<li>两表数据量相差非常大</li>
+<li>对CPU消耗明显，需要CPU资源充足</li>
+<li>只适合（不）等值查询</li>
+</ul>
+</li>
+</ul>
+<h4 id="In-Memory-Hash-Join"><a href="#In-Memory-Hash-Join" class="headerlink" title="In-Memory Hash Join"></a><em>In-Memory Hash Join</em></h4><p><img src="/imgs/db_hash_join.png" alt="db_hash_join"></p>
+<h5 id="build阶段"><a href="#build阶段" class="headerlink" title="build阶段"></a><em>build</em>阶段</h5><p>以操作涉及字段为hash key构造hash表</p>
+<ul>
+<li><p>从构造输入表中取记录，使用hash函数生成hash值</p>
+</li>
+<li><p>hash值对应hash表中的buckets，若一个hash值对应多个桶，
+则使用链表将联接桶</p>
+</li>
+<li><p>构造输入表处理完毕之后，其中记录都被桶关联</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>build表构建的hash表需要频繁访问，最好能全部加载在内存中
+  ，因此尽量选择小表，避免使用GHJ</li>
+</ul>
+</blockquote>
+<h5 id="probe阶段"><a href="#probe阶段" class="headerlink" title="probe阶段"></a><em>probe</em>阶段</h5><ul>
+<li><p>从探测输入中取记录，使用同样hash函数生成hash值</p>
+</li>
+<li><p>根据hash值，在构造阶段构造的hash表中搜索对应桶</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>为避免冲突，bucket可能会联接到其他bucket，探测操作
+  会搜索整个冲突链上的buckets查找匹配记录</li>
+</ul>
+</blockquote>
+<h5 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h5><p>以下操作内部实现其实都是hash join，只是对应算符不同而已</p>
+<ul>
+<li><p>join操作</p>
+<ul>
+<li>使用join字段计算hash值</li>
+<li>使用<strong>顶端输入</strong>构造hash表，<strong>底端输入</strong>进行探测</li>
+<li>按照联接类型规定的模式输出（不）匹配项</li>
+<li>若多个联接使用相同的联接列，这些操作将分组为一个
+哈希组</li>
+</ul>
+</li>
+<li><p>grouby操作、unique操作</p>
+<ul>
+<li>使用groupby字段、所有select字段计算hash值</li>
+<li>使用输入构造hash表，删除重复项、计算聚合表达式</li>
+<li>扫描hash表输出所有项</li>
+</ul>
+</li>
+<li><p>union操作、需要去除重复记录操作</p>
+<ul>
+<li>所有select字段计算hash值</li>
+<li>第一个输入构建hash表，删除重复项</li>
+<li>第二个输入进行探测<ul>
+<li>若第二个输入没有重复项，直接返回没有匹配的项，
+扫描hash表返回所有项</li>
+<li>若第二个输入有重复项，则应该需要继续构建hash表，
+最后统一输出整个hash表</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Grace-Hash-Join"><a href="#Grace-Hash-Join" class="headerlink" title="Grace Hash Join"></a><em>Grace Hash Join</em></h4><p><em>grace hash join</em>：磁盘分块HJ</p>
+<ul>
+<li><p>将两表按照相同hash函数分配至不同分片中</p>
+<ul>
+<li>在磁盘上为各分片、表建立相应文件</li>
+<li>对表输入计算哈希值，根据哈希值写入分片、表对应文件</li>
+</ul>
+</li>
+<li><p>再对不同分片进行普通<em>in-memory hash join</em></p>
+<ul>
+<li>若分片依然不能全部加载至内存，可以继续使用
+<em>grace hash join</em></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">grace_hash_join</span>(t1, t2):</span><br><span class="line">	<span class="comment">// Grace Hash Join实现</span></span><br><span class="line">	<span class="comment">// 输入：待join表t1、t2</span></span><br><span class="line">	<span class="keyword">for</span> row in t1:</span><br><span class="line">		hash_val = <span class="built_in">hash_func</span>(row)</span><br><span class="line">		N = hash_val % PART_COUNT</span><br><span class="line">		write row to file t1_N</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> row in t2:</span><br><span class="line">		hash_val = <span class="built_in">hash_func</span>(row)</span><br><span class="line">		N = hash_val % PART_COUNT</span><br><span class="line">		write row to file t2_N</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i in <span class="built_in">range</span>(<span class="number">0</span>, PART_COUNT):</span><br><span class="line">		<span class="built_in">join</span>(t1_i, t2_i)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>分片数量<code>PART_COUNT</code>决定磁盘IO效率</p>
+<ul>
+<li>分片数量过小：无法起到分治效果，分片仍然需要进行
+<em>grace hash join</em>，降低效率</li>
+<li>分片数量过大：磁盘是块设备，每次刷盘刷一定数量块才
+高效，频繁刷盘不经济</li>
+<li>即分片数量在保证刷盘经济的情况下，越大越好，这需要
+优化器根据表统计信息确定</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li>有磁盘I/O代价，会降低效率</li>
+<li>适合参与join表非常大，无法同时载入内存中</li>
+</ul>
+</li>
+</ul>
+<h4 id="Hybrid-Hash-Join"><a href="#Hybrid-Hash-Join" class="headerlink" title="Hybrid Hash Join"></a><em>Hybrid Hash Join</em></h4><p><em>hybrid hash join</em>：GHJ基础上结合IMHJ的改进</p>
+<ul>
+<li>对build表分片过程中，尽量多把完整分片保留在内存中</li>
+<li>对probe表分片时，对应分片可以直接进行probe操作</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>hybrid hash join</em>有时也被直接视为<em>grace hash join</em>，
+  不做区分</li>
+</ul>
+</blockquote>
+<h3 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h3><ul>
+<li><p>资源消耗</p>
+<ul>
+<li>HJ：CPU计算、内存（磁盘）中创建临时hash表</li>
+<li>SMJ：磁盘I/O（扫描表、索引）</li>
+<li>NLJ：磁盘I/O</li>
+</ul>
+</li>
+<li><p>性能</p>
+<ul>
+<li><p>通常情况：HJ &gt; NPJ &lt;&gt; SMJ</p>
+<ul>
+<li>全表扫描比索引范围扫描再进行表访问更可取时，SMJ
+优于NPJ？？？</li>
+<li>而表特别小、特别大时，全表扫描优于索引范围扫描</li>
+</ul>
+</li>
+<li><p>但若关联字段已排序，SMJ性能最优</p>
+</li>
+</ul>
+</li>
+<li><p>首条搜索结果</p>
+<ul>
+<li>NPJ能快速返回首条搜索结果</li>
+<li>HJ、SMJ返回首条结果较慢</li>
+</ul>
+</li>
+</ul>
+<h2 id="多表联接算法"><a href="#多表联接算法" class="headerlink" title="多表联接算法"></a>多表联接算法</h2><p>多表联接算法：找到最优连接顺序（执行路径）</p>
+<ul>
+<li><p>表联接顺序对于查询结果没有影响，但是对资源消耗、性能影响
+巨大</p>
+</li>
+<li><p>随着需要联接表数目增加，可能的联接排列非常多，基本不能
+对所有可能穷举分析</p>
+<ul>
+<li><em>left-deep tree</em>/<em>linear (processing)tree</em>：$n!$</li>
+<li><em>bushy tree</em>：$\frac {2(n-1)!} {(n-1)!}$
+（包括left-deep tree、right-deep tree）</li>
+</ul>
+<p><img src="/imgs/left_deep_tree_bushy_tree.png" alt="left_deep_tree_bushy_tree"></p>
+</li>
+<li><p>事实上查询优化器不会穷尽搜索所有可能联接排列，而是使用
+启发式算法进行搜索</p>
+</li>
+</ul>
+<h3 id="Dynamic-Programming"><a href="#Dynamic-Programming" class="headerlink" title="Dynamic Programming"></a><em>Dynamic Programming</em></h3><p>动态规划算法：依次求解各数量表最优联接顺序，直到求出最终结果</p>
+<ol>
+<li><p>构造第一层关系：每个关系的最优路径就是关系的最优单表扫描
+方式</p>
+</li>
+<li><p>迭代依次构造之后n-1层关系联接最优解</p>
+<ul>
+<li>左深联接树方式：将第k-1层每个关系同第1层关系联接</li>
+<li>紧密树联接方式：将第m(m &gt; 2)层每个关系同第k-m层关系
+联接</li>
+</ul>
+<p><img src="/imgs/left_deep_tree_bushy_tree.png" alt="left_deep_tree_bushy_tree"></p>
+</li>
+</ol>
+<h3 id="Heuristic-Algorithm"><a href="#Heuristic-Algorithm" class="headerlink" title="Heuristic Algorithm"></a><em>Heuristic Algorithm</em></h3><h3 id="Greedy-Algorithm"><a href="#Greedy-Algorithm" class="headerlink" title="Greedy Algorithm"></a><em>Greedy Algorithm</em></h3><p>贪心算法：认为每次连接表的连接方式都是最优的，即从未联接表中
+选择使得下次联接代价最小者</p>
+<ul>
+<li><p>多表排序一般为</p>
+<ul>
+<li>常量表最前</li>
+<li>其他表按可访问元组数量升序排序</li>
+</ul>
+</li>
+<li><p>贪心算法得到的联接方式都是最优的</p>
+<ul>
+<li>则每次联接主要求解要联接表对象的最佳访问方式</li>
+<li>即每次代价估计的重点在于单表扫描的代价</li>
+</ul>
+</li>
+<li><p>求解结束后，局部最优查询计划生成</p>
+<ul>
+<li>得到左深树</li>
+<li>最初始表位于最左下端叶子节点处</li>
+</ul>
+</li>
+</ul>
+<h3 id="System-R"><a href="#System-R" class="headerlink" title="System R"></a><em>System R</em></h3><p><em>System R</em>：对动态规划算法的改进</p>
+<ul>
+<li>保留子树查询最优、次优查询计划，用于上层查询计划生成，
+使得查询计划整体较优</li>
+</ul>
+<h3 id="Genetic-Algorithm"><a href="#Genetic-Algorithm" class="headerlink" title="Genetic Algorithm"></a><em>Genetic Algorithm</em></h3><p>遗传算法：模拟自然界生物进化过程，采用人工进化的方式对目标
+空间进行搜索</p>
+<ul>
+<li>本质是高效、并行、全局搜索方法</li>
+<li>能在搜索过程中自动获取、积累有关搜索空间的知识，并自适应
+的控制搜索过程以求的最佳解</li>
+</ul>
+<h4 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h4><ul>
+<li>将问题域中可能解看作是染色体，将其编码为符号串的形式</li>
+<li>对染色体群体反复进行基于遗传学的操作：选择、交叉、变异</li>
+<li>根据预定目标适应度函数对每个个体进行评价，不断得到更优
+群体，从中全局并行搜索得到优化群体中最优个体</li>
+</ul>
+<h4 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h4><ul>
+<li><em>population</em>：群体，GA的遗传搜索空间</li>
+<li><em>individual</em>：个体，搜索空间中可能解</li>
+<li><em>chromosome</em>：染色体，个体特征代表<ul>
+<li>由若干段基因组成</li>
+<li>GA中基本操作对象</li>
+</ul>
+</li>
+<li><em>gene</em>：基因<ul>
+<li>染色体片段</li>
+</ul>
+</li>
+<li><em>fitness</em>：适应度，个体对环境的适应程度</li>
+</ul>
+<h4 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h4><ul>
+<li><p><em>selection</em>：选择，根据个体适应度在群体中按照一定概率
+选择个体作为父本</p>
+<ul>
+<li>适应度大个体被选择概率高</li>
+<li>体现了适者生存、优胜劣汰的进化规则</li>
+</ul>
+</li>
+<li><p><em>crossover</em>：交叉，将父本个体按照一定概率随机交换基因
+形成新个体</p>
+</li>
+<li><p><em>mutate</em>：变异，按照一定概率随机改变某个体基因值</p>
+</li>
+</ul>
+<h4 id="涉及问题"><a href="#涉及问题" class="headerlink" title="涉及问题"></a>涉及问题</h4><ul>
+<li><p>串编码方式</p>
+<ul>
+<li>把问题的各种参数用二进串进行编码构成子串</li>
+<li>把子串拼接成染色体<blockquote>
+<ul>
+<li>串长度、编码方式对算法收敛影响极大</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>适应度/对象函数确定</p>
+<ul>
+<li>一般可以把问题模型函数作为对象函数</li>
+</ul>
+</li>
+<li><p>GA超参设置</p>
+<ul>
+<li>群体大小$n$：过小难以求出最优解，过大难收敛，一般取
+$n = 30 ~ 160$</li>
+<li>交叉概率$P_c$：太小难以前向搜索，太大容易破坏高适应
+值结构，一般取$P_c = 0.25 ~ 0.75$</li>
+<li>变异概率$P_m$：太小难以产生新结构，太大则变为单纯
+随机搜索，一般取$P_m = 0.01 ~ 0.2$</li>
+</ul>
+</li>
+</ul>
+<h4 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h4><ol>
+<li>随机初始化种群</li>
+<li>估初始种群：为种群每个个体计算适应值、排序</li>
+<li>若没有达到预定演化数，则继续，否则结束算法</li>
+<li>选择父体<ul>
+<li>杂交：得到新个体</li>
+<li>变异：对新个体变异</li>
+</ul>
+</li>
+<li>计算新个体适应值，把适应值排名插入种群，淘汰最后个体</li>
+<li>重复3</li>
+</ol>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-04-09T15:04:11.000Z" title="4/9/2019, 11:04:11 PM">2019-04-09</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-04-09T15:04:11.000Z" title="4/9/2019, 11:04:11 PM">2019-04-09</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a></span><span class="level-item">12 minutes read (About 1758 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/optimizer.html">DBMS 查询优化</a></h1><div class="content"><h2 id="查询优化技术"><a href="#查询优化技术" class="headerlink" title="查询优化技术"></a>查询优化技术</h2><p>查询优化技术：求解给定查询语句的高效执行计划过程</p>
+<ul>
+<li>目标：在数据库查询优化引擎生成执行策略的过程中，尽量减小
+查询总开销</li>
+<li><p>SQL层面上的局部优化，区别于数据库调优的全局优化</p>
+</li>
+<li><p>广义数据库查询优化</p>
+<ul>
+<li>查询重用技术</li>
+<li>查询重写规则</li>
+<li>查询算法优化技术</li>
+<li>并行查询优化技术</li>
+<li>分布式查询优化技术</li>
+</ul>
+</li>
+<li><p>狭义数据库查询优化</p>
+<ul>
+<li>查询重写规则：代数/逻辑优化，RBO</li>
+<li>查询算法优化技术：非代数/物理优化，CBO</li>
+</ul>
+</li>
+</ul>
+<h3 id="代数-逻辑优化"><a href="#代数-逻辑优化" class="headerlink" title="代数/逻辑优化"></a>代数/逻辑优化</h3><p>代数/逻辑优化：依据关系代数的等价变换做逻辑变换</p>
+<ul>
+<li>语法级：查询语句层、基于语法进行优化</li>
+<li>代数级：使用形式逻辑、关系代数原理进行优化</li>
+<li>语义级：根据完整性约束，对查询语句进行语义理解，推知可
+优化操作</li>
+</ul>
+<h3 id="非代数-物理优化"><a href="#非代数-物理优化" class="headerlink" title="非代数/物理优化"></a>非代数/物理优化</h3><p>非代数/物理优化：根据数据读取、表连接方式、排序等技术对查询
+进行优化</p>
+<ul>
+<li>物理级：物理优化技术，基于代价估计模型，比较得出各执行
+方式中代价最小者<ul>
+<li>查询算法优化：运用基于代价估算的多表连接算法求解最小
+花费计算</li>
+</ul>
+</li>
+</ul>
+<h2 id="查询重用技术"><a href="#查询重用技术" class="headerlink" title="查询重用技术"></a>查询重用技术</h2><p>查询重用：尽可能利用先前执行的结果，以节约全过程时间、减少
+资源消耗</p>
+<ul>
+<li>查询结果的重用：分配缓冲块存放SQL语句、最后结果集</li>
+<li>查询计划的重用：缓存查询语句执行计划、相应语法树结构</li>
+<li>优势：节约CPU、IO消耗</li>
+<li>弊端<ul>
+<li>结果集很大回消耗放大内存资源</li>
+<li>同样SQL不同用户获取的结果集可能不完全相同</li>
+</ul>
+</li>
+</ul>
+<h2 id="查询重写规则"><a href="#查询重写规则" class="headerlink" title="查询重写规则"></a>查询重写规则</h2><p>查询重写：查询语句的等价转换</p>
+<ul>
+<li>基于关系代数，关系代数的等价变换规则为查询重写提供了理论
+支持</li>
+<li>查询重写后，查询优化器可能生成多个连接路径，可以从候选者
+中择优</li>
+</ul>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ul>
+<li>将查询转换为等价、效率更高的形式<ul>
+<li>低效率谓词转换为高效率谓词</li>
+<li>消除重复条件</li>
+</ul>
+</li>
+<li>将查询重写为等价、简单、不受表顺序限制的形式，为
+<strong>物理查询阶段提供更多选择</strong></li>
+</ul>
+<h3 id="优化方向"><a href="#优化方向" class="headerlink" title="优化方向"></a>优化方向</h3><ul>
+<li>过程性查询转换为描述性查询：视图重写</li>
+<li>复杂查询尽可能转换为多表连接查询：嵌套子查询、外连接、
+嵌套连接等</li>
+<li>低效率谓词转换为高效率谓词：等价谓词重写</li>
+<li>利用（不）等式性质简化<code>where</code>、<code>having</code>、<code>on</code>条件</li>
+</ul>
+<h2 id="查询算法优化技术"><a href="#查询算法优化技术" class="headerlink" title="查询算法优化技术"></a>查询算法优化技术</h2><h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1><h3 id="Rule-Based-Optimizer"><a href="#Rule-Based-Optimizer" class="headerlink" title="Rule-Based Optimizer"></a><em>Rule-Based Optimizer</em></h3><p>RBO：基于规则的优化器</p>
+<ul>
+<li><p>对AST/LP进行遍历，模式匹配能够满足特定规则的结点，进行
+等价转换，得到等价的另一棵树</p>
+<ul>
+<li>剪枝：删除一些无用计算</li>
+<li>合并：合并多个计算步骤</li>
+</ul>
+</li>
+<li><p>经验式、启发式的固定<em>transformation</em>，手动设置（硬编码）
+在数据库中规则决定SQL执行计划</p>
+</li>
+</ul>
+<h4 id="经典优化规则"><a href="#经典优化规则" class="headerlink" title="经典优化规则"></a>经典优化规则</h4><ul>
+<li><p><em>predicate pushdown</em>：谓词下推</p>
+<p><img src="/imgs/sql_optimization_predicate_pushdown.png" alt="sql_optimization_predicate_pushdown"></p>
+</li>
+<li><p><em>constant folding</em>：常量累加</p>
+<p><img src="/imgs/sql_optimization_constant_folding.png" alt="sql_optimization_constant_folding"></p>
+</li>
+<li><p><em>column pruning</em>：列值裁剪</p>
+<p><img src="/imgs/sql_optimization_column_pruning.png" alt="sql_optimization_column_pruning"></p>
+</li>
+<li><p><em>combine limits</em>：Limits合并</p>
+</li>
+<li><p>inner join只访问单表：降为semi join</p>
+</li>
+</ul>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>操作简单、能快速确定连接方式</p>
+</li>
+<li><p>规则虽然有效但不敏感</p>
+<ul>
+<li>数据分布发生变化时，RBO是不感知的</li>
+</ul>
+</li>
+<li><p>基于RBO生成的执行计划不能确保是最优的</p>
+<ul>
+<li>启发式规则只能排除一些明显不好的存取路径</li>
+</ul>
+</li>
+</ul>
+<h3 id="Cost-Base-Optimizer"><a href="#Cost-Base-Optimizer" class="headerlink" title="Cost-Base Optimizer"></a><em>Cost-Base Optimizer</em></h3><p>CBO：基于成本的优化器</p>
+<ul>
+<li><p>根据SQL的执行成本制定、优化查询作业执行计划，生成可能
+的执行计划中代价最小的计划</p>
+<ul>
+<li>数据表统计数据<ul>
+<li>基/势</li>
+<li>唯一值数量</li>
+<li>空值数量</li>
+<li>平均、最大长度</li>
+</ul>
+</li>
+<li>SQL执行路径I/O</li>
+<li>网络资源</li>
+<li>CPU使用情况</li>
+</ul>
+</li>
+<li><p>以上执行信息获取方式取决于不同平台、数据库</p>
+<ul>
+<li>执行SQL前抽样分析数据</li>
+<li>每次执行SQL都会记录统计信息</li>
+</ul>
+</li>
+<li><p>特殊概念</p>
+<ul>
+<li><p><em>cardinality</em>：集的势，结果集的行数</p>
+<ul>
+<li>表示SQL执行成本值</li>
+<li>SQL执行返回的结果集包含的行数越多，成本越大</li>
+</ul>
+</li>
+<li><p><em>selectivity</em>：可选择率，施加指定谓语条件后返回
+结果集的记录数占未施加任何谓语条件的原始结果集记录数
+的比率</p>
+<ul>
+<li>值越小，说明可选择性越好</li>
+<li>值越大，说明可选择性越差，成本值越大</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="常见优化规则"><a href="#常见优化规则" class="headerlink" title="常见优化规则"></a>常见优化规则</h4><ul>
+<li>hash-join<ul>
+<li>选择正确hash建表方</li>
+<li>选择正确join类型：广播hash、全洗牌hash</li>
+<li>join reorder：调整多路join顺序<ul>
+<li>尽量减小中间shuffle数据集大小，达到最优输出</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
+<li>对各种可能情况进行量化比较，可以得到花费最小的情况</li>
+<li>CBO本身需要耗费一定资源，需要平衡CBO和查询计划优化程度<ul>
+<li>数据表的数据统计资源耗费</li>
+<li>优化查询计划即时资源耗费，如果组合情况比较多则花费
+判断时间较多</li>
+</ul>
+</li>
+</ul>
+<h2 id="并行查询优化技术"><a href="#并行查询优化技术" class="headerlink" title="并行查询优化技术"></a>并行查询优化技术</h2><p>并行数据库系统中查询优化的目标：寻找具有最小响应时间的查询
+执行计划</p>
+<ul>
+<li><p>具有最小执行代价的计划不一定具有最快相应时间，需要考虑
+把查询工作分解为可以并行运行的子工作</p>
+</li>
+<li><p>查询能否并行取决于</p>
+<ul>
+<li>系统中可用资源</li>
+<li>CPU数目</li>
+<li>运算中特定代数运算符</li>
+</ul>
+</li>
+<li><p>查询并行可以分为</p>
+<ul>
+<li><p>操作内并行：将同一操作如单表扫描、两表连接、排序操作
+等分解为多个独立子操作</p>
+</li>
+<li><p>操作间并行：一条SQL查询语句分解为多个子操作</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="分布式查询优化技术"><a href="#分布式查询优化技术" class="headerlink" title="分布式查询优化技术"></a>分布式查询优化技术</h2><p>分布式数据库系统：查询策略优化、局部处理优化是查询优化重点</p>
+<ul>
+<li><p>查询策略优化：主要是数据传输策略优化</p>
+<ul>
+<li>主要考虑因素：数据的通信开销</li>
+<li>主要目标：以减少传输次数、数据量</li>
+</ul>
+</li>
+<li><p>局部处理优化：传统单结点数据库的查询优化技术</p>
+</li>
+<li><p>代价估计模型：总代价 = IO代价 + CPU代价 + 通信代价</p>
+</li>
+</ul>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

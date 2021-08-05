@@ -1,0 +1,1918 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-23T00:39:04.000Z" title="7/23/2019, 8:39:04 AM">2019-07-23</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:50:56.000Z" title="7/16/2021, 4:50:56 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Specification/">ML Specification</a><span> / </span><a class="link-muted" href="/categories/ML-Specification/Click-Through-Rate/">Click Through Rate</a><span> / </span><a class="link-muted" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/">Recommandation System</a></span><span class="level-item">9 minutes read (About 1380 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Specification/Click-Through-Rate/Recommandation-System/video_recsys.html">视频推荐</a></h1><div class="content"><h2 id="Matching"><a href="#Matching" class="headerlink" title="Matching"></a>Matching</h2><h3 id="基于用户行为"><a href="#基于用户行为" class="headerlink" title="基于用户行为"></a>基于用户行为</h3><h4 id="离线协同过滤"><a href="#离线协同过滤" class="headerlink" title="离线协同过滤"></a>离线协同过滤</h4><ul>
+<li><p>根据用户行为日志，利用<em>物品-based</em>协同过滤生成离线的
+物品2物品相似度矩阵、用户离线推荐结果</p>
+<ul>
+<li>基于艾宾浩斯遗忘曲线按照时间进行降权</li>
+<li>弱化热点影片的权重</li>
+<li>矩阵分解</li>
+</ul>
+</li>
+<li><p>基于用户的playlog接口实时获取用户的短时间内的观看历史，
+通过物品2物品相似度矩阵进行CF扩散，提取出与用户短时间内
+观看历史相似的topN个物品用于召回</p>
+</li>
+<li><p>用户的CF离线推荐结果直接作为线上服务的召回渠道</p>
+</li>
+</ul>
+<h4 id="W2V"><a href="#W2V" class="headerlink" title="W2V"></a>W2V</h4><ul>
+<li><p>全部影片作为预料库、观看历史按时序排列视为文档，计算所有
+物品的词向量</p>
+</li>
+<li><p>根据词向量计算物品2物品相似度矩阵，用于线上playlog召回
+数据</p>
+</li>
+</ul>
+<h4 id="LDA"><a href="#LDA" class="headerlink" title="LDA"></a>LDA</h4><ul>
+<li><p>基于概率主题模型：文档-潜在主题-词三级关系，映射/类比到
+用户行为数据：用户-潜在兴趣-资源</p>
+</li>
+<li><p>通过用户历史行为记录，提取LDA中间产物、用户的潜在兴趣
+向量、资源潜在主题分布向量</p>
+</li>
+<li><p>基于物品的主题向量，进行物品2物品相似度计算，用于线上
+playlog召回数据</p>
+</li>
+</ul>
+<h4 id="SimRank"><a href="#SimRank" class="headerlink" title="SimRank"></a>SimRank</h4><ul>
+<li>将用户、物品关系视为二部图，考虑相似关系可以在图上传播
+思想，使用SimRank计算物品相似队列</li>
+</ul>
+<h3 id="基于内容"><a href="#基于内容" class="headerlink" title="基于内容"></a>基于内容</h3><h4 id="基于标题"><a href="#基于标题" class="headerlink" title="基于标题"></a>基于标题</h4><ul>
+<li>对影片文本简介使用doc2vector，计算资源的表示向量</li>
+<li>使用资源的表示项集计算物品2物品相似度矩阵</li>
+</ul>
+<h4 id="基于Style"><a href="#基于Style" class="headerlink" title="基于Style"></a>基于Style</h4><h4 id="基于Tag"><a href="#基于Tag" class="headerlink" title="基于Tag"></a>基于Tag</h4><h3 id="其他方向"><a href="#其他方向" class="headerlink" title="其他方向"></a>其他方向</h3><ul>
+<li><p>RNN捕捉用户在点击序列中的模式，利用点击行为发生先后顺序
+调整推荐展示顺序</p>
+</li>
+<li><p>Graph Embedding</p>
+</li>
+</ul>
+<h2 id="Ranking"><a href="#Ranking" class="headerlink" title="Ranking"></a>Ranking</h2><h3 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h3><ul>
+<li><p>低维稠密通用特征：泛化能力良好、记忆能力差</p>
+<ul>
+<li>embedding特征</li>
+<li>统计特征</li>
+</ul>
+</li>
+<li><p>高维稠密特征：记忆能力较好</p>
+<ul>
+<li>视频ID</li>
+<li>标签</li>
+<li>主题</li>
+</ul>
+</li>
+</ul>
+<h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><ul>
+<li><p>按特征来源分类</p>
+<ul>
+<li>物品特征：资源风格、低于、类型、标签、统计特征</li>
+<li>用户特征：性别、年龄、婚姻状况、收入预测</li>
+<li>context特征：网络状态、时间段、城市</li>
+<li>交叉特征</li>
+</ul>
+</li>
+<li><p>按特征更新频率、获取方式</p>
+<ul>
+<li>离线特征：变化缓慢，如：用户、物品基本特征、统计特征</li>
+<li>近在线特征：分钟级、小时级需要更新的特征，如：ctr</li>
+<li>在线特征：每次请求达到实时获取特征，如：网络状态、
+请求时间</li>
+</ul>
+</li>
+</ul>
+<h4 id="特征扩充"><a href="#特征扩充" class="headerlink" title="特征扩充"></a>特征扩充</h4><ul>
+<li><p>用户兴趣向量丰富用户维度上兴趣特征</p>
+<ul>
+<li>LDA中间产物作为用户潜在兴趣向量</li>
+<li>W2V词向量、用户行为历史统计出用户兴趣向量</li>
+</ul>
+</li>
+<li><p>资源embedding向量丰富物品维度特征</p>
+<ul>
+<li>用户行为数据embedding得到W2V、LDA词向量</li>
+<li>资源标题embedding得到doc2vector词向量</li>
+</ul>
+</li>
+<li><p>资源封面AutoEncode向量</p>
+<ul>
+<li>基于资源封面采用自编码器训练，提取隐层向量作为资源
+特征</li>
+</ul>
+</li>
+</ul>
+<h4 id="统计特征细化"><a href="#统计特征细化" class="headerlink" title="统计特征细化"></a>统计特征细化</h4><ul>
+<li><p>特征工程时间窗口细化：按不同时间窗口分别计算资源的统计
+特征</p>
+<ul>
+<li>丰富资源特征</li>
+<li>融入时间衰减因素</li>
+</ul>
+</li>
+<li><p>在线特征交叉：交叉特征增加样本特征的区分度</p>
+</li>
+</ul>
+<h4 id="连续特征离散化"><a href="#连续特征离散化" class="headerlink" title="连续特征离散化"></a>连续特征离散化</h4><blockquote>
+<ul>
+<li>目标：避免特征为长尾分布、大部分取值集中在小范围，对样本
+  区分度差</li>
+</ul>
+</blockquote>
+<ul>
+<li>等频离散化：等频分桶、独热编码</li>
+<li>对数转化</li>
+</ul>
+<h4 id="采样策略"><a href="#采样策略" class="headerlink" title="采样策略"></a>采样策略</h4><ul>
+<li>负样本采样策略调整：基本曝光时间、顺序，过滤负样本</li>
+<li>不平衡样本策略调整：离线A/B测试正负样本比例，择优调整</li>
+</ul>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><ul>
+<li>一般使用stacking模型堆叠集成</li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>ml_models/model_enhancement/ensemble_stacking</em></li>
+</ul>
+</blockquote>
+<h4 id="基学习器"><a href="#基学习器" class="headerlink" title="基学习器"></a>基学习器</h4><ul>
+<li><p>GBDT：各树、各叶子节点对应一维特征</p>
+<ul>
+<li>适合低维稠密通用特征，对输入特征分布没有要求</li>
+</ul>
+</li>
+<li><p>DNN</p>
+<ul>
+<li>适合普通稠密特征、embedding特征</li>
+<li>能抽取有良好分布数据的深层次特征，提高模型准确性、
+泛化能力</li>
+</ul>
+</li>
+</ul>
+<h4 id="元学习器"><a href="#元学习器" class="headerlink" title="元学习器"></a>元学习器</h4><ul>
+<li><p>LR</p>
+<ul>
+<li>适合低维稀疏特征，可对所有特征离散化以引入非线性</li>
+</ul>
+</li>
+<li><p>FM</p>
+<ul>
+<li>适合低维稀疏特征</li>
+<li>LR基础上自动组合二阶交叉项</li>
+</ul>
+</li>
+<li><p>Linear：训练模型、对训练结果线性加权</p>
+</li>
+</ul>
+<h2 id="冷启动、EE"><a href="#冷启动、EE" class="headerlink" title="冷启动、EE"></a>冷启动、EE</h2><h3 id="冷启动"><a href="#冷启动" class="headerlink" title="冷启动"></a>冷启动</h3><h4 id="Matching-1"><a href="#Matching-1" class="headerlink" title="Matching"></a>Matching</h4><ul>
+<li><p>冷启动用户召回</p>
+<ul>
+<li>使用imbd算法计算资源得分，根据不同时间周期进行得分
+融合、并ab测试，选取最优时间周期组合</li>
+<li>按照imdb得分倒排，生成热点召回数据</li>
+</ul>
+</li>
+<li><p>冷启动资源召回</p>
+<ul>
+<li>基于资源库，统计各资源点击、播放率，按一定比例召回
+第点击、播放率物品</li>
+</ul>
+</li>
+</ul>
+<h4 id="Ranking-1"><a href="#Ranking-1" class="headerlink" title="Ranking"></a>Ranking</h4><blockquote>
+<ul>
+<li>通常使用强化学习算法</li>
+</ul>
+</blockquote>
+<ul>
+<li>Thompson Sampling</li>
+<li>UCB算法</li>
+<li>Epsilon-Greedy算法</li>
+<li>朴素Bandit算法</li>
+<li>LinUCB算法：较UCB算法加入特征信息</li>
+<li>COFIBA算法：Bandit算法结合协同过滤</li>
+</ul>
+<h3 id="Exploration-and-Exploitation-Tradeoff"><a href="#Exploration-and-Exploitation-Tradeoff" class="headerlink" title="Exploration and Exploitation Tradeoff"></a><em>Exploration and Exploitation Tradeoff</em></h3><h4 id="Matching-2"><a href="#Matching-2" class="headerlink" title="Matching"></a>Matching</h4><ul>
+<li>调整不同召回渠道的配比方式保证多样性</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-23T00:39:04.000Z" title="7/23/2019, 8:39:04 AM">2019-07-23</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-23T00:39:04.000Z" title="7/23/2019, 8:39:04 AM">2019-07-23</time></span><span class="level-item"><a class="link-muted" href="/categories/Algorithm/">Algorithm</a><span> / </span><a class="link-muted" href="/categories/Algorithm/Problem/">Problem</a></span><span class="level-item">37 minutes read (About 5565 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Algorithm/Problem/searching.html">查找</a></h1><div class="content"><h2 id="总述"><a href="#总述" class="headerlink" title="总述"></a>总述</h2><p>在给定的集合、多重集（允许多个元素具有相同的值）中找给定值
+（查找键，<em>search key</em>）</p>
+<ul>
+<li>顺序搜索</li>
+<li>折半查找：效率高但应用受限</li>
+<li>将原集合用另一种形式表示以方便查找</li>
+</ul>
+<h3 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h3><p>没有任何一种查找算法在任何情况下都是最优的</p>
+<ul>
+<li>有些算法速度快，但是需要较多存储空间</li>
+<li>有些算法速度快，但是只适合有序数组</li>
+</ul>
+<p>查找算法没有稳定性问题，但会发生其他问题</p>
+<ul>
+<li><p>如果应用里的数据相对于查找次数频繁变化，查找问题必须结合
+添加、删除一起考虑</p>
+</li>
+<li><p>必须仔细选择数据结构、算法，以便在各种操作的需求间达到
+平衡</p>
+</li>
+</ul>
+<h2 id="无序线性表查找"><a href="#无序线性表查找" class="headerlink" title="无序线性表查找"></a>无序线性表查找</h2><h3 id="顺序查找"><a href="#顺序查找" class="headerlink" title="顺序查找"></a>顺序查找</h3><h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><ul>
+<li>将给定列表中连续元素和给定元素查找键进行比较<ul>
+<li>直到遇到匹配元素：成功查找</li>
+<li>匹配之前遍历完整个列表：失败查找</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SequentialSearch(A[<span class="number">0.</span>.n<span class="number">-1</span>], K)</span><br><span class="line">	<span class="comment">// 顺序查找，使用**查找键作限位器**</span></span><br><span class="line">	<span class="comment">// 输入：n个元素数组A、查找键K</span></span><br><span class="line">	<span class="comment">// 输出：第一个值为K的元素位置，查找失败返回-1</span></span><br><span class="line">	A[n] = K</span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> A[i] != K <span class="keyword">do</span></span><br><span class="line">		i = i + <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> i &lt; n</span><br><span class="line">		<span class="keyword">return</span> i</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h4 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h4><ul>
+<li>将查找键添加找列表末尾，查找一定会成功，循环时将不必每次
+检查是否到列表末尾</li>
+<li>如果给定数组有序：遇到等于（查找成功）、大于（查找失败）
+查找键元素，算法即可停止</li>
+</ul>
+<h3 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h3><h4 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h4><ul>
+<li>对数组构建二叉查找树</li>
+<li>在二叉查找树上进行查找</li>
+</ul>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>算法效率：参见二叉查找树</p>
+</li>
+<li><p>构建二叉查找树（插入）和查找操作基本相同，效率特性也相同</p>
+</li>
+<li><p>减可变规模 + 输入增强</p>
+</li>
+</ul>
+<h3 id="预排序查找"><a href="#预排序查找" class="headerlink" title="预排序查找"></a>预排序查找</h3><p>对线性表预排序，有序表中查找速度快得多</p>
+<h4 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PreorderSearch(A[<span class="number">0.</span>.n<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 对数组预排序然后查找</span></span><br><span class="line">	<span class="comment">// 输入：可排序数组A[0..n-1]</span></span><br><span class="line">	<span class="comment">// 输出：元素在数组中的位置</span></span><br><span class="line">	对B[(数组元素, 索引)]进行预排序</span><br><span class="line">	使用折半查找寻找二元组</span><br><span class="line">	返回二元组中索引</span><br></pre></td></tr></table></figure>
+<h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>算法时间效率：取决于排序算法</p>
+<ul>
+<li>查找算法在最差情况下总运行时间$\in \Theta(nlogn)$</li>
+<li>如果需要在统一列表上进行多次查找，预排序才值得</li>
+</ul>
+</li>
+<li><p>这种<strong>预排序</strong>思想可以用于<strong>众数</strong>、<strong>检验惟一性</strong>等，
+此时算法执行时间都取决于排序算法
+（优于蛮力法$\in \Theta(n^2)$）</p>
+</li>
+<li><p>变治法（输入增强）</p>
+</li>
+</ul>
+<h5 id="预排序检验唯一性"><a href="#预排序检验唯一性" class="headerlink" title="预排序检验唯一性"></a>预排序检验唯一性</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PresortElementUniqueness(A[<span class="number">0.</span>.n<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 先对数组排序，求解元素唯一性问题</span></span><br><span class="line">	<span class="comment">// 输入：n个可排序元素构成数[0..n-1]</span></span><br><span class="line">	<span class="comment">// 输出：A中有相等元素，返回true，否则false</span></span><br><span class="line">	对数组排序</span><br><span class="line">	<span class="keyword">for</span> i=<span class="number">0</span> to n<span class="number">-2</span> <span class="keyword">do</span></span><br><span class="line">		<span class="keyword">if</span> A[i] = A[i+<span class="number">1</span>]</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h5 id="预排序求众数"><a href="#预排序求众数" class="headerlink" title="预排序求众数"></a>预排序求众数</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">PresortMode(A[<span class="number">0.</span>.n<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 对数组预排序来计算其模式（众数）</span></span><br><span class="line">	<span class="comment">// 输入：可排序数组A[0..n-1]</span></span><br><span class="line">	<span class="comment">// 输出：数组模式</span></span><br><span class="line">	对数组A排序</span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	modefrequency = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt;= n<span class="number">-1</span> <span class="keyword">do</span></span><br><span class="line">		runlength = <span class="number">1</span></span><br><span class="line">		runvalue = A[i]</span><br><span class="line">		<span class="keyword">while</span> i + runlength &lt;= n<span class="number">-1</span> <span class="keyword">and</span> A[i+runlength] == runvalue</span><br><span class="line">			<span class="comment">// 相等数值邻接，只需要求出邻接次数最大即可</span></span><br><span class="line">			runlength = runlength+<span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> runlength &gt; modefrequency</span><br><span class="line">			modefrequency = runlength</span><br><span class="line">			modevalue = runvalue</span><br><span class="line">		i = i+runlength</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> modevalue</span><br></pre></td></tr></table></figure>
+<h2 id="有序顺序表查找"><a href="#有序顺序表查找" class="headerlink" title="有序顺序表查找"></a>有序顺序表查找</h2><ul>
+<li><p>有序顺序表的查找关键是利用有序减规模</p>
+</li>
+<li><p>但关键不是有序，而是<strong>减规模</strong>，即使顺序表不是完全有序，
+信息足够减规模即可</p>
+</li>
+</ul>
+<h3 id="折半查找-二分查找"><a href="#折半查找-二分查找" class="headerlink" title="折半查找/二分查找"></a>折半查找/二分查找</h3><p>二分查找：利用数组的有序性，通过对查找区间中间元素进行判断，
+缩小查找区间至一般大小</p>
+<ul>
+<li><p>依赖数据结构，需能够快速找到中间元素，如数组、二叉搜索树</p>
+</li>
+<li><p>一般模板：比较中间元素和目标的大小关系、讨论</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">left, right = ...</span><br><span class="line"><span class="keyword">while</span> condition(search_space is <span class="keyword">not</span> <span class="literal">NULL</span>):</span><br><span class="line">	mid = (left + right) <span class="comment">// 2</span></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="comment">// do something</span></span><br><span class="line">	elif nums[mid] &gt; target:</span><br><span class="line">		<span class="comment">// do something</span></span><br><span class="line">	elif nums[mid] &lt; target:</span><br><span class="line">		<span class="comment">// do somthing</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>函数独立时，找到<code>target</code>可在循环内直接返回</li>
+<li>函数体嵌入其他部分时，为方便找到<code>target</code>应<code>break</code>，
+此时涉及跳出循环时<code>target</code>可能存在的位置<ul>
+<li>找到<code>target</code>中途<code>break</code></li>
+<li>未找到<code>target</code>直到循环终止条件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="基本版"><a href="#基本版" class="headerlink" title="基本版"></a>基本版</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchEndReturnV1(nums[<span class="number">0.</span>.n-<span class="number">1</span>], target):</span><br><span class="line">	// 非递归折半查找基本版，不直接返回，方便嵌入</span><br><span class="line">	// 输入：升序数组nums[<span class="number">0.</span>.n-<span class="number">1</span>]、查找键target</span><br><span class="line">	// 输出：存在返回数组元素下标m，否则返回-<span class="number">1</span></span><br><span class="line">	left, right = <span class="number">0</span>, n-<span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> left &lt;= right:</span><br><span class="line">		mid = (left + right) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">elif</span> nums[mid] &lt; target:</span><br><span class="line">			left = mid+<span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid-<span class="number">1</span></span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">assert</span>(mid == right == left-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 仅最后返回，方便嵌入，下同</span></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>输入判断：无需判断输入列表是否为空</p>
+<ul>
+<li>终止条件保证不会进入，即不会越界</li>
+</ul>
+</li>
+<li><p>初始条件：<code>left, right = 0, n-1</code></p>
+<ul>
+<li>左、右均未检查、需检查</li>
+<li>即代码中查找区间为<strong>闭区间</strong>$[left, right]$，此时
+搜索区间非空</li>
+</ul>
+</li>
+<li><p>中点选择：<code>mid = (left + right) // 2</code></p>
+<ul>
+<li>向下取整</li>
+<li>对此版本无影响，<code>left</code>、<code>right</code>总是移动，不会死循环</li>
+</ul>
+</li>
+<li><p>循环条件：<code>left &lt;= right</code></p>
+<ul>
+<li>搜索区间为闭区间，则相应检查条件为<code>left &lt;= right</code>，
+否则有元素未被检查</li>
+<li>在循环内<code>left</code>、<code>right</code>可能重合</li>
+</ul>
+</li>
+<li><p>更新方式：<code>left=mid+1, right=mid-1</code></p>
+<ul>
+<li>为保证搜索区间始终为闭区间，需剔除<code>mid</code></li>
+</ul>
+</li>
+<li><p>终止情况：<code>right=left-1</code>、<code>mid=left/right</code></p>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环<code>left==right</code></li>
+<li>越界终止情况：左、右指针均剔除<code>mid</code>，两侧均可能越界<ul>
+<li><code>mid=right=n-1, left=n</code></li>
+<li><code>mid=left=0, right=-1</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>target</code>位置</p>
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code><ul>
+<li><code>target</code>位于<code>[right, left]</code>间</li>
+<li><code>left=mid+1=right+1</code>表示小于<code>target</code>元素数量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>需要和<strong>左右邻居（查找结束后）</strong>、<code>left</code>、<code>right</code>比较
+  情况下，容易考虑失误，不适合扩展使用</li>
+</ul>
+</blockquote>
+<h4 id="高级版1"><a href="#高级版1" class="headerlink" title="高级版1"></a>高级版1</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchV2(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	left, right = <span class="number">0</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right:</span><br><span class="line">		mid = (left + right) <span class="comment">// 2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			left = mid+<span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		assert(mid<span class="number">-1</span> == left == right)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>输入判断：无需判断输入列表是否为空</p>
+<ul>
+<li>终止条件保证不会进入，即不会越界</li>
+</ul>
+</li>
+<li><p>初始条件：<code>left, right = 0, n</code></p>
+<ul>
+<li>左未检查、需检查，右无需检查</li>
+<li>即代码中查找区间为<strong>左闭右开区间</strong>$[left, right)$</li>
+</ul>
+</li>
+<li><p>中点选择：<code>mid = (left + right) // 2</code></p>
+<ul>
+<li>向下取整</li>
+<li>此处必须选择向下取整，否则<code>left=right-1</code>时进入死循环</li>
+<li>即：<strong>循环内检查所有元素，取整一侧指针必须移动</strong></li>
+</ul>
+</li>
+<li><p>循环条件：<code>left &lt; right</code></p>
+<ul>
+<li>搜索区间为左闭右开区间，则检查条件为<code>left &lt; right</code>，
+此时搜索区间非空</li>
+<li>在循环内<code>left</code>、<code>right</code>不会重合</li>
+</ul>
+</li>
+<li><p>更新方式：<code>left=mid+1, right=mid</code></p>
+<ul>
+<li>为保证搜索区间始终为左闭右开区间<ul>
+<li>移动左指针时需剔除<code>mid</code></li>
+<li>移动右指针时无需剔除<code>mid</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>终止情况：<code>right=left</code>、<code>mid=left/left-1</code></p>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环<ul>
+<li><code>left+1=mid=right-1</code></li>
+<li><code>left=mid=right-1</code></li>
+</ul>
+</li>
+<li>越界终止情况：仅左指针剔除<code>mid</code>，仅可能右侧越界<ul>
+<li><code>left=right=n=mid+1</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>target</code>位置</p>
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code><ul>
+<li><code>left=mid=right</code>：循环过程中<code>target</code>可能已不在
+搜索区间中，最终位于<code>(mid-1, mid)</code></li>
+<li><code>mid+1=left=right</code>：<code>(mid, left)</code></li>
+<li><code>left</code>表示小于<code>target</code>元素数量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="高级版2"><a href="#高级版2" class="headerlink" title="高级版2"></a>高级版2</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">BainarySearchEndReturnV3(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保持左右指针顺序、不重合</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	left, right = <span class="number">-1</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right:</span><br><span class="line">		mid = (left + right + <span class="number">1</span>) <span class="comment">// 2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			right = mid<span class="number">-1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			left = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>输入判断：无需判断输入列表是否为空</p>
+<ul>
+<li>终止条件保证不会进入，即不会越界</li>
+</ul>
+</li>
+<li><p>初始条件：<code>left, right = -1, n-1</code></p>
+<ul>
+<li>左无需检查，右未检查、需检查</li>
+<li>即代码中查找区间为<strong>左开右闭区间</strong>$(left, right]$</li>
+</ul>
+</li>
+<li><p>中点选择：<code>mid = (left + right + 1) // 2</code></p>
+<ul>
+<li><strong>向上取整</strong></li>
+<li>此处必须选择向上取整，否则<code>left=right-1</code>时进入死循环
+（或放宽循环条件，添加尾判断）</li>
+<li>即：<strong>循环内检查所有元素，取整一侧指针必须移动</strong></li>
+</ul>
+</li>
+<li><p>循环条件：<code>left &lt; right</code></p>
+<ul>
+<li>搜索区间为左开右闭区间，则检查条件为<code>left &lt; right</code>，
+此时搜索区间非空</li>
+<li>在循环内<code>left</code>、<code>right</code>不会重合</li>
+</ul>
+</li>
+<li><p>更新方式：<code>left=mid, right=mid+1</code></p>
+<ul>
+<li>为保证搜索区间始终为左闭右开区间<ul>
+<li>移动右指针时需剔除<code>mid</code></li>
+<li>移动左指针时无需剔除<code>mid</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>终止情况：<code>left=right</code>、<code>mid=left/left+1</code></p>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环<ul>
+<li><code>left+1=mid=right-1</code></li>
+<li><code>left+1=mid=right</code></li>
+</ul>
+</li>
+<li>越界终止情况：仅右指针剔除<code>mid</code>，仅可能左侧越界<ul>
+<li><code>left=right=-1=mid-1</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>target</code>位置</p>
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code><ul>
+<li><code>left=mid=right</code>：循环过程中<code>target</code>可能已不在
+搜索区间中，最终位于<code>(right, right+1)</code></li>
+<li><code>mid+1=left=right</code>：<code>(left, right)</code></li>
+<li><code>left+1</code>表示小于<code>target</code>元素数量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="高级版3"><a href="#高级版3" class="headerlink" title="高级版3"></a>高级版3</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchEndReturnV2(nums[<span class="number">0.</span>.n-<span class="number">1</span>], target):</span><br><span class="line">	// 折半查找，保持左右指针顺序、不重合</span><br><span class="line">	// 输入：升序数组nums、查找键target</span><br><span class="line">	// 输出：存在返回数组元素下标m，否则返回-<span class="number">1</span></span><br><span class="line">	left, right = -<span class="number">1</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right-<span class="number">1</span>:</span><br><span class="line">		mid = (left + right) // <span class="number">2</span></span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">elif</span> nums[mid] &lt; target:</span><br><span class="line">			left = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">		<span class="keyword">return</span> mid</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>输入判断：无需判断输入列表是否为空</p>
+<ul>
+<li>终止条件保证不会进入，即不会越界</li>
+</ul>
+</li>
+<li><p>初始条件：<code>left, right = -1, n</code></p>
+<ul>
+<li>左、右均无需检查</li>
+<li>即代码中查找区间为<strong>开区间</strong>$(left, right)$</li>
+</ul>
+</li>
+<li><p>中点选择：<code>mid = (left + right) // 2</code></p>
+<ul>
+<li>向下取整、向上取整均可</li>
+</ul>
+</li>
+<li><p>循环条件：<code>left &lt; right-1</code></p>
+<ul>
+<li>搜索区间为左开右闭区间，则检查条件为<code>left &lt; right-1</code>，
+此时搜索区间非空</li>
+<li>在循环内<code>left</code>、<code>right</code>不会重合</li>
+</ul>
+</li>
+<li><p>更新方式：<code>left=mid, right=mid</code></p>
+<ul>
+<li>循环终止条件足够宽泛，不会死循环</li>
+</ul>
+</li>
+<li><p>终止情况：<code>left=right-1</code>、<code>mid=right/right-1</code></p>
+<ul>
+<li>循环条件、循环内部<code>+1</code>保证：上轮循环<ul>
+<li><code>left+1=mid=right-1</code></li>
+</ul>
+</li>
+<li>越界终止情况：左右初始条件均越界，则左、右均可能越界<ul>
+<li><code>mid=left=n-1</code>、<code>right=n</code></li>
+<li><code>left=-1</code>、<code>mid=right=0</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>target</code>位置</p>
+<ul>
+<li>若存在<code>target</code>：必然在<code>mid</code>处，循环结束只需判断<code>mid</code></li>
+<li>若不存在<code>target</code><ul>
+<li><code>target</code>始终在搜索区间<code>(left, right)</code>内</li>
+<li>最终位于<code>(left, right)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="高级版1-原"><a href="#高级版1-原" class="headerlink" title="高级版1-原"></a>高级版1-原</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchKeep1(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保持左右指针顺序、不重合</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">0</span>, n<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> left &lt; right - <span class="number">1</span>:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			right = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			left = mid</span><br><span class="line"></span><br><span class="line">	<span class="comment">// post-procesing</span></span><br><span class="line">	<span class="keyword">if</span> nums[left] == target:</span><br><span class="line">		<span class="keyword">return</span> left</span><br><span class="line">	<span class="keyword">if</span> nums[right] == target:</span><br><span class="line">		<span class="keyword">return</span> right</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>初始条件：<code>left = 0, right = n-1</code></li>
+<li><strong>终止情况</strong>：<code>left = right - 1</code></li>
+<li>指针移动：<code>left = mid, right= mid</code></li>
+</ul>
+</blockquote>
+<ul>
+<li><p><strong>关键特点</strong></p>
+<ul>
+<li><code>n&gt;1</code>时<code>left</code>、<code>mid</code>、<code>right</code>循环内不会重合</li>
+<li><code>mid</code>可以<code>left</code>、<code>right</code>任意比较，无需顾忌重合</li>
+<li>需要和<strong>左右邻居</strong>、<code>left</code>、<code>right</code>比较时适合使用</li>
+<li>扩展使用需要进行真后处理，对<code>left</code>、<code>right</code>进行判断</li>
+</ul>
+</li>
+<li><p>终止情况：<code>left = right - 1</code></p>
+<ul>
+<li>循环过程中会保证<strong>查找空间至少有3个元素</strong>，剩下两个
+元素时，循环终止</li>
+<li>循环终止后，<code>left</code>、<code>right</code>不会越界，可以直接检查</li>
+</ul>
+</li>
+<li><p><code>target</code>位置</p>
+<ul>
+<li><p>若存在<code>target</code>，可能位于<code>mid</code>、<code>left</code>、<code>right</code></p>
+<ul>
+<li><code>mid</code>：因为找到<code>nums[mid]==target</code>跳出</li>
+<li><code>left</code>：<code>left=0</code>，循环中未检查</li>
+<li><code>right</code>：<code>right=n-1</code>，循环中未检查</li>
+</ul>
+</li>
+<li><p>不存在<code>target</code>，则<code>target</code>位于<code>(left, right)</code>之间</p>
+</li>
+<li><p>适合<strong>访问目标在数组中索引、极其左右邻居</strong></p>
+</li>
+</ul>
+</li>
+<li><p><strong>仅仅二分查找的话</strong>，后处理其实不能算是真正的后处理</p>
+<ul>
+<li><p><code>nums[mid]</code>都会被检查，普通<code>left</code>、<code>right</code>肯定不会
+是<code>target</code>所在的位置</p>
+</li>
+<li><p>真正处理的情况：<code>target</code>在端点</p>
+<ul>
+<li><code>left=0, right=1</code>终止循环，<code>left=0</code>未检查</li>
+<li><code>left=n-2, right=n-1</code>终止循环，<code>right=n-1</code>未检查</li>
+</ul>
+</li>
+<li><p>即这个处理是可以放在循环之前进行处理</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="高级版2-原"><a href="#高级版2-原" class="headerlink" title="高级版2-原"></a>高级版2-原</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchKeep0(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保证左右指针不交错</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">0</span>, n</span><br><span class="line">	<span class="keyword">while</span> left &lt; right:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			left = mid + <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid</span><br><span class="line"></span><br><span class="line">	<span class="comment">// post-processing</span></span><br><span class="line">	<span class="keyword">if</span> left != len(nums) <span class="keyword">and</span> nums[left] == target:</span><br><span class="line">		<span class="keyword">return</span> left</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>初始条件：<code>left = 0, right = n</code>，保证<code>n-1</code>可以被正确处理</li>
+<li><strong>终止情况</strong>：<code>left = right</code></li>
+<li>指针移动：<code>left = mid + 1, right = mid</code></li>
+<li>中点选择对此有影响，指针移动行为非对称，取<code>ceiling</code>则
+  终止情况还有<code>left = right + 1</code></li>
+</ul>
+</blockquote>
+<ul>
+<li><p><strong>关键特点</strong></p>
+<ul>
+<li><code>left</code>、<code>right</code>循环内不会重合</li>
+<li>由于<code>floor</code>的特性，<code>mid</code>可以<code>right</code>任意比较，无需
+顾忌和<code>right</code>重合</li>
+<li>需要和<strong>右邻居</strong>、<code>right</code>比较时适合使用</li>
+</ul>
+</li>
+<li><p>终止情况：<code>left = right</code></p>
+<ul>
+<li>循环过程中会保证<strong>查找空间至少有2个元素</strong>，否则循环
+终止</li>
+<li>循环终止条件导致退出循环时，可能<code>left=right=n</code>越界</li>
+</ul>
+</li>
+<li><p><code>target</code>位置</p>
+<ul>
+<li>若存在<code>target</code>，可能位于<code>mid</code>、<code>left=right</code></li>
+<li>若不存在<code>target</code>，则<code>target</code>位于<code>(left-1, left)</code></li>
+<li>适合<strong>访问目标在数组中索引、及其直接右邻居</strong></li>
+</ul>
+</li>
+<li><p><strong>仅二分查找</strong>，甚至无需后处理</p>
+</li>
+<li><p>判断<code>nums</code>长度在某些语言中也可以省略</p>
+</li>
+</ul>
+<h4 id="高级版3-原"><a href="#高级版3-原" class="headerlink" title="高级版3-原"></a>高级版3-原</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">BinarySearchNoKeep(nums[<span class="number">0.</span>.n<span class="number">-1</span>], target):</span><br><span class="line">	<span class="comment">// 折半查找，保证左右指针不交错</span></span><br><span class="line">	<span class="comment">// 输入：升序数组nums、查找键target</span></span><br><span class="line">	<span class="comment">// 输出：存在返回数组元素下标m，否则返回-1</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">	left, right = <span class="number">-1</span>, n<span class="number">-1</span></span><br><span class="line">	<span class="keyword">while</span> left &lt; right - <span class="number">1</span>:</span><br><span class="line">		mid = <span class="built_in">floor</span>((left + right) / <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span> nums[mid] == target:</span><br><span class="line">			<span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line">		elif nums[mid] &lt; target:</span><br><span class="line">			left = mid</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			right = mid - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// post-processing</span></span><br><span class="line">	<span class="keyword">if</span> right &gt;= <span class="number">0</span> <span class="keyword">and</span> nums[right] == target:</span><br><span class="line">		<span class="keyword">return</span> right</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>初始条件：<code>left = -1, right = n-1</code></li>
+<li><strong>终止情况</strong>：<code>left = right</code>、<code>left = right + 1</code></li>
+<li>指针移动：<code>left = mid, right = mid - 1</code></li>
+<li>中点选择对此有影响，指针移动行为非对称，取<code>ceiling</code>则
+  同高级版本2</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>终止条件：<code>left = right</code>、<code>left = right - 1</code></p>
+<ul>
+<li><p>循环过程中保证<strong>查找空间至少有3个元素</strong>，否则循环
+终止</p>
+</li>
+<li><p>由于<code>floor</code>特性，必须在<code>left &lt; right - 1</code>时即终止
+循环，否则可能死循环</p>
+</li>
+<li><p>循环终止后，<code>left=right=-1</code>可能越界</p>
+</li>
+</ul>
+</li>
+<li><p><code>target</code>位置</p>
+<ul>
+<li>若存在<code>target</code>，可能位于<code>mid</code>、<code>left=right</code></li>
+<li>若不存在<code>target</code>，则<code>target</code>位于<code>(left, left+1)</code></li>
+<li>适合<strong>访问目标在数组中索引、及其直接左邻居</strong></li>
+</ul>
+</li>
+<li><p>此版本仅想实现二分查找<strong>必须后处理</strong></p>
+<ul>
+<li><p>终止条件的原因，最后一次<code>right=left + 1</code>时未被检查
+即退出循环</p>
+</li>
+<li><p>可能在任何位置发生，不是端点问题</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="特点-2"><a href="#特点-2" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>前两个版本比较常用，最后两个版本逻辑类似</p>
+</li>
+<li><p>折半查找时间效率</p>
+<ul>
+<li>最坏情况下：$\in \Theta(log n)$</li>
+<li>平均情况下仅比最差稍好</li>
+</ul>
+</li>
+<li><p>就<strong>依赖键值比较</strong>的查找算法而言，折半查找已经是最优算法
+，但是插值算法、散列法等具有更优平均效率</p>
+</li>
+<li><p>减常因子因子法</p>
+</li>
+</ul>
+<h3 id="插值查找"><a href="#插值查找" class="headerlink" title="插值查找"></a>插值查找</h3><p>Interpolation Search：查找有序数组，在折半查找的基础上考虑
+查找键的值</p>
+<h4 id="算法-3"><a href="#算法-3" class="headerlink" title="算法"></a>算法</h4><ul>
+<li><p>假设数组值是线性递增，即<em>数字值~索引</em>为一条直线，则根据
+直线方程，可以估计查找键K在A[l..r]所在的位置</p>
+<script type="math/tex; mode=display">
+x = l + \left \lfloor \frac {(K-A[l])(r-l)}
+   {A[r] - A[l]} \right \rfloor</script></li>
+<li><p>若k == A[x]，则算法停止，否则类似折半查找得到规模更小的
+问题</p>
+</li>
+</ul>
+<h4 id="特点-3"><a href="#特点-3" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>即使数组值不是线性递增，也不会影响算法正确性，只是每次
+估计查找键位置不够准确，影响算法效率</p>
+</li>
+<li><p>统计考虑</p>
+<ul>
+<li>折半插值类似于非参方法，只考虑秩（索引）方向</li>
+<li>插值查找类似参数方法，构建了秩（索引）和数组值模型，
+但是线性关系基于假设</li>
+<li>如果模型错误可能会比折半查找效率更差，即在数据分布
+分布偏差较大的情况下非参方法好于参数方法</li>
+</ul>
+</li>
+<li><p>所以是否可以考虑取样方法，先取5个点构建模型，然后估计</p>
+</li>
+<li><p>算法效率</p>
+<ul>
+<li>对随机列表，算法比较次数小于$log_2log_n+1$</li>
+<li>最差情况，比较次数为线性，没有折半查找稳定</li>
+<li>Robert Sedgewick的Algorithms中研究表明，对较小文件
+折半查找更好，大文件、比较开销大插值查找更好</li>
+</ul>
+</li>
+<li><p>减可变规模</p>
+</li>
+</ul>
+<h2 id="子串匹配"><a href="#子串匹配" class="headerlink" title="子串匹配"></a>子串匹配</h2><h3 id="蛮力字符串匹配"><a href="#蛮力字符串匹配" class="headerlink" title="蛮力字符串匹配"></a>蛮力字符串匹配</h3><h4 id="算法-4"><a href="#算法-4" class="headerlink" title="算法"></a>算法</h4><ul>
+<li>将pattern对齐文本前m个字符，从左向右匹配相应字符<ul>
+<li>m个字符全部匹配，匹配成功，算法停止</li>
+<li>遇到不匹配字符则</li>
+</ul>
+</li>
+<li>模式右移1位，然后从模式首个字符开始重复以上匹配</li>
+<li>在n-m位置无法匹配成功，则无足够匹配字符，算法停止</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BruteForceStringMatch(T[<span class="number">0.</span>.n<span class="number">-1</span>], P[<span class="number">0.</span>.m<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 蛮力字符串匹配</span></span><br><span class="line">	<span class="comment">// 输入：文本T：n个字符的字符数组</span></span><br><span class="line">	<span class="comment">//       模式：m个字符的字符数组</span></span><br><span class="line">	<span class="comment">// 输出：查找成功返回文本第一个匹配子串中第一个字符位置</span></span><br><span class="line">	<span class="keyword">for</span> i = <span class="number">0</span> to m-m <span class="keyword">do</span></span><br><span class="line">		j = <span class="number">0</span></span><br><span class="line">		<span class="keyword">while</span> j &lt; m <span class="keyword">and</span> P[j] = T[i+j] <span class="keyword">do</span></span><br><span class="line">			j = j + <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> j = m</span><br><span class="line">				<span class="keyword">return</span> i</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h4 id="特点-4"><a href="#特点-4" class="headerlink" title="特点"></a>特点</h4><ul>
+<li>最坏情况下，算法比较次数属于$O(nm)$<ul>
+<li>即在移动模式之前，算法需要做足m次比较</li>
+<li>但是一般在自然语言中，算法平均效率比最差好得多</li>
+<li>在随机文本中，有线性效率</li>
+</ul>
+</li>
+</ul>
+<h3 id="Horspool算法"><a href="#Horspool算法" class="headerlink" title="Horspool算法"></a>Horspool算法</h3><p>算法<strong>从右往左</strong>匹配，在<strong>任意位置</strong>匹配不成功时只考虑
+<strong>同模式最后字符匹配的文本字符<code>c</code></strong>，确定安全移动距离，在
+不会错过匹配子串的情况下移动最长距离</p>
+<ul>
+<li>如果<code>c</code>在模式中出现，则模式移动到其最后<code>c</code>至同文本中<code>c</code>
+匹配</li>
+<li>否则移动模式长度m</li>
+<li>特别的，如果<code>c</code>只在模式最后字符出现，则也应该移动m</li>
+</ul>
+<h4 id="算法-5"><a href="#算法-5" class="headerlink" title="算法"></a>算法</h4><ul>
+<li>对给定长度m的模式及文本中用到的字母表，构造移动表<code>t</code></li>
+<li>将模式同文本开始对齐</li>
+<li>重复以下过程直至发了了匹配子串或模式达到了文本字符外<ul>
+<li>从模式<strong>最后字符开始</strong>，比较模式、文本相应字符</li>
+<li>若m个字符匹配，停止</li>
+<li>遇到不匹配字符<code>c</code>，若为当前文本中和模式最后匹配字符
+对齐的字符，将模式移动<code>t(c)</code>个字符</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ShiftTable(P[<span class="number">0.</span>.m<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 用Horspool算法、Boyer-Moore算法填充移动表</span></span><br><span class="line">	<span class="comment">// 输入：模式P[0..m-1]、可能出现字符表</span></span><br><span class="line">	<span class="comment">// 输出：以字符表为为索引的数组Table[0..size-1]</span></span><br><span class="line">	<span class="keyword">for</span> i=<span class="number">0</span> to size<span class="number">-1</span> <span class="keyword">do</span></span><br><span class="line">		Table[i] = m</span><br><span class="line">		<span class="comment">// 初始化所有字符对应移动距离为m</span></span><br><span class="line">	<span class="keyword">for</span> j=<span class="number">0</span> to m<span class="number">-2</span> <span class="keyword">do</span></span><br><span class="line">		Table[P[j]] = m - <span class="number">1</span> - j</span><br><span class="line">		<span class="comment">// 对模式中存在的字符重新计算移动距离</span></span><br><span class="line">	<span class="keyword">return</span> Table</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">HorspoolMatching(P[<span class="number">0.</span>.m<span class="number">-1</span>], T[<span class="number">0.</span>.n<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 实现Horspool字符串匹配算法</span></span><br><span class="line">	<span class="comment">// 输入：模式P[0..m-1]、文本T[0..n-1]</span></span><br><span class="line">	<span class="comment">// 输出：第一个匹配子串最左端字符下标，未匹配返回-1</span></span><br><span class="line">	Table = ShiftTable(P[<span class="number">0.</span>.m<span class="number">-1</span>])</span><br><span class="line">	i = m - <span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt;= n<span class="number">-1</span> <span class="keyword">do</span></span><br><span class="line">		k = <span class="number">0</span></span><br><span class="line">		<span class="keyword">while</span> k &lt;= m<span class="number">-1</span> <span class="keyword">and</span> P[m<span class="number">-1</span>-k]=T[i-k] <span class="keyword">do</span></span><br><span class="line">			k = k+<span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> k == m</span><br><span class="line">			<span class="keyword">return</span> i-m+<span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			i = i+Table[T[i]]</span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h4 id="特点-5"><a href="#特点-5" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>算法效率</p>
+<ul>
+<li>最差情况下模式为相同字符，效率$\in O(nm)$</li>
+<li>对随机文本效率$\in O(n)$</li>
+</ul>
+</li>
+<li><p>输入增强</p>
+</li>
+</ul>
+<h3 id="Boyer-Moore算法"><a href="#Boyer-Moore算法" class="headerlink" title="Boyer-Moore算法"></a>Boyer-Moore算法</h3><ul>
+<li>坏符号移动：模式、文本中相应不匹配字符<strong>确定</strong>的移动
+（不是Horspool中简单根据最后字符确定移动）</li>
+<li>好后缀移动：模式、文本匹配的后缀<strong>确定</strong>的移动</li>
+</ul>
+<h4 id="算法-6"><a href="#算法-6" class="headerlink" title="算法"></a>算法</h4><ul>
+<li>对给定长度m的模式及文本用到的字母表，构造坏符号移动表<code>t</code></li>
+<li>对给定长度m的模式构造后缀移动表</li>
+<li>将模式与文本开始处对齐</li>
+<li>重复以下直到找到匹配子串或模式达到文本字符以外<ul>
+<li>从模式最后字符开始比较模式、文本相应字符</li>
+<li>所有m个字符匹配，则停止</li>
+<li>若<code>c</code>是不匹配字符，移动坏符号表、后缀移动表决定的
+距离较大者</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BadSymbolShift(P[<span class="number">0.</span>.m<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 创建坏符号移动表</span></span><br><span class="line">	<span class="comment">// 输入：模式P[0..m-1]</span></span><br><span class="line">	<span class="comment">// 输出：坏符号移动表</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="特点-6"><a href="#特点-6" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>算法效率</p>
+<ul>
+<li>算法效率最差也是线性的</li>
+</ul>
+</li>
+<li><p>输入增强</p>
+</li>
+</ul>
+<h3 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h3><p>算法<strong>从左往右</strong>匹配，失败时不回溯指针，利用已经得到的
+<strong>部分匹配</strong>结果尽可能将模式滑动一段距离，从模式中间<em>next</em>
+字符开始比较</p>
+<script type="math/tex; mode=display">
+next[i] =
+\left \{ \begin{array} {l}
+    -1 & i=0 \\
+    Max\{k|0<k<m-1, 'p_0 \cdots p_{k-1}' == \
+        'p_{i-k} \cdots p_{i-1}\}' \
+        & 此集合不空 \\
+    0 & 其他情况 \\
+\end{array} \right.</script><h4 id="算法-7"><a href="#算法-7" class="headerlink" title="算法"></a>算法</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">KMPShift(P[<span class="number">0.</span>.m<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 计算KMP算法next值</span></span><br><span class="line">	<span class="comment">// 输入：模式P[0..m-1]</span></span><br><span class="line">	<span class="comment">// 输出：模式中各元素next值数组</span></span><br><span class="line">	i = <span class="number">-1</span></span><br><span class="line">		<span class="comment">// 表示开始比较文本中下个字符</span></span><br><span class="line">	j = <span class="number">0</span></span><br><span class="line">	next[<span class="number">0</span>] = <span class="number">-1</span></span><br><span class="line">		<span class="comment">// 即如果模式首字符都不匹配，比较文本下个字符</span></span><br><span class="line">	<span class="keyword">while</span> j &lt; m</span><br><span class="line">		<span class="keyword">if</span> i == <span class="number">-1</span> <span class="keyword">or</span> P[j] == P[i]</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">			<span class="comment">// 当前字符匹配成功，决定下个字符next值</span></span><br><span class="line">			next[j] = i</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			i = next[i]</span><br><span class="line">			<span class="comment">// 若当前字符没有匹配成功，不会立即处理下个字符</span></span><br><span class="line">			<span class="comment">// next值，而是反复迭代、查询已匹配部分next值，</span></span><br><span class="line">			<span class="comment">// 以获得最大匹配前缀</span></span><br><span class="line">	<span class="keyword">return</span> next</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">KMPShiftVal(P[<span class="number">0.</span>.m<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 计算KMP算法next值修正版（考虑next值与当前相等）</span></span><br><span class="line">	<span class="comment">// 输入：模式P[0..m-1]</span></span><br><span class="line">	<span class="comment">// 输出：模式中各元素next_val值数组u</span></span><br><span class="line">	i = <span class="number">-1</span></span><br><span class="line">		<span class="comment">// 表示开始比较文本中下个字符</span></span><br><span class="line">	j = <span class="number">0</span></span><br><span class="line">	next_val[<span class="number">0</span>] = <span class="number">-1</span></span><br><span class="line">	<span class="keyword">while</span> j &lt; m <span class="keyword">do</span></span><br><span class="line">		<span class="keyword">if</span> i == <span class="number">-1</span> <span class="keyword">or</span> P[j] == P[i]</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> T[j] != T[i]</span><br><span class="line">				next_val[j] = i</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				next_val[j] = next_val[i]</span><br><span class="line">				<span class="comment">// 考虑了next值相同时，可以再滑动一次</span></span><br><span class="line">				<span class="comment">// 这里会导致next_val值跳跃</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			i = next_val[i]</span><br><span class="line">	<span class="keyword">return</span> next_val</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">KMPMatching(P[<span class="number">0.</span>.m<span class="number">-1</span>], T[<span class="number">0.</span>.n<span class="number">-1</span>])</span><br><span class="line">	<span class="comment">// 实现KMP字符串匹配算法</span></span><br><span class="line">	<span class="comment">// 输入：模式P[0..m-1]、文本T[0..n-1]</span></span><br><span class="line">	<span class="comment">// 输出：第一个匹配子串最左端字符下标，未匹配返回-1</span></span><br><span class="line">	i = <span class="number">0</span></span><br><span class="line">	j = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; m <span class="keyword">and</span> j &lt; n <span class="keyword">do</span></span><br><span class="line">		<span class="keyword">if</span> i == <span class="number">-1</span> <span class="keyword">or</span> P[i] == T[j]</span><br><span class="line">			i += <span class="number">1</span></span><br><span class="line">			j += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			i = next[i]</span><br><span class="line">	<span class="keyword">if</span> i &gt;= m</span><br><span class="line">		<span class="keyword">return</span> j - m + <span class="number">1</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h4 id="特点-7"><a href="#特点-7" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>算法效率</p>
+<ul>
+<li>算法时间效率$\in O(m+n)$</li>
+</ul>
+</li>
+<li><p>文本指针不需要回溯，整个匹配过程只需要对文本扫描一次，
+对流程处理十分有效，可以边读边匹配</p>
+</li>
+<li><p>输入增强</p>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-19T01:19:48.000Z" title="7/19/2021, 9:19:48 AM">2021-07-19</time></span><span class="level-item"><a class="link-muted" href="/categories/Set/">Set</a></span><span class="level-item">6 minutes read (About 876 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Set/set_theory.html">集合</a></h1><div class="content"><h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><h3 id="势"><a href="#势" class="headerlink" title="势"></a>势</h3><blockquote>
+<ul>
+<li>等势：若集合 $X, Y$ 之间存在双射 $\phi: X \rightarrow Y$，则称 $X, Y$ 等势</li>
+<li>可数/可列集合：与自然数集合、其子集等势的集合称为可数集合，否则称为不可数集合</li>
+</ul>
+</blockquote>
+<ul>
+<li>等势构成集合之间的等价关系<ul>
+<li>集合 $X$ 的等势类记为 $|X|$</li>
+<li>若存在单射 $\phi: X \rightarrow Y$，则记为 $|X| \leq |Y|$</li>
+</ul>
+</li>
+<li>一些基本结论<ul>
+<li>自然数集 $N = {0, 1, 2, 3, \cdots}$ 和闭区间 $[0,1]$ 不等势</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34097692">https://zhuanlan.zhihu.com/p/34097692</a></li>
+</ul>
+</blockquote>
+<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><blockquote>
+<ul>
+<li><p>偏序集：若集合 $A$ 上有二元关系 $\leq$ 满足以下性质，则称集合 $A$ 为偏序集，关系 $\leq$ 称为偏序关系</p>
+<blockquote>
+<ul>
+<li>反身性：$\forall x \in A, x \leq x$</li>
+<li>传递性：$(x \leq y) \wedge (y \leq z) \Rightarrow x \leq z$</li>
+<li>反称性：$(x \leq y) \wedge (y \leq x) \Rightarrow x = y$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>全序集：若 $\leq$ 是集合上的偏序关系，若对每个$x, y \in A$，必有 $x\leq y$ 或 $y \leq x$，则称集合 $A$ 为全序集，关系 $\leq$ 为全序关系</p>
+</li>
+<li><p>良序集：若集合 $A$ 每个自己都有极小元，则称为良序集</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>特点<ul>
+<li>偏序指集合中只有部分成员之间可比较</li>
+<li>全序指集合全体成员之间均可比较</li>
+<li>良序集则是不存在无穷降链的全序集（可有无穷升链）</li>
+</ul>
+</li>
+</ul>
+<h3 id="序数"><a href="#序数" class="headerlink" title="序数"></a>序数</h3><blockquote>
+<ul>
+<li>序数：若集合 $A$ 中每个元素都是 $A$ 的子集，则称 $A$ 是传递的。而 $A$ 对于关系 $\in$ 构成良序集，则称 $A$ 为序数</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>满足如下形式的集合即为序数</p>
+<script type="math/tex; mode=display">
+\{\phi, \{\phi\}, \{\phi, \{\phi\}\}, \{\phi, \{\phi\}, \{\phi, \{\phi\}\}\} \}, \cdots</script></li>
+<li><p>序数的性质（引理）</p>
+<ul>
+<li>若 $\alpha$ 为序数，$\beta \in \alpha$，则 $\beta$ 也是序数</li>
+<li>对任意序数 $\alpha, \beta$，若 $\alpha \subset \beta$，则 $\alpha \in \beta$</li>
+<li>对任意序数 $\alpha, \beta$，必有 $\alpha \subseteq \beta$ 或 $\beta \subseteq \alpha$</li>
+</ul>
+</li>
+<li><p>由以上，序数性质的解释</p>
+<ul>
+<li>序数是唯一的，都满足上述形式</li>
+<li>序数都是由自己之前的所有序数构造而来</li>
+<li>对任意序数 $\alpha$，有 $\alpha = {\beta: \beta &lt; \alpha }$ （$ &lt; $ 表示偏序关系）</li>
+</ul>
+</li>
+<li><p>将 $0, 1, 2, \cdots$ 依次对应上述序数，即给出自然数和序数</p>
+<script type="math/tex; mode=display">
+0 := \phi, 1 := \{phi\}, 2 := \{\phi, \{phi\}\}, \cdots</script></li>
+</ul>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BA%8F%E6%95%B0">https://zh.wikipedia.org/wiki/%E5%BA%8F%E6%95%B0</a></li>
+<li>自然数可用于描述集合大小（势，基数）、序列中元素的位置（序，序数）</li>
+</ul>
+</blockquote>
+<h4 id="良序定理"><a href="#良序定理" class="headerlink" title="良序定理"></a>良序定理</h4><blockquote>
+<ul>
+<li><em>Zermelo</em> 良序定理：任何集合 $P$ 都能被赋予良序</li>
+</ul>
+</blockquote>
+<ul>
+<li><em>Zermelo</em> 良序定理和 <em>ZFC</em> 选择公理等价，可以由选择公理证明<ul>
+<li>由选择公理，可以一直从集合中选择元素，建立偏序关系</li>
+<li>而集合有限，则集合和序数之间可以建立双射</li>
+</ul>
+</li>
+</ul>
+<h2 id="基"><a href="#基" class="headerlink" title="基"></a>基</h2><h3 id="基数"><a href="#基数" class="headerlink" title="基数"></a>基数</h3><blockquote>
+<ul>
+<li>基数：序数 $k$ 为基数，若对任意序数 $\lambda &lt; k$，都有 $|\lambda| &lt; |k|$</li>
+<li><em>Counter</em> 定理：设 $A$ 为集合，$P(A)$ 为 $A$ 的幂集，则有 $|A| \leq |P(A)|$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>基数是集合势的标尺</p>
+</li>
+<li><p>数的集合的基数</p>
+<ul>
+<li>自然数集合基数 $\aleph_0$：最小的无限基数</li>
+<li>实数集集合基数称为 <em>continuum</em> 连续统</li>
+</ul>
+</li>
+<li><p>连续统假设：不存在一个集合，基数在自然数集和连续统之间</p>
+<ul>
+<li>哥德尔证明：连续统假设与公理化集合论体系 <em>Zermelo-Fraenkel set theory with the axiom of choice</em> 中不矛，即不能再 <em>ZFC</em> 中被证伪</li>
+<li>科恩证明：连续统假设和 <em>ZFC</em> 彼此独立，不能在 <em>ZFC</em> 公理体系内证明、证伪</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9F%BA%E6%95%B0_(%E6%95%B0%E5%AD%A6)">https://zh.wikipedia.org/wiki/%E5%9F%BA%E6%95%B0_(%E6%95%B0%E5%AD%A6)</a></li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Mixin/">Math Mixin</a></span><span class="level-item">9 minutes read (About 1338 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Mixin/func_distance.html">距离函数</a></h1><div class="content"><h2 id="距离"><a href="#距离" class="headerlink" title="距离"></a>距离</h2><ul>
+<li>距离可认为是两个对象 $x,y$ 之间的 <strong>相似程度</strong><ul>
+<li>距离和相似度是互补的</li>
+<li>可以根据处理问题的情况，自定义距离</li>
+</ul>
+</li>
+</ul>
+<h3 id="Bregman-Divergence"><a href="#Bregman-Divergence" class="headerlink" title="Bregman Divergence"></a><em>Bregman Divergence</em></h3><script type="math/tex; mode=display">
+D(x, y) = \Phi(x) - \Phi(y) - <\nabla \Phi(y), (x - y)></script><blockquote>
+<ul>
+<li>$Phi(x)$：凸函数</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>布雷格曼散度：穷尽所有关于“正常距离”的定义</p>
+<ul>
+<li>给定 $R^n * R^n \rightarrow R$ 上的正常距离 $D(x,y)$，一定可以表示成布雷格曼散度形式</li>
+<li>直观上：$x$处函数、函数过$y$点切线（线性近似）之差<ul>
+<li>可以视为是损失、失真函数：$x$由$y$失真、近似、添加噪声得到</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li>非对称：$D(x, y) = D(y, x)$</li>
+<li>不满足三角不等式：$D(x, z) \leq D(x, y) + D(y, z)$</li>
+<li>对凸集作 <em>Bregman Projection</em> 唯一<ul>
+<li>即寻找凸集中与给定点Bregman散度最小点</li>
+<li>一般的投影指欧式距离最小</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>$\Phi(x)$</th>
+<th>$D_{\Phi}(x,y)$</th>
+<th>Divergence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$R$</td>
+<td>$x^2$</td>
+<td>$(x-y)^2$</td>
+<td>Squared Loss</td>
+</tr>
+<tr>
+<td>$R_{+}$</td>
+<td>$xlogx$</td>
+<td>$xlog(\frac x y) - (x-y)$</td>
+<td></td>
+</tr>
+<tr>
+<td>$[0,1]$</td>
+<td>$xlogx + (1-x)log(1-x)$</td>
+<td>$xlog(\frac x y) + (1-x)log(\frac {1-x} {1-y})$</td>
+<td>Logistic Loss</td>
+</tr>
+<tr>
+<td>$R_{++}$</td>
+<td>$-logx$</td>
+<td>$\frac x y - log(\frac x y) - 1$</td>
+<td>Itakura-Saito Distance</td>
+</tr>
+<tr>
+<td>$R$</td>
+<td>$e^x$</td>
+<td>$e^x - e^y - (x-y)e^y$</td>
+<td></td>
+</tr>
+<tr>
+<td>$R^d$</td>
+<td>$\</td>
+<td>x\</td>
+<td>$</td>
+<td>$\</td>
+<td>x-y\</td>
+<td>$</td>
+<td>Squared Euclidean Distance</td>
+</tr>
+<tr>
+<td>$R^d$</td>
+<td>$x^TAx$</td>
+<td>$(x-y)^T A (x-y)$</td>
+<td>Mahalanobis Distance</td>
+</tr>
+<tr>
+<td>d-Simplex</td>
+<td>$\sum_{j=1}^d x_j log_2 x_j$</td>
+<td>$\sum_{j=1}^d x_j log_2 log(\frac {x_j} {y_j})$</td>
+<td>KL-divergence</td>
+</tr>
+<tr>
+<td>$R_{+}^d$</td>
+<td>$\sum_{j=1}^d x_j log x_j$</td>
+<td>$\sum<em>{j=1}^d x_j log(\frac {x_j} {y_j}) - \sum</em>{j=1}^d (x_j - y_j)$</td>
+<td>Genelized I-divergence</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><em>正常距离</em>：对满足任意概率分布的点，点平均值点（期望点）应该是空间中距离所有点平均距离最小的点</li>
+<li>布雷格曼散度对一般概率分布均成立，而其本身限定由凸函数生成<blockquote>
+<ul>
+<li>和 <em>Jensen</em> 不等式有关？凸函数隐含部分对期望的度量</li>
+</ul>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="http://www.jmlr.org/papers/volume6/banerjee05b/banerjee05b.pdf">http://www.jmlr.org/papers/volume6/banerjee05b/banerjee05b.pdf</a></li>
+</ul>
+</blockquote>
+<h2 id="单点距离"><a href="#单点距离" class="headerlink" title="单点距离"></a>单点距离</h2><h3 id="Minkowski-Distance"><a href="#Minkowski-Distance" class="headerlink" title="Minkowski Distance"></a><em>Minkowski Distance</em></h3><p>闵科夫斯基距离：向量空间 $\mathcal{L_p}$ 范数</p>
+<script type="math/tex; mode=display">
+d_{12} = \sqrt [1/p] {\sum_{k=1}^n |x_{1,k} - x_{2,k}|^p}</script><ul>
+<li><p>表示一组距离族</p>
+<ul>
+<li>$p=1$：<em>Manhattan Distance</em>，曼哈顿距离</li>
+<li>$p=2$：<em>Euclidean Distance</em>，欧式距离</li>
+<li>$p \rightarrow \infty$：<em>Chebychev Distance</em>，切比雪夫距离</li>
+</ul>
+</li>
+<li><p>闵氏距离缺陷</p>
+<ul>
+<li>将各个分量量纲视作相同</li>
+<li>未考虑各个分量的分布</li>
+</ul>
+</li>
+</ul>
+<h3 id="Mahalanobis-Distance"><a href="#Mahalanobis-Distance" class="headerlink" title="Mahalanobis Distance"></a><em>Mahalanobis Distance</em></h3><p>马氏距离：表示数据的协方差距离</p>
+<script type="math/tex; mode=display">
+d_{12} = \sqrt {({x_1-\mu}^T) \Sigma^{-1} (x_2-\mu)}</script><blockquote>
+<ul>
+<li>$\Sigma$：总体协方差矩阵</li>
+</ul>
+</blockquote>
+<ul>
+<li>优点<ul>
+<li>马氏距离和原始数据量纲无关</li>
+<li>考虑变量相关性</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>需要知道总体协方差矩阵，使用样本估计效果不好</li>
+</ul>
+</li>
+</ul>
+<h3 id="LW-Distance"><a href="#LW-Distance" class="headerlink" title="LW Distance"></a><em>LW Distance</em></h3><p>兰氏距离：<em>Lance and Williams Distance</em>，堪培拉距离</p>
+<script type="math/tex; mode=display">
+d_{12} = \sum^{n}_{k=1} \frac {|x_{1,k} - x_{2,k}|} {|x_{1,k} + x_{2,k}|}</script><ul>
+<li>特点<ul>
+<li>对接近0的值非常敏感</li>
+<li>对量纲不敏感</li>
+<li>未考虑变量直接相关性，认为变量之间相互独立</li>
+</ul>
+</li>
+</ul>
+<h3 id="Hamming-Distance"><a href="#Hamming-Distance" class="headerlink" title="Hamming Distance"></a><em>Hamming Distance</em></h3><p>汉明距离：差别</p>
+<script type="math/tex; mode=display">
+diff = \frac 1 p \sum_{i=1}^p  (v^{(1)}_i - v^{(2)}_i)^k</script><blockquote>
+<ul>
+<li>$v_i \in {0, 1}$：虚拟变量</li>
+<li>$p$：虚拟变量数量</li>
+</ul>
+</blockquote>
+<ul>
+<li>可以衡量定性变量之间的距离</li>
+</ul>
+<h4 id="Embedding"><a href="#Embedding" class="headerlink" title="Embedding"></a><em>Embedding</em></h4><ul>
+<li>找到所有点、所有维度坐标值中最大值 $C$</li>
+<li>对每个点 $P=(x_1, x_2, \cdots, x_d)$<ul>
+<li>将每维 $x_i$ 转换为长度为 $C$ 的 0、1 序列</li>
+<li>其中前 $x_i$ 个值为 1，之后为 0</li>
+</ul>
+</li>
+<li>将 $d$ 个长度为 $C$ 的序列连接，形成长度为 $d * C$ 的序列</li>
+</ul>
+<blockquote>
+<ul>
+<li>以上汉明距离空间嵌入对曼哈顿距离是保距的</li>
+</ul>
+</blockquote>
+<h3 id="Jaccard-系数"><a href="#Jaccard-系数" class="headerlink" title="Jaccard 系数"></a><em>Jaccard</em> 系数</h3><p><em>Jaccard</em> 系数：度量两个集合的相似度，值越大相似度越高</p>
+<script type="math/tex; mode=display">
+sim = \frac {\|S_1 \hat S_2\|} {\|S_1 \cup S_2\|}</script><blockquote>
+<ul>
+<li>$S_1, S_2$：待度量相似度的两个集合</li>
+</ul>
+</blockquote>
+<h3 id="Consine-Similarity"><a href="#Consine-Similarity" class="headerlink" title="Consine Similarity"></a><em>Consine Similarity</em></h3><p>余弦相似度</p>
+<script type="math/tex; mode=display">
+similarity = cos(\theta) = \frac {x_1 x_2} {\|x_1\|\|x_2\|}</script><blockquote>
+<ul>
+<li>$x_1, x_2$：向量</li>
+</ul>
+</blockquote>
+<h3 id="欧式距离"><a href="#欧式距离" class="headerlink" title="欧式距离"></a>欧式距离</h3><h4 id="点到平面"><a href="#点到平面" class="headerlink" title="点到平面"></a>点到平面</h4><blockquote>
+<ul>
+<li>$T={(x_1,y_1),(x_2,y_2),\cdots,(x_n,y_n)}$：样本点集</li>
+<li>$wx + b = 0$：超平面</li>
+</ul>
+</blockquote>
+<h5 id="Functional-Margin-函数间隔"><a href="#Functional-Margin-函数间隔" class="headerlink" title="Functional Margin 函数间隔"></a><em>Functional Margin</em> 函数间隔</h5><script type="math/tex; mode=display">
+\hat{\gamma_i} = y_i(wx_i + b)</script><ul>
+<li><p>函数间隔可以表示分类的正确性、确信度</p>
+<ul>
+<li>正值表示正确</li>
+<li>间隔越大确信度越高</li>
+</ul>
+</li>
+<li><p>点集与超平面的函数间隔取点间隔最小值 $\hat{T} = \min_{i=1,2,\cdots,n} \hat{\gamma_i}$</p>
+</li>
+<li><p>超平面参数 $w, b$ 成比例改变时，平面未变化，但是函数间隔成比例变化</p>
+</li>
+</ul>
+<h5 id="Geometric-Margin-几何间隔"><a href="#Geometric-Margin-几何间隔" class="headerlink" title="Geometric Margin 几何间隔"></a><em>Geometric Margin</em> 几何间隔</h5><script type="math/tex; mode=display">\begin{align*}
+\gamma_i & = \frac {y_i} {\|w\|} (wx_i + b) \\
+    & = \frac {\hat \gamma_i} {\|w\|}
+\end{align*}</script><ul>
+<li><p>几何间隔一般是样本点到超平面的 <em>signed distance</em></p>
+<ul>
+<li>点正确分类时，几何间隔就是点到直线的距离</li>
+</ul>
+</li>
+<li><p>几何间隔相当于使用 $|w|$ 对函数间隔作规范化</p>
+<ul>
+<li>$|w|=1$ 时，两者相等</li>
+<li>几何间隔对确定超平面、样本点是确定的，不会因为超平面表示形式改变而改变</li>
+</ul>
+</li>
+<li><p>点集与超平面的几何间隔取点间隔最小值 $\hat{T} = \min_{i=1,2,\cdots,n} \hat{\gamma_i}$</p>
+</li>
+</ul>
+<h3 id="Levenshtein-Edit-Distance"><a href="#Levenshtein-Edit-Distance" class="headerlink" title="Levenshtein/Edit Distance"></a><em>Levenshtein/Edit Distance</em></h3><p>（字符串）编辑距离：两个字符串转换需要进行插入、删除、替换操作的次数</p>
+<script type="math/tex; mode=display">
+lev_{A,B}(i, j) = \left \{ \begin{array}{l}
+    i, & j = 0 \\
+    j, & i = 0 \\
+    min \left \{ \begin{array}{l}
+        lev_{A,B}(i,j-1) + 1 \\
+        lev_{A,B}(i-1,j) + 1 \\
+        lev_{A,B}(i-1, j-1) + 1
+    \end{array} \right. & A[i] != B[j] \\
+    min \left \{ \begin{array}{l}
+        lev_{A,B}(i,j-1) + 1 \\
+        lev_{A,B}(i-1,j) + 1 \\
+        lev_{A,B}(i-1, j-1)
+    \end{array} \right. & A[i] = B[j] \\
+\end{array} \right.</script><h2 id="组间距离"><a href="#组间距离" class="headerlink" title="组间距离"></a>组间距离</h2><h3 id="Single-Linkage"><a href="#Single-Linkage" class="headerlink" title="Single Linkage"></a><em>Single Linkage</em></h3><h3 id="Average-Linkage"><a href="#Average-Linkage" class="headerlink" title="Average Linkage"></a><em>Average Linkage</em></h3><h3 id="Complete-Linkage"><a href="#Complete-Linkage" class="headerlink" title="Complete Linkage"></a><em>Complete Linkage</em></h3></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Spark/">Spark</a></span><span class="level-item">7 minutes read (About 1067 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/Spark/spark_streaming.html">Spark Streaming</a></h1><div class="content"><h2 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h2><p><em>Spark Streaming</em>：提供对实时数据流高吞吐、高容错、可扩展的
+流式处理系统</p>
+<ul>
+<li><p>可以对多种数据源（Kafka、Flume、Twitter、ZeroMQ），进行
+包括map、reduce、join等复杂操作</p>
+</li>
+<li><p>采用Micro Batch数据处理方式，实现更细粒度资源分配，实现
+动态负载均衡</p>
+<ul>
+<li>离散化数据流为为小的RDDs得到DStream交由Spark引擎处理</li>
+<li>数据存储在内存实现数据流处理、批处理、交互式一体化</li>
+<li>故障节点任务将均匀分散至集群中，实现更快的故障恢复</li>
+</ul>
+</li>
+</ul>
+<h3 id="streaming-StreamingContext"><a href="#streaming-StreamingContext" class="headerlink" title="streaming.StreamingContext"></a><code>streaming.StreamingContext</code></h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.streaming.<span class="type">StreamingContext</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StreamingContext</span>(<span class="params">?conf: <span class="type">SparkConf</span>, ?slices: <span class="type">Int</span></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 开始接受、处理流式数据</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">start</span></span>()</span><br><span class="line">	<span class="comment">// 结束流式处理过程</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">stop</span></span>(?stop_spark_context=<span class="type">True</span>)</span><br><span class="line">	<span class="comment">// 等待计算完成</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">awaitTermination</span></span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.&#123;<span class="type">SparkContext</span>, <span class="type">SparkConf</span>&#125;</span><br><span class="line"><span class="keyword">import</span> org.apache.spark.streaming.<span class="type">Seconds</span></span><br><span class="line"><span class="keyword">import</span> org.apache.spark.streaming.<span class="type">StreamingContext</span>._</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setAppName(<span class="string">&quot;app name&quot;</span>).setMaster(master)</span><br><span class="line"><span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(conf, <span class="type">Seconds</span>(<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="Discreted-Stream"><a href="#Discreted-Stream" class="headerlink" title="Discreted Stream"></a><em>Discreted Stream</em></h2><p><em>DStream</em>：代表持续性的数据流，是Spark Streaming的基础抽象</p>
+<p><img src="/imgs/spark_streaming_dstream_transformation.png" alt="spark_streaming_dstream_transformation"></p>
+<ul>
+<li><p>可从外部输入源、已有DStream转换得到</p>
+<ul>
+<li>可在流应用中并行创建多个输入DStream接收多个数据流</li>
+</ul>
+</li>
+<li><p>在内部实现</p>
+<ul>
+<li>DStream由时间上连续的RDD表示，每个RDD包含特定时间
+间隔内的数据流</li>
+<li>对DStream中各种操作也是<strong>映射到内部RDD上分别进行</strong>
+（部分如<code>transform</code>等则以RDD为基本单元）<ul>
+<li>转换操作仍然得到DStream</li>
+<li>最终结果也是以批量方式生成的batch</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>对DStream操作参见<em>tools/spark/spark_rdd</em></li>
+</ul>
+</blockquote>
+</li>
+<li><p>（大部分）输入流DStream和一个<em>Receiver</em>对象相关联</p>
+<ul>
+<li><code>Recevier</code>对象作为长期任务运行，会占用独立计算核，
+若分配核数量不够，系统将只能接收数据而不能处理</li>
+<li><em>reliable receiver</em>：可靠的receiver正确应答可靠源，
+数据收到、且被正确复制至Spark</li>
+<li><em>unreliable receiver</em>：不可靠recevier不支持应答</li>
+</ul>
+</li>
+</ul>
+<h3 id="Basic-Sources"><a href="#Basic-Sources" class="headerlink" title="Basic Sources"></a><em>Basic Sources</em></h3><p>基本源：在<code>StreamingContext</code>中直接可用</p>
+<ul>
+<li>套接字连接</li>
+<li>Akka中Actor</li>
+<li>RDD队列数据流</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 套接字连接TCP源获取数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">socketTextStream</span></span>(?host: <span class="type">String</span>, ?port: <span class="type">Int</span>): <span class="type">DStream</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义actor流</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">actorStream</span></span>(actorProps: ?, actorName: <span class="type">String</span>): <span class="type">DStream</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// RDD队列流</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">queueStream</span></span>(queueOfRDDs: <span class="type">Seq</span>[<span class="type">RDD</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件流获取数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">fileStream</span></span>[keyClass, valueClass, inputFormatClass]</span><br><span class="line">	(dataDirectory: <span class="type">String</span>): <span class="type">DStream</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">textFileStream</span></span>(dataDirectory)</span><br></pre></td></tr></table></figure>
+<p>文件系统：<code>StreamingContext</code>将监控目标目录，处理目录下任何
+文件（不包括嵌套目录）</p>
+<ul>
+<li>文件须具有相同数据格式</li>
+<li>文件需要直接位于目标目录下</li>
+<li>已处理文件追加数据不被处理</li>
+</ul>
+<blockquote>
+<ul>
+<li>文件流无需运行<code>receiver</code></li>
+</ul>
+</blockquote>
+<h3 id="Advanced-Sources"><a href="#Advanced-Sources" class="headerlink" title="Advanced Sources"></a><em>Advanced Sources</em></h3><p>高级源：需要额外的依赖</p>
+<ul>
+<li>Flume</li>
+<li>Kinesis</li>
+<li>Twitter</li>
+</ul>
+<h4 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建多个Kafka输入流</span></span><br><span class="line"><span class="keyword">val</span> kafkaStreams = (<span class="number">1</span> to numStreams).map(_ =&gt; kafkaUtils.createStream())</span><br><span class="line"><span class="keyword">val</span> unifiedStream = streamingContext.union(kafkaStreams)</span><br></pre></td></tr></table></figure>
+<h3 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h3><ul>
+<li><p>减少批数据处理时间</p>
+<ul>
+<li>创建多个<em>receiver</em>接收输入流，提高数据接受并行水平</li>
+<li>提高数据处理并行水平</li>
+<li>减少输入数据序列化、RDD数据序列化成本</li>
+<li>减少任务启动开支</li>
+</ul>
+</li>
+<li><p>设置正确的批容量，保证系统能正常、稳定处理数据</p>
+</li>
+<li><p>内存调优，调整内存使用、应用的垃圾回收行为</p>
+</li>
+</ul>
+<h2 id="Checkpoint"><a href="#Checkpoint" class="headerlink" title="Checkpoint"></a><em>Checkpoint</em></h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置checkpoint存储信息目录</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ssc</span>.<span class="title">checkpoint</span></span>(?checkpointDirectory: <span class="type">String</span>)</span><br><span class="line"><span class="comment">// 从checkpoint中恢复（若目录存在）、或创建新streaming上下文</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">StreamingContext</span>.<span class="title">getOrCreate</span></span>(?checkPointDirectory: <span class="type">String</span>, ?functionToCreateContext: () =&gt; <span class="type">StreamingContext</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>为保证流应用程序全天运行，需要checkpoint足够信息到容错
+存储系统，使得系统能从程序逻辑无关错误中恢复</p>
+<ul>
+<li><em>metadata checkpointing</em>：流计算的定义信息，用于恢复
+worker节点故障</li>
+<li><em>configuration</em>：streaming程序配置</li>
+<li><em>DStream operation</em>：streaming程序操作集合</li>
+<li><em>imcomplete batches</em>：操作队列中未完成批</li>
+<li><em>data checkpointing</em>：中间生成的RDD，在有状态的转换
+操作中必须，避免RDD依赖链无限增长</li>
+</ul>
+</li>
+<li><p>需要开启checkpoint场合</p>
+<ul>
+<li>使用有状态转换操作：<code>updateStateByKey</code>、
+<code>reduceByKeyAndWindow</code>等</li>
+<li>从程序的driver故障中恢复</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">functionToCreateContext</span></span>(): <span class="type">StreamingContext</span> = &#123;</span><br><span class="line">	<span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>()</span><br><span class="line">	<span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(conf)</span><br><span class="line">	<span class="comment">// other streaming setting</span></span><br><span class="line">	ssc.checkpoint(<span class="string">&quot;checkpointDirectory&quot;</span>)</span><br><span class="line">	ssc</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Algorithm/">Algorithm</a><span> / </span><a class="link-muted" href="/categories/Algorithm/Heuristic/">Heuristic</a></span><span class="level-item">a few seconds read (About 4 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Algorithm/Heuristic/tabu_search.html">Tabu Seach</a></h1><div class="content"><h2 id="禁忌搜索"><a href="#禁忌搜索" class="headerlink" title="禁忌搜索"></a>禁忌搜索</h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Algorithm/">Algorithm</a><span> / </span><a class="link-muted" href="/categories/Algorithm/Heuristic/">Heuristic</a></span><span class="level-item">15 minutes read (About 2308 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Algorithm/Heuristic/envolutional_algorithms.html">Envolutionary Algorithm</a></h1><div class="content"><h2 id="进化算法"><a href="#进化算法" class="headerlink" title="进化算法"></a>进化算法</h2><p>进化算法：</p>
+<ul>
+<li>后设启发式算法：适合多种最优化问题，但不保证找到全局最优</li>
+</ul>
+<h2 id="Genetic-Algorithm"><a href="#Genetic-Algorithm" class="headerlink" title="Genetic Algorithm"></a><em>Genetic Algorithm</em></h2><p>遗传算法：模拟自然界生物进化过程，采用人工进化的方式对目标
+空间进行搜索</p>
+<ul>
+<li>本质是高效、并行、全局搜索方法</li>
+<li>能在搜索过程中自动获取、积累有关搜索空间的知识，并自适应
+的控制搜索过程以求的最佳解</li>
+</ul>
+<h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><ul>
+<li>将问题域中可能解看作是染色体，将其编码为符号串的形式</li>
+<li>对染色体群体反复进行基于遗传学的操作：选择、交叉、变异</li>
+<li>根据预定目标适应度函数对每个个体进行评价，不断得到更优
+群体，从中全局并行搜索得到优化群体中最优个体</li>
+</ul>
+<h4 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h4><ul>
+<li><em>population</em>：群体，GA的遗传搜索空间</li>
+<li><em>individual</em>：个体，搜索空间中可能解</li>
+<li><em>chromosome</em>：染色体，个体特征代表<ul>
+<li>由若干段基因组成</li>
+<li>GA中基本操作对象</li>
+</ul>
+</li>
+<li><em>gene</em>：基因<ul>
+<li>染色体片段</li>
+</ul>
+</li>
+<li><em>fitness</em>：适应度，个体对环境的适应程度</li>
+</ul>
+<h4 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h4><ul>
+<li><p><em>selection</em>：选择，根据个体适应度在群体中按照一定概率
+选择个体作为父本</p>
+<ul>
+<li>适应度大个体被选择概率高</li>
+<li>体现了适者生存、优胜劣汰的进化规则</li>
+</ul>
+</li>
+<li><p><em>crossover</em>：交叉，将父本个体按照一定概率随机交换基因
+形成新个体</p>
+</li>
+<li><p><em>mutate</em>：变异，按照一定概率随机改变某个体基因值</p>
+</li>
+</ul>
+<h3 id="串编码方式"><a href="#串编码方式" class="headerlink" title="串编码方式"></a>串编码方式</h3><ul>
+<li>把问题的各种参数用二进串进行编码构成子串</li>
+<li>把子串拼接成染色体<blockquote>
+<ul>
+<li>串长度、编码方式对算法收敛影响极大</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="二进制编码方式"><a href="#二进制编码方式" class="headerlink" title="二进制编码方式"></a>二进制编码方式</h4><p>二进制法：使用二进制染色体表示所有特征</p>
+<ul>
+<li><p>优点</p>
+<ul>
+<li>编码、解码操作简单</li>
+<li>交叉、变异等遗传操作便于实现</li>
+<li>符合最小字符集编码原则</li>
+<li>利于模式定理对算法理论分析</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>连续函数离散化存在误差，染色体长度短时达不到精度
+要求，较长时解码难度大、搜索空间增大</li>
+<li>对连续函数优化问题，随机性使得其局部搜索能力较差，
+接近最优值时不稳定</li>
+</ul>
+</li>
+</ul>
+<h4 id="浮点编码"><a href="#浮点编码" class="headerlink" title="浮点编码"></a>浮点编码</h4><p>浮点法：个体的每个基因值用某一范围内的一个浮点数表示</p>
+<ul>
+<li><p>必须保证基因之在给定区间限制范围内</p>
+<ul>
+<li>交叉、变异等遗传算子结果也必须在限制范围内</li>
+</ul>
+</li>
+<li><p>优点</p>
+<ul>
+<li>适用于在遗传算法中表示范围较大的数</li>
+<li>精度较高</li>
+<li>便于较大空间的遗传搜索</li>
+<li>改善了遗传算法的计算复杂性，提高了运算效率</li>
+<li>便于遗传算法与经典优化方法的混合使用</li>
+<li>便于设计针对问题的专门知识的知识型遗传算子</li>
+<li>便于处理复杂的决策变量约束条件</li>
+</ul>
+</li>
+</ul>
+<h4 id="符号编码法"><a href="#符号编码法" class="headerlink" title="符号编码法"></a>符号编码法</h4><p>符号法：个体染色体编码串基因值取自无意义字符集</p>
+<ul>
+<li>优点<ul>
+<li>符合有意义积木块编码原则</li>
+<li>方便利用所求解问题的专门知识</li>
+<li>访问GA和相关近似算法的混合使用</li>
+</ul>
+</li>
+</ul>
+<h3 id="Fitness-Function"><a href="#Fitness-Function" class="headerlink" title="Fitness Function"></a><em>Fitness Function</em></h3><p>适应度/对象函数</p>
+<ul>
+<li><p>一般可以把问题模型函数作为对象函数</p>
+</li>
+<li><p>过程</p>
+<ul>
+<li>解码个体，得到个体表现型</li>
+<li>由个体表现型计算个体目标函数值</li>
+<li>根据最优化问题类型，由目标函数值按一定转换规则求出
+个体适应度</li>
+</ul>
+</li>
+</ul>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="选择函数"><a href="#选择函数" class="headerlink" title="选择函数"></a>选择函数</h4><ul>
+<li><p><em>Roulette Wheel Selection</em>：轮盘赌选择，个体进入下一代
+概率为其适应度与整个种群适应度之比</p>
+<ul>
+<li>放回式随机抽样</li>
+<li>选择误差较大</li>
+</ul>
+</li>
+<li><p><em>Stochastic Tournament</em>：随机竞争选择，每次按轮盘赌选择
+一对个体，选择适应度较高者，重复直到选满</p>
+</li>
+<li><p>最佳保留选择：按轮盘赌选择方法执行遗传算法选择操作，然后
+t将当前群体中适应度最高的个体结构完整地复制到下一代群体中</p>
+</li>
+<li><p><em>Excepted Value Selection</em>：无回放随机选择，根据每个个体
+在下一代群体中的生存期望来进行随机选择运算</p>
+<ul>
+<li>计算群体中每个个体在下一代群体中的生存期望数目N</li>
+<li>若体被选中参与交叉运算，则它在下一代中的生存期望数目
+减去0.5，否则在下一代中的生存期望数目减去1.0</li>
+<li>随着选择过程的进行，当个体的生存期望数目小于0时，则
+该个体就不再有机会被选中。</li>
+</ul>
+</li>
+<li><p>确定式选择：按照一种确定的方式来进行选择操作</p>
+<ul>
+<li>计算群体中各个体在下一代群体中的期望生存数目N</li>
+<li>用N的整数部分确定个体在下一代群体中的生存数目</li>
+<li>用N的小数部分对个体进行降序排列，顺序取前M个个体加入
+到下一代群体</li>
+<li>完全确定出下一代群体中Ｍ个个体</li>
+</ul>
+</li>
+<li><p>无回放余数随机选择</p>
+<ul>
+<li>可确保适应度比平均适应度大的一些个体能够被遗传到
+下一代群体中</li>
+<li>选择误差比较小</li>
+</ul>
+</li>
+<li><p>均匀排序：对群体中的所有个体按期适应度大小进行排序，基于
+这个排序来分配各个个体被选中的概率</p>
+</li>
+<li><p>最佳保存策略：当前群体中适应度最高的个体不参与交叉运算
+和变异运算，而是用它来代替掉本代群体中经过交叉、变异等
+操作后所产生的适应度最低的个体</p>
+</li>
+<li><p>随机联赛选择：每次选取几个个体中适应度最高个体遗传到
+下一代群体中。</p>
+</li>
+<li><p>排挤选择：新生成的子代将代替或排挤相似的旧父代个体，提高
+群体的多样性</p>
+</li>
+</ul>
+<h4 id="Cross-Over"><a href="#Cross-Over" class="headerlink" title="Cross Over"></a><em>Cross Over</em></h4><ul>
+<li><p><em>One-point Crossover</em>：单点交叉，在个体编码串中只随机
+设置一个交叉点，然后再该点相互交换两个配对个体的部分
+染色体</p>
+</li>
+<li><p><em>Two-point Crossover</em>：两点交叉，在个体编码串中随机设置
+两个交叉点，然后再进行部分基因交换</p>
+</li>
+<li><p><em>Multi-point Crossover</em>：多点交叉</p>
+</li>
+<li><p><em>Uniform Crossover</em>：均匀交叉/一致交叉，两个配对个体的
+每个基因座上的基因都以相同的交叉概率进行交换，从而形成
+两个新个体</p>
+</li>
+<li><p><em>Arithmetic Crossover</em>：算术交叉，由两个个体的线性组合
+而产生出两个新的个体</p>
+<ul>
+<li>操作对象一般是由浮点数编码表示的个体</li>
+</ul>
+</li>
+</ul>
+<h4 id="Mutation"><a href="#Mutation" class="headerlink" title="Mutation"></a><em>Mutation</em></h4><ul>
+<li><em>Simple Mutation</em>：基本位变异，对个体编码串中以变异概率
+、随机指定的某一位或某几位仅因座上的值做变异运算</li>
+</ul>
+<ul>
+<li><p><em>Uniform Mutation</em>：均匀变异，用符合某一范围内均匀分布
+的随机数，以较小的概率来替换个体编码串中各个基因座上原有
+基因值</p>
+<ul>
+<li>适用于在算法的初级运行阶段</li>
+</ul>
+</li>
+<li><p><em>Boundary Mutation</em>：边界变异，随机的取基因座上的两个
+对应边界基因值之一去替代原有基因值</p>
+<ul>
+<li>适用于最优点位于或接近于可行解的边界时的一类问题</li>
+</ul>
+</li>
+<li><p><em>非均匀变异</em>：对原有的基因值做一随机扰动，以扰动后的结果
+作为变异后的新基因值</p>
+<ul>
+<li>对每个基因值都以相同的概率进行变异运算之后，相当于
+整个解向量在解空间中作了一次轻微的变动</li>
+</ul>
+</li>
+<li><p>高斯近似变异：进行变异操作时用符号均值为P、方差$P^2$的
+正态分布的一个随机数来替换原有的基因值</p>
+</li>
+</ul>
+<h3 id="GA超参设置"><a href="#GA超参设置" class="headerlink" title="GA超参设置"></a>GA超参设置</h3><ul>
+<li><p>群体大小$n$：过小难以求出最优解，过大难收敛，一般取
+$n = 30 ~ 160$</p>
+</li>
+<li><p>交叉概率$P_c$：太小难以前向搜索，太大容易破坏高适应
+值结构，一般取$P_c = 0.25 ~ 0.75$</p>
+</li>
+<li><p>变异概率$P_m$：太小难以产生新结构，太大则变为单纯
+随机搜索，一般取$P_m = 0.01 ~ 0.2$</p>
+</li>
+</ul>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>随机初始化种群</li>
+<li>估初始种群：为种群每个个体计算适应值、排序</li>
+<li>若没有达到预定演化数，则继续，否则结束算法</li>
+<li>选择父体<ul>
+<li>杂交：得到新个体</li>
+<li>变异：对新个体变异</li>
+</ul>
+</li>
+<li>计算新个体适应值，把适应值排名插入种群，淘汰最后个体</li>
+<li>重复3</li>
+</ol>
+<h2 id="Differential-Evolution"><a href="#Differential-Evolution" class="headerlink" title="Differential Evolution"></a><em>Differential Evolution</em></h2><p>差分进化算法：</p>
+<h2 id="Particle-Swarm-Optimization"><a href="#Particle-Swarm-Optimization" class="headerlink" title="Particle Swarm Optimization"></a><em>Particle Swarm Optimization</em></h2><p>粒子群/微粒群算法：</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Algorithm/">Algorithm</a><span> / </span><a class="link-muted" href="/categories/Algorithm/Heuristic/">Heuristic</a></span><span class="level-item">4 minutes read (About 590 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Algorithm/Heuristic/simulated_anealing.html">Simulated Annealing Algorithm</a></h1><div class="content"><h2 id="Simulated-Annealing-Algorithm"><a href="#Simulated-Annealing-Algorithm" class="headerlink" title="Simulated Annealing Algorithm"></a>Simulated Annealing Algorithm</h2><p>模拟退火算法</p>
+<ul>
+<li><p>来源于固体退火原理</p>
+<ul>
+<li>将固体加热至充分高，固体内部粒子随之变为无序状，内能
+增加</li>
+<li>再让固体徐徐冷却，内部例子随之有序</li>
+<li>到达常温状态时，内能减为最小</li>
+</ul>
+</li>
+<li><p>用固体退火模拟<strong>组合</strong>优化问题</p>
+<ul>
+<li>目标函数值<code>f</code>视为内能<code>E</code>，控制参数<code>t</code>视为温度<code>T</code></li>
+<li>由初始解<code>i</code>、控制参数初值<code>t</code>开始，对当前解重复
+<em>产生新解-&gt;计算目标函数增量-&gt;接受或舍弃</em>的迭代，并
+逐步衰减t值</li>
+<li>算法终止时，当前解即为所得近似最优解</li>
+</ul>
+</li>
+<li><p>退火过程由Cooling Schedule控制，包括控制参数初值t、衰减
+因子$\Delta t$、迭代次数L、停止条件S</p>
+</li>
+</ul>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ul>
+<li>初始化：初始温度$t_0$（充分大）、初始解$i_0$、迭代次数L</li>
+<li>产生新解$i_1$，计算目标函数增量$\Delta f=f(i_1)-f(i)$</li>
+<li>若$\Delta f&lt;0$则接受$i_1$作为新解，否则以概率
+$\exp^{\Delta f/f(i_0)}$接受$i_1$作为新解</li>
+<li>若满足终止条件则算法结束<ul>
+<li>若干次新解都不被接受：当前解“能量”低</li>
+<li>迭代次数达到上限</li>
+</ul>
+</li>
+<li>否则减小温度为$t_1$继续迭代</li>
+</ul>
+<p>说明</p>
+<ul>
+<li><p>解生成器：应该可以通过简单变换即可产生新解，便于减少每次
+迭代计算新解耗时</p>
+<ul>
+<li>比如对新解全部、部分元素进行置换、互换等</li>
+<li>需要注意的是，这决定了新解的领域结构，对冷却的进度表
+选取有影响</li>
+</ul>
+</li>
+<li><p>新解是否被接受采用的是Metropolis准则</p>
+</li>
+</ul>
+<h3 id="模拟退火算法性质"><a href="#模拟退火算法性质" class="headerlink" title="模拟退火算法性质"></a>模拟退火算法性质</h3><ul>
+<li>与初值无关</li>
+<li>具有渐进收敛性</li>
+<li>具有并行性</li>
+<li>在理论上被证明是以概率1收敛于全局最优解的算法</li>
+<li>能够跳出局部最优解</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><ul>
+<li>VLSI：目前退火模拟算法的应用实例，几乎可以完成所有VLSI
+设计工作</li>
+<li>神经网络：模拟退火算法能够跳出局部最优解</li>
+<li>图像处理：用于进行图像恢复工作</li>
+<li>其他问题：还可以用于其他各种组合优化问题</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Algorithm/">Algorithm</a><span> / </span><a class="link-muted" href="/categories/Algorithm/Specification/">Specification</a></span><span class="level-item">9 minutes read (About 1299 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Algorithm/Specification/random_strategies.html">随机算法</a></h1><div class="content"><h2 id="数值随机化算法"><a href="#数值随机化算法" class="headerlink" title="数值随机化算法"></a>数值随机化算法</h2><p>数值化随机算法：常用于数值问题求解，往往得到的是近似解</p>
+<ul>
+<li>近似解的精度随计算时间、采样数量增加不断提高</li>
+<li>很多情况下计算问题的精确解不可能、无必要，数值化随机算法
+可以得到较好的解</li>
+</ul>
+<h3 id="随机投点法"><a href="#随机投点法" class="headerlink" title="随机投点法"></a>随机投点法</h3><p>随机投点法：在给定范围内生成均匀分布随机数模拟随机投点</p>
+<ul>
+<li><p>计算$\pi$值：在正方形、内切圆中随机撒点，计算圆内、
+正方形内点数量之比</p>
+</li>
+<li><p>计算黎曼积分：在包括积分区域单位矩形内随机投点，计算
+积分区域、矩形区域点数量之比</p>
+</li>
+</ul>
+<h3 id="平均值法"><a href="#平均值法" class="headerlink" title="平均值法"></a>平均值法</h3><p>平均值法：结合随机数分布、目标问题构造统计量，估计目标问题</p>
+<h4 id="计算黎曼积分"><a href="#计算黎曼积分" class="headerlink" title="计算黎曼积分"></a>计算黎曼积分</h4><ul>
+<li><p>假设独立同分布随机变量${\eta_i}$在$[a, b]$中服从分布
+$f(x)$、待积函数为$g(x)$</p>
+</li>
+<li><p>记$g^{*}(x) = \frac {g(x)} {f(x)}$，则有</p>
+<script type="math/tex; mode=display">\begin{align*}
+E(g^{*}(\eta)) & = \int_a^b g^{*}f(x) dx \\
+& = \int_a^b g(x) dx = I
+\end{align*}</script></li>
+<li><p>由强大数定理</p>
+<script type="math/tex; mode=display">
+P_r(\lim_{x \rightarrow \infty} \frac 1 n \sum_{i=1}^n
+   g^{*}(\eta_i) = I) = 1</script><p>选择$\bar I = \frac 1 n \sum_{i=1}^n g^{*}(\eta_i)$，
+则$\bar I$依概率收敛为$I$</p>
+</li>
+<li><p>选择抽样方法简单的概率密度函数$f(x)$满足</p>
+<script type="math/tex; mode=display">\left \{ \begin{array}{l}
+f(x) \neq 0, & g(x) \neq 0, a \leq x \leq b \\
+\int_a^b f(x) dx = 1
+\end{array} \right.</script><p>可以取$f(x)$为均匀分布</p>
+<script type="math/tex; mode=display">
+f(x) = \left \{ \begin{array}{l}
+   \frac 1 {b-a}, & a \leq x \leq b \\
+   0, & x < a, x > b
+\end{array} \right.</script></li>
+<li><p>则积分</p>
+<script type="math/tex; mode=display">
+I = \int_a^b g(x)dx = (b-a) \int_a^b g(x)
+   \frac 1 {b-a}dx</script><p>取均值</p>
+<script type="math/tex; mode=display">
+\bar I = \frac {b-a} n \sum_{i=1}^n g(x_i)</script><p>可作为求分I的近似值</p>
+</li>
+</ul>
+<h3 id="解非线性方程组"><a href="#解非线性方程组" class="headerlink" title="解非线性方程组"></a>解非线性方程组</h3><script type="math/tex; mode=display">\left \{ \begin{array}{l}
+f_1(x) & = f_1(x_1, x_2, \cdots, x_n) & = 0 \\
+f_2(x) & = f_2(x_1, x_2, \cdots, x_n) & = 0 \\
+\vdots \\
+f_n(x) & = f_n(x_1, x_2, \cdots, x_n) & = 0
+\end{array} \right.</script><ul>
+<li>线性化方法、求函数极小值方法有时会遇到麻烦，甚至使方法
+失效而不能获得近似解</li>
+<li>随机化方法相较而言要耗费较多时间，但设计简单、易于实现</li>
+<li>对于精度要求较高的问题，随机化方法可以提供一个较好的初值</li>
+</ul>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li><p>构造目标函数</p>
+<script type="math/tex; mode=display">
+\Phi(x) = \sum f_i^2(x)</script><p>则目标函数的极小值点即为所求非线性方程组的一组解</p>
+</li>
+<li><p>随机选择点$x_0$作为出发点，不断<strong>随机生成搜索方向</strong>，
+迭代为使得目标函数值下降的搜索点</p>
+<ul>
+<li>一般以目标函数变化幅度、迭代轮数作为终止条件</li>
+<li>搜索方向为随机生成，迭代步长比例每轮缩小指定幅度</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>真正的<strong>随机次梯度下降</strong></li>
+</ul>
+</blockquote>
+<h2 id="Monte-Carol-Method"><a href="#Monte-Carol-Method" class="headerlink" title="Monte Carol Method"></a><em>Monte Carol Method</em></h2><p>蒙特卡洛算法：一定能给出问题解，但未必正确</p>
+<ul>
+<li>要求在有限时间、采样内必须给出解，解未必正确</li>
+<li>求得正确解的概率依赖于算法所用时间，算法所用时间越多，
+得到正确解概率越高</li>
+<li>无法有效判断得到的解是否肯定正确</li>
+</ul>
+<h2 id="Las-Vegas-Method"><a href="#Las-Vegas-Method" class="headerlink" title="Las Vegas Method"></a><em>Las Vegas Method</em></h2><p>拉斯维加斯算法：找到的解一定是正确解，但是可能找不到解</p>
+<ul>
+<li>找到正确解的概率随着计算所用时间增加而提高</li>
+<li>用同一拉斯维加斯算法反复对实例求解多次，可使得求解失效
+概率任意小</li>
+</ul>
+<h2 id="Sherwood-Method"><a href="#Sherwood-Method" class="headerlink" title="Sherwood Method"></a><em>Sherwood Method</em></h2><p>舍伍德算法：能求得问题的一个解，所求得得解总是正确的</p>
+<ul>
+<li><p>确定性算法在最好情况、平均情况下计算复杂度有较大差别，
+在确定性算法中引入随机性将其改造成舍伍德算法，消除、减少
+问题的好坏实例间差别</p>
+</li>
+<li><p>精髓不是改进算法在最坏情形下的行为，而是设法消除最坏情形
+与特定问题实例的关联性</p>
+</li>
+</ul>
+<h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><ul>
+<li><p>问题输入规模为n时，算法A所需的平均时间为</p>
+<script type="math/tex; mode=display">
+\bar t_A(n) = \sum_{x \in X_n} t_A(x) / |X_n|</script><blockquote>
+<ul>
+<li>$X_n$：算法A输入规模为n的实例全体</li>
+<li>$t_A(x)$：输入实例为x时所需的计算时间</li>
+</ul>
+</blockquote>
+<p>显然存在$x \in X_n, t_A(x) &gt;&gt; \bar t_A(x)$</p>
+</li>
+<li><p>希望获得随机化算法B，使得对问题的输入规模为n的每个实例
+$x \in X_n$均有$t_B(x) = \bar t_A(x) + s(n)$</p>
+<ul>
+<li><p>对具体实例，存在$x \in X_n$，算法B需要时间超过
+$\bar t_A(x) + s(n)$，但这是由于算法所做的概率引起，
+与具体实例无关</p>
+</li>
+<li><p>算法B关于规模为n的随机实例平均时间为</p>
+<p><script type="math/tex">\begin{align*}
+\bar t_B(n) & = \sum_{x \in X_n} t_B(x) / (X_n) \\
+& = \bar t_A(n) + s(n)
+\end{align*}</script>K</p>
+<p>当$s(n)$与$\bar t_A(n)$相比可以忽略时，舍伍德算法
+可以获得较好平均性能</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-04T03:05:02.000Z" title="8/4/2021, 11:05:02 AM">2021-08-04</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Algebra/">Math Algebra</a><span> / </span><a class="link-muted" href="/categories/Math-Algebra/Universal-Algebra/">Universal Algebra</a></span><span class="level-item">6 minutes read (About 928 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Algebra/Universal-Algebra/hilbert.html">Hilbert空间</a></h1><div class="content"><h2 id="Reproducing-Kernel-Hilbert-Space"><a href="#Reproducing-Kernel-Hilbert-Space" class="headerlink" title="Reproducing Kernel Hilbert Space"></a><em>Reproducing Kernel Hilbert Space</em></h2><blockquote>
+<ul>
+<li><em>Hilbert space</em>：假设 $K(x,z)$ 是定义在 $\mathcal{X <em> X}$ 上的<strong>对称函数</strong>，并且对任意 $x_1, x_2, \cdots, x_m \in \mathcal{X}$，$K(x,z)$ 关于其的 </em>Gram* 矩阵半正定，则可以根据函数 $K(x,z)$ 构成一个希尔伯特空间</li>
+</ul>
+</blockquote>
+<h3 id="构造步骤"><a href="#构造步骤" class="headerlink" title="构造步骤"></a>构造步骤</h3><h4 id="定义映射构成向量空间"><a href="#定义映射构成向量空间" class="headerlink" title="定义映射构成向量空间"></a>定义映射构成向量空间</h4><ul>
+<li><p>定义映射</p>
+<script type="math/tex; mode=display">\phi: x \rightarrow K(·, x)</script></li>
+<li><p>根据此映射，对任意 $x_i \in \mathcal{X}, \alpha_i \in R, i = 1,2,\cdots,m$ 定义线性组合</p>
+<script type="math/tex; mode=display">
+f(·) = \sum_{i=1}^m \alpha_i K(·, x_i)</script></li>
+<li><p>由以上线性组合为元素的集合 $S$ 对加法、数乘运算是封闭的，所以 $S$ 构成一个向量空间</p>
+</li>
+</ul>
+<h4 id="定义内积构成内积空间"><a href="#定义内积构成内积空间" class="headerlink" title="定义内积构成内积空间"></a>定义内积构成内积空间</h4><ul>
+<li><p>在 $S$ 上定义运算 $ * $：对任意 $f,g \in S$</p>
+<script type="math/tex; mode=display">\begin{align*}
+f(·) = \sum_{i=1}^m \alpha_i K(·, x_i) \\
+g(·) = \sum_{j=1}^n \beta_j K(·, z_j)
+\end{align*}</script><p>定义运算 $ * $</p>
+<script type="math/tex; mode=display">
+f * g = \sum_{i=1}^m \sum_{j=1}^n \alpha_i \beta_j
+   K(x_i, z_j)</script></li>
+<li><p>为证明运算 $ * $ 是空间 $S$ 的内积</p>
+<ul>
+<li>需要证明：<ul>
+<li>$(cf) <em> g = c(f </em> g), c \in R$</li>
+<li>$(f + g) <em> h = f </em> h + g * h, h \in S$</li>
+<li>$f <em> g = g </em> f$</li>
+<li>$f <em> f \geq 0, f </em> f = 0 \Leftrightarrow f = 0$</li>
+</ul>
+</li>
+<li>其中前3条由 $S$ 元素定义、$K(x,z)$ 对称性容易得到</li>
+<li>由 $ * $ 运算规则可得<script type="math/tex; mode=display">
+f * f = \sum_{i,j=1}^m \alpha_i \alpha_j K(x_i, x_j)</script>由 <em>Gram</em> 矩阵非负可知上式右端非负，即 $f * f \geq 0$</li>
+</ul>
+</li>
+<li><p>为证明 $f * f \Leftrightarrow f = 0$</p>
+<ul>
+<li><p>首先证明</p>
+<script type="math/tex; mode=display">
+|f * g|^2 \leq (f * f)(g * g)</script><ul>
+<li><p>设$f, g \in S$，则有$f + \lambda g \in S$，则有</p>
+<script type="math/tex; mode=display">\begin{align*}
+(f + \lambda g) * (f + \lambda g) & \geq 0 \\
+f*f + 2\lambda (f * g) + \lambda^2 (g*g) & \geq 0
+\end{align*}</script></li>
+<li><p>则上述关于$\lambda$的判别式非负，即</p>
+<script type="math/tex; mode=display">
+(f*g)^2 - (f*f)(g*g) \leq 0</script></li>
+</ul>
+</li>
+<li><p>$\forall x \in \mathcal{x}$，有</p>
+<script type="math/tex; mode=display">
+K(·, x) * f = \sum_{i=1}^m \alpha_i K(x, x_i) = f(x)</script><p>则有</p>
+<script type="math/tex; mode=display">
+|f(x)|^2 = |K(·, x) * f|^2</script></li>
+<li><p>又</p>
+<script type="math/tex; mode=display">
+|K(·, x) * f|^2 \leq (K(·, x) * K(·, x))(f * f) = K(x, x)(f*f)</script><p>则有</p>
+<script type="math/tex; mode=display">
+|f(x)|^2 \leq K(x, x) (f * f)</script><p>即$f * f = 0$时，对任意$x$都有$|f(x)| = 0$</p>
+</li>
+</ul>
+</li>
+<li><p>因为 $ * $ 为向量空间 $S$ 的内积，可以继续用 $ · $ 表示</p>
+<script type="math/tex; mode=display">
+f·g = \sum_{i=1}^m \sum_{j=1}^n \alpha_i \alpha_j K(x_i,z_J)</script></li>
+</ul>
+<h4 id="完备化构成Hilbert空间"><a href="#完备化构成Hilbert空间" class="headerlink" title="完备化构成Hilbert空间"></a>完备化构成Hilbert空间</h4><ul>
+<li><p>根据内积定义可以得到范数</p>
+<script type="math/tex; mode=display">
+\|f\| = \sqrt {f · f}</script><p>所以 $S$ 是一个赋范向量空间，根据泛函分析理论，对于不完备的赋范空间 $S$ ，一定可以使之完备化得到希尔伯特空间 $\mathcal{H}$</p>
+</li>
+<li><p>此希尔伯特空间 $\mathcal{H}$ ，称为 <em>reproducing kernel Hilber Space</em> ，因为核 $K$ 具有再生性</p>
+<script type="math/tex; mode=display">\begin{align*}
+K(·, x) · f & = f(x) \\
+K(·, x) · K(·, Z) & = K(x, z)
+\end{align*}</script></li>
+</ul>
+<h3 id="Positive-Definite-Kernel-Function"><a href="#Positive-Definite-Kernel-Function" class="headerlink" title="Positive Definite Kernel Function"></a><em>Positive Definite Kernel Function</em></h3><blockquote>
+<ul>
+<li><p>设 $K: \mathcal{X <em> X} \leftarrow R$ 是对称函数，则 $K(x,z)$ 为正定核函数的充要条件是 $\forall x_i \in \mathcal{X}, i=1,2,…,m$，$K(x,z)$ 对应的 </em>Gram<em> 矩阵 $K = [K(x<em>i, x_j)]</em>{m</em>m} $ 是半正定矩阵</p>
+</li>
+<li><p>必要性</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>由于 $K(x,z)$ 是 $\mathcal{X <em> X}$ 上的正定核，所以存在从 $\mathcal{X}$ 到 </em>Hilbert* 空间 $\mathcal{H}$ 的映射，使得</p>
+<script type="math/tex; mode=display">
+K(x,z) = \phi(x) \phi(z)</script></li>
+<li><p>则对任意 $x_1, x_2, \cdots, x_m$，构造 $K(x,z)$ 关于其的 <em>Gram</em> 矩阵</p>
+<script type="math/tex; mode=display">
+[K_{ij}]_{m*m} = [K(x_i, x_i)]_{m*m}</script></li>
+<li><p>对任意 $c_1, c_2, \cdots, c_m \in R$，有</p>
+<script type="math/tex; mode=display">\begin{align*}
+\sum_{i,j=1}^m c_i c_j K(x_i, x_j) & = \sum_{i,j=1}^m
+   c_i c_j (\phi(x_i) \phi(x_j)) \\
+& = (\sum_i c_i \phi(x_i))(\sum_j c_j \phi(x_j)) \\
+& = \| \sum_i c_i \phi(x_i) \|^2 \geq 0
+\end{align*}</script><p>所以 $K(x,z)$ 关于 $x_1, x_2, \cdots, x_m$ 的 <em>Gram</em> 矩阵半正定</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>充分性</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对给定的 $K(x,z)$，可以构造从 $\mathcal{x}$ 到某个希尔伯特空间的映射</p>
+<script type="math/tex; mode=display">
+\phi: x \leftarrow K(·, x)</script></li>
+<li><p>且有</p>
+<script type="math/tex; mode=display">
+K(x,z) = \phi(x) · \phi(z)</script><p>所以 $K(x,z)$ 是 $\mathcal{X * X}$ 上的核函数</p>
+</li>
+</ul>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/12/">Previous</a></div><div class="pagination-next"><a href="/page/14/">Next</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><a class="pagination-link is-current" href="/page/13/">13</a></li><li><a class="pagination-link" href="/page/14/">14</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/40/">40</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

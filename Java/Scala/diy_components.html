@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Scala 自定义实体 - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Scala自定义实体"><meta property="og:type" content="blog"><meta property="og:title" content="Scala 自定义实体"><meta property="og:url" content="https://xyy15926.github.io/Java/Scala/diy_components.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="Scala自定义实体"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:published_time" content="2019-08-02T15:17:39.000Z"><meta property="article:modified_time" content="2021-08-02T09:36:11.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Java"><meta property="article:tag" content="Scala"><meta property="article:tag" content="Object"><meta property="article:tag" content="Trait"><meta property="article:tag" content="Generic"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Java/Scala/diy_components.html"},"headline":"Scala 自定义实体","image":["https://xyy15926.github.io/img/og_image.png"],"datePublished":"2019-08-02T15:17:39.000Z","dateModified":"2021-08-02T09:36:11.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"Scala自定义实体"}</script><link rel="canonical" href="https://xyy15926.github.io/Java/Scala/diy_components.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-08-02T15:17:39.000Z" title="8/2/2019, 11:17:39 PM">2019-08-02</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T09:36:11.000Z" title="8/2/2021, 5:36:11 PM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a><span> / </span><a class="link-muted" href="/categories/Java/Scala/">Scala</a></span><span class="level-item">39 minutes read (About 5790 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">Scala 自定义实体</h1><div class="content"><h2 id="Class"><a href="#Class" class="headerlink" title="Class"></a><em>Class</em></h2><blockquote>
+<ul>
+<li>Scala是纯面向对象语言，所有变量都是对象，所有操作都是
+  方法调用</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><code>class</code>定义类，包括类名、主构造参数，其中成员可能包括</p>
+<ul>
+<li>普通类可用<code>new</code>创建类实例</li>
+</ul>
+</li>
+</ul>
+<h3 id="成员说明"><a href="#成员说明" class="headerlink" title="成员说明"></a>成员说明</h3><ul>
+<li>常/变量：<strong>声明时必须初始化</strong>，否则需定义为抽象类，
+相应成员也被称为抽象成员常/变量<ul>
+<li>可以使用占位符<code>_</code>初始化<ul>
+<li><code>AnyVal</code>子类：<code>0</code></li>
+<li><code>AnyRef</code>子类：<code>null</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>抽象类型：<code>type</code>声明</li>
+<li>方法、函数</li>
+<li>内部类、单例对象：内部类、单例对象绑定至<strong>外部对象</strong><ul>
+<li>内部类是路径依赖类型</li>
+<li><strong>不同类实例中的单例对象不同</strong></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Java：仍然会为匿名类生成相应字节码文件</li>
+<li>Java：<em>public</em>类成员常/变量在编译后自动生成getter、
+  setter（仅变量）方法<blockquote>
+<ul>
+<li>即使是公有成员也会被编译为<code>private</code></li>
+<li>对其访问实际上是通过setter、getter方法（可显式调用）</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h4 id="内部类型投影"><a href="#内部类型投影" class="headerlink" title="内部类型投影"></a>内部类型投影</h4><p>类型投影：<code>Outter#Inner</code>类型<code>Inner</code>以<code>Outter</code>类型作为前缀，
+<code>Outter</code>不同实例中<code>Inner</code>均为此类型子类</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outter</span></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">class</span> <span class="title">Inner</span></span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">test</span></span>(i: <span class="type">Outter</span>#<span class="type">Inner</span>) = i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> o1 = <span class="keyword">new</span> <span class="type">Outter</span></span><br><span class="line"><span class="keyword">val</span> o2 = <span class="keyword">new</span> <span class="type">Outter</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 二者为不同类型</span></span><br><span class="line"><span class="keyword">val</span> i1 = <span class="keyword">new</span> o1.<span class="type">Inner</span></span><br><span class="line"><span class="keyword">val</span> i2 = <span class="keyword">new</span> o2.<span class="type">Inner</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类型投影父类作为参数类型</span></span><br><span class="line">o1.test(i2)</span><br><span class="line">o2.test(i1)</span><br></pre></td></tr></table></figure>
+<h4 id="单例类型"><a href="#单例类型" class="headerlink" title="单例类型"></a>单例类型</h4><p>单例类型：所有对象都对应的类型，任意对象对应单例类型不同</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scla.reflect.runtime.universe.typeOf</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span></span></span><br><span class="line"><span class="keyword">val</span> d1 = <span class="keyword">new</span> <span class="type">Dog</span></span><br><span class="line"><span class="keyword">val</span> d2 = <span class="keyword">new</span> <span class="type">Dog</span></span><br><span class="line">typeOf[d1.<span class="keyword">type</span>] == typeOf[d2.<span class="keyword">type</span>]		<span class="comment">// `false`</span></span><br><span class="line"><span class="keyword">val</span> d3: d1.<span class="keyword">type</span> = d1					<span class="comment">// 两者单例类型也不同</span></span><br></pre></td></tr></table></figure>
+<h5 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h5><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pet</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> name: <span class="type">String</span> = _</span><br><span class="line">	<span class="keyword">var</span> age: <span class="type">Float</span> = _</span><br><span class="line">	<span class="comment">// 返回类型单例类型，保证类型不改变</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">setName</span></span>(name: <span class="type">String</span>): <span class="keyword">this</span>.<span class="keyword">type</span> = &#123;</span><br><span class="line">		<span class="keyword">this</span>.name = name</span><br><span class="line">		<span class="keyword">this</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">setAge</span></span>(age: <span class="type">Float</span>): <span class="keyword">this</span>.age = &#123;</span><br><span class="line">		<span class="keyword">this</span>.age = age</span><br><span class="line">		<span class="keyword">this</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span> <span class="keyword">extends</span> <span class="title">Pet</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> weight: <span class="type">Float</span> = _</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">setWeight</span></span>(weight: <span class="type">Float</span>): <span class="keyword">this</span>.<span class="keyword">type</span> = &#123;</span><br><span class="line">		<span class="keyword">this</span>.weight = weight</span><br><span class="line">		<span class="keyword">this</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 若没有设置返回类型为单例类型`this.type`，`setAge`之后</span></span><br><span class="line"><span class="comment">// 将返回`Pet`类型，没有`setWeight`方法，报错</span></span><br><span class="line"><span class="keyword">val</span> d = <span class="keyword">new</span> <span class="type">Dog</span>().setAge(<span class="number">2</span>).setWeight(<span class="number">2.3</span>).setName(<span class="string">&quot;Tom&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="Constructor"><a href="#Constructor" class="headerlink" title="Constructor"></a><em>Constructor</em></h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 带默认参数的、私有主构造方法</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="title">private</span>(<span class="params">var name: <span class="type">String</span>, var age: <span class="type">Int</span>=10</span>)</span>&#123;</span><br><span class="line">	<span class="comment">// 辅助构造方法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">this</span></span>(age: <span class="type">Int</span>) = &#123;</span><br><span class="line">		<span class="comment">// 必须调用已定义构造方法</span></span><br><span class="line">		<span class="keyword">this</span>(<span class="string">&quot;&quot;</span>, age)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>主构造方法：类签名中参数列表、类体</p>
+<ul>
+<li><p>其参数（类签名中）被自动注册为类成员变、常量</p>
+<ul>
+<li>其可变性同样由<code>var</code>、<code>val</code>声明</li>
+<li>其访问控制类似类似类体中成员访问控制</li>
+<li>但缺省继承父类可见性，否则为<code>private[this] val</code></li>
+</ul>
+<blockquote>
+<ul>
+<li>参数中私有成员变、常量没有被使用，则不会被生成</li>
+<li><code>case class</code>主构造方法中缺省为<code>public val</code></li>
+</ul>
+</blockquote>
+</li>
+<li><p>其函数体为整个类体，创建对象时被执行</p>
+</li>
+<li><p>可类似普通方法</p>
+<ul>
+<li>提供默认值来拥有可选参数</li>
+<li>将主构造方法声明为私有</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>辅助构造方法：<code>this</code>方法</p>
+<ul>
+<li>辅助构造方法必须以先前已定义的其他辅助构造方法、或
+主构造方法的调用开始</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>主构造方法体现于<strong>其中参数被自动注册为类成员</strong></li>
+</ul>
+</blockquote>
+<h3 id="类继承"><a href="#类继承" class="headerlink" title="类继承"></a>类继承</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `extends`指定类继承</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>(<span class="params">name: <span class="type">String</span>, age: <span class="type">Int</span>, var studentNo: <span class="type">Int</span></span>)</span></span><br><span class="line">	<span class="keyword">extends</span> <span class="type">Person</span>(name: <span class="type">String</span>, age: <span class="type">Int</span>)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>必须给出父类的构造方法（可以是辅助构造方法）</p>
+<ul>
+<li>类似强制性C++中初始化列表</li>
+</ul>
+</li>
+<li><p>构造函数按以下规则、顺序执行</p>
+<ul>
+<li>父类、特质构造函数</li>
+<li>混入特质：多个特质按从左至右</li>
+<li>当前类构造函数</li>
+</ul>
+</li>
+<li><p>可用<code>override</code>重写从父类继承的成员方法、常/变量</p>
+<ul>
+<li>重写父类抽象成员（未初始化）可省略<code>override</code></li>
+</ul>
+<blockquote>
+<ul>
+<li>java中方法都可以视为C++中虚函数，具有多态特性</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="提前定义、懒加载"><a href="#提前定义、懒加载" class="headerlink" title="提前定义、懒加载"></a>提前定义、懒加载</h4><ul>
+<li>由于构造方法的执行顺序问题，定义于<code>trait</code>中的抽象成员
+常/变量可能会在初始化化之前被使用</li>
+<li>可以考虑使用提前定义、懒加载避免</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.<span class="type">PrintWriter</span></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">FileLogger</span></span>&#123;</span><br><span class="line">	<span class="comment">// 抽象变量</span></span><br><span class="line">	<span class="keyword">val</span> fileName: <span class="type">String</span></span><br><span class="line">	<span class="comment">// 抽象变量被使用</span></span><br><span class="line">	<span class="keyword">val</span> fileOutput = <span class="keyword">new</span> <span class="type">PrintWriter</span>(fileName: <span class="type">String</span>)</span><br><span class="line">	<span class="comment">// `lazy`懒加载，延迟变量创建</span></span><br><span class="line">	<span class="keyword">lazy</span> <span class="keyword">val</span> fileOutput = <span class="keyword">new</span> <span class="type">PrintWriter</span>(fileName: <span class="type">String</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">extends</span> <span class="title">Person</span> <span class="keyword">with</span> <span class="title">FileLogger</span></span>&#123;</span><br><span class="line">	<span class="keyword">val</span> fileName = <span class="string">&quot;file.log&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">val</span> s = <span class="keyword">new</span> &#123;</span><br><span class="line">	<span class="comment">// 提前定义</span></span><br><span class="line">	<span class="keyword">override</span> <span class="keyword">val</span> fileName = <span class="string">&quot;file.log&quot;</span></span><br><span class="line">&#125; <span class="keyword">with</span> <span class="type">Student</span></span><br></pre></td></tr></table></figure>
+<h3 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h3><blockquote>
+<ul>
+<li>缺省：Scala没有<code>public</code>关键字，缺省即为<em>public</em></li>
+<li><code>protected[&lt;X&gt;]</code>：在<code>X</code>范围内的类、子类中可见</li>
+<li><code>private[&lt;X&gt;]</code>：在<code>X</code>范围内类可见</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><code>X</code>可为包、类、单例对象等作用域</p>
+<ul>
+<li>缺省为包含当前实体的上层包、类、单例对象，即类似Java
+中对应关键字</li>
+</ul>
+</li>
+<li><p>特别的<code>private[this]</code>表示<strong>对象私有</strong></p>
+<ul>
+<li>只有对象本身能够访问该成员</li>
+<li><p>类、伴生对象中也不能访问</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span>[<span class="keyword">this</span>] age = <span class="number">12</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">visit</span></span>() = &#123;</span><br><span class="line">		<span class="keyword">val</span> p = <span class="keyword">new</span> <span class="type">Person</span></span><br><span class="line">		<span class="comment">// 报错，`age`不是`Person`成员</span></span><br><span class="line">		println(p.age)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="特殊类"><a href="#特殊类" class="headerlink" title="特殊类"></a>特殊类</h3><h4 id="abstract-class"><a href="#abstract-class" class="headerlink" title="abstract class"></a><code>abstract class</code></h4><p>抽象类：不能被实例化的类</p>
+<ul>
+<li>抽象类中可存在抽象成员常/变量、方法，需在子类中被具体化</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义抽象类</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">var name: <span class="type">String</span>, var age: <span class="type">Int</span></span>)</span>&#123;</span><br><span class="line">	<span class="comment">// 抽象成员常量</span></span><br><span class="line">	<span class="keyword">val</span> gender: <span class="type">String</span></span><br><span class="line">	<span class="comment">// 抽象方法</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">print</span></span>: <span class="type">Unit</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抽象类、泛型、抽象类型常用于匿名类</span></span><br><span class="line"><span class="keyword">val</span> p = <span class="keyword">new</span> <span class="type">Person</span>(<span class="string">&quot;Tom&quot;</span>, <span class="number">8</span>)&#123;</span><br><span class="line">	<span class="keyword">override</span> gender = <span class="string">&quot;male&quot;</span></span><br><span class="line">	<span class="comment">// 覆盖抽象成员可以省略`override`</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">print</span></span>: <span class="type">Unit</span> = println(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="case-class"><a href="#case-class" class="headerlink" title="case class"></a><code>case class</code></h4><p>样例类</p>
+<ul>
+<li><p>和普通类相比具有以下默认实现</p>
+<ul>
+<li><code>apply</code>：工厂方法负责对象创建，无需<code>new</code>实例化样例类</li>
+<li><code>unapply</code>：解构方法负责对象解构，方便模式匹配</li>
+<li><code>equals</code>：案例类按<strong>值比较</strong>（而不是按引用比较）</li>
+<li><code>toString</code></li>
+<li><code>hashCode</code></li>
+<li><code>copy</code>：创建案例类实例的浅拷贝，可以指定部分构造参数
+修改部分值</li>
+</ul>
+</li>
+<li><p>类主构造函数参数缺省为<code>val</code>，即参数缺省不可变公开</p>
+</li>
+<li><p>用途</p>
+<ul>
+<li>方便模式匹配</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>样例类一般实例化为不可变对象，不推荐实例化为可变</li>
+</ul>
+</blockquote>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Message</span>(<span class="params">sender: <span class="type">String</span>, recipient: <span class="type">String</span>, body: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="keyword">val</span> message4 = <span class="type">Message</span>(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;message&quot;</span>)</span><br><span class="line"><span class="comment">// 指定部分构造参数的拷贝</span></span><br><span class="line"><span class="keyword">val</span> message5 = message.copy(sender=message4.recipient, recipient=<span class="string">&quot;C&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="Value-Class"><a href="#Value-Class" class="headerlink" title="Value Class"></a>Value Class</h4><p><em>Value Class</em>：通过继承<code>AnyVal</code>以避免运行时对象分配机制</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Wrapper</span>(<span class="params">val underlying: <span class="type">Int</span></span>) <span class="keyword">extends</span> <span class="title">AnyVal</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>特点</p>
+<ul>
+<li>参数：仅有被用作运行时底层表示的公有<code>val</code>参数</li>
+<li>成员：可包含<code>def</code>自定义方法，但不能定义额外<code>val</code>、
+<code>var</code>、内嵌<code>trait</code>、<code>class</code>、<code>object</code></li>
+<li>继承：只能继承<em>universal trait</em>，自身不能再被继承</li>
+</ul>
+<blockquote>
+<ul>
+<li>编译期类型为自定义类型，运行时类型为<code>val</code>参数类型</li>
+<li>调用universal trait中方法会带来对象分配开销</li>
+</ul>
+</blockquote>
+</li>
+<li><p>用途</p>
+<ul>
+<li><p>和隐式类联合获得免分配扩展方法</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 标准库中`RichInt`定义</span></span><br><span class="line"><span class="keyword">implicit</span> <span class="class"><span class="keyword">class</span> <span class="title">RichInt</span>(<span class="params">val self <span class="type">Int</span></span>) <span class="keyword">extends</span> <span class="title">AnyVal</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">toHexString</span></span>: <span class="type">String</span> = java.lang.<span class="type">Integer</span>.toHexString(self)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不增加运行时开销同时保证数据类型安全</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meter</span>(<span class="params">val value: <span class="type">Double</span></span>) <span class="keyword">extends</span> <span class="title">AnyVal</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">+</span></span>(m: <span class="type">Meter</span>): <span class="type">Meter</span> = <span class="keyword">new</span> <span class="type">Meter</span>(value + m.value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>JVM不支持value class，Scala有时需实例化value class<blockquote>
+<ul>
+<li>value class作为其他类型使用</li>
+<li>value class被赋值给数组</li>
+<li>执行运行时类型测试，如：模式匹配</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h2 id="Object"><a href="#Object" class="headerlink" title="Object"></a><em>Object</em></h2><p>单例对象：有且只有一个实例的特殊类，其中方法可以直接访问，
+无需实例化</p>
+<ul>
+<li><p>单例对象由自身定义，可以视为其自身类的单例</p>
+<ul>
+<li>对象定义在顶层（没有包含在其他类中时），单例对象只有
+一个实例<ul>
+<li>全局唯一</li>
+<li>具有稳定路径，可以被<code>import</code>语句导入</li>
+</ul>
+</li>
+<li>对象定义在类、方法中时，单例对象表现类似惰性变量<ul>
+<li>不同实例中单例对象不同，依赖于包装其的实例</li>
+<li>单例对象和普通类成员同样是路径相关的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>单例对象是延迟创建的，在第一次使用时被创建</p>
+<ul>
+<li><code>object</code>定义</li>
+<li>可以通过引用其名称访问对象</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>单例对象被编译为单例模式、静态类成员实现</li>
+</ul>
+</blockquote>
+<h3 id="Companion-Object-Class"><a href="#Companion-Object-Class" class="headerlink" title="Companion Object/Class"></a><em>Companion Object/Class</em></h3><blockquote>
+<ul>
+<li>伴生对象：和某个类共享名称的单例对象</li>
+<li>伴生类：和某个单例对象共享名称的类</li>
+</ul>
+</blockquote>
+<ul>
+<li>伴生类和伴生对象之间可以互相访问私有成员<ul>
+<li>伴生类、伴生对象必须定义在同一个源文件中</li>
+</ul>
+</li>
+<li>用途：在伴生对象中定义在伴生类中不依赖于实例化对象而存在
+的成员变量、方法<ul>
+<li>工厂方法</li>
+<li>公共变量</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Java中<code>static</code>成员对应于伴生对象的普通成员</li>
+<li>静态转发：在Java中调用伴生对象时，其中成员被定义为伴生类
+  中<code>static</code>成员（当没有定义伴生类时）</li>
+</ul>
+</blockquote>
+<h3 id="apply"><a href="#apply" class="headerlink" title="apply"></a><code>apply</code></h3><p><code>apply</code>方法：像构造器接受参数、创建实例对象</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scala.util.<span class="type">Random</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">CustomerID</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(name: <span class="type">String</span>) = <span class="string">s&quot;<span class="subst">$name</span>--<span class="subst">$&#123;Random.nextLong&#125;</span>&quot;</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">unapply</span></span>(customerID: <span class="type">String</span>): <span class="type">Option</span>[<span class="type">String</span>] = &#123;</span><br><span class="line">		<span class="keyword">val</span> stringArray:[<span class="type">String</span>] = customer.<span class="type">ID</span>.split(<span class="string">&quot;--&quot;</span>)</span><br><span class="line">		<span class="keyword">if</span> (stringArray.tail.nonEmpty) <span class="type">Some</span>(<span class="type">StringArray</span>.head)</span><br><span class="line">		<span class="keyword">else</span> <span class="type">None</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> customer1ID = <span class="type">CustomerId</span>(<span class="string">&quot;Tom&quot;</span>)</span><br><span class="line">customer1ID <span class="keyword">match</span> &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="type">CustomerID</span>(name) =&gt; println(name)</span><br><span class="line">	<span class="keyword">case</span> _ =&gt; println(<span class="string">&quot;could not extract a CustomerID&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">val</span> <span class="type">CustomerID</span>(name) = customer1ID</span><br><span class="line"><span class="comment">// 变量定义中可以使用模式引入变量名</span></span><br><span class="line"><span class="comment">// 此处即使用提取器初始化变量，使用`unapply`方法生成值</span></span><br><span class="line"><span class="keyword">val</span> name = <span class="type">CustomerID</span>.unapply(customer2ID).get</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>unapply</code>、<code>unapplySeq</code>参见<em>cs_java/scala/entity_components</em></li>
+</ul>
+</blockquote>
+<h3 id="应用程序对象"><a href="#应用程序对象" class="headerlink" title="应用程序对象"></a>应用程序对象</h3><p>应用程序对象：实现有<code>main(args: Array[String])</code>方法的对象</p>
+<ul>
+<li><p><code>main(args: Array[String])</code>方法必须定义在单例对象中</p>
+</li>
+<li><p>实际中可以通过<code>extends App</code>方式更简洁定义应用程序对象
+，<code>trait App</code>中同样是使用<code>main</code>函数作为程序入口</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">trait App&#123;</span><br><span class="line">	<span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span> </span>= &#123;</span><br><span class="line">		<span class="keyword">this</span>._args = args</span><br><span class="line">		<span class="keyword">for</span>(proc &lt;- initCode) proc()</span><br><span class="line">		<span class="keyword">if</span> (util.Propertie.propIsSet(<span class="string">&quot;scala.time&quot;</span>))&#123;</span><br><span class="line">			val total = currentTime - executionStart</span><br><span class="line">			Console.println(<span class="string">&quot;[total &quot;</span> + total + <span class="string">&quot;ms&quot;</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>包中可以包含多个应用程序对象，但可指定主类以确定包程序
+  入口</li>
+</ul>
+</blockquote>
+<h3 id="case-object"><a href="#case-object" class="headerlink" title="case object"></a><code>case object</code></h3><p>样例对象：基本同<code>case class</code></p>
+<ul>
+<li>对于不需要定义成员的域的<code>case class</code>子类，可以定义为
+<code>case object</code>以提升程序速度<ul>
+<li><code>case object</code>可以直接使用，<code>case class</code>需先创建对象</li>
+<li><code>case object</code>只生成一个字节码文件，<code>case class</code>生成
+两个</li>
+<li><code>case object</code>中不会自动生成<code>apply</code>、<code>unapply</code>方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="用途示例"><a href="#用途示例" class="headerlink" title="用途示例"></a>用途示例</h3><h4 id="创建功能性方法"><a href="#创建功能性方法" class="headerlink" title="创建功能性方法"></a>创建功能性方法</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> logging</span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Logger</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">info</span></span>(message: <span class="type">String</span>): <span class="type">Unit</span> = println(<span class="string">s&quot;IFNO: <span class="subst">$message</span>&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// `import`语句要求被导入标识具有“稳定路径”</span></span><br><span class="line"><span class="comment">// 顶级单例对象全局唯一，具有稳定路径</span></span><br><span class="line"><span class="keyword">import</span> logging.<span class="type">Logger</span>.info</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">	info(<span class="string">&quot;created projects&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Trait"><a href="#Trait" class="headerlink" title="Trait"></a><em>Trait</em></h2><p>特质：包含某些字段、方法的类型</p>
+<ul>
+<li><p>特点</p>
+<ul>
+<li>特质的成员方法、常/变量可以是具体、或抽象</li>
+<li>特质不能被实例化，因而也没有参数</li>
+<li>特质可以<code>extends</code>自类</li>
+</ul>
+</li>
+<li><p>用途：在类之间共享程序接口、字段，尤其是作为泛型类型和
+抽象方法</p>
+<ul>
+<li><code>extend</code>继承特质</li>
+<li><code>with</code>混入可以组合多个特质</li>
+<li><code>override</code>覆盖/实现特质默认实现</li>
+</ul>
+</li>
+<li><p>子类型：需要特质的地方都可以使用特质的子类型替换</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Java：<code>trait</code>被编译为<code>interface</code>，包含具体方法、常/变量
+  还会生成相应抽象类</li>
+</ul>
+</blockquote>
+<h3 id="Mixin"><a href="#Mixin" class="headerlink" title="Mixin"></a><em>Mixin</em></h3><p>混入：特质被用于组合类</p>
+<ul>
+<li><p>类只能有一个父类，但是可以有多个混入</p>
+<ul>
+<li>混入和父类可能有相同父类</li>
+<li>通过Mixin <code>trait</code>组合类实现多继承</li>
+</ul>
+</li>
+<li><p>多继承导致歧义时，使用最优深度优先确定相应方法</p>
+</li>
+</ul>
+<h4 id="复合类型"><a href="#复合类型" class="headerlink" title="复合类型"></a>复合类型</h4><p>复合类型：多个类型的交集，指明对象类型是某几个类型的子类型</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;traitA&gt; <span class="keyword">with</span> &lt;traitB&gt; <span class="keyword">with</span> ... &#123;refinement&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="sealed-trait-sealed-class"><a href="#sealed-trait-sealed-class" class="headerlink" title="sealed trait/sealed class"></a><code>sealed trait</code>/<code>sealed class</code></h3><p>密封特质/密封类：子类确定的特质、类</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sealed</span> <span class="class"><span class="keyword">trait</span> <span class="title">ST</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">CC1</span>(<span class="params">id: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">ST</span></span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">CC2</span> <span class="keyword">extends</span> <span class="title">ST</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>密封类、特质只能在<strong>当前文件被继承</strong></li>
+<li>适合模式匹配中使用，编译器知晓所有模式，可提示缺少模式</li>
+</ul>
+<h3 id="自类型"><a href="#自类型" class="headerlink" title="自类型"></a>自类型</h3><p>自类型：声明特质必须<strong>混入其他特质</strong>，尽管特质没有直接扩展
+其他特质</p>
+<ul>
+<li>特质可以直接使用已声明自类型的特质中成员</li>
+</ul>
+<h4 id="细分大类特质"><a href="#细分大类特质" class="headerlink" title="细分大类特质"></a>细分大类特质</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">User</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">username</span></span>: <span class="type">String</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Tweeter</span></span>&#123;</span><br><span class="line">	<span class="comment">// 声明自类型，表明需要混入`User`特质</span></span><br><span class="line">	<span class="keyword">this</span>: <span class="type">User</span> =&gt;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">tweet</span></span>(tweetText: <span class="type">String</span>) =</span><br><span class="line">		println(<span class="string">s&quot;<span class="subst">$username</span>: <span class="subst">$tweetText</span>&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">VerifiedTweeter</span>(<span class="params">val username_: <span class="type">String</span></span>)</span></span><br><span class="line">	<span class="keyword">extends</span> <span class="type">Tweeter</span> <span class="keyword">with</span> <span class="type">User</span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">username</span> </span>= <span class="string">s&quot;real <span class="subst">$username_</span>&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="定义this别名"><a href="#定义this别名" class="headerlink" title="定义this别名"></a>定义<code>this</code>别名</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OuterClass</span></span>&#123;</span><br><span class="line">	<span class="comment">// 定义`this`别名，下面二者等价</span></span><br><span class="line">	outer =&gt;</span><br><span class="line">	<span class="comment">// outer: OuterClass =&gt;</span></span><br><span class="line">	<span class="keyword">val</span> v1 = <span class="string">&quot;here&quot;</span></span><br><span class="line">	<span class="class"><span class="keyword">class</span> <span class="title">Innerclass</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 方便在内部类中使用</span></span><br><span class="line">		println(outer.v1)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Universal-Trait"><a href="#Universal-Trait" class="headerlink" title="Universal Trait"></a>Universal Trait</h3><p><em>Universal Trait</em>：继承自<code>Any</code>、只有<code>def</code>成员、不作任何
+初始化的trait</p>
+<ul>
+<li>继承自universal trait的value class同时继承该trait方法，
+但是调用其会带来对象分配开销</li>
+</ul>
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><ul>
+<li><p>泛型类、泛型trait</p>
+<ul>
+<li>泛型类使用方括号<code>[]</code>接受类型参数</li>
+</ul>
+</li>
+<li><p>泛型方法：按类型、值进行参数化，语法和泛型类类似</p>
+<ul>
+<li>类型参数在方括号<code>[]</code>中、值参数在圆括号<code>()</code>中</li>
+<li>调用方法时，不总是需要显式提供类型参数，编译器
+通常可以根据上下文、值参数类型推断</li>
+</ul>
+</li>
+<li><p>泛型类型的父子类型关系不可传导</p>
+<ul>
+<li>可通过<strong>类型参数注释机制</strong>控制</li>
+<li>或使用类型通配符（存在类型）“构建统一父类”</li>
+</ul>
+</li>
+</ul>
+<h3 id="存在类型-类型通配符"><a href="#存在类型-类型通配符" class="headerlink" title="存在类型/类型通配符"></a>存在类型/类型通配符</h3><p>存在类型：<code>&lt;type&gt;[T, U,...] forSome &#123;type T; type U;...&#125;</code>
+，可以视为所有<code>&lt;type&gt;[]</code>类型的父类</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可以使用通配符`_`简化语法</span></span><br><span class="line"><span class="comment">// def printAll(x: Array[T] forSome &#123;type T&#125;)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printAll</span></span>(x: <span class="type">Array</span>[_]) = &#123;</span><br><span class="line">	<span class="keyword">for</span> (i &lt;- x) &#123;</span><br><span class="line">		print(i + <span class="string">&quot; &quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	println()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> a = <span class="type">Map</span>(<span class="number">1</span> -&gt; <span class="number">2</span>, <span class="number">3</span> -&gt; <span class="number">3</span>)</span><br><span class="line"><span class="keyword">match</span> a &#123;</span><br><span class="line">	<span class="comment">// 类型通配符语法可以用于模式匹配，但存在类型不可</span></span><br><span class="line">	<span class="keyword">case</span> m: <span class="type">Map</span>[_, _] =&gt; println(m)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>省略给方法添加泛型参数</li>
+</ul>
+</blockquote>
+<h3 id="类型边界约束"><a href="#类型边界约束" class="headerlink" title="类型边界约束"></a>类型边界约束</h3><ul>
+<li><p><code>T &lt;: A</code>/<code>T &gt;: B</code>：类型<code>T</code>应该是<code>A</code>的子类/<code>B</code>的父类</p>
+<ul>
+<li>描述<em>is a</em>关系</li>
+</ul>
+</li>
+<li><p><code>T &lt;% S</code>：<code>T</code>是<code>S</code>的子类型、或能经过隐式转换为<code>S</code>子类型</p>
+<ul>
+<li>描述<em>can be seen as</em>关系</li>
+</ul>
+</li>
+<li><p><code>T : E</code>：作用域中存在类型<code>E[T]</code>的隐式值</p>
+</li>
+</ul>
+<h3 id="型变"><a href="#型变" class="headerlink" title="型变"></a>型变</h3><p>型变：复杂类型的子类型关系与其组件类型的子类型关系的相关性</p>
+<ul>
+<li>型变允许在复杂类型中建立直观连接，利用重用类抽象</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Animal</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">name</span></span>: <span class="type">String</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span>(<span class="params">name: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">Animal</span></span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span>(<span class="params">name: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">Animal</span></span></span><br></pre></td></tr></table></figure>
+<h4 id="Covariant"><a href="#Covariant" class="headerlink" title="Covariant"></a><em>Covariant</em></h4><p>协变：<code>+A</code>使得泛型类型参数<code>A</code>成为协变</p>
+<ul>
+<li><p>类型<code>List[+A]</code>中<code>A</code>协变意味着：若<code>A</code>是<code>B</code>的子类型，则
+<code>List[A]</code>是<code>List[B]</code>的子类型</p>
+</li>
+<li><p>使得可以使用泛型创建有效、直观的子类型关系</p>
+</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ConvarienceTest</span> <span class="title">extends</span> <span class="title">App</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">printAnimalNames</span></span>(animals: <span class="type">List</span>[<span class="type">Animal</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">		animals.foreach&#123; animal =&gt;</span><br><span class="line">			println(animal.name)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">val</span> cats: <span class="type">List</span>[<span class="type">Cat</span>] = <span class="type">List</span>(<span class="type">Cat</span>(<span class="string">&quot;Winskers&quot;</span>), <span class="type">Cat</span>(<span class="string">&quot;Tom&quot;</span>))</span><br><span class="line">	<span class="keyword">val</span> dogs: <span class="type">List</span>[<span class="type">Dog</span>] = <span class="type">List</span>(<span class="type">Dog</span>(<span class="string">&quot;Fido&quot;</span>), <span class="type">Dog</span>(<span class="string">&quot;Rex&quot;</span>))</span><br><span class="line">	printAnimalNames(cats)</span><br><span class="line">	printAnimalNames(dogs)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Contravariant"><a href="#Contravariant" class="headerlink" title="Contravariant"></a><em>Contravariant</em></h4><p>逆变：<code>-A</code>使得泛型类型参数<code>A</code>成为逆变</p>
+<ul>
+<li>同协变相反：若<code>A</code>是<code>B</code>的子类型，则<code>Writer[B]</code>是
+<code>Writer[A]</code>的子类型</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Printer</span>[-<span class="type">A</span>] </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">print</span></span>(value: <span class="type">A</span>): <span class="type">Unit</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AnimalPrinter</span> <span class="keyword">extends</span> <span class="title">Printer</span>[<span class="type">Animal</span>] </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">print</span></span>(animal: <span class="type">Animal</span>): <span class="type">Unit</span> =</span><br><span class="line">		println(<span class="string">&quot;The animal&#x27;s name is: &quot;</span> + animal.name)</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CatPrinter</span> <span class="keyword">extends</span> <span class="title">Printer</span>[<span class="type">Cat</span>]</span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">print</span></span>(cat: <span class="type">Cat</span>): <span class="type">Unit</span> =</span><br><span class="line">		println(<span class="string">&quot;The cat&#x27;s name is: &quot;</span> + cat.name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> myCat: <span class="type">Cat</span> = <span class="type">Cat</span>(<span class="string">&quot;Boots&quot;</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printMyCat</span></span>(printer: <span class="type">Printer</span>[<span class="type">Cat</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">	printer.print(myCat)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> catPrinter: <span class="type">Printer</span>[<span class="type">Cat</span>] = <span class="keyword">new</span> <span class="type">CatPrinter</span></span><br><span class="line"><span class="keyword">val</span> animalPrinter: <span class="type">Printer</span>[<span class="type">Animal</span>] = <span class="keyword">new</span> <span class="type">AnimalPrinter</span></span><br><span class="line"></span><br><span class="line">printMyCat(catPrinter)</span><br><span class="line">printMyCat(animalPrinter)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>协变泛型</p>
+<ul>
+<li>子类是父类的特化、父类是子类的抽象，子类实例总可以
+替代父类实例</li>
+<li>协变泛型作为成员<ul>
+<li>适合位于<strong>表示实体的类型</strong>中，方便泛化、组织成员</li>
+<li>作为[部分]输出[成员]</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>注意：<strong>可变</strong>的协变泛型变量不安全</li>
+</ul>
+</blockquote>
+</li>
+<li><p>逆变泛型</p>
+<ul>
+<li>子类方法是父类方法特化、父类方法是子类方法抽象，子类
+方法总可以替代父类方法</li>
+<li>逆变泛型提供行为、特征<ul>
+<li>适合位于<strong>表示行为的类型</strong>中，方便统一行为</li>
+<li>仅作为输入</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>协变泛型、逆变泛型互补</p>
+<ul>
+<li>对包含协变泛型的某类型的某方法，总可以将该方法扩展
+为包含相应逆变泛型的类</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Function</span>[-<span class="type">T</span>, +<span class="type">R</span>]</span></span><br><span class="line"><span class="comment">// 具有一个参数的函数，`T`参数类型、`R`返回类型</span></span><br></pre></td></tr></table></figure>
+<h4 id="Invariant"><a href="#Invariant" class="headerlink" title="Invariant"></a><em>Invariant</em></h4><p>不变：默认情况下，Scala中泛型类是不变的</p>
+<ul>
+<li><strong>可变</strong>的协变泛型变量不安全</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Container</span>[<span class="type">A</span>](<span class="params">value: <span class="type">A</span></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">var</span> _value: <span class="type">A</span> = value</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">getValue</span></span>: <span class="type">A</span> = _value</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">setValue</span></span>(value: <span class="type">A</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">		_value = value</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 若`A`协变</span></span><br><span class="line"><span class="keyword">val</span> catContainer: <span class="type">Container</span>[cat] = <span class="keyword">new</span> <span class="type">Container</span>(<span class="type">Cat</span>(<span class="string">&quot;Felix&quot;</span>))</span><br><span class="line"><span class="keyword">val</span> animalContainer: <span class="type">Container</span>[<span class="type">Animal</span>] = catCont</span><br><span class="line">animalContainer.setValue(<span class="type">Dog</span>(<span class="string">&quot;Spot&quot;</span>))</span><br><span class="line"><span class="keyword">val</span> cat: <span class="type">Cat</span> = catContainer.getValue</span><br></pre></td></tr></table></figure>
+<h3 id="Type-Erasure"><a href="#Type-Erasure" class="headerlink" title="Type Erasure"></a><em>Type Erasure</em></h3><p>类型擦除：编译后删除所有泛型的类型信息</p>
+<ul>
+<li>导致运行时无法区分泛型的具体扩展，均视为相同类型</li>
+<li><p>类型擦除无法避免，但可以通过一些利用反射的类型标签解决</p>
+<ul>
+<li><code>ClassTag</code></li>
+<li><code>TypeTag</code></li>
+<li><code>WeakTypeTag</code></li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>cs_java/scala/stdlib</em>中</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Java：Java初始不支持泛型，JVM不接触泛型<blockquote>
+<ul>
+<li>为保持向后兼容，泛型中类型参数被替换为<code>Object</code>、或
+ 类型上限</li>
+<li>JVM执行时，不知道泛型类参数化的实际类</li>
+</ul>
+</blockquote>
+</li>
+<li>Scala、Java编译器执行过程都执行类型擦除</li>
+</ul>
+</blockquote>
+<h3 id="抽象类型"><a href="#抽象类型" class="headerlink" title="抽象类型"></a>抽象类型</h3><p>抽象类型：由具体实现决定实际类型</p>
+<ul>
+<li><p>特质、抽象类均可包括抽象类型</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Buffer</span></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">type</span> <span class="title">T</span></span></span><br><span class="line">	<span class="keyword">val</span> element: <span class="type">T</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>抽象类型可以添加类型边界</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SeqBuffer</span> <span class="keyword">extends</span> <span class="title">Buffer</span></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">type</span> <span class="title">U</span></span></span><br><span class="line">	<span class="class"><span class="keyword">type</span> <span class="title">T</span> <span class="title">&lt;</span></span>: <span class="type">Seq</span>[<span class="type">U</span>]</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">length</span> </span>= element.length</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>含有抽象类型的特质、类经常和匿名类的初始化同时使用</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">IntSeqBuffer</span> <span class="keyword">extends</span> <span class="title">SeqBuffer</span></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">type</span> <span class="title">U</span> </span>= <span class="type">Int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">newIntSeqBuf</span></span>(elem1: <span class="type">Int</span>, elem2: <span class="type">Int</span>): <span class="type">IntSeqBuffer</span> =</span><br><span class="line">	<span class="keyword">new</span> <span class="type">IntSeqBuffer</span>&#123;</span><br><span class="line">		<span class="class"><span class="keyword">type</span> <span class="title">T</span> </span>= <span class="type">List</span>[<span class="type">U</span>]</span><br><span class="line">		<span class="keyword">val</span> element = <span class="type">List</span>(elem1, elem2)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 所有泛型参数给定后，得到可以实例化的匿名类</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>抽象类型、类的泛型参数大部分可以相互转换，但以下情况无法
+使用泛型参数替代抽象类型</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Buffer</span>[+<span class="type">T</span>]</span>&#123;</span><br><span class="line">	<span class="keyword">val</span> element: <span class="type">T</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SeqBuffer</span>[<span class="type">U</span>, +<span class="type">T</span> &lt;: <span class="type">Seq</span>[<span class="type">U</span>]] <span class="keyword">extends</span> <span class="title">Buffer</span>[<span class="type">T</span>]</span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">length</span> </span>= element.length</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">newIntSeqBuf</span></span>(e1: <span class="type">Int</span>, e2: <span class="type">Int</span>): <span class="type">SeqBuffer</span>[<span class="type">Int</span>, <span class="type">Seq</span>[<span class="type">Int</span>]] =</span><br><span class="line">	<span class="keyword">new</span> <span class="type">SeqBuffer</span>[<span class="type">Int</span>, <span class="type">List</span>[<span class="type">Int</span>]]&#123;</span><br><span class="line">		<span class="keyword">val</span> element = <span class="type">List</span>(e1, e2)</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="包和导入"><a href="#包和导入" class="headerlink" title="包和导入"></a>包和导入</h2><h3 id="package"><a href="#package" class="headerlink" title="package"></a><code>package</code></h3><blockquote>
+<ul>
+<li>Scala使用包创建命名空间，允许创建模块化程序</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>包命名方式</p>
+<ul>
+<li>惯例是将包命名为与包含Scala文件目录名相同，但Scala
+未对文件布局作任何限制</li>
+<li>包名称应该全部为小写</li>
+</ul>
+</li>
+<li><p>包声明方式：同一个包可以定义在多个文件中</p>
+<ul>
+<li>括号嵌套：使用大括号包括包内容<ul>
+<li>允许包嵌套，可以定义多个包内容</li>
+<li>提供范围、封装的更好控制</li>
+</ul>
+</li>
+<li>文件顶部标记：在Scala文件头部声明一个、多个包名称<ul>
+<li>各包名按出现顺序逐层嵌套</li>
+<li>只能定义一个包的内容</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>包作用域：相较于Java更加前后一致</p>
+<ul>
+<li>和其他作用域一样支持嵌套</li>
+<li>可以直接访问上层作用域中名称<ul>
+<li>行为类似Python作用域，优先级高于全局空间中导入</li>
+<li>即使名称在不同文件中</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>包冲突方案：Java中包名总是绝对的，Scala中包名是相对的，
+而包代码可能分散在多个文件中，导致冲突</p>
+<ul>
+<li><strong>绝对包名定位包</strong>：<code>__root__.&lt;full_package_path&gt;</code><ul>
+<li>导入时：<code>import __root__.&lt;package&gt;</code></li>
+<li>使用时：<code>val v = new __root__.&lt;class&gt;</code></li>
+</ul>
+</li>
+<li><strong>串联式包语句隐藏包</strong>：包名为路径分段串，其中非结尾
+包被隐藏</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Scala文件顶部一定要<code>package</code>声明所属包，否则好像不会默认
+  导入<code>scala.</code>等包，出现非常奇怪的错误，如：没有该方法</li>
+</ul>
+</blockquote>
+<h3 id="import"><a href="#import" class="headerlink" title="import"></a><code>import</code></h3><ul>
+<li><p><code>import</code>语句用于导入其他包中成员，相同包中成员不需要
+<code>import</code>语句</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> users._</span><br><span class="line"><span class="keyword">import</span> users.&#123;<span class="type">User</span>, <span class="type">UserPreferences</span>&#125;</span><br><span class="line"><span class="comment">// 重命名</span></span><br><span class="line"><span class="keyword">import</span> users.&#123;<span class="type">UserPreferences</span> =&gt; <span class="type">UPrefs</span>&#125;</span><br><span class="line"><span class="comment">// 导入除`HashMap`以外其他类型</span></span><br><span class="line"><span class="keyword">import</span> java.utils.&#123;<span class="type">HashMap</span> =&gt; _, _&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若存在命名冲突、且需要从项目根目录导入，可以使用
+<code>__root__</code>表示从根目录开始</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>scala</code>、<code>java.lang</code>、<code>object Predef</code>默认导入</li>
+<li>相较于Java，Scala允许在任何地方使用导入语句</li>
+</ul>
+</blockquote>
+<h3 id="包对象"><a href="#包对象" class="headerlink" title="包对象"></a>包对象</h3><p>包对象：作为在整个包中方便共享内容、使用的容器</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// in file gardening/fruits/Fruit.scala</span></span><br><span class="line"><span class="keyword">package</span> gardening.fruits</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Fruit</span>(<span class="params">name: <span class="type">String</span>, color: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Apple</span> <span class="keyword">extends</span> <span class="title">Fruit</span>(<span class="params">&quot;<span class="type">Appple</span>&quot;, &quot;green&quot;</span>)</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Plum</span> <span class="keyword">extends</span> <span class="title">Fruit</span>(<span class="params">&quot;<span class="type">Plum</span>&quot;, &quot;blue&quot;</span>)</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Banana</span> <span class="keyword">extends</span> <span class="title">Fruit</span>(<span class="params">&quot;<span class="type">Banana</span>&quot;, &quot;yellow&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// in file gardening/fruits/package.scala</span></span><br><span class="line"><span class="keyword">package</span> gardening</span><br><span class="line"><span class="keyword">package</span> <span class="class"><span class="keyword">object</span> <span class="title">fruits</span></span>&#123;</span><br><span class="line">	<span class="keyword">val</span> planted = <span class="type">List</span>(<span class="type">Apple</span>, <span class="type">Plum</span>, <span class="type">Banana</span>)</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">showFruit</span></span>(fruit: <span class="type">Fruit</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">		println(<span class="string">s&quot;<span class="subst">$&#123;fruit.name&#125;</span>s are <span class="subst">$&#123;fruit.color&#125;</span>&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>包对象中任何定义都认为时包自身的成员，其中可以定义
+包作用域级任何内容</p>
+<ul>
+<li>类型别名</li>
+<li>隐式转换</li>
+</ul>
+</li>
+<li><p>包对象和其他对象类似，每个包都允许有一个包对象</p>
+<ul>
+<li>可以继承Scala的类、特质</li>
+<li>注意：包对象中不能进行方法重载</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>按照惯例，包对象代码通常放在文件<code>package.scala</code>中</li>
+</ul>
+</blockquote>
+<h2 id="Annotations"><a href="#Annotations" class="headerlink" title="Annotations"></a><em>Annotations</em></h2><p>注解：关联元信息、定义</p>
+<ul>
+<li>注解作用于其后的首个定义、声明</li>
+<li>定义、声明之前可以有多个注解，注解顺序不重要</li>
+</ul>
+<h3 id="确保编码正确性注解"><a href="#确保编码正确性注解" class="headerlink" title="确保编码正确性注解"></a>确保编码正确性注解</h3><blockquote>
+<ul>
+<li>此类注解条件不满足时，会导致编译失败</li>
+</ul>
+</blockquote>
+<h4 id="tailrec"><a href="#tailrec" class="headerlink" title="@tailrec"></a><code>@tailrec</code></h4><p><code>@tailrec</code>：确保方法尾递归</p>
+<pre><code><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scala.annotations.tailrec</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factorial</span></span>(x: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">	<span class="meta">@tailrec</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">factorialHelper</span></span>(x: <span class="type">Int</span>, accumulator: <span class="type">Int</span>): <span class="type">Int</span> =&#123;</span><br><span class="line">		<span class="keyword">if</span> (x == <span class="number">1</span>) accumulator</span><br><span class="line">		<span class="keyword">else</span> factorialHelper(x - <span class="number">1</span>, accumulator * x)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><h3 id="影响代码生成注解"><a href="#影响代码生成注解" class="headerlink" title="影响代码生成注解"></a>影响代码生成注解</h3><blockquote>
+<ul>
+<li>此类注解会影响生成字节码</li>
+</ul>
+</blockquote>
+<h4 id="inline"><a href="#inline" class="headerlink" title="@inline"></a><code>@inline</code></h4><p><code>@inline</code>：内联，在调用点插入被调用方法</p>
+<ul>
+<li>生成字节码更长，但可能运行更快</li>
+<li>不能确保方法内联，当且仅当满足某些生成代码大小的
+启发式算法时，才会出发编译器执行此操作</li>
+</ul>
+<h4 id="BeanProperty"><a href="#BeanProperty" class="headerlink" title="@BeanProperty"></a><code>@BeanProperty</code></h4><p><code>@BeanProperty</code>：为成员常/变量同时生成Java风格getter、setter
+方法<code>get&lt;Var&gt;()</code>、<code>set&lt;Var&gt;()</code></p>
+<blockquote>
+<ul>
+<li>对成员变/常量，类编译后会自动生成Scala风格getter、
+  setter方法：<code>&lt;var&gt;()</code>、<code>&lt;var&gt;_$eq()</code></li>
+</ul>
+</blockquote>
+<h3 id="Java注解"><a href="#Java注解" class="headerlink" title="Java注解"></a>Java注解</h3><ul>
+<li>Java注解有用户自定义元数据形式<ul>
+<li>注解依赖于指定的<em>name-value</em>对来初始化其元素</li>
+</ul>
+</li>
+</ul>
+<h4 id="interface"><a href="#interface" class="headerlink" title="@interface"></a><code>@interface</code></h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义跟踪某个类的来源的注解</span></span><br><span class="line"><span class="meta">@interface</span> <span class="type">Source</span>&#123;</span><br><span class="line">	public <span class="type">String</span> <span class="type">URL</span>();</span><br><span class="line">	public <span class="type">String</span> mail();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Scala中注解应用类似构造函数调用</span></span><br><span class="line"><span class="comment">// 必须使用命名参数实例化Java注解</span></span><br><span class="line"><span class="meta">@Source</span>(<span class="type">URL</span>=<span class="string">&quot;http://coders.com&quot;</span>,</span><br><span class="line">		mail=<span class="string">&quot;support@coders.com&quot;</span>)</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 若注解中只有单个[无默认值]元素、名称为`value`</span></span><br><span class="line"><span class="comment">// 则可以用类似构造函数的语法在Java、Scala中应用</span></span><br><span class="line"><span class="meta">@interface</span> <span class="type">SourceURL</span>&#123;</span><br><span class="line">	public <span class="type">String</span> value();</span><br><span class="line">	public <span class="type">String</span> mail() defualt <span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@SourceURL</span>(<span class="string">&quot;http://coders.com/&quot;</span>)</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line"><span class="comment">// 若需要给`mail`显式提供值，Java必须全部使用命名参数</span></span><br><span class="line"><span class="meta">@Source</span>(<span class="type">URL</span>=<span class="string">&quot;http://coders.com&quot;</span>,</span><br><span class="line">		mail=<span class="string">&quot;support@coders.com&quot;</span>)</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br><span class="line"><span class="comment">// Scala可以继续利用`value`特性</span></span><br><span class="line"><span class="meta">@SourceURL</span>(<span class="string">&quot;http://coders.com/&quot;</span></span><br><span class="line">		mail = <span class="string">&quot;support@coders.com&quot;</span>)</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span></span><br></pre></td></tr></table></figure>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Scala 自定义实体</p><p><a href="https://xyy15926.github.io/Java/Scala/diy_components.html">https://xyy15926.github.io/Java/Scala/diy_components.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-08-02</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-08-02</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Java/">Java</a><a class="link-muted mr-2" rel="tag" href="/tags/Scala/">Scala</a><a class="link-muted mr-2" rel="tag" href="/tags/Object/">Object</a><a class="link-muted mr-2" rel="tag" href="/tags/Trait/">Trait</a><a class="link-muted mr-2" rel="tag" href="/tags/Generic/">Generic</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Java/Scala/entity_components.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Scala 基本实体</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Algorithm/Issue/longest_xx.html"><span class="level-item">线性最长问题</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "17ca4f6c2a6fe3bffc39d8d46360712c",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#Class"><span class="level-left"><span class="level-item">1</span><span class="level-item">Class</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#成员说明"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">成员说明</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#内部类型投影"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">内部类型投影</span></span></a></li><li><a class="level is-mobile" href="#单例类型"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">单例类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#链式调用"><span class="level-left"><span class="level-item">1.1.2.1</span><span class="level-item">链式调用</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Constructor"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">Constructor</span></span></a></li><li><a class="level is-mobile" href="#类继承"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">类继承</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#提前定义、懒加载"><span class="level-left"><span class="level-item">1.3.1</span><span class="level-item">提前定义、懒加载</span></span></a></li></ul></li><li><a class="level is-mobile" href="#访问控制"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">访问控制</span></span></a></li><li><a class="level is-mobile" href="#特殊类"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">特殊类</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#abstract-class"><span class="level-left"><span class="level-item">1.5.1</span><span class="level-item">abstract class</span></span></a></li><li><a class="level is-mobile" href="#case-class"><span class="level-left"><span class="level-item">1.5.2</span><span class="level-item">case class</span></span></a></li><li><a class="level is-mobile" href="#Value-Class"><span class="level-left"><span class="level-item">1.5.3</span><span class="level-item">Value Class</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Object"><span class="level-left"><span class="level-item">2</span><span class="level-item">Object</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Companion-Object-Class"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">Companion Object/Class</span></span></a></li><li><a class="level is-mobile" href="#apply"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">apply</span></span></a></li><li><a class="level is-mobile" href="#应用程序对象"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">应用程序对象</span></span></a></li><li><a class="level is-mobile" href="#case-object"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">case object</span></span></a></li><li><a class="level is-mobile" href="#用途示例"><span class="level-left"><span class="level-item">2.5</span><span class="level-item">用途示例</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#创建功能性方法"><span class="level-left"><span class="level-item">2.5.1</span><span class="level-item">创建功能性方法</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Trait"><span class="level-left"><span class="level-item">3</span><span class="level-item">Trait</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Mixin"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">Mixin</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#复合类型"><span class="level-left"><span class="level-item">3.1.1</span><span class="level-item">复合类型</span></span></a></li></ul></li><li><a class="level is-mobile" href="#sealed-trait-sealed-class"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">sealed trait/sealed class</span></span></a></li><li><a class="level is-mobile" href="#自类型"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">自类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#细分大类特质"><span class="level-left"><span class="level-item">3.3.1</span><span class="level-item">细分大类特质</span></span></a></li><li><a class="level is-mobile" href="#定义this别名"><span class="level-left"><span class="level-item">3.3.2</span><span class="level-item">定义this别名</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Universal-Trait"><span class="level-left"><span class="level-item">3.4</span><span class="level-item">Universal Trait</span></span></a></li></ul></li><li><a class="level is-mobile" href="#泛型"><span class="level-left"><span class="level-item">4</span><span class="level-item">泛型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#存在类型-类型通配符"><span class="level-left"><span class="level-item">4.1</span><span class="level-item">存在类型/类型通配符</span></span></a></li><li><a class="level is-mobile" href="#类型边界约束"><span class="level-left"><span class="level-item">4.2</span><span class="level-item">类型边界约束</span></span></a></li><li><a class="level is-mobile" href="#型变"><span class="level-left"><span class="level-item">4.3</span><span class="level-item">型变</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Covariant"><span class="level-left"><span class="level-item">4.3.1</span><span class="level-item">Covariant</span></span></a></li><li><a class="level is-mobile" href="#Contravariant"><span class="level-left"><span class="level-item">4.3.2</span><span class="level-item">Contravariant</span></span></a></li><li><a class="level is-mobile" href="#Invariant"><span class="level-left"><span class="level-item">4.3.3</span><span class="level-item">Invariant</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Type-Erasure"><span class="level-left"><span class="level-item">4.4</span><span class="level-item">Type Erasure</span></span></a></li><li><a class="level is-mobile" href="#抽象类型"><span class="level-left"><span class="level-item">4.5</span><span class="level-item">抽象类型</span></span></a></li></ul></li><li><a class="level is-mobile" href="#包和导入"><span class="level-left"><span class="level-item">5</span><span class="level-item">包和导入</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#package"><span class="level-left"><span class="level-item">5.1</span><span class="level-item">package</span></span></a></li><li><a class="level is-mobile" href="#import"><span class="level-left"><span class="level-item">5.2</span><span class="level-item">import</span></span></a></li><li><a class="level is-mobile" href="#包对象"><span class="level-left"><span class="level-item">5.3</span><span class="level-item">包对象</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Annotations"><span class="level-left"><span class="level-item">6</span><span class="level-item">Annotations</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#确保编码正确性注解"><span class="level-left"><span class="level-item">6.1</span><span class="level-item">确保编码正确性注解</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#tailrec"><span class="level-left"><span class="level-item">6.1.1</span><span class="level-item">@tailrec</span></span></a></li></ul></li><li><a class="level is-mobile" href="#影响代码生成注解"><span class="level-left"><span class="level-item">6.2</span><span class="level-item">影响代码生成注解</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#inline"><span class="level-left"><span class="level-item">6.2.1</span><span class="level-item">@inline</span></span></a></li><li><a class="level is-mobile" href="#BeanProperty"><span class="level-left"><span class="level-item">6.2.2</span><span class="level-item">@BeanProperty</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Java注解"><span class="level-left"><span class="level-item">6.3</span><span class="level-item">Java注解</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#interface"><span class="level-left"><span class="level-item">6.3.1</span><span class="level-item">@interface</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

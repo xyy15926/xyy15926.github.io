@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Postgre SQL笔记 - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Postgre SQL笔记"><meta property="og:type" content="blog"><meta property="og:title" content="Postgre SQL笔记"><meta property="og:url" content="https://xyy15926.github.io/Database/SQL-DB/psql.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="Postgre SQL笔记"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:published_time" content="2019-05-09T17:01:26.000Z"><meta property="article:modified_time" content="2019-05-09T17:01:26.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Database"><meta property="article:tag" content="SQL DB"><meta property="article:tag" content="Postgre SQL"><meta property="article:tag" content="Roles"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Database/SQL-DB/psql.html"},"headline":"Postgre SQL笔记","image":["https://xyy15926.github.io/img/og_image.png"],"datePublished":"2019-05-09T17:01:26.000Z","dateModified":"2019-05-09T17:01:26.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"Postgre SQL笔记"}</script><link rel="canonical" href="https://xyy15926.github.io/Database/SQL-DB/psql.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-05-09T17:01:26.000Z" title="5/10/2019, 1:01:26 AM">2019-05-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-05-09T17:01:26.000Z" title="5/10/2019, 1:01:26 AM">2019-05-10</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/SQL-DB/">SQL DB</a></span><span class="level-item">17 minutes read (About 2484 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">Postgre SQL笔记</h1><div class="content"><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li>交互式客户端：<code>postgresql</code></li>
+<li>服务器：<code>postgres-server</code></li>
+<li>额外功能：<code>postgresql-contrib</code></li>
+<li>开发工具：<code>postgresql-devel</code></li>
+</ul>
+<h3 id="OpenSuSe"><a href="#OpenSuSe" class="headerlink" title="OpenSuSe"></a>OpenSuSe</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo zypper <span class="keyword">in</span> postgresql postgresql-server \</span></span><br><span class="line"><span class="bash">	postgresql-contrib postgresql-devel</span></span><br></pre></td></tr></table></figure>
+<h3 id="CentOS"><a href="#CentOS" class="headerlink" title="CentOS"></a>CentOS</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install postgresql postgresql-server \</span></span><br><span class="line"><span class="bash">	postgresql-contrib postgresql-devel</span></span><br></pre></td></tr></table></figure>
+<h4 id="其他版本"><a href="#其他版本" class="headerlink" title="其他版本"></a>其他版本</h4><ul>
+<li><p>从中选择合适版本下载：<a target="_blank" rel="noopener" href="https://yum.postgresql.org/repopackages.php">Postgres Yum repositories</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装下载的RPM（依赖EPEL repo）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install pgdg-centos96-9.6-3.noarch.rpm</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新Yum、安装指定PG版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo yum update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo yum install postgresql96-sever postgresql96-contrib</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>安装的PG带有版本后缀，初始化、启动时注意</li>
+</ul>
+</blockquote>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><ul>
+<li><p>postgres安装完成后，默认创建Linux用户</p>
+<ul>
+<li>用户密码为空，要为其设置密码以切换到其<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo passwd postgres</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> su - postgres</span></span><br></pre></td></tr></table></figure></li>
+<li>用户目录默认是<code>/var/lib/pgsql</code></li>
+<li>很多命令可以切换到用户<code>postgres</code>直接执行</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>初始化数据库簇后，默认创建数据库角色<code>postgres</code>、数据库
+  <code>postgres</code></li>
+</ul>
+</blockquote>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><ul>
+<li><p>创建新PostgreSQL数据库簇</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo postgresql-setup initdb</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 或</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo inidb -D /var/lib/pgsql/data</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认数据库存储路径为<code>/var/lib/pgsql/data</code></li>
+</ul>
+</li>
+<li><p>开启PG密码认证：修改<em>host-based authentication</em>设置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> /var/lib/pgsql/data/pg_hba.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> TYPE		DATABASE	USER	ADDRESS			MEHTOD</span></span><br><span class="line">host		all			all		127.0.0.1/32	md5</span><br><span class="line">host		all			all		::1/128			md5</span><br></pre></td></tr></table></figure>
+<ul>
+<li>替换默认<code>ident</code>为<code>md5</code>开启密码认证</li>
+<li>修改之后需要重启PG</li>
+</ul>
+</li>
+<li><p>修改<code>postgres</code>用户密码，以可以通过密码作为<code>postgres</code>连接
+数据库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> su - postgres</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> psql -d template1 -c <span class="string">&quot;ALTER USER postgres with password &#x27;&lt;passwd&gt;&#x27;&quot;</span></span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 也可以在数据库prompt中执行</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="启动数据库"><a href="#启动数据库" class="headerlink" title="启动数据库"></a>启动数据库</h3><ul>
+<li><p>作为服务：<code>start</code>、<code>enable</code>PG</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl start postgresql</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl <span class="built_in">enable</span> postgresql</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>作为普通程序启动：<code>pg_ctl</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> su - postgres</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pg_ctl start -D /var/lib/pgsql/data</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Roles"><a href="#Roles" class="headerlink" title="Roles"></a><em>Roles</em></h2><p>PG使用概念<em>roles</em>处理认证、权限问题</p>
+<ul>
+<li><p>角色相较于区分明显的用户、组概念更加灵活</p>
+</li>
+<li><p><code>create user</code>和<code>create role</code>几乎完全相同</p>
+<ul>
+<li><code>create user</code>：创建角色默认带<code>LOGIN</code>属性</li>
+<li><code>create role</code>：创建角色默认不带<code>LOGIN</code>属性</li>
+</ul>
+</li>
+</ul>
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><ul>
+<li><code>SUPERUSER</code>/<code>NOSUPERUSER</code>：数据库超级用户</li>
+<li><code>CREATEDB</code>/<code>NOCREATEDB</code>：创建数据库</li>
+<li><code>CREATEUSER</code>/<code>NOCREATEUSER</code></li>
+<li><code>CREATEROLE</code>/<code>NOCREATEROLE</code>：创建、删除普通用户角色</li>
+<li><code>INHERIT</code>/<code>INHERIT</code>：角色可以继承所属用户组权限</li>
+<li><code>LOGIN</code>/<code>NONLOGIN</code>：作连接数据库初始角色名</li>
+<li><code>REPLICATION</code>/<code>NOREPLICATION</code>：流复制时用到</li>
+<li><code>CONNECTION LIMIT connlimit</code></li>
+<li>[<code>ENCRYPTED</code>/<code>UNENCRYPTED</code>]<code>PASSWORD &#39;&lt;passwd&gt;&#39;</code></li>
+<li><code>VALID UNTIL &#39;&lt;timestamp&gt;&#39;</code></li>
+<li><code>IN ROLE &lt;role_name&gt;[, ...]</code>：角色所属用户组</li>
+<li><code>IN GROUP &lt;role_name&gt;[, ...]</code></li>
+<li><code>ROLE &lt;role_name&gt;[, ...]</code></li>
+<li><code>ADMIN &lt;role_name&gt;[, ...]</code></li>
+<li><code>USER &lt;role_name&gt;[, ...]</code></li>
+<li><code>SYSID uid</code></li>
+</ul>
+<h4 id="角色赋权"><a href="#角色赋权" class="headerlink" title="角色赋权"></a>角色赋权</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">psql&gt;</span><span class="bash"> create role/user &lt;name&gt; [[with] &lt;option&gt; [...]];</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 创建角色时直接赋权</span></span><br><span class="line"><span class="meta">psql&gt;</span><span class="bash"> alter role/user &lt;name&gt; [[with] &lt;option&gt; [...]];</span></span><br><span class="line"><span class="meta">psql&gt;</span><span class="bash"> grant connect on database &lt;db_name&gt; to &lt;name&gt;;</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 修改已创建角色权限</span></span><br></pre></td></tr></table></figure>
+<h4 id="组赋权"><a href="#组赋权" class="headerlink" title="组赋权"></a>组赋权</h4><ul>
+<li>把多个角色归为组，通过给组赋权、撤销权限实现权限管理</li>
+<li>PG中角色赋权是通过<code>inherit</code>方式实现的</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">psql&gt;</span><span class="bash"> create role father login createdb createrole;</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 创建组角色、赋权</span></span><br><span class="line"><span class="meta">psql&gt;</span><span class="bash"> create role son1 inherit;</span></span><br><span class="line"><span class="meta">psql&gt;</span><span class="bash"> grant father to son1;</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 创建有`inherit`权限的用户、赋权</span></span><br><span class="line"><span class="meta">psql&gt;</span><span class="bash"> create role son2 inherit <span class="keyword">in</span> role father;</span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 创建用户时直接赋组权</span></span><br></pre></td></tr></table></figure>
+<h3 id="认证方式"><a href="#认证方式" class="headerlink" title="认证方式"></a>认证方式</h3><h4 id="Peer-Authentication"><a href="#Peer-Authentication" class="headerlink" title="Peer Authentication"></a>Peer Authentication</h4><p><code>peer</code>：从内核中获取操作系统中用户名，作为数据库角色名连接</p>
+<ul>
+<li>默认连接同名数据库</li>
+<li>信任Linux用户身份（认证），不询问密码<ul>
+<li>即使<code>-W</code>强制输入密码，也不会检查密码正确性</li>
+</ul>
+</li>
+<li>只有<code>local</code>连接支持此方法</li>
+</ul>
+<h4 id="Trust-Authentication"><a href="#Trust-Authentication" class="headerlink" title="Trust Authentication"></a>Trust Authentication</h4><p><code>trust</code>：允许任何数据库角色名的连接</p>
+<ul>
+<li><p>信任任何连接、不询问密码</p>
+<ul>
+<li>只应该在操作系统层面上能提供足够保护下情况下使用<ul>
+<li>文件系统权限：限制对Linux域套接字文件的访问</li>
+</ul>
+</li>
+<li>适合单用户、本地连接</li>
+</ul>
+</li>
+<li><p>数据库、用户权限限制仍然存在</p>
+</li>
+</ul>
+<h4 id="Ident-Authentication"><a href="#Ident-Authentication" class="headerlink" title="Ident Authentication"></a>Ident Authentication</h4><p><code>ident</code>：从ident服务器中获取操作系统中用户名，用于连接数据库</p>
+<ul>
+<li><p>仅在<code>TCP/IP</code>连接情况下支持</p>
+<ul>
+<li>若被指定给<code>local</code>连接，将使用<code>peer</code>认证</li>
+</ul>
+</li>
+<li><p>数据库服务器向客户端ident服务器询问“连接数据库的”用户，
+据此判断连</p>
+<ul>
+<li>此流程依赖于客户端完整性，若客户端机器不可信，则
+攻击者可以在113端口执行任何程序返回任何用户名</li>
+<li>故此认证方法只适合封闭网络，所以客户端机器都被严格
+控制</li>
+<li>有些ident服务器开启非标准选项导致返回的加密用户名，
+此选项应该关闭</li>
+</ul>
+<blockquote>
+<ul>
+<li>基本每个类Unix操作系统都带有ident服务器，用于监听
+ 113端口TCP</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h5 id="涉及配置"><a href="#涉及配置" class="headerlink" title="涉及配置"></a>涉及配置</h5><ul>
+<li><code>map</code>：运行系统、数据库用户名之间映射</li>
+</ul>
+<h4 id="Password-Authentication"><a href="#Password-Authentication" class="headerlink" title="Password Authentication"></a>Password Authentication</h4><p>Password认证：基于密码的认证方式</p>
+<blockquote>
+<ul>
+<li><code>password</code>：明文传输密码验证</li>
+<li><code>md5</code>：MD5-hashed传输密码o</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><code>md5</code>可以避免密码嗅探攻击</p>
+</li>
+<li><p><code>password</code>总应该尽量避免使用</p>
+<ul>
+<li>启用<code>db_user_namespace</code>特性时无法使用<code>md5</code></li>
+<li>SSL加密连接下<code>password</code>也能安全使用</li>
+</ul>
+</li>
+<li><p>每个数据库的密码存储在<code>pg_authid</code>系统表中</p>
+<ul>
+<li>若用户没有设置密码，则存储的密码为<code>null</code>，密码验证
+也总是失败</li>
+<li>使用<code>create user</code>、<code>alter role</code>等SQL语句修改密码</li>
+</ul>
+</li>
+</ul>
+<h4 id="GSSAPI-Authentication"><a href="#GSSAPI-Authentication" class="headerlink" title="GSSAPI Authentication"></a>GSSAPI Authentication</h4><p>GSSAPI：定义在<em>RFC 2743</em>中的安全认证产业界标准协议</p>
+<ul>
+<li>GSSAPI为支持其的系统自动提供认证<ul>
+<li>认证本身是安全的，但是通过数据库连接的数据默认没有
+加密，除非使用SSL</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>PG中GSSAPI需要编译时启用支持</li>
+</ul>
+</blockquote>
+<h4 id="SSPI-Authentication"><a href="#SSPI-Authentication" class="headerlink" title="SSPI Authentication"></a>SSPI Authentication</h4><p><code>negotiate</code>：windows的安全认证技术</p>
+<ul>
+<li>PG将尽可能使用<em>Kerberos</em>，并自动回滚为<em>NTLM</em></li>
+<li>仅服务器、客户端均在windows下或GSSAPI可用的情况下才能
+工作</li>
+</ul>
+<blockquote>
+<ul>
+<li>使用Kerberos情况下，SSPI、GSSAPI工作方式相同</li>
+</ul>
+</blockquote>
+<h5 id="涉及配置-1"><a href="#涉及配置-1" class="headerlink" title="涉及配置"></a>涉及配置</h5><ul>
+<li><code>include_realm</code></li>
+<li><code>map</code></li>
+<li><code>krb_realm</code></li>
+</ul>
+<h4 id="Kerberos-Authentication"><a href="#Kerberos-Authentication" class="headerlink" title="Kerberos Authentication"></a>Kerberos Authentication</h4><p>Kerberos：适合公共网络上分布式计算的产业界标准安全认证系统</p>
+<ul>
+<li>Kerberos提供不加密的语句、数据安全认证，若需要加密则使用
+SSL</li>
+<li>PG支持Kerberos第5版，需要在build时开启Kerberos支持</li>
+</ul>
+<h5 id="涉及配置-2"><a href="#涉及配置-2" class="headerlink" title="涉及配置"></a>涉及配置</h5><ul>
+<li><code>map</code></li>
+<li><code>include_realm</code></li>
+<li><code>krb_realm</code></li>
+<li><code>krb_server_hostname</code></li>
+</ul>
+<h4 id="LDAP-Authentication"><a href="#LDAP-Authentication" class="headerlink" title="LDAP Authentication"></a>LDAP Authentication</h4><p>LDAP：类似<code>password</code>，只是使用<em>LDAP</em>作为密码认证方法</p>
+<h5 id="涉及配置-3"><a href="#涉及配置-3" class="headerlink" title="涉及配置"></a>涉及配置</h5><ul>
+<li><code>ldapserver</code></li>
+<li><code>ldapport</code></li>
+<li><code>ldaptls</code></li>
+<li><code>ldapprefix</code></li>
+<li><code>ldapsuffix</code></li>
+<li><code>ldapbasedn</code></li>
+<li><code>ldapbinddn</code></li>
+<li><code>ldapbindpasswd</code></li>
+<li><code>ldapsearchattribute</code></li>
+</ul>
+<h4 id="RADIUS-Authentication"><a href="#RADIUS-Authentication" class="headerlink" title="RADIUS Authentication"></a>RADIUS Authentication</h4><p>RADIUS：类似<code>password</code>，只是使用<em>RADIUS</em>作为密码认证方法</p>
+<h5 id="涉及配置-4"><a href="#涉及配置-4" class="headerlink" title="涉及配置"></a>涉及配置</h5><ul>
+<li><code>radiusserver</code></li>
+<li><code>radiussecret</code></li>
+<li><code>radiusport</code></li>
+<li><code>radiusidentifier</code></li>
+</ul>
+<h4 id="Certificate-Authentication"><a href="#Certificate-Authentication" class="headerlink" title="Certificate Authentication"></a>Certificate Authentication</h4><p>Certificate：使用SSL客户多证书进行认证</p>
+<ul>
+<li>所以只在SSL连接中可用</li>
+<li>服务器要求客户端提供有效证书，不会向客户端传递密码prompt<ul>
+<li><code>cn</code>属性（<em>common name</em>）将回和目标数据库的用户名
+比较</li>
+<li>可通过名称映射允许<code>cn</code>属性和数据库用户名不同</li>
+</ul>
+</li>
+</ul>
+<h5 id="涉及配置-5"><a href="#涉及配置-5" class="headerlink" title="涉及配置"></a>涉及配置</h5><ul>
+<li><code>map</code>：允许系统、数据库用户名之间映射</li>
+</ul>
+<h4 id="PAM-Authentication"><a href="#PAM-Authentication" class="headerlink" title="PAM Authentication"></a>PAM Authentication</h4><p>PAM：类似<code>password</code>，只是使用
+<em>PAM(Pluggable Anthentication Modules)</em>作为密码认证机制</p>
+<h5 id="涉及配置-6"><a href="#涉及配置-6" class="headerlink" title="涉及配置"></a>涉及配置</h5><ul>
+<li><code>parmservice</code>：PAM服务名<ul>
+<li>默认<code>postgresql</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="pg-ctl"><a href="#pg-ctl" class="headerlink" title="pg_ctl"></a><code>pg_ctl</code></h2><p><code>pg_ctl</code>：用于控制PostgreSQL服务器的工具，此工具基本需要在
+postgres用户下才能使用</p>
+<ul>
+<li>查看状态：<code>$ pg_ctl status -D /var/lib/pgsql/data</code></li>
+</ul>
+<h2 id="psql"><a href="#psql" class="headerlink" title="psql"></a><code>psql</code></h2><h3 id="Shell"><a href="#Shell" class="headerlink" title="Shell"></a>Shell</h3><h4 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> psql [-h &lt;host&gt;] [-p &lt;port&gt;] [-U &lt;user_name&gt;] [[-d] &lt;db_name&gt;]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>-h</code>：缺省为<code>local</code>类型连接本地数据库<blockquote>
+<ul>
+<li><code>local</code>、<code>host</code>连接类型对应不同认证方式</li>
+<li><code>-h localhost</code>和缺省对应不同<code>hba.conf</code>条目</li>
+</ul>
+</blockquote>
+</li>
+<li><code>-p</code>：缺省端口<code>5432</code></li>
+<li><code>-U/--user_name=</code>：缺省linux用户名</li>
+<li><code>[-d]/--database=</code>：当前linux用户名</li>
+<li><code>-W</code>：密码，<code>peer</code>、<code>trust</code>模式下无价值</li>
+</ul>
+</blockquote>
+<h4 id="Shell命令"><a href="#Shell命令" class="headerlink" title="Shell命令"></a>Shell命令</h4><ul>
+<li><p>postgres不仅仅提供psql交互环境作为shell命令，还提供可以
+直接在shell中运行的数据库命令</p>
+<ul>
+<li>当然前提是当前linux登陆用户在数据库中存在、有权限</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ createdb &lt;db_name&gt; [-O &lt;user_name&gt;]</span><br><span class="line">	# 创建数据库，设置所有权为`user_name`</span><br><span class="line">$ dropdb &lt;db_name&gt;</span><br><span class="line">	# 删除数据库</span><br></pre></td></tr></table></figure>
+<h3 id="元命令"><a href="#元命令" class="headerlink" title="元命令"></a>元命令</h3><p>元命令：反斜杠命令，<code>\</code>开头，由psql自己处理</p>
+<ul>
+<li><p><code>\</code>后：跟命令动词、参数，其间使用空白字符分割</p>
+</li>
+<li><p>冒号<code>:</code>：不在引号中的冒号开头的参数会被当作psql变量</p>
+</li>
+<li><p>反点号：参数内容被当作命令传给shell，
+输出（除去换行符）作为参数值</p>
+</li>
+<li><p>单引号<code>&#39;</code>：参数包含空白时需用单引号包o，其中包含的参数
+的内容会进行类C的替换</p>
+<ul>
+<li><code>\n</code>（换行）、<code>\digits</code>（八进制）</li>
+<li>包含单引号需要使用反斜杠转义</li>
+</ul>
+</li>
+<li><p>双引号<code>\”&lt;\code&gt;</p>
+<ul>
+<li>遵循SQL语法规则，双引号保护字符不被强制转换为
+小写，且允许其中使用空白</li>
+<li>双引号内的双引号使用双双引号<code>&quot;&quot;</code>转义</li>
+</ul>
+</li>
+</ul>
+<h4 id="帮助"><a href="#帮助" class="headerlink" title="帮助"></a>帮助</h4><ul>
+<li><p><code>\?</code></p>
+<ul>
+<li><code>[&lt;commands&gt;]</code>：元命令帮助</li>
+<li><code>&lt;options&gt;</code>：psql命令行选项帮助</li>
+<li><code>&lt;variables&gt;</code>：特殊变量帮助</li>
+</ul>
+</li>
+<li><p><code>\h [&lt;clauses&gt;]</code>：SQL命令语法帮助（<code>*</code>表示全部）</p>
+</li>
+</ul>
+<h4 id="展示信息"><a href="#展示信息" class="headerlink" title="展示信息"></a>展示信息</h4><ul>
+<li><code>\du</code>：查看用户权限</li>
+<li><code>\c &lt;db_name&gt; &lt;name&gt;</code>：以身份<code>name</code>访问数据库<code>db_name</code></li>
+<li><code>\l[ist]</code>：查看数据库</li>
+<li><code>\dt</code>：展示当前数据库中表</li>
+</ul>
+<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><ul>
+<li><code>\set foo bar</code>：设置变量<ul>
+<li>可以像php设置“变量 变量”：<code>\set :foo bar</code></li>
+</ul>
+</li>
+<li><code>\unset foo</code>：重置变量</li>
+</ul>
+<h2 id="数据库变量"><a href="#数据库变量" class="headerlink" title="数据库变量"></a>数据库变量</h2><h3 id="内部变量"><a href="#内部变量" class="headerlink" title="内部变量"></a>内部变量</h3><h4 id="特殊变量"><a href="#特殊变量" class="headerlink" title="特殊变量"></a>特殊变量</h4><p>特殊变量：一些选项设置，在运行时可通过改变变量的值、应用的
+表现状态改变其，不推荐改变这些变量的用途</p>
+<ul>
+<li><code>AUTOCOMMIT</code>：缺省为<code>on</code>，每个SQL命令完成后自行提交，此时
+需要输出<code>BEGIN</code>、<code>START TRANSACTION</code>命令推迟提交</li>
+<li><code>DBNAMW</code>：当前所连接数据库</li>
+<li><code>ENCODING</code>：客户端字符集编码</li>
+</ul>
+<blockquote>
+<ul>
+<li>详情查询手册</li>
+</ul>
+</blockquote>
+<h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><ul>
+<li><p><code>PGDATA</code>：指定数据库簇（存放数据）目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"><span class="built_in">export</span> PGDATA=/var/lib/pgsql/data</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认<code>/var/lib/pgsql/data</code></li>
+<li><code>-D</code>命令行参数指定</li>
+</ul>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Postgre SQL笔记</p><p><a href="https://xyy15926.github.io/Database/SQL-DB/psql.html">https://xyy15926.github.io/Database/SQL-DB/psql.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-05-10</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2019-05-10</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Database/">Database</a><a class="link-muted mr-2" rel="tag" href="/tags/SQL-DB/">SQL DB</a><a class="link-muted mr-2" rel="tag" href="/tags/Postgre-SQL/">Postgre SQL</a><a class="link-muted mr-2" rel="tag" href="/tags/Roles/">Roles</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/C-C/STL/io.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">IO</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Tool/Markup-Language/binary_format.html"><span class="level-item">二进制文件格式</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "e221fef48af07a689a15c7661fe951c2",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#安装"><span class="level-left"><span class="level-item">1</span><span class="level-item">安装</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#OpenSuSe"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">OpenSuSe</span></span></a></li><li><a class="level is-mobile" href="#CentOS"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">CentOS</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#其他版本"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">其他版本</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#配置"><span class="level-left"><span class="level-item">2</span><span class="level-item">配置</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#初始化"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">初始化</span></span></a></li><li><a class="level is-mobile" href="#启动数据库"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">启动数据库</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Roles"><span class="level-left"><span class="level-item">3</span><span class="level-item">Roles</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#权限"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">权限</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#角色赋权"><span class="level-left"><span class="level-item">3.1.1</span><span class="level-item">角色赋权</span></span></a></li><li><a class="level is-mobile" href="#组赋权"><span class="level-left"><span class="level-item">3.1.2</span><span class="level-item">组赋权</span></span></a></li></ul></li><li><a class="level is-mobile" href="#认证方式"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">认证方式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Peer-Authentication"><span class="level-left"><span class="level-item">3.2.1</span><span class="level-item">Peer Authentication</span></span></a></li><li><a class="level is-mobile" href="#Trust-Authentication"><span class="level-left"><span class="level-item">3.2.2</span><span class="level-item">Trust Authentication</span></span></a></li><li><a class="level is-mobile" href="#Ident-Authentication"><span class="level-left"><span class="level-item">3.2.3</span><span class="level-item">Ident Authentication</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#涉及配置"><span class="level-left"><span class="level-item">3.2.3.1</span><span class="level-item">涉及配置</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Password-Authentication"><span class="level-left"><span class="level-item">3.2.4</span><span class="level-item">Password Authentication</span></span></a></li><li><a class="level is-mobile" href="#GSSAPI-Authentication"><span class="level-left"><span class="level-item">3.2.5</span><span class="level-item">GSSAPI Authentication</span></span></a></li><li><a class="level is-mobile" href="#SSPI-Authentication"><span class="level-left"><span class="level-item">3.2.6</span><span class="level-item">SSPI Authentication</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#涉及配置-1"><span class="level-left"><span class="level-item">3.2.6.1</span><span class="level-item">涉及配置</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Kerberos-Authentication"><span class="level-left"><span class="level-item">3.2.7</span><span class="level-item">Kerberos Authentication</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#涉及配置-2"><span class="level-left"><span class="level-item">3.2.7.1</span><span class="level-item">涉及配置</span></span></a></li></ul></li><li><a class="level is-mobile" href="#LDAP-Authentication"><span class="level-left"><span class="level-item">3.2.8</span><span class="level-item">LDAP Authentication</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#涉及配置-3"><span class="level-left"><span class="level-item">3.2.8.1</span><span class="level-item">涉及配置</span></span></a></li></ul></li><li><a class="level is-mobile" href="#RADIUS-Authentication"><span class="level-left"><span class="level-item">3.2.9</span><span class="level-item">RADIUS Authentication</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#涉及配置-4"><span class="level-left"><span class="level-item">3.2.9.1</span><span class="level-item">涉及配置</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Certificate-Authentication"><span class="level-left"><span class="level-item">3.2.10</span><span class="level-item">Certificate Authentication</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#涉及配置-5"><span class="level-left"><span class="level-item">3.2.10.1</span><span class="level-item">涉及配置</span></span></a></li></ul></li><li><a class="level is-mobile" href="#PAM-Authentication"><span class="level-left"><span class="level-item">3.2.11</span><span class="level-item">PAM Authentication</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#涉及配置-6"><span class="level-left"><span class="level-item">3.2.11.1</span><span class="level-item">涉及配置</span></span></a></li></ul></li></ul></li></ul></li><li><a class="level is-mobile" href="#pg-ctl"><span class="level-left"><span class="level-item">4</span><span class="level-item">pg_ctl</span></span></a></li><li><a class="level is-mobile" href="#psql"><span class="level-left"><span class="level-item">5</span><span class="level-item">psql</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Shell"><span class="level-left"><span class="level-item">5.1</span><span class="level-item">Shell</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#连接数据库"><span class="level-left"><span class="level-item">5.1.1</span><span class="level-item">连接数据库</span></span></a></li><li><a class="level is-mobile" href="#Shell命令"><span class="level-left"><span class="level-item">5.1.2</span><span class="level-item">Shell命令</span></span></a></li></ul></li><li><a class="level is-mobile" href="#元命令"><span class="level-left"><span class="level-item">5.2</span><span class="level-item">元命令</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#帮助"><span class="level-left"><span class="level-item">5.2.1</span><span class="level-item">帮助</span></span></a></li><li><a class="level is-mobile" href="#展示信息"><span class="level-left"><span class="level-item">5.2.2</span><span class="level-item">展示信息</span></span></a></li><li><a class="level is-mobile" href="#变量"><span class="level-left"><span class="level-item">5.2.3</span><span class="level-item">变量</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#数据库变量"><span class="level-left"><span class="level-item">6</span><span class="level-item">数据库变量</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#内部变量"><span class="level-left"><span class="level-item">6.1</span><span class="level-item">内部变量</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#特殊变量"><span class="level-left"><span class="level-item">6.1.1</span><span class="level-item">特殊变量</span></span></a></li></ul></li><li><a class="level is-mobile" href="#环境变量"><span class="level-left"><span class="level-item">6.2</span><span class="level-item">环境变量</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

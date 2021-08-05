@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hadoop HDFS - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="HDFS"><meta property="og:type" content="blog"><meta property="og:title" content="Hadoop HDFS"><meta property="og:url" content="https://xyy15926.github.io/Database/Hadoop/hdfs.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="HDFS"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:published_time" content="2019-03-21T09:27:37.000Z"><meta property="article:modified_time" content="2021-07-16T09:13:17.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Database"><meta property="article:tag" content="Hadoop"><meta property="article:tag" content="HDFS"><meta property="article:tag" content="Parquet"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Database/Hadoop/hdfs.html"},"headline":"Hadoop HDFS","image":["https://xyy15926.github.io/img/og_image.png"],"datePublished":"2019-03-21T09:27:37.000Z","dateModified":"2021-07-16T09:13:17.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"HDFS"}</script><link rel="canonical" href="https://xyy15926.github.io/Database/Hadoop/hdfs.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T09:13:17.000Z" title="7/16/2021, 5:13:17 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Hadoop/">Hadoop</a></span><span class="level-item">39 minutes read (About 5813 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">Hadoop HDFS</h1><div class="content"><h2 id="HDFS设计模式"><a href="#HDFS设计模式" class="headerlink" title="HDFS设计模式"></a>HDFS设计模式</h2><ul>
+<li><p>数据读取、写入</p>
+<ul>
+<li>HDFS一般存储不可更新的文件，只能对文件进行数据追加
+，也不支持多个写入者的操作</li>
+<li>认为一次写入、多次读取是最高效的访问模式</li>
+<li>namenode将metadata存储在内存中，所以文件系统所能
+存储的文件总数受限于NameNode的内存</li>
+</ul>
+</li>
+<li><p>适合模式</p>
+<ul>
+<li>每次分析都涉及数据集大部分数据甚至全部，因此读取整个
+数据集的大部分数据、甚至全部，因此读取整个数据集的
+时间比读取第一条记录时间延迟更重要</li>
+<li>HDFS不适合要求地时间延迟的数据访问应用，HDFS是为
+高数据吞吐量应用优化的，可能会提高时间延迟</li>
+</ul>
+</li>
+<li><p>硬件：HDFS无需高可靠硬件，HDFS被设计为即使节点故障也能
+继续运行，且不让用户察觉</p>
+</li>
+</ul>
+<h3 id="数据块"><a href="#数据块" class="headerlink" title="数据块"></a>数据块</h3><p>和普通文件系统一样，HDFS同样也有块的概念，默认为64MB</p>
+<ul>
+<li><p>HDFS上的文件也被划分为块大小的多个chunk，作为独立的存储
+单元，但是HDFS中小于块大小的文件不会占据整个块空间</p>
+</li>
+<li><p>对分布式文件系统块进行抽象的好处</p>
+<ul>
+<li>文件大小可以大于网络中任意一个磁盘的容量</li>
+<li>使用抽象块而非整个文件作为存储单元，简化了存储子系统
+的设计<ul>
+<li>简化存储管理，块大小固定，计算磁盘能存储块数目
+相对容易</li>
+<li>消除了对元素见的顾虑，文件的元信息（权限等），
+不需要和块一起存储，可由其他系统单独管理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>块非常适合用于数据备份，进而提供数据容错能力、提高可用性</p>
+</li>
+</ul>
+<h3 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h3><p>HDFS系统中的管理者</p>
+<ul>
+<li><p>集中存储了HDFS的元信息Metadata</p>
+<ul>
+<li>维护文件系统的文件树、全部的文件和文件夹的元数据</li>
+<li>管理文件系统的Namespace：创建、删除、修改、列出所有
+文件、目录</li>
+</ul>
+</li>
+<li><p>执行数据块的管理操作</p>
+<ul>
+<li>把文件映射到所有的数据块</li>
+<li>创建、删除数据块</li>
+<li>管理副本的Placement、Replication</li>
+</ul>
+</li>
+<li><p>负责DataNode的成员管理</p>
+<ul>
+<li>接受DataNode的Registration</li>
+<li>接受DataNode周期性的Heart Beat</li>
+</ul>
+</li>
+</ul>
+<p>Hadoop上层模块，根据NameNode上的元信息，就可以知道每个数据块
+有多少副本、存放在哪些节点上，据此分配计算任务，通过
+<strong>Move Computation to Data</strong>，而不是移动数据本身，减少数据
+移动开销，加快计算过程</p>
+<h4 id="Metadata的保存"><a href="#Metadata的保存" class="headerlink" title="Metadata的保存"></a>Metadata的保存</h4><p>为了支持高效的存取操作，NameNode把所有的元信息保存在主内存，
+包括文件和数据块的命名空间、文件到数据块的映射、数据块副本
+的位置信息。文件命名空间、文件到数据块的映射信息也会持久化
+到NameNode本地文件系统</p>
+<ul>
+<li>FsImage：命名空间镜像文件，保存整个文件系统命名空间、
+文件到数据块的映射信息</li>
+<li>EditLog：编辑日志文件，是一个Transaction Log文件，记录了
+对文件系统元信息的所有更新操作：创建文件、改变文件的
+Replication Factor</li>
+</ul>
+<p>NameNode启动时，读取FsImage、EditLog文件，把EditLog的所有
+事务日志应用到从FsImage文件中装载的旧版本元信息上，生成新的
+FsImage并保存，然后截短EditLog</p>
+<h4 id="NameNode可恢复性"><a href="#NameNode可恢复性" class="headerlink" title="NameNode可恢复性"></a>NameNode可恢复性</h4><h5 id="多个文件系统备份"><a href="#多个文件系统备份" class="headerlink" title="多个文件系统备份"></a>多个文件系统备份</h5><p>备份文件系统元信息的持久化版本</p>
+<ul>
+<li>在NameNode写入元信息的持久化版本时，同步、atomic写入多个
+文件系统（一般是本地磁盘、mount为本地目录的NFS）</li>
+</ul>
+<h5 id="Secondary-NameNode"><a href="#Secondary-NameNode" class="headerlink" title="Secondary NameNode"></a>Secondary NameNode</h5><p>运行Secondary NameNode：负责周期性的使用EditLog更新
+FsImage，保持EditLog在一定规模内</p>
+<ul>
+<li><p>Seconadary NameNode保存FsImage、EditLog文件副本，
+每个一段时间从NameNode拷贝FsImage，和EditLog文件进行
+合并，然后把更新后的FsImage复制回NameNode</p>
+</li>
+<li><p>若NameNode宕机，可以启动其他机器，从Secondary
+NameNode获得FsImage、EditLog，恢复宕机之前的最新的
+元信息，当作新的NameNode，也可以直接作为主NameNode</p>
+</li>
+<li><p>Secondary NameNode保存的出状态总是滞后于主节点，需要
+从NFS获取NameNode部分丢失的metadata</p>
+</li>
+<li><p>Secondary NameNode需要运行在另一台机器，需要和主
+NameNode一样规模的CPU计算能力、内存，以便完成元信息
+管理</p>
+</li>
+</ul>
+<p>想要从失效的NameNode恢复，需要启动一个拥有文件系统数据副本的
+新NameNode，并配置DataNode和客户端以便使用新的NameNode</p>
+<ul>
+<li>将namespace的映像导入内存中</li>
+<li>重做编辑日志</li>
+<li>接收到足够多的来自DataNode的数据块报告，并退出安全模式</li>
+</ul>
+<h3 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h3><p>HDFS中保存数据的节点</p>
+<ul>
+<li><p>数据被切割为多个数据块，以冗余备份的形式存储在多个
+DataNode中，因此不需要再每个节点上安装RAID存储获得硬件上
+可靠存储支持。DataNode之间可以拷贝数据副本，从而可以重新
+平衡每个节点存储数据量、保证数据可靠性（保证副本数量）</p>
+</li>
+<li><p>DotaNode定期向NameNode报告其存储的数据块列表，以备使用者
+通过直接访问DataNode获得相应数据</p>
+</li>
+<li><p>所有NameNode和DataNode之间的通讯，包括DataNode的注册、
+心跳信息、报告数据块元信息，都是由DataNode发起请求，由
+NameNode被动应答和完成管理</p>
+</li>
+</ul>
+<h3 id="HDFS高可用性"><a href="#HDFS高可用性" class="headerlink" title="HDFS高可用性"></a>HDFS高可用性</h3><p>对于大型集群，NN冷启动需要30min甚至更长，因此Hadoop2.x中添加
+对高可用性HA（high-availability）的支持</p>
+<ul>
+<li><p>配置Active-Standby NameNode</p>
+<ul>
+<li>ANN失效后，SNN就会接管任务并开始服务，没有明显中断</li>
+<li>ANN、SNN应该具有相同的硬件配置</li>
+</ul>
+</li>
+<li><p>NN之间需要通过<strong>高可用的共享存储（JounalNode）</strong>实现
+Editlog共享</p>
+<ul>
+<li>JN进程轻量，可以和其他节点部署在同一台机器</li>
+<li>JN至少为3个，最好为奇数个，这样JN失效$(n-1)/2$个时
+  仍然可以正常工作</li>
+<li>SNN接管工作后，将通读共享编辑日志直到末尾，实现与ANN
+状态同步</li>
+</ul>
+</li>
+<li><p>DN需要同时向两个NN发送数据块处理报告，因为数据块映射信息
+存储在NN内存中</p>
+</li>
+<li><p>客户端需要使用特定机制处理NN失效问题，且机制对用户透明</p>
+</li>
+<li><p>如果两个namenode同时失效，同样可以冷启动其他namenode，
+此时情况就和<em>no-HA</em>模式冷启动类似</p>
+</li>
+</ul>
+<p>注意：HA模式下，不应该再次配置Secondary NameNode</p>
+<blockquote>
+<p>   Note that, in an HA cluster, the Standby NameNode also 
+    performs checkpoints of the namespace state, and thus it
+    is not necessary to run a Secondary NameNode, 
+    CheckpointNode, or BackupNode in an HA cluster. In fact,
+    to do so would be an error. This also allows one who is
+    reconfiguring a non-HA-enabled HDFS cluster to be
+    HA-enabled to reuse the hardware which they had
+    previously dedicated to the Secondary NameNode.</p>
+</blockquote>
+<h4 id="Failover-Controller"><a href="#Failover-Controller" class="headerlink" title="Failover Controller"></a>Failover Controller</h4><p>故障转移控制器系统中有一个新实体管理者管理namenode之间切换，</p>
+<ul>
+<li><p>Failover Controller最初实现基于Zookeeper，可插拔</p>
+</li>
+<li><p>每个namenode运行着一个Failover Controller，用于监视宿主
+namenode是否失效（heart beat机制）， 并在失效时进行故障
+切换</p>
+<ul>
+<li>管理员也可以手动发起故障切换，称为<em>平稳故障转移</em></li>
+</ul>
+</li>
+<li><p>在非平稳故障切换时，无法确切知道失效namenode是否已经停止
+运行，如网速慢、网络切割均可能激发故障转移，引入fencing
+机制</p>
+<ul>
+<li>杀死namenode进程</li>
+<li>收回对共享存储目录权限</li>
+<li>屏蔽相应网络端口</li>
+<li>STONITH：shoot the other node in the head，断电</li>
+</ul>
+</li>
+</ul>
+<h3 id="联邦HDFS"><a href="#联邦HDFS" class="headerlink" title="联邦HDFS"></a>联邦HDFS</h3><p>NameNode在内存中保存文件系统中每个文件、数据块的引用关系，
+所以对于拥有大量文件的超大集群，内存将成为系统扩展的瓶颈，
+2.x中引入的联邦HDFS可以添加NameNode实现扩展</p>
+<ul>
+<li>每个NameNode维护一个namespace volume，包括命名空间的
+元数据、命令空间下的文件的所有数据块、数据块池</li>
+<li>namespace volume之间相互独立、不通信，其中一个NameNode
+失效也不会影响其他NameNode维护的命名空间的可用性</li>
+<li>数据块池不再切分，因此集群中的DataNode需要注册到每个
+NameNode，并且存储来自多个数据块池的数据块</li>
+</ul>
+<h2 id="Hadoop文件系统"><a href="#Hadoop文件系统" class="headerlink" title="Hadoop文件系统"></a>Hadoop文件系统</h2><p>Hadoop有一个抽象问的文件系统概念，HDFS只是其中的一个实现，
+Java抽象类<code>org.apche.hadoop.fs.FileSystem</code>定义了Hadoop中的
+一个文件系统接口，包括以下具体实现</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>文件系统</th>
+<th>URI方案</th>
+<th>Java实现</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local</td>
+<td><code>file</code></td>
+<td><code>fs.LocalFileSystem</code></td>
+<td>使用客户端校验和本地磁盘文件系统，没有使用校验和文件系统<code>RawLocalFileSystem</code></td>
+</tr>
+<tr>
+<td>HDFS</td>
+<td><code>hdfs</code></td>
+<td><code>hdfs.DistributedFileSystem</code></td>
+<td>HDFS设计为与MapReduce结合使用实现高性能</td>
+</tr>
+<tr>
+<td>HFTP</td>
+<td><code>hftp</code></td>
+<td><code>hdfs.HftpFileSystem</code></td>
+<td>在HTTP上提供对HDFS只读访问的文件系统，通常与distcp结合使用，以实现在运行不同版本HDFS集群之间复制数据</td>
+</tr>
+<tr>
+<td>HSFTP</td>
+<td><code>hsftp</code></td>
+<td><code>hdfs.HsftpFileSystem</code></td>
+<td>在HTTPS上同以上</td>
+</tr>
+<tr>
+<td>WebHDFS</td>
+<td><code>Webhdfs</code></td>
+<td><code>hdfs.web.WebHdfsFileSystem</code></td>
+<td>基于HTTP，对HDFS提供安全读写访问的文件系统，为了替代HFTP、HFSTP而构建</td>
+</tr>
+<tr>
+<td>HAR</td>
+<td><code>har</code></td>
+<td><code>fs.HarFileSystem</code></td>
+<td>构建于其他文件系统之上，用于文件存档的文件系统，通常用于需要将HDFS中的文件进行存档时，以减少对NN内存的使用</td>
+</tr>
+<tr>
+<td>hfs</td>
+<td><code>kfs</code></td>
+<td><code>fs.kfs.kosmosFileSystem</code></td>
+<td>CloudStore（前身为Kosmos文件系统）类似于HDFS（GFS），<em>C++</em>编写</td>
+</tr>
+<tr>
+<td>FTP</td>
+<td><code>ftp</code></td>
+<td><code>fs.ftp.FTPFileSystem</code></td>
+<td>由FTP服务器支持的文件系统</td>
+</tr>
+<tr>
+<td>S3（原生）</td>
+<td><code>S3n</code></td>
+<td><code>fs.s3native.NativeS3FileSystem</code></td>
+<td>由Amazon S3支持的文件系统</td>
+</tr>
+<tr>
+<td>S3（基于块）</td>
+<td><code>S3</code></td>
+<td><code>fs.sa.S3FileSystem</code></td>
+<td>由Amazon S3支持的文件系统，以块格式存储文件（类似于HDFS），以解决S3Native 5GB文件大小限制</td>
+</tr>
+<tr>
+<td>分布式RAID</td>
+<td><code>hdfs</code></td>
+<td><code>hdfs.DistributedRaidFileSystem</code></td>
+<td>RAID版本的HDFS是为了存档而设计的。针对HDFS中每个文件，创建一个更小的检验文件，并允许数据副本变为2，同时数据丢失概率保持不变。需要在集群中运行一个RaidNode后台进程</td>
+</tr>
+<tr>
+<td>View</td>
+<td><code>viewfs</code></td>
+<td><code>viewfs.ViewFileSystem</code></td>
+<td>针对其他Hadoop文件系统挂载的客户端表，通常用于联邦NN创建挂载点</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="文件系统接口"><a href="#文件系统接口" class="headerlink" title="文件系统接口"></a>文件系统接口</h3><p>Hadoop对文件系统提供了许多接口，一般使用<strong>URI方案</strong>选择合适的
+文件系统实例进行交互</p>
+<h4 id="命令行接口"><a href="#命令行接口" class="headerlink" title="命令行接口"></a>命令行接口</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ hadoop fs -copyFromLocal file hdfs://localhost/user/xyy15926/file</span><br><span class="line">	<span class="comment"># 调用Hadoop文件系统的shell命令`fs`</span></span><br><span class="line">	<span class="comment"># `-copyFromLocalFile`则是`fs`子命令</span></span><br><span class="line">	<span class="comment"># 事实上`hfds://localhost`可以省略，使用URI默认设置，即</span></span><br><span class="line">		<span class="comment"># 在`core-site.xml`中的默认设置</span></span><br><span class="line">	<span class="comment"># 类似的默认复制文件路径为HDFS中的`$HOME`</span></span><br><span class="line"></span><br><span class="line">$ hadoop fs -copyToLocal file file</span><br></pre></td></tr></table></figure>
+<h4 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h4><ul>
+<li><p>直接访问：HDFS后台进程直接服务来自于客户端的请求</p>
+<ul>
+<li>由NN内嵌的web服务器提供目录服务（默认50070端口）</li>
+<li>DN的web服务器提供文件数据（默认50075端口）</li>
+</ul>
+</li>
+<li><p>代理访问：依靠独立代理服务器通过HTTP访问HDFS</p>
+<ul>
+<li>代理服务器可以使用更严格的防火墙策略、贷款限制策略</li>
+</ul>
+</li>
+</ul>
+<h4 id="C"><a href="#C" class="headerlink" title="C"></a>C</h4><p>Hadoop提供<code>libhdfs</code>的C语言库，是Java <code>FileSystem</code>接口类的
+镜像</p>
+<ul>
+<li>被写成访问HDFS的C语言库，但其实可以访问全部的Hadoop文件
+系统</li>
+<li>使用Java原生接口（JNI）调用Java文件系统客户端</li>
+</ul>
+<h4 id="FUSE"><a href="#FUSE" class="headerlink" title="FUSE"></a>FUSE</h4><p>Filesystem in Userspace允许把按照用户空间实现的文件系统整合
+成一个Unix文件系统</p>
+<ul>
+<li>使用Hadoop Fuse-DFS功能模块，任何一个Hadoop文件系统可以
+作为一个标准文件系统进行挂载<ul>
+<li>Fuse_DFS使用C语言实现，调用libhdfs作为访问HDFS的接口</li>
+</ul>
+</li>
+<li>然后可以使用Unix工具（<code>ls</code>、<code>cat</code>等）与文件系统交互</li>
+<li>还可以使用任何编程语言调用POSIX库访问文件系统</li>
+</ul>
+<h3 id="读文件"><a href="#读文件" class="headerlink" title="读文件"></a>读文件</h3><ol>
+<li><p>客户端程序使用要读取的文件名、Read Range的开始偏移量、
+读取范围的程度等信息，询问NameNode</p>
+</li>
+<li><p>NameNode返回落在读取范围内的数据块的Location信息，根据
+与客户端的临近性（Proximity）进行排序，客户端一般选择
+最临近的DataNode发送读取请求</p>
+</li>
+</ol>
+<p>具体实现如下</p>
+<ol>
+<li><p>客户端调用<code>FileSystem</code>对象<code>open</code>方法，打开文件，获得
+<code>DistributedFileSystem</code>类的一个实例</p>
+</li>
+<li><p><code>DistributedFileSystem</code>返回<code>FSDataInputStream</code>类的实例，
+支持文件的定位、数据读取</p>
+<ul>
+<li><code>DistributedFileSystem</code>通过<strong>RPC</strong>调用NameNode，获得
+文件首批若干数据块的位置信息（Locations of Blocks）</li>
+<li>对每个数据块，NameNode会返回拥有其副本的所有DataNode
+地址</li>
+<li>其包含一个<code>DFSInputStream</code>对象，负责管理客户端对HDFS
+中DataNode、NameNode存取</li>
+</ul>
+</li>
+<li><p>客户端从输入流调用函数<code>read</code>，读取文件第一个数据块，不断
+调用<code>read</code>方法从DataNode获取数据</p>
+<ul>
+<li><code>DFSInputStream</code>保存了文件首批若干数据块所在的
+DataNode地址，连接到closest DataNode</li>
+<li>当达到数据块末尾时，<code>DFSInputStream</code>关闭到DataNode
+的连接，创建到保存其他数据块DataNode的连接</li>
+<li>首批数据块读取完毕之后，<code>DFSInputStream</code>向NameNode
+询问、提取下一批数据块的DataNode的位置信息</li>
+</ul>
+</li>
+<li><p>客户端完成文件的读取，调用<code>FSDataInputStream</code>实例<code>close</code>
+方法关闭文件</p>
+</li>
+</ol>
+<h3 id="写文件"><a href="#写文件" class="headerlink" title="写文件"></a>写文件</h3><ul>
+<li><p>客户端询问NameNode，了解应该存取哪些DataNode，然后客户端
+直接和DataNode进行通讯，使用Data Transfer协议传输数据，
+这个流式数据传输协议可以提高数据传输效率</p>
+</li>
+<li><p>创建文件时，客户端把文件数据缓存在一个临时的本地文件上，
+当本地文件累计超过一个数据块大小时，客户端程序联系
+NameNode，NameNode更新文件系统的NameSpace，返回Newly
+Allocated数据块的位置信息，客户端根据此信息本文件数据块
+从临时文件Flush到DataNode进行保存</p>
+</li>
+</ul>
+<p>具体实现如下：</p>
+<ol>
+<li><p>客户端调用<code>DistributedFileSystem</code>的<code>create</code>方法</p>
+<ul>
+<li><code>DistributedFileSystem</code>通过发起RPC告诉NameNode在
+其NameSpace创建一个新文件，此时新文件没有任何数据块</li>
+<li>NameNode检查：文件是否存在、客户端权限等，检查通过
+NameNode为新文件创建新记录、保存其信息，否则文件创建
+失败</li>
+</ul>
+</li>
+<li><p><code>DistributedFileSystem</code>返回<code>FSDataOutputStream</code>给客户端</p>
+<ul>
+<li>其包括一个<code>DFSOutputStream</code>对象，负责和NameNode、
+DataNode的通讯</li>
+</ul>
+</li>
+<li><p>客户端调用<code>FSDataOutputStream</code>对象<code>write</code>方法写入数据</p>
+<ul>
+<li><code>DFSOutputStream</code>把数据分解为数据包Packet，写入内部
+Data Queue</li>
+<li><code>DataSteamer</code>消费这个队列，写入本地临时文件中</li>
+<li>当写入数据超过一个数据块大小时，<code>DataStreamer</code>请求
+NameNode为新的数据块分配空间，即选择一系列合适的
+DataNode存放各个数据块各个副本</li>
+<li>存放各个副本的DataNode形成一个Pipeline，流水线上的
+Replica Factor数量的DataNode接收到数据包之后转发给
+下个DataNode</li>
+<li><code>DFSOutputStream</code>同时维护数据包内部Ack Queue，用于
+等待接受DataNode应答信息，只有某个数据包已经被流水线
+上所有DataNode应答后，才会从Ack Queue上删除</li>
+</ul>
+</li>
+<li><p>客户端完成数据写入，调用<code>FSDataOutputStream</code>的<code>close</code>
+方法</p>
+<ul>
+<li><code>DFSOutputStream</code>把所有的剩余的数据包发送到DataNode
+流水线上，等待应答信息</li>
+<li>最后通知NameNode文件结束</li>
+<li>NameNode自身知道文件由哪些数据块构成，其等待数据块
+复制完成，然后返回文件创建成功</li>
+</ul>
+</li>
+</ol>
+<h2 id="Hadoop平台上的列存储"><a href="#Hadoop平台上的列存储" class="headerlink" title="Hadoop平台上的列存储"></a>Hadoop平台上的列存储</h2><p>列存储的优势</p>
+<ul>
+<li><p>更少的IO操作：读取数据的时候，支持Prject Pushdown，甚至
+是Predicate Pushdown，可大大减少IO操作</p>
+</li>
+<li><p>更大的压缩比：每列中数据类型相同，可以针对性的编码、压缩</p>
+</li>
+<li><p>更少缓存失效：每列数据相同，可以使用更适合的Cpu Pipline
+编码方式，减少CPU cache miss</p>
+</li>
+</ul>
+<h3 id="RCFile"><a href="#RCFile" class="headerlink" title="RCFile"></a>RCFile</h3><p>Record Columnar File Format：FB、Ohio州立、中科院计算所合作
+研发的列存储文件格式，首次在Hadoop中引入列存储格式</p>
+<ul>
+<li><p><em>允许按行查询，同时提供列存储的压缩效率</em>的列存储格式</p>
+<ul>
+<li>具备相当于行存储的数据加载速度、负载适应能力</li>
+<li>读优化可以在扫描表格时，避免不必要的数据列读取</li>
+<li>使用列维度压缩，有效提升存储空间利用率</li>
+</ul>
+</li>
+<li><p>具体存储格式</p>
+<ul>
+<li>首先横向分割表格，生成多个Row Group，大小可以由用户
+指定</li>
+<li>在RowGroup内部，按照列存储一般做法，按列把数据分开，
+分别连续保存<ul>
+<li>写盘时，RCFile针对每列数据，使用Zlib/LZO算法进行
+压缩，减少空间占用</li>
+<li>读盘时，RCFile采用Lazy Decompression策略，即用户
+查询只涉及表中部分列时，会跳过不需要列的解压缩、
+反序列化的过程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="ORC存储格式"><a href="#ORC存储格式" class="headerlink" title="ORC存储格式"></a>ORC存储格式</h3><p>Optimized Row Columnar File：对RCFile优化的存储格式</p>
+<ul>
+<li><p>支持更加丰富的数据类型</p>
+<ul>
+<li>包括Date Time、Decimal</li>
+<li>Hive的各种Complex Type，包括：Struct、List、Map、
+Union</li>
+</ul>
+</li>
+<li><p>Self Describing的列存储文件格式</p>
+<ul>
+<li>为Streaming Read操作进行了优化</li>
+<li>支持快速查找少数数据行</li>
+</ul>
+</li>
+<li><p>Type Aware的列存储文件格式</p>
+<ul>
+<li>文件写入时，针对不同的列的数据类型，使用不同的编码器
+进行编码，提高压缩比<ul>
+<li>整数类型：Variable Length Compression</li>
+<li>字符串类型：Dictionary Encoding</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>引入轻量级索引、基本统计信息</p>
+<ul>
+<li>包括各数据列的最大/小值、总和、记录数等信息</li>
+<li>在查询过程中，通过谓词下推，可以忽略大量不符合查询
+条件的记录</li>
+</ul>
+</li>
+</ul>
+<h4 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h4><p>一个ORC文件由多个Stripe、一个包含辅助信息的FileFooter、以及
+Postscript构成</p>
+<h5 id="Stripe"><a href="#Stripe" class="headerlink" title="Stripe"></a>Stripe</h5><p>每个stripe包含index data、row data、stripe footer</p>
+<ul>
+<li><p>stripe就是ORC File中划分的row group</p>
+<ul>
+<li>默认大小为256MB，可扩展的长度只受HDFS约束</li>
+<li>大尺寸的strip、对串行IO的优化，能提高数据吞吐量、
+读取更少的文件，同时能把减轻NN负担</li>
+</ul>
+</li>
+<li><p>Index Data部分</p>
+<ul>
+<li>包含每个列的极值</li>
+<li>一系列Row Index Entry记录压缩模块的偏移量，用于跳转
+到正确的压缩块的位置，实现数据的快速读取，缺省可以
+跳过10000行</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Row Data部分；包含每个列的数据，每列由若干Data Stream
+构成</p>
+</li>
+<li><p>Stripe Footer部分</p>
+<ul>
+<li>Data Stream位置信息</li>
+<li>每列数据的编码方式</li>
+</ul>
+</li>
+</ul>
+<h5 id="File-Footer"><a href="#File-Footer" class="headerlink" title="File Footer"></a>File Footer</h5><p>包含该ORCFile文件中所有stripe的元信息</p>
+<ul>
+<li>每个Stripe的位置</li>
+<li>每个Stripe的行数</li>
+<li>每列的数据类型</li>
+<li>还有一些列级别的聚集结果，如：记录数、极值、总和</li>
+</ul>
+<h5 id="Postscript"><a href="#Postscript" class="headerlink" title="Postscript"></a>Postscript</h5><ul>
+<li>用来存储压缩参数</li>
+<li>压缩过后的Footer的长度</li>
+</ul>
+<h3 id="Parquet"><a href="#Parquet" class="headerlink" title="Parquet"></a>Parquet</h3><p>灵感来自于Google关于Drenel系统的论文，其介绍了一种支持嵌套
+结构的列存储格式，以提升查询性能</p>
+<h4 id="支持"><a href="#支持" class="headerlink" title="支持"></a>支持</h4><p>Parquet为hadoop生态系统中的所有项目，提供支持高压缩率的
+列存储格式</p>
+<ul>
+<li><p>兼容各种数据处理框架</p>
+<ul>
+<li>MapReduce</li>
+<li>Spark</li>
+<li>Cascading</li>
+<li>Crunch</li>
+<li>Scalding</li>
+<li>Kite</li>
+</ul>
+</li>
+<li><p>支持多种对象模型</p>
+<ul>
+<li>Avro</li>
+<li>Thrift</li>
+<li>Protocol Buffers</li>
+</ul>
+</li>
+<li><p>支持各种查询引擎</p>
+<ul>
+<li>Hive</li>
+<li>Impala</li>
+<li>Presto</li>
+<li>Drill</li>
+<li>Tajo</li>
+<li>HAWQ</li>
+<li>IBM Big SQL</li>
+</ul>
+</li>
+</ul>
+<h4 id="Parquet组件"><a href="#Parquet组件" class="headerlink" title="Parquet组件"></a>Parquet组件</h4><ul>
+<li><p>Storage Format：存储格式，定义了Parquet内部的数据类型、
+存储格式</p>
+</li>
+<li><p>Object Model Converter：对象转换器，由Parquet-mr实现，
+完成对象模型与Parquet数据类型的映射</p>
+<ul>
+<li>如Parquet-pig子项目，负责把内存中的Pig Tuple序列化
+并按存储格式保存为Parquet格式的文件，已经反过来，
+把Parquet格式文件的数据反序列化为Pig Tuple</li>
+</ul>
+</li>
+<li><p>Object Model：对象模型，可以理解为内存中的数据表示，包括
+Avro、Thrift、Protocal Buffer、Hive Serde、Pig Tuple、
+SparkSQL Internal Row等对象模型</p>
+</li>
+</ul>
+<h4 id="Parquet数据schema"><a href="#Parquet数据schema" class="headerlink" title="Parquet数据schema"></a>Parquet数据schema</h4><p>数据schema（结构）可以用一个棵树表达</p>
+<ul>
+<li><p>有一个根节点，根节点包含多个Feild（子节点），子节点可以
+包含子节点</p>
+</li>
+<li><p>每个field包含三个属性</p>
+<ul>
+<li><p>repetition：field出现的次数</p>
+<ul>
+<li><code>required</code>：必须出现1次</li>
+<li><code>optional</code>：出现0次或1次</li>
+<li><code>repeated</code>：出现0次或多次</li>
+</ul>
+</li>
+<li><p>type：数据类型</p>
+<ul>
+<li>primitive：原生类惬</li>
+<li>group：衍生类型</li>
+</ul>
+</li>
+<li><p>name：field名称</p>
+</li>
+</ul>
+</li>
+<li><p>Parquet通过把多个schema结构按树结构组合，提供对复杂类型
+支持</p>
+<ul>
+<li>List、Set：repeated field</li>
+<li>Map：包含键值对的Repeated Group（key为Required）</li>
+</ul>
+</li>
+<li><p>schema中有多少<strong>叶子节点</strong>，Parquet格式实际存储多少列，
+父节点则是在表头组合成schema的结构</p>
+</li>
+</ul>
+<h4 id="Parquet文件结构"><a href="#Parquet文件结构" class="headerlink" title="Parquet文件结构"></a>Parquet文件结构</h4><ul>
+<li>HDFS文件：包含数据和元数据，数据存储在多个block中</li>
+<li>HDFS Block：HDFS上最小的存储单位</li>
+<li>Row Group：按照行将数据表格划分多个单元，每个行组包含
+一定行数，行组包含该行数据各列对应的列块<ul>
+<li>一般建议采用更大的行组（512M-1G），此意味着更大的
+列块，有毅力在磁盘上串行IO</li>
+<li>由于可能依次需要读取整个行组，所以一般让一个行组刚好
+在一个HDFS数据块中，HDFS Block需要设置得大于等于行组
+大小</li>
+</ul>
+</li>
+<li>Column Chunk：每个行组中每列保存在一个列块中<ul>
+<li>行组中所有列连续的存储在行组中</li>
+<li>不同列块使用不同压缩算法压缩</li>
+<li>列块存储时保存相应统计信息，极值、空值数量，用于加快
+查询处理</li>
+<li>列块由多个页组成</li>
+</ul>
+</li>
+<li>Page：每个列块划分为多个Page<ul>
+<li>Page是压缩、编码的单元</li>
+<li>列块的不同页可以使用不同的编码方式</li>
+</ul>
+</li>
+</ul>
+<h2 id="HDFS命令"><a href="#HDFS命令" class="headerlink" title="HDFS命令"></a>HDFS命令</h2><h3 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h3><ul>
+<li>HDFS的用户就是当前linux登陆的用户</li>
+</ul>
+<h2 id="Hadoop组件"><a href="#Hadoop组件" class="headerlink" title="Hadoop组件"></a>Hadoop组件</h2><h3 id="Hadoop-Streaming"><a href="#Hadoop-Streaming" class="headerlink" title="Hadoop Streaming"></a>Hadoop Streaming</h3></div><div class="article-licensing box"><div class="licensing-title"><p>Hadoop HDFS</p><p><a href="https://xyy15926.github.io/Database/Hadoop/hdfs.html">https://xyy15926.github.io/Database/Hadoop/hdfs.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-03-21</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-07-16</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Database/">Database</a><a class="link-muted mr-2" rel="tag" href="/tags/Hadoop/">Hadoop</a><a class="link-muted mr-2" rel="tag" href="/tags/HDFS/">HDFS</a><a class="link-muted mr-2" rel="tag" href="/tags/Parquet/">Parquet</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Linux/Tool/gdb.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">GDB</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Python/Keras/backend.html"><span class="level-item">Keras 后端</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "5e61dd790830619770cc0ad71547d89e",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#HDFS设计模式"><span class="level-left"><span class="level-item">1</span><span class="level-item">HDFS设计模式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#数据块"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">数据块</span></span></a></li><li><a class="level is-mobile" href="#NameNode"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">NameNode</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Metadata的保存"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">Metadata的保存</span></span></a></li><li><a class="level is-mobile" href="#NameNode可恢复性"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">NameNode可恢复性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#多个文件系统备份"><span class="level-left"><span class="level-item">1.2.2.1</span><span class="level-item">多个文件系统备份</span></span></a></li><li><a class="level is-mobile" href="#Secondary-NameNode"><span class="level-left"><span class="level-item">1.2.2.2</span><span class="level-item">Secondary NameNode</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#DataNode"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">DataNode</span></span></a></li><li><a class="level is-mobile" href="#HDFS高可用性"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">HDFS高可用性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Failover-Controller"><span class="level-left"><span class="level-item">1.4.1</span><span class="level-item">Failover Controller</span></span></a></li></ul></li><li><a class="level is-mobile" href="#联邦HDFS"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">联邦HDFS</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Hadoop文件系统"><span class="level-left"><span class="level-item">2</span><span class="level-item">Hadoop文件系统</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#文件系统接口"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">文件系统接口</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#命令行接口"><span class="level-left"><span class="level-item">2.1.1</span><span class="level-item">命令行接口</span></span></a></li><li><a class="level is-mobile" href="#HTTP"><span class="level-left"><span class="level-item">2.1.2</span><span class="level-item">HTTP</span></span></a></li><li><a class="level is-mobile" href="#C"><span class="level-left"><span class="level-item">2.1.3</span><span class="level-item">C</span></span></a></li><li><a class="level is-mobile" href="#FUSE"><span class="level-left"><span class="level-item">2.1.4</span><span class="level-item">FUSE</span></span></a></li></ul></li><li><a class="level is-mobile" href="#读文件"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">读文件</span></span></a></li><li><a class="level is-mobile" href="#写文件"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">写文件</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Hadoop平台上的列存储"><span class="level-left"><span class="level-item">3</span><span class="level-item">Hadoop平台上的列存储</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#RCFile"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">RCFile</span></span></a></li><li><a class="level is-mobile" href="#ORC存储格式"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">ORC存储格式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#文件结构"><span class="level-left"><span class="level-item">3.2.1</span><span class="level-item">文件结构</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Stripe"><span class="level-left"><span class="level-item">3.2.1.1</span><span class="level-item">Stripe</span></span></a></li><li><a class="level is-mobile" href="#File-Footer"><span class="level-left"><span class="level-item">3.2.1.2</span><span class="level-item">File Footer</span></span></a></li><li><a class="level is-mobile" href="#Postscript"><span class="level-left"><span class="level-item">3.2.1.3</span><span class="level-item">Postscript</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Parquet"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">Parquet</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#支持"><span class="level-left"><span class="level-item">3.3.1</span><span class="level-item">支持</span></span></a></li><li><a class="level is-mobile" href="#Parquet组件"><span class="level-left"><span class="level-item">3.3.2</span><span class="level-item">Parquet组件</span></span></a></li><li><a class="level is-mobile" href="#Parquet数据schema"><span class="level-left"><span class="level-item">3.3.3</span><span class="level-item">Parquet数据schema</span></span></a></li><li><a class="level is-mobile" href="#Parquet文件结构"><span class="level-left"><span class="level-item">3.3.4</span><span class="level-item">Parquet文件结构</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#HDFS命令"><span class="level-left"><span class="level-item">4</span><span class="level-item">HDFS命令</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#用户"><span class="level-left"><span class="level-item">4.1</span><span class="level-item">用户</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Hadoop组件"><span class="level-left"><span class="level-item">5</span><span class="level-item">Hadoop组件</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Hadoop-Streaming"><span class="level-left"><span class="level-item">5.1</span><span class="level-item">Hadoop Streaming</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

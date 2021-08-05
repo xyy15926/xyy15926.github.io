@@ -1,0 +1,1723 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Category: Optimization - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">Categories</a></li><li><a href="/categories/Math-Analysis/">Math Analysis</a></li><li class="is-active"><a href="#" aria-current="page">Optimization</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-08-26T01:53:43.000Z" title="8/26/2019, 9:53:43 AM">2019-08-26</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-08-26T01:53:48.000Z" title="8/26/2019, 9:53:48 AM">2019-08-26</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">10 minutes read (About 1504 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/online_optimization.html">在线最优化</a></h1><div class="content"><h2 id="Truncated-Gradient"><a href="#Truncated-Gradient" class="headerlink" title="Truncated Gradient"></a>Truncated Gradient</h2><h3 id="L1正则化法"><a href="#L1正则化法" class="headerlink" title="L1正则化法"></a>L1正则化法</h3><p>L1正则化</p>
+<script type="math/tex; mode=display">
+w^{(t+1)} = w^{(t)} - \eta^{(t)}g^{(t)} - \eta^{(t)} \lambda sgn(w^{(t)})</script><blockquote>
+<ul>
+<li>$\lambda$：正则化项参数</li>
+<li>$sgn$：符号函数</li>
+<li>$g^{(t)}=\nabla_w L(w^{(t)}, Z^{(t)})$：损失函数对参数梯度</li>
+</ul>
+</blockquote>
+<ul>
+<li>L1正则化项在0处不可导，每次迭代使用次梯度计算正则项梯度</li>
+<li>OGD中每次根据观测到的一个样本进行权重更新
+（所以后面正则项次梯度只考虑非0处？？？）</li>
+</ul>
+<h3 id="简单截断法"><a href="#简单截断法" class="headerlink" title="简单截断法"></a>简单截断法</h3><p>简单截断法：以$k$为窗口，当$t/k$非整数时，使用标准SGD迭代，
+否则如下更新权重</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(t+1)} & = T_0 (w^{(t)} - \eta^{(t)} G^{(t)}, \theta) \\
+
+T_0(v_i, \theta) & = \left \{ \begin{array}{l}
+    0, & |v_i| \leq \theta \\
+    v_i, & otherwise
+\end{array} \right.
+\end{align*}</script><blockquote>
+<ul>
+<li>$w^{(t)}$：模型参数</li>
+<li>$g^{(t)}$：损失函数对模型参数梯度</li>
+<li>$T_0$：截断函数</li>
+<li>$\theta$：控制参数稀疏性</li>
+</ul>
+</blockquote>
+<h3 id="截断梯度法"><a href="#截断梯度法" class="headerlink" title="截断梯度法"></a>截断梯度法</h3><p>截断梯度法：以$k$为窗口，当$t/k$非整数时，使用标准SGD迭代，
+否则如下更新权重</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(t+1)} & = T_1(w^{(t)} - \eta^{(t)} g^{(t)}, \lambda^{(t)} \eta^{(t)},
+    \theta) \\
+
+T_1(v_i, \alpha, \theta) & = \left \{ \begin{array}{l}
+    max(0, v_i - \alpha), & v_i \in [0, \theta] \\
+    min(0, v_1 + \alpha), & v_i \in [-\theta, 0] \\
+    v_i, & otherwise
+\end{array} \right.
+\end{align*}</script><blockquote>
+<ul>
+<li>$\lambda, \theta$：控制参数$w$稀疏性</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对简单截断的改进，避免在实际（OgD）中参数因训练不足过小
+而被错误截断，造成特征丢失</p>
+<p><img src="/imgs/truncated_gradient_compared_with_l1.png" alt="truncated_gradient_compared_with_l1"></p>
+</li>
+</ul>
+<h2 id="Forward-Backward-Spliting"><a href="#Forward-Backward-Spliting" class="headerlink" title="Forward-Backward Spliting"></a>Forward-Backward Spliting</h2><p>FOBOS：前向后向切分，权重更新方式为<em>proximal method</em>如下</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(t.5)} & = w^{(t)} - \eta^{(t)} g^{(t)} \\
+w^{(t+1)} & = \arg\min_w \{ \frac 1 2 \|w - w^{(t.5)}\|
+    + \eta^{(t+0.5)} \Phi(w) \} \\
+& = \arg\min_w \{ \frac 1 2 \|w - w^{(t)} + \eta^{(t)} g^{(t)}\|
+    + \eta^{(t+0.5)} \Phi(w) \}
+\end{align*}</script><h3 id="L1-FOBOS"><a href="#L1-FOBOS" class="headerlink" title="L1-FOBOS"></a>L1-FOBOS</h3><p>L1-FOBOS：即令$Phi(w)=\lambda |w|_1$，则根据可加性如下</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(t+1)} & = \arg\min_w \sum_{i=1}^N (\frac 1 2 (w_i - v_i)^2
+    + \tilde \lambda |w_i|)
+w_i^{(t+1)} = \arg\min_{w_i} (\frac 1 2 (w_i - v_i)^2
+    + \tilde \lambda |w_i|)
+\end{align*}</script><blockquote>
+<ul>
+<li>$V=[v_1, v_2, \cdots, v_N]:=w^{(t.5)}$：为方便</li>
+<li>$\tilde \lambda := \eta^{t.5} \lambda$：为方便</li>
+<li>$\eta^{t.5}$：学习率，常取
+  $\eta^{(t)} \in \theta(\frac 1 {\sqrt t})$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>则对$w_i$求次梯度、分类讨论，解得</p>
+<script type="math/tex; mode=display">
+w_i^{(t+1)} = \left \{ \begin{array}{l}
+   v_i - \tilde \lambda, & v_i > \tilde \lambda \\
+   0, & |v_i| < \tilde \lambda \\
+   v_i + \tilde \lambda, & v_i < -\tilde \lambda
+\end{array} \right.</script><ul>
+<li><p>可以理解为：到当前样本为止，维度权重小于阈值
+$\eta^{(t.5)} \lambda$）时，认为该维度不够重要，
+权重置为0</p>
+</li>
+<li><p>可视为$k=1, \theta=\infty$的Tg算法</p>
+</li>
+</ul>
+</li>
+<li><p>另外，显然有$w_i^{(t+1)} v_i \geq 0$</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac 1 2 (w_i^{(t+1)} - v_i)^2 + \tilde \lambda |w_i^{(t+1)}|
+& = \frac 1 2((w_i^{(t+1)})^2 - 2 w_i^{(t+1)} v_i + v_i^2)
+   + \tilde \lambda |w_i^{(t+1)}| \\
+& \leq \frac 1 2 v_i^2
+\end{align*}</script><blockquote>
+<ul>
+<li>考虑$w_i^{(t+1)}$使得目标函数最小，带入$w=0$则得</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="Regularized-Dual-Averaging"><a href="#Regularized-Dual-Averaging" class="headerlink" title="Regularized Dual Averaging"></a>Regularized Dual Averaging</h2><p>RDA算法：正则对偶平均算法，权重更新方式为
+<strong>包含[增广]正则项的最速下降</strong></p>
+<script type="math/tex; mode=display">
+w^{(t+1)} = \arg\min_w {\frac 1 t \sum_{r=1}^t g^{(r)} w + \Phi(w)
+    + \frac {\beta^{(t)}} t h(w)}</script><ul>
+<li><p>目标函数包括三个部分</p>
+<ul>
+<li>$\frac 1 t \sum_{r=1}^t g^{(r)} w$：包含之前所有梯度
+均值</li>
+<li>$\Phi(w)$：正则项</li>
+<li>$\frac {\beta^{(t)}} t h(w)$：额外正则项，严格凸，且
+不影响稀疏性</li>
+</ul>
+</li>
+<li><p>相较于TG、FOBOS是从另一方面求解在线最优化，更有效地提升
+特征权重稀疏性</p>
+</li>
+</ul>
+<h3 id="L1-RDA"><a href="#L1-RDA" class="headerlink" title="L1 RDA"></a>L1 RDA</h3><p>L1 RDA：令$\Phi(w) := \lambda |w|_1$，
+再设$h(w) := |w|_2^2$，根据可加性则有</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(t+1)} & = \arg\min_w \{ \frac 1 t \sum_{r=1}^t <g^{(t)}, w>
+    + \lambda \|w\|_1 + \frac {\gamma} {2\sqrt t} \|w\|_2^2 \} \\
+w_i^{(t+1)} & = \arg\min_{w_i} \{bar g_i^{(t)} w_i + \lambda |w_i|
+    \frac {\gamma} {2 \sqrt t} w_i^2 \}
+\end{align*}</script><blockquote>
+<ul>
+<li>$\lambda &gt; 0, \gamma &gt; 0$</li>
+<li>$\bar g<em>i^{(t)} = \frac 1 t \sum</em>{r=1}^t g_i^{(r)}$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>对$w_i$求次梯度、置零、求解得</p>
+<script type="math/tex; mode=display">
+w_i^{(t+1)} = \left \{ \begin{array}{l}
+   -\frac {\sqrt t} {\gamma} (\bar g^{(t)} - \lambda),
+       & \bar g_i^{(t)} > \lambda \\
+   0, & |\bar g_i^{(t)}| \leq \lambda \\
+   -\frac {\sqrt t} {\gamma} (\bar g^{(t)} + \lambda),
+       & \bar g_i^{(t)} < -\lambda \\
+\end{array} \right.</script><ul>
+<li>可以理解为：某维度梯度累计均值绝对值$|bar g_i^{(t)}$
+小于阈值$\lambda$时，对应权重被置零、产生稀疏性</li>
+</ul>
+</li>
+<li><p>相较于L1-FOBOS的截断</p>
+<ul>
+<li>截断阈值为常数，更加激进、容易产生稀疏性</li>
+<li>截断判断对象为梯度累加均值，避免由于训练不足而产生
+截断</li>
+<li>只需条件$\lambda$参数，容易权衡精度、稀疏性</li>
+</ul>
+</li>
+</ul>
+<h2 id="Follow-the-Regularized-Leader"><a href="#Follow-the-Regularized-Leader" class="headerlink" title="Follow the Regularized Leader"></a>Follow the Regularized Leader</h2><p>FTRL：综合考虑L1-RDA、L1-FOBOS</p>
+<h3 id="L1-FOBOS、L1-RDA变换"><a href="#L1-FOBOS、L1-RDA变换" class="headerlink" title="L1-FOBOS、L1-RDA变换"></a>L1-FOBOS、L1-RDA变换</h3><ul>
+<li><p>将L1-FOBOS类似近端算法收敛证明中展开、去除无关项、放缩，
+得到类似L1-RDA目标函数</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(t+1)} & = \arg\min_w \{ \frac 1 2 \|w - w^{(t)} +
+   \eta^{(t)} g^{(t)}\| + \eta^{(t)} \lambda \|w\|_1 \} \\
+& = \arg\min_w \{ g^{(t)} w + \lambda \|w\|_1 +
+   \frac 1 {2 \eta^{(t)}} \|w - w^{(t)}\|_2^2 \}
+\end{align*}</script></li>
+<li><p>将L1-RDA目标函数整体整体放缩，得到</p>
+<script type="math/tex; mode=display">
+w^{(t+1)} = \arg\min_w \{ g^{(1:t)} w + t \lambda \|w\|_1
+   + \frac 1 {2\eta^{(t)}} \|w - 0\|_2^2 \}</script><blockquote>
+<ul>
+<li>$g^{(1:t)} := \sum_{r=1}^t g^{(r)}$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>FTRL综合考虑L1-FOBOS、L1-RDA，得到目标函数</p>
+<script type="math/tex; mode=display">
+w^{(t+1)} = \arg\min_w \{ g^{(1:t)} W + \lambda_1 \|w\|_1
+   + \frac {\lambda_2} 2 \|w\|_2^2 + \frac 1 2
+   \sum_{r=1}^t \sigma^{(r)} \|w - w^{(r)}\|_2^2 \}</script><ul>
+<li>使用累加梯度更新，避免因训练不充分错误截断</li>
+<li>包含L1-FOBOS、L1-RDA全部正则化项</li>
+</ul>
+</li>
+</ul>
+<h3 id="求解"><a href="#求解" class="headerlink" title="求解"></a>求解</h3><ul>
+<li><p>将FTRL中最后一项拆分、去除无关项</p>
+<script type="math/tex; mode=display">\begin{align*}
+w^{(t+1)} & = \arg\min_w \{(g^{(1:t)} - \sum_{r=1}^t
+   \sigma^{(r)} w^{(r)})w + \lambda_1 \|w\|_1 +
+   \frac 1 2 (\lambda_2 + \sum_{r=1}^t \sigma^{(r)})
+   \|w\|_2^2 + \frac 1 2 \sum_{r=1}^t \sigma^{(r)}
+   \|w^{(r)}\|_2^2 \} \\
+& = \arg\min_w \{ z^{(t)} w + \lambda_1 \|w\|_1
+   + \frac 1 2 (\lambda_2 + \sum_{r=1}^t \sigma^{(r)})
+   \|w\|_2^2 \} \\
+z^{(t)} &= g^{(1:t)} - \sum_{r=1}^t \sigma^{(r)} w^{(r)}
+\end{align*}</script></li>
+<li><p>则同样根据可加性，对各分量求次梯度、置零、求解得</p>
+<script type="math/tex; mode=display">
+w_i^{(t+1)} = \left \{ \begin{array}{l}
+   \frac 1 {\lambda_1 + \sum_{r=1}^t \sigma^{(r)}}
+       (z_i^{(t)} - \lambda_1 z_i), & z_i > \lambda_1 \\
+   0, & |z_i^{(t)}| \leq \lambda_1 \\
+   \frac 1 {\lambda_1 + \sum_{r=1}^t \sigma^{(r)}}
+       (z_i^{(t)} + \lambda_1 z_i), & z_i < -\lambda_1 \\
+\end{array} \right.</script></li>
+<li><p>其中学习率$\eta$为类似Adagrad优化器的学习率，但包括可学习
+参数$\alpha, \beta$</p>
+<script type="math/tex; mode=display">
+\eta_i^{(t)} = \frac {\alpha} {\beta + \sqrt{\sum_{r=1}^t
+   (g_i^{(r)})^2}}</script></li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-29T13:16:01.000Z" title="7/29/2019, 9:16:01 PM">2019-07-29</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-29T13:16:01.000Z" title="7/29/2019, 9:16:01 PM">2019-07-29</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">13 minutes read (About 1892 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/proxmial_method.html">Proximal Gredient Method</a></h1><div class="content"><h2 id="Proximal-Operator"><a href="#Proximal-Operator" class="headerlink" title="Proximal Operator"></a><em>Proximal Operator</em></h2><script type="math/tex; mode=display">
+prox_{f}(x) = \arg\min_u (f(u) + \frac 1 2 \|u - x\|^2)</script><blockquote>
+<ul>
+<li>$f(x)$：凸函数</li>
+</ul>
+</blockquote>
+<ul>
+<li>由于$L_2$范数的强凸性，近端算子也强凸，解总是唯一存在</li>
+<li>直观理解：寻找距离点$x$不太远、$f(u)$尽可能小的$u$</li>
+<li>以下算法都是近端算法的特例<ul>
+<li><em>shrinkage thresholding algorithm</em></li>
+<li><em>projected Landweber</em></li>
+<li><em>projected gradient</em></li>
+<li><em>alternating projections</em></li>
+<li><em>alternating-directions method of multipliers</em></li>
+<li><em>alternating split Bregman</em></li>
+</ul>
+</li>
+</ul>
+<p><img src="/imgs/proximal_operator.png" alt="proximal_operator"></p>
+<blockquote>
+<ul>
+<li>近端算子连续可微</li>
+</ul>
+</blockquote>
+<h3 id="Moreau-Envolop"><a href="#Moreau-Envolop" class="headerlink" title="Moreau Envolop"></a><em>Moreau Envolop</em></h3><script type="math/tex; mode=display">\begin{align*}
+M_{\gamma, f}(x) & = prox_{\gamma, f}(x) \\
+&= \arg\min_u (f(u) + \frac 1 {2\gamma} \|u - x\|^2) \\
+\nabla prox_{\gamma, f}(x) & = \frac 1 {\gamma}(x - prox_f(x))
+\end{align*}</script><ul>
+<li>$\gamma &gt; 0$：平衡参数，$\gamma = 1$即为普通近端算子</li>
+</ul>
+<h3 id="近端算子求解"><a href="#近端算子求解" class="headerlink" title="近端算子求解"></a>近端算子求解</h3><ul>
+<li><p>对一般凸$f(x)$，通常使用次梯度进行优化，其近端算子解为
+（即解变动方向$p-x$为负次梯度方向）</p>
+<script type="math/tex; mode=display">
+p = prox_f(x) \Leftrightarrow x - p \in \partial f(p)
+   \quad (\forall (x,p) \in R^N * R^N)</script></li>
+<li><p>对光滑凸函数$f$，上述等式对其近端算子约简为
+（即解变动方向$p-x$为负梯度方向）</p>
+<script type="math/tex; mode=display">
+p = prox_f(x) \Leftrightarrow x-p = \bigtriangledown f(p)</script></li>
+</ul>
+<h3 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h3><h4 id="分离函数"><a href="#分离函数" class="headerlink" title="分离函数"></a>分离函数</h4><script type="math/tex; mode=display">\begin{align*}
+f(x_1, \cdots, x_m) & = \sum_{i=1}^m f_i(x_i) \\
+prox_f(x_1, \cdots, x_m) & = [prox_{f_1}(x_1), \cdots, prox_{fm}(x_m)]
+\end{align*}</script><ul>
+<li><p>取$f(x) = |x|_1$，即可得即软阈值算子</p>
+<script type="math/tex; mode=display">
+(prox_{\gamma, f}(x))_i = \left \{ \begin{array}{l}
+   x_i - \gamma, & x_i \geq \gamma \\
+   0, & |x_i| < \gamma \\
+   x_i + \gamma, & x_i \leq -\gamma
+\end{array} \right.</script><blockquote>
+<ul>
+<li>参考坐标下降：近端算子中二次项中各分量无关，所以一轮
+ 迭代即为最优解</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="仿射函数分解"><a href="#仿射函数分解" class="headerlink" title="仿射函数分解"></a>仿射函数分解</h4><script type="math/tex; mode=display">\begin{align*}
+f(x) & = g(Ax + b) \\
+prox_f(x) & = x + \frac 1 {\alpha} A^T (prox_{\alpha g}(Ax + b) - Ax - b)
+\end{align*}</script><blockquote>
+<ul>
+<li>$A^T A = \alpha I, \alpha &gt; 0$：线性变换</li>
+<li>$g$：良好闭凸函数</li>
+</ul>
+</blockquote>
+<h4 id="第一投影定理"><a href="#第一投影定理" class="headerlink" title="第一投影定理"></a>第一投影定理</h4><blockquote>
+<ul>
+<li>取$f(x)$为示性函数、约束条件，即得到投影算子</li>
+</ul>
+</blockquote>
+<script type="math/tex; mode=display">\begin{align*}
+prox_{\gamma, f}(x) & = proj_C(x) = \arg\min_{u \in C}
+    \|u - x\|_2^2 \\
+f(x) & = I_C(x) = \left \{ \begin{array}{l}
+        0, x \in C \\
+        \infty, x \notin C
+    \end{array} \right.
+\end{align*}</script><h4 id="第二临近定理"><a href="#第二临近定理" class="headerlink" title="第二临近定理"></a>第二临近定理</h4><blockquote>
+<ul>
+<li>$f$为良好闭凸函数，则以下三条等价<blockquote>
+<ul>
+<li>$y = prox_f(x)$</li>
+<li>$x - y \in \partial f(y)$：由近端算子定义即得</li>
+<li>$\forall z, <x - y, z - y> \leq f(z) - f(y)$</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h4 id="Moreau-Decomposition"><a href="#Moreau-Decomposition" class="headerlink" title="Moreau Decomposition"></a><em>Moreau Decomposition</em></h4><script type="math/tex; mode=display">\begin{align*}
+prox_f(x) + prox_{f^{*}}(x) & = x \\
+prox_{\lambda f}(x) + \lambda prox_{f^{*}/lambda}(x/\lambda) & = x,
+    \lambda > 0
+\end{align*}</script><h4 id="最小值"><a href="#最小值" class="headerlink" title="最小值"></a>最小值</h4><script type="math/tex; mode=display">\begin{align*}
+\min_x prox_f(x) & = \min_x f(x) \\
+\arg\min_x prox_f(x) & = \arg\min_x f(x)
+\end{align*}</script><p>证明</p>
+<script type="math/tex; mode=display">\begin{align*}
+f(x_f) & = f(x_f) + \frac 1 2 \|x_f - x_f\|_2^2 \\
+& \geq \min_u {f(u) + \frac 1 2 \|u - x_f\|_2^2} \\
+& = prox_f(x_f) \\
+& \geq prox_f(x_p) \\
+& = f(x_p) + \frac 1 2 \|x_p - x_f\|_2^2 \\
+& \geq f(x_p) \geq f(x_f)
+\end{align*}</script><blockquote>
+<ul>
+<li>$x_f = \arg\min_x f(x)$</li>
+<li>$x_p = \arg\min_x prox_f(x)$</li>
+</ul>
+</blockquote>
+<h3 id="例"><a href="#例" class="headerlink" title="例"></a>例</h3><ul>
+<li>$f(x)=c$：<script type="math/tex">prox_{f}(x) = x</script></li>
+</ul>
+<h4 id="Projection-Operator"><a href="#Projection-Operator" class="headerlink" title="Projection Operator"></a><em>Projection Operator</em></h4><p>投影算子</p>
+<script type="math/tex; mode=display">\begin{align*}
+proj_C(x) & = \arg\min_{y \in C} \|y - x\|^2 \\
+& = \arg\min_{y \in R^N} l_C(x) + \frac 1 2 \|y-x\|^2
+\end{align*}</script><ul>
+<li>点$x$在凸集$C$上的投影：$X$上距离$x$的欧式距离最近的点</li>
+</ul>
+<h4 id="Alternating-Projection-Method"><a href="#Alternating-Projection-Method" class="headerlink" title="Alternating Projection Method"></a><em>Alternating Projection Method</em></h4><p><em>POCS/project onto convex sets method</em>：用于解同时满足多个
+凸约束的算法</p>
+<ul>
+<li><p>$f_i$作为非空闭凸集$C_i$示性函数，表示一个约束，则整个
+问题约简为<em>convex feasibility problem</em></p>
+</li>
+<li><p>只需要找到位于所有$C_i$交集的解即可</p>
+</li>
+<li><p>每次迭代</p>
+<script type="math/tex; mode=display">
+x^{(k+1)} = P_{C_1}P_{C_2} \cdots P_{C_n}x_k</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>在其他问题中投影算子不再适合，需要更一般的算子，在其他
+  各种同样的凸投影算子中，近端算子最合适</li>
+</ul>
+</blockquote>
+<h2 id="Proximal-Gradient-Method"><a href="#Proximal-Gradient-Method" class="headerlink" title="Proximal Gradient Method"></a><em>Proximal Gradient Method</em></h2><p>近端算法：分两步分别优化可微凸$F(x)$、凸$R(x)$，近似优化目标
+函数整体，不断迭代直至收敛</p>
+<script type="math/tex; mode=display">
+\min_{x \in \mathcal{H}}F(x) + R(x)</script><blockquote>
+<ul>
+<li>$F(x)$：可微、凸函数</li>
+<li>$\nabla F(x)$：<em>Lipschitz continous</em>、利普希茨常数为$L$</li>
+<li>$R(x)$：下半连续凸函函数，可能不光滑</li>
+<li>$\mathcal{H}$：目标函数定义域集合，如：希尔伯特空间</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><em>gredient step</em>：从$x^{(k)}$处沿$F(x)$负梯度方向微小移动
+达到$x^{(k.5)}$</p>
+<script type="math/tex; mode=display">
+x^{(k.5)} = x^{(k)} - \gamma \nabla F(x^{(k)})</script></li>
+<li><p><em>proximal operator step</em>：在$x^{(k.5)}$处应用$R(x)$近端
+算子，即寻找$x^{(k.5)}$附近且使得$R(x)$较小点</p>
+<script type="math/tex; mode=display">
+x^{(k+1)} = prox_{\gamma R}(x^{(k.5)})</script></li>
+</ul>
+<h3 id="目标函数推导"><a href="#目标函数推导" class="headerlink" title="目标函数推导"></a>目标函数推导</h3><script type="math/tex; mode=display">\begin{align*}
+prox_{\gamma R}(x - \gamma \nabla F(x)) & = \arg\min_u
+    (R(u) + \frac 1 {2\gamma} \|u - x + \gamma \nabla F(x)\|_2^2) \\
+& = \arg\min_u (R(u) + \frac {\gamma} 2 \|\nabla F(x)\|_2^2 +
+    \nabla F(x)^T (u-x) + \frac 1 {2\gamma} \|u-x\|_2^2) \\
+& = \arg\min_u (R(u) + F(x) + \nabla F(x)^T (u-x) +
+    \frac 1 {2\gamma} \|u - x\|_2^2) \\
+& \approx \arg\min_u(R(u) + F(u))
+\end{align*}</script><blockquote>
+<ul>
+<li>$\frac {\gamma} 2 |\nabla F(x)|_2^2, F(x)$：与$u$无关
+  ，相互替换不影响极值</li>
+<li>$0 &lt; \gamma \leq \frac 1 L$：保证最后反向泰勒展开成立</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>则$prox_{\gamma R}(x-\gamma \nabla F(x))$解即为
+“原问题最优解”（若泰勒展开完全拟合$F(x)$）</p>
+<ul>
+<li>近端算法中距离微调项部分可加法分离</li>
+<li>若$R(x)$部分也可分离，则整个目标函数可以分离，可以
+<strong>拆分为多个一元函数分别求极值</strong></li>
+</ul>
+</li>
+<li><p>考虑泰勒展开是局部性质，$u$作为极小值点只能保证在$x$附近
+领域成立，可将近端算子解作为下个迭代点</p>
+<script type="math/tex; mode=display">
+x^{(k+1)} = prox_{\gamma R}(x^{(k)} - \gamma \nabla
+   F(x^{(k)}))</script></li>
+<li><p>迭代终止条件即</p>
+<script type="math/tex; mode=display">
+\hat x = prox_{\gamma R}(\hat x - \gamma \nabla F(\hat x))</script></li>
+</ul>
+<h4 id="二阶近似证明"><a href="#二阶近似证明" class="headerlink" title="二阶近似证明"></a>二阶近似证明</h4><script type="math/tex; mode=display">\begin{align*}
+F(u) & = F(x) + \nabla F(x)^T (u - x) + \frac 1 2
+    (u - x)^T \nabla^2 F(\zeta)(u - x) \\
+& \geq F(x) + \nabla F(x)^T (u - x) \\
+& \leq F(x) + \nabla F(x)^T (u - x) + \frac L 2 \|u-x\|^2
+\end{align*}</script><blockquote>
+<ul>
+<li>$\nabla^2 F(\zeta)$：凸函数二阶导正定</li>
+<li>$|\nabla F(u) - \nabla F(x)|_2 \leq L |u-x|_2$：
+  $\nabla F(x)$利普希茨连续性质</li>
+</ul>
+</blockquote>
+<h3 id="参数确定"><a href="#参数确定" class="headerlink" title="参数确定"></a>参数确定</h3><ul>
+<li><p>$L$已知时，可直接确定$\gamma \in (0, \frac 1 L]$，</p>
+</li>
+<li><p>否则可线性迭代搜索$\gamma := \beta \gamma,\beta &lt; 1$，
+直至</p>
+<script type="math/tex; mode=display">
+F(x - PG_{\gamma R}(x)) \leq F(x) - \nabla F(x) PG_{\gamma R}(x)
+   + \frac 1 2 \|PG_{\gamma R}(x)\|_2^2</script><blockquote>
+<ul>
+<li>$PG<em>{\gamma R}(x)=x-prox</em>{\gamma R}(x-\gamma \nabla F(x))$</li>
+<li>直接根据下述利普希茨条件须求Hasse矩阵，计算量较大</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="反向推导"><a href="#反向推导" class="headerlink" title="反向推导"></a>反向推导</h3><ul>
+<li><p>对$F(x)+R(x)$在$x_0$附近作泰勒展开</p>
+<script type="math/tex; mode=display">
+F(u)+R(u) \leq F(x) + \nabla F(x)^T (u - x) +
+   \frac 1 {2\gamma} \|u - x\|_2^2 + R(x)</script><blockquote>
+<ul>
+<li>$\lambda \in (0, \frac 1 L]$</li>
+<li>$L$：$F(x)$利普希茨常数</li>
+<li>$\leq$：由Lipschitz连续可取</li>
+</ul>
+</blockquote>
+<ul>
+<li>则不等式右边就是$F(x)+R(x)$的一个上界，可以对将对其
+求极小化转化对此上界求极小</li>
+</ul>
+</li>
+<li><p>考虑对极小化目标添加常数项不影响极值，对不等式右侧添加
+与$u$无关项$\frac \gamma 2 |\nabla F(x)|_2^2$、剔除
+剔除$F(x)$凑出近端算子</p>
+<script type="math/tex; mode=display">\begin{align*}
+prox_{\gamma R} & = \arg\min_u (R(u) + \frac {\gamma} 2
+   \|\nabla F(x)\|_2^2 + \nabla F(x)^T (u-x) +
+   \frac 1 {2\gamma} \|u-x\|_2^2) \\
+& = \arg\min_u (R(u) + \|u - x + \frac 1 {2\gamma} \nabla F(x)\|_2^2)
+\end{align*}</script></li>
+</ul>
+<h2 id="近端算法推广"><a href="#近端算法推广" class="headerlink" title="近端算法推广"></a>近端算法推广</h2><h3 id="问题推广"><a href="#问题推广" class="headerlink" title="问题推广"></a>问题推广</h3><blockquote>
+<ul>
+<li>求解<em>non-differentiable</em>凸优化问题的通用投影形式</li>
+</ul>
+</blockquote>
+<script type="math/tex; mode=display">
+\min_{x \in R^N} \sum_{i=1}^N f_i(x)</script><blockquote>
+<ul>
+<li>$f_i(x)$：凸函数，不一定处处可微</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>目标函数中包含不处处连续可微函数，整个目标函数不光滑</p>
+<ul>
+<li>无法使用传统的光滑优化手段，如：最速下降、共轭梯度</li>
+<li>极小化条件为$0 \in \partial(F+R)(x)$</li>
+</ul>
+</li>
+<li><p>分开考虑各个函数，对非光滑函数使用近端算子处理</p>
+</li>
+</ul>
+<h3 id="算子推广"><a href="#算子推广" class="headerlink" title="算子推广"></a>算子推广</h3><blockquote>
+<ul>
+<li>考虑使用<em>Bregman Divergence</em>替代近端算子中欧式距离</li>
+</ul>
+</blockquote>
+<script type="math/tex; mode=display">
+prox_{\gamma, f}(x) = \arg\min_u (f(u) + \mu(u) - \mu(x) +
+    <\nabla \mu(x), u - x>)</script><blockquote>
+<ul>
+<li>取$\mu(x) = \frac 1 2 |x|_2^2$时，即为普通近端算子</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-29T13:16:01.000Z" title="7/29/2019, 9:16:01 PM">2019-07-29</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-04T03:25:54.000Z" title="8/4/2021, 11:25:54 AM">2021-08-04</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">5 minutes read (About 697 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/coordinate_descent.html">Coordinate Descent</a></h1><div class="content"><h2 id="坐标下降"><a href="#坐标下降" class="headerlink" title="坐标下降"></a>坐标下降</h2><p>坐标下降法：在当前点处延一个坐标方向进行一维搜索以求得函数
+的局部极小值</p>
+<ul>
+<li>非梯度优化算法，但能提供超过一阶的信息<ul>
+<li>SMO算法就是两块贪心坐标下降</li>
+</ul>
+</li>
+</ul>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul>
+<li><p>优化方向从算法一开始就固定，如：选择线性空间中一组基作为
+搜索方向</p>
+</li>
+<li><p>循环极小化各坐标方向上目标函数值，即：若$x^k$给定，则</p>
+<script type="math/tex; mode=display">
+x_i^{(k+1)} = \arg\min_{x \in R} f(x_1^{k+1}, \cdots,
+   x_{i-1}^{k+1}, x, x_{i+1}^{k}, \cdots, x_n^k)</script><blockquote>
+<ul>
+<li>$k$：第k轮迭代</li>
+<li>$i$：某轮迭代中更新第i个方向</li>
+</ul>
+</blockquote>
+</li>
+<li><p>对初始值为$X_0$得到迭代序列$X_1, \cdots, X_n$，对精确
+一维搜索类似最速下降有</p>
+<script type="math/tex; mode=display">
+F(X_0) \geq F(X_1) \geq \cdots \geq F(x_n)</script></li>
+<li><p>若某轮迭代中目标函数无法被有优化，说明已经达到驻点</p>
+</li>
+</ul>
+<h3 id="Adaptive-Coordinate-Descent"><a href="#Adaptive-Coordinate-Descent" class="headerlink" title="Adaptive Coordinate Descent"></a>Adaptive Coordinate Descent</h3><p>自适应坐标下降：变换坐标系使得在考虑目标函数的情况下，新坐标
+间尽可能不相关</p>
+<ul>
+<li><p>对非可拆分函数（可加？），算法可能无法在较小迭代步数中
+求得最优解</p>
+<ul>
+<li>可采用适当坐标系加速收敛，如：主成分分析进行自适应
+编码</li>
+<li>性能远超过传统坐标下降算法，甚至可以达到梯度下降的
+性能</li>
+</ul>
+<p><img src="/imgs/adaptive_coordinate_descent_illustration.png" alt="adaptive_coordinate_descent_illustration"></p>
+</li>
+<li><p>自适应坐标下降具有以下特性，和最先进的进化算法相当</p>
+<ul>
+<li>缩放不变性</li>
+<li>旋转不变性</li>
+</ul>
+</li>
+</ul>
+<h3 id="Block-Coordinate-Descent"><a href="#Block-Coordinate-Descent" class="headerlink" title="Block Coordinate Descent"></a>Block Coordinate Descent</h3><p>块坐标下降：在当前点处在一个超平面内方向进行搜索以求得函数
+的局部极小值</p>
+<ul>
+<li>即同时更新一组坐标的坐标下降</li>
+</ul>
+<h3 id="例"><a href="#例" class="headerlink" title="例"></a>例</h3><h4 id="Lasso求解"><a href="#Lasso求解" class="headerlink" title="Lasso求解"></a>Lasso求解</h4><ul>
+<li><p>目标函数</p>
+<script type="math/tex; mode=display">
+L(x) = RSS(x) + \lambda \|x\|_1 = \frac 1 2 (Ax - y)^T(Ax - y)
+   + \lambda \|x\|_1</script></li>
+<li><p>RSS求导</p>
+<script type="math/tex; mode=display">\begin{align*}
+\frac {\partial RSS} {\partial x} & = (Ax - y)^T A \\
+(\frac {\partial RSS} {\partial x})_i & = (Ax - y)^T A_{:i} \\
+& = (Ax_{i0} - y)^T A_{:i} + x_i A_{:i}^T A_{:i} \\
+& = z_i + \rho_i x_i
+\end{align*}</script><blockquote>
+<ul>
+<li>$(\frac {\partial RSS} {\partial x})_i$：RSS对$x$
+ 导数第$i$分量，即对$x_i$偏导</li>
+<li>$A_{:i}$：$A$第$i$列</li>
+<li>$x_{i0}$：$x$第$i$分量置零</li>
+<li>$z<em>i = (Ax</em>{i0} - y)^T A_{:i}$</li>
+<li>$\rho<em>i = A</em>{:i}^T A_{:i}$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>则$x_i$整体次梯度为</p>
+<script type="math/tex; mode=display">
+\frac {\partial L} {\partial x_i} = z_i + \rho_i x_i +
+   \left \{ \begin{array}{l}
+       -\lambda, & x_i < 0 \\
+       [-\lambda, \lambda], & x_i = 0 \\
+       \lambda, & x_i > 0
+   \end{array} \right.</script></li>
+<li><p>分类讨论：令整体次梯度为0求解$x_i$、回带确定参数条件</p>
+<script type="math/tex; mode=display">
+x_i = \left \{ \begin{array}{l}
+   \frac {-z_i + \lambda} {\rho_i}, & z_i > \lambda \\
+   0 , & -\lambda < z_i < \lambda \\
+   \frac {-z_i - \lambda} {\rho_i}, & z_i < -\lambda
+\end{array} \right.</script><blockquote>
+<ul>
+<li>此算子也称<em>soft threshholding</em></li>
+</ul>
+</blockquote>
+<p><img src="/imgs/lasso_ridge_lse.svg" alt="lasso_ridge_lse"></p>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">9 minutes read (About 1332 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/fenchel_duality.html">Fenchel-Legendre Duality</a></h1><div class="content"><h2 id="Legendre-Transformation"><a href="#Legendre-Transformation" class="headerlink" title="Legendre Transformation"></a><em>Legendre Transformation</em></h2><p>勒让德变换：用 $f^{ * }(p)$ 表示凸、可导函数 $f(x)$ 的变换，其中 $p$ 是 $f(x)$ 导数</p>
+<script type="math/tex; mode=display">
+f^{*}(p) = p^T x - f(x)|_{\frac {d(p^T x - f(x))} {dx} = 0}</script><blockquote>
+<ul>
+<li>$x$：参数，满足 $\frac {d(p^T x - f(x))} {dx} = 0$，随 $p$ 取值改变</li>
+<li>可导：有导数；凸：导数唯一</li>
+</ul>
+</blockquote>
+<ul>
+<li>勒让德变换是实变量的实值凸函数的对合变换<ul>
+<li>把定义在线性空间上的函数变换至对偶空间的函数</li>
+<li>是点、（切）线之间对偶关系的应用<ul>
+<li>严格凸函数中，切线、导数一一对应</li>
+<li>函数关系 $f(x)$ 可使用 $(x, y=f(x))$ 点集表示，也可用<strong>切线集合</strong>表示</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>involution</em> 对合：对合函数 $f$ 的反函数的为自身，即 $f(f(x))=x$；对合线性变换 $V$ 满足 $V^2 = E$</li>
+</ul>
+</blockquote>
+<h3 id="Legendre-变换理解（按-Fenchel-共轭）"><a href="#Legendre-变换理解（按-Fenchel-共轭）" class="headerlink" title="Legendre 变换理解（按 Fenchel 共轭）"></a><em>Legendre</em> 变换理解（按 <em>Fenchel</em> 共轭）</h3><ul>
+<li><p>$f^{*}(p)$：可理解为斜率为 $p$、同 $f(x)$ 有交点 $x_0$ 的直线在零点处值（截距）和 $f(x_0)$ 的最大差</p>
+<p><img src="/imgs/fenchel_conjugate_max_interception.png" alt="fenchel_conjugate_max_interception"></p>
+</li>
+<li><p>$x$：可以理解为函数 $f(x)$ 上距离给定斜率为 $p$、过原点的直线 $f(x)=px$ 竖直距离最大的点</p>
+<p><img src="/imgs/fenchel_conjugate_max_vertical_distance.png" alt="fenchel_conjugate_max_vertical_distance"></p>
+<blockquote>
+<ul>
+<li>类似一个端点为 $0$ 的 <em>Bregman</em> 散度</li>
+</ul>
+</blockquote>
+</li>
+<li><p><em>Legendre</em> 变换为对合变换，进行两次的变换得到原函数</p>
+<p><img src="/imgs/fenchel_conjugate_transformation_cycle.png" alt="fenchel_conjugate_transformation_cycle"></p>
+<script type="math/tex; mode=display">\begin{align*}
+f^{**}(x) & = \sup_{p \in dom(f^{*})} [x^T p - f^{*}(p)] \\
+& = \sup_{u \in dom(f)}[x^T \nabla f(u) -
+   \nabla f(u)^T u + f(u)] \\
+& = \sup_{u \in dom(f)}[f(u) + \nabla f(u)^T (x-u)] \\
+& = f(x)
+\end{align*}</script></li>
+<li><p>若视凸函数 $f(x)$ 视为积分，则其共轭 $f^{ * }(x)$ 为对另一轴积分，二者导函数互为反函数</p>
+<script type="math/tex; mode=display">
+f(x) + f^{*}(p) = xp, p = \frac {df(x)} {dx}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>以上性质均按 <em>Fenchel</em> 共轭，但要求 $f(x)$ 为凸、可导函数，故等价于 <em>Legendre</em> 变换</li>
+</ul>
+</blockquote>
+<h3 id="Legendre-变换最大值式定义"><a href="#Legendre-变换最大值式定义" class="headerlink" title="Legendre 变换最大值式定义"></a><em>Legendre</em> 变换最大值式定义</h3><script type="math/tex; mode=display">\begin{align*}
+L(p, x) &= px - f(x) \\
+\frac {\partial (px - f(x))} {\partial x} &= p - \frac {df(x)} {dx} = 0 \\
+\Rightarrow & p = \frac {df(x)} {dx}
+\end{align*}</script><ul>
+<li><em>Legendre</em> 变换可以视为寻找 $px-f(x)$ 最大值（如前述）<ul>
+<li>$f(x)$ 为凸函数，则 $p=\frac {df(x)} {dx}$ 是最大值点</li>
+<li>则将 $f(x)$ 导函数的反函数 $x=f^{-1}(p)$ 带入即可</li>
+</ul>
+</li>
+</ul>
+<h3 id="Legendre-变换数学性质"><a href="#Legendre-变换数学性质" class="headerlink" title="Legendre 变换数学性质"></a><em>Legendre</em> 变换数学性质</h3><ul>
+<li><p>标度性质</p>
+<script type="math/tex; mode=display">\begin{align*}
+f(x) & = a g(x) \rightarrow f^{*}(p) = a g^{*}(\frac p a) \\
+f(x) & = g(ax) \rightarrow f^{*}(p) = g^{*}(\frac p a)
+\end{align*}</script><p>由此，$r$次齐次函数的勒让德变换是$s$次齐次函数，满足</p>
+<script type="math/tex; mode=display">
+\frac 1 r + \frac 1 s = s</script></li>
+<li><p>平移性质</p>
+<script type="math/tex; mode=display">\begin{align*}
+f(x) & = g(x) + b \rightarrow f^{*}(p) = g^{*}(p) - b
+f(x) & = g(x+y) \rightarrow f*^{*}(p) = g^{*}(p) - py
+\end{align*}</script></li>
+<li><p>反演性质</p>
+<script type="math/tex; mode=display">
+f(x) = g^{-1}(x) \rightarrow f^{*}(p) = -p g^{*}(\frac 1 p)</script></li>
+<li><p>线性变换性质</p>
+<script type="math/tex; mode=display">
+(Af)^{*} = f^{*}A^{*}</script><blockquote>
+<ul>
+<li>$f$：$R^n$上的凸函数</li>
+<li>$A$：$R^n \rightarrow R^m$的线性变换</li>
+<li>$A^{<em>}: &lt;Ax, y^{</em>}&gt; = <x, A^{*}y^{*}>$：$A$伴随算子</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="Fenchel-Conjugate-凸共轭"><a href="#Fenchel-Conjugate-凸共轭" class="headerlink" title="Fenchel Conjugate / 凸共轭"></a><em>Fenchel Conjugate</em> / 凸共轭</h2><script type="math/tex; mode=display">
+f^{*}(p) = \sup_{x \in R}{p^Tx - f(x)}</script><ul>
+<li><em>Fenchel</em> 共轭是对 <em>Legendre</em> 变换的扩展，不再局限于凸、可导函数<ul>
+<li><em>Fenchel</em> 共轭可类似 <em>Legendre</em> 理解，但是适用范围更广</li>
+<li>对凸函数 <em>Fenchel</em> 共轭的共轭即为原函数，对非凸函数 <em>Fenchel</em> 共轭得到<strong>原函数凸包</strong></li>
+<li>用罗尔中值定理描述极值、导数关系：兼容 <em>Legendre</em> 变换中导数支撑面</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>非凸函数线性外包络是凸函数</li>
+</ul>
+</blockquote>
+<h3 id="Fenchel-Young不等式"><a href="#Fenchel-Young不等式" class="headerlink" title="Fenchel-Young不等式"></a><em>Fenchel-Young</em>不等式</h3><script type="math/tex; mode=display">
+f(x) + f^{*}(p) \geq <p, x></script><ul>
+<li><p>证明</p>
+<script type="math/tex; mode=display">\begin{align*}
+f(x) + f^{*}(p) & = f(x) + \sup_{x \in dom(f)} {(x^T p - f(x))} \\
+& \geq f(x) + x^T p - f(x) = x^T p
+\end{align*}</script></li>
+<li><p>按积分理解，仅$p$为$x$共轭时取等号</p>
+<p><img src="/imgs/fenchel_conjugate_integration_for_fenchel_young_ineq.png" alt="fenchel_conjugate_integration_for_fenchel_young_ineq"></p>
+</li>
+</ul>
+<h3 id="Fenchel-Conjugate-推导-Lagrange-Duality"><a href="#Fenchel-Conjugate-推导-Lagrange-Duality" class="headerlink" title="Fenchel Conjugate 推导 Lagrange Duality"></a><em>Fenchel Conjugate</em> 推导 <em>Lagrange Duality</em></h3><ul>
+<li><p>原问题 <em>Prime</em> </p>
+<script type="math/tex; mode=display">\begin{align*}
+& \min {f(x)} \\
+s.t. & g(x) \leq 0 \\
+\end{align*}</script></li>
+<li><p>约束条件 $g(x) \leq 0$ 扰动函数化、求 <em>Fenchel</em> 共轭</p>
+<script type="math/tex; mode=display">\begin{align*}
+p(u) & = \inf_{x \in X, g(x) \leq u} f(x) \\
+p^{*}(y) & = \sup_{y \in R^r} \{u^T y - p(u)\}
+\end{align*}</script></li>
+<li><p>记 $\lambda = -y$，并将 $y=-\lambda$ 带入 $-p^{*}(y)$ 中得到</p>
+<script type="math/tex; mode=display">\begin{align*}
+-p^{*}(y) & = \inf_{u \in R^r} \{p(u) - u^T y\} \\
+d(\lambda) & = \inf_{u \in R^r} \{p(u) + u^T \lambda\} \\
+& = \inf_{u \in R^r} \{\inf_{x \in X, g(x) \leq u} f(x)
+   + \lambda^T u\}
+\end{align*}</script><blockquote>
+<ul>
+<li>$\lambda = -y$</li>
+</ul>
+</blockquote>
+</li>
+<li><p>将 $\inf_{x \in X, g(x) \leq u}$ 外提，并考虑到约束 $g(x) \leq u$（即 $u \geq g(x)$），则</p>
+<script type="math/tex; mode=display">\begin{align*}
+\lambda \geq 0 & \Rightarrow \lambda^T g(x) \leq \lambda u \\
+d(\lambda) & = \left \{ \begin{array}{l}
+       \inf_{x \in X} \{f(x) + \lambda^T g(x)\},
+           & \lambda \geq 0 \\
+       -\infty, & otherwise
+   \end{array} \right.
+\end{align*}</script></li>
+<li><p>考虑 <em>Fenchel</em> 不等式</p>
+<script type="math/tex; mode=display">\begin{align*}
+p(u) + p^{*}(-y) & \geq u^T (-y) \\
+p(0) + p^{*}(-y) & \geq 0 \\
+p(0) & \geq -p^{*}(-y) \\
+p(0) & \geq d(\lambda)
+\end{align*}</script></li>
+<li><p>则可得 <em>Lagrange</em> 对偶 <em>Prime</em>、<em>Dual</em> 最优关系</p>
+<script type="math/tex; mode=display">
+L(x, \lambda) = f(x) + \lambda^T g(x), \lambda \geq 0 \\
+D^{*} := \max_{\lambda \geq 0} \min_x L(x, \lambda) \leq
+   \min_x \max_{\lambda \geq 0} L(x, \lambda) =: P^{*}</script><p><img src="/imgs/fenchel_conjugate_dual_gap.png" alt="fenchel_conjugate_dual_gap"></p>
+</li>
+</ul>
+<h3 id="Lagrange-Duality-推导-Fenchel-对偶"><a href="#Lagrange-Duality-推导-Fenchel-对偶" class="headerlink" title="Lagrange Duality 推导 Fenchel 对偶"></a><em>Lagrange Duality</em> 推导 <em>Fenchel</em> 对偶</h3><blockquote>
+<ul>
+<li><em>Fenchel</em> 对偶可以视为 <em>Lagrange</em> 对偶的应用</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>原问题、等价问题</p>
+<script type="math/tex; mode=display">\begin{align*}
+& \min_x & f(x) - g(x) \\
+\Leftrightarrow & \min_{x,z} & f(x) - g(z) \\
+& s.t. & x = z
+\end{align*}</script></li>
+<li><p>对上式取 <em>Lagrange</em> 对偶 $L(u)$、等价得到</p>
+<script type="math/tex; mode=display">\begin{align*}
+L(u) &= \min_{x,z} f(x) - g(z) + u^T(z-x) \\
+&= -(f^{*}(u) - g^{(-u)})
+\end{align*}</script></li>
+</ul>
+<p><img src="/imgs/fenchel_conjugate_duality.png" alt="fenchel_conjugate_duality"></p>
+<blockquote>
+<ul>
+<li><em>Fenchel</em> 对偶：寻找截距差值最大的平行切线</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">a few seconds read (About 0 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/inner_pointer.html">内点法</a></h1><div class="content"></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">a few seconds read (About 0 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/outer_pointer.html">外点法</a></h1><div class="content"></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">8 minutes read (About 1181 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/projection_method.html">Projected Gradient Descent</a></h1><div class="content"><h2 id="Projected-Gradient-Descent"><a href="#Projected-Gradient-Descent" class="headerlink" title="Projected Gradient Descent"></a>Projected Gradient Descent</h2><h3 id="受限优化问题"><a href="#受限优化问题" class="headerlink" title="受限优化问题"></a>受限优化问题</h3><script type="math/tex; mode=display">
+\min_{x \in C} f(x)</script><blockquote>
+<ul>
+<li>$C \subseteq R^d$：受限凸集</li>
+</ul>
+</blockquote>
+<p>投影梯度下降：采用后处理的方式，将迭代位置拉回到约束条件内</p>
+<ul>
+<li><p>使用一般下降算法进行位置更新，新位置$x_{t+1}^{‘}$可能
+不再满足约束条件</p>
+</li>
+<li><p>为使新位置$x<em>{t+1}^{‘}$符合受限集合，可以选择在$L_2$范数
+下距离受限集合$C$最近的的点
+$x</em>{t+1}=\arg\min<em>{x \in C} |x - x</em>{t+1}^{‘}|$作为下步
+真正迭代位置</p>
+</li>
+</ul>
+<h2 id="线性约束"><a href="#线性约束" class="headerlink" title="线性约束"></a>线性约束</h2><h3 id="Projection-Matrix"><a href="#Projection-Matrix" class="headerlink" title="Projection Matrix"></a><em>Projection Matrix</em></h3><blockquote>
+<ul>
+<li>投影矩阵：矩阵$P \in R^{n*n}$，若满足$P^T = P, P^2 = P$</li>
+<li>若$A \in R^{m*n}$为行满秩矩阵，则$A$的零空间为
+  $L_A = {x \in R^{n} | Ax = 0}$，对应正交空间为
+  $L_A^{\perp} = {A^T y | y \in R^m}$</li>
+</ul>
+</blockquote>
+<p>对$\forall x \in R^n$进行正交分解</p>
+<script type="math/tex; mode=display">\begin{align*}
+\forall x \in R^n, x & = x_1 + x_2, x_1 \in L_A,
+    x_2 \in L_A^{\perp} \\
+x_1 & = P_A x
+\end{align*}</script><blockquote>
+<ul>
+<li>$P_A = I - A^T (A A^T)^{-1} A$：$A$的投影矩阵</li>
+<li>投影矩阵$P_A$可由点对线性约束的投影定义，利用拉格朗日
+  求解</li>
+</ul>
+</blockquote>
+<p>证明</p>
+<script type="math/tex; mode=display">\begin{align*}
+x_1 & = x - x_2 = x - A^T y \\
+A x_1 & = A x - A A^T y \\
+\Rightarrow y & = (A A^T)^{-1} A (x - x_1) \\
+\Rightarrow x_1 & = x - A^T[(A A^T)^{-1} A (x - x_1)] \\
+& = x - A^T (A A^T)^{-1} A x - A^T (A A^T)^{-1} A x_1 \\
+& = (I - A^T (A A^T)^{-1} A) x = P_A x
+\end{align*}</script><blockquote>
+<ul>
+<li>投影矩阵$P$对值应用多次线性变换和只应用一次结果相同，
+  保持像不变</li>
+</ul>
+</blockquote>
+<h3 id="Projection-Operator"><a href="#Projection-Operator" class="headerlink" title="Projection Operator"></a><em>Projection Operator</em></h3><script type="math/tex; mode=display">\begin{array}{l}
+\min & f(x) \\
+s.t. & A_1 x \leq b_1 \\
+& A_2 x = b_2
+\end{array}</script><ul>
+<li><p>设$x^{k}$为当前迭代点，记$A<em>{11}$、$A</em>{12}$分别为紧、松
+约束，即</p>
+<script type="math/tex; mode=display">\begin{align*}
+A_1 & = \begin{bmatrix} A_{1,1} \\ A_{1,2} \end{bmatrix},
+& b_1 & = \begin{bmatrix} b_{1,1} \\ b_{1,2} \end{bmatrix} \\
+A_{1,1} x^k & = b_{1,1}, & A_{1,2} x^k & \leq b_{1,2}
+\end{align*}</script></li>
+<li><p>记$M = [A_{1,1}^T, A_2^T]^T$，则$s \in L_M$时是可行方向</p>
+</li>
+<li><p>对负梯度$\nabla f(x^k)$，通过$M$的投影矩阵$P_M$将其投影
+至$L_M$上即得可行下降方向$s^k = -P_M \nabla f(x^k)$</p>
+<ul>
+<li>$s^k \neq 0$：为$x^k$处可行下降方向</li>
+<li>$s^k = 0$：作如下讨论</li>
+</ul>
+</li>
+</ul>
+<h4 id="投影方向为0"><a href="#投影方向为0" class="headerlink" title="投影方向为0"></a>投影方向为0</h4><ul>
+<li><p>记$w = [u, v]^T = -(M M^T)^{-1}M \nabla f(x^k)$，则有</p>
+<script type="math/tex; mode=display">\begin{align*}
+0 & = \nabla f(x^k) + M^T w \\
+& = \nabla f(x^k) + [A_{1,1}^T, A_2^T]
+   \begin{bmatrix} u \\ v \end{bmatrix} \\
+& = \nabla f(x^k) + A_{1,1}^T u + A_2^T v
+\end{align*}</script></li>
+<li><p>若$u \geq 0$，则$x^{k}$是KKT点</p>
+<script type="math/tex; mode=display">
+\nabla f(x^k) + A_{1,1}^T u + A_{1,2}^T v = 0
+\Rightarrow x^k 为KKT点</script></li>
+<li><p>否则若$u$中有负分量，可设$u<em>0 &lt; 0$，记$\bar M$为$M$中
+去除对应列矩阵，则$\bar s^k = -P</em>{\bar M}\nabla f(x^k)$
+为$x^k$可行下降方向</p>
+<ul>
+<li><p>先反证法证明$\bar s^k \neq 0$，若$\bar s^k = 0$</p>
+<script type="math/tex; mode=display">\begin{align*}
+0 & = \nabla f(x^k) - \bar M^T (\bar M \bar M^T)^{-1}
+  \bar M \nabla f(x^k) \\
+& = \nabla f(x^k) + \bar M^T \beta \\
+\beta & = -(\bar M \bar M^T)^{-1} \bar M
+  \nabla f(x^k)
+\end{align*}</script><p>考虑到</p>
+<script type="math/tex; mode=display">\begin{align*}
+0 & = \nabla f(x^k) + M^T w \\
+& = \nabla f(x^k) + u_0 \alpha_0 + \bar M^T \bar w
+\end{align*}</script><blockquote>
+<ul>
+<li>$\alpha_0$：$M$中$u_0$对应行</li>
+</ul>
+</blockquote>
+<p>则有</p>
+<script type="math/tex; mode=display">
+u_0 \alpha_0 + \bar M^T (\bar w - \beta) = 0</script><p>与$M$行满秩条件矛盾，故$\bar s^k \neq 0$</p>
+</li>
+<li><p>证明$\bar s^k$为下降方向</p>
+<script type="math/tex; mode=display">\begin{align*}
+\nabla f(x^k)^T \bar s^k & = -\nabla f(x^k)
+  P_{\bar M} \nabla f(x^k) \\
+& = -\nabla f(x^k) P_{\bar M}^T P_{\bar M}
+  \nabla f(x^k) \\
+& = -\|P_{\bar M} \nabla f(x^k)\|_2^2 \leq 0
+\end{align*}</script></li>
+<li><p>证明$\bar s^k$方向可行（满足约束）</p>
+<ul>
+<li><p>由$P<em>{\bar M}$定义：$\bar M P</em>{\bar M} = 0$，则</p>
+<script type="math/tex; mode=display">\begin{align*}
+\bar M \bar s^k & = -\bar M \bar P_{\bar M}
+ \nabla f(x^k) \\
+& = \begin{bmatrix} \bar A_{1,1} \\ A_2
+ \end{bmatrix} \bar s^k = 0
+\end{align*}</script></li>
+<li><p>则只需证明$\alpha_0^T \bar s^k &lt; 0$</p>
+<script type="math/tex; mode=display">\begin{align*}
+0 & = \nabla f(x^k) + M^T w \\
+& = \nabla f(x^k) + u_0 \alpha_0 + \bar M^T \bar w \\
+\Rightarrow & = \nabla f(x^k)^T \bar s^k + u_0
+ \alpha_0^T \bar s^k + \bar w^T \bar M \bar s^k \\
+& = \nabla f(x^k)^T \bar s^k + u_0 \alpha_0^T \bar s^k
+\end{align*}</script><p>考虑到$u_0 &lt; 0$，则$\alpha_0^T \bar s^k &lt; 0$</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>即此时有紧约束变为松约束</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><blockquote>
+<ul>
+<li>初始化：初始点$x^0$、$k=0$、精度参数$\epsilon &gt; 0$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>构造$M = [A_{1,1}^T, A_2^T]^T$</p>
+<ul>
+<li>若$M=0$（在可行域内），令$s^k = -\nabla f(x^k)$为
+迭代方向</li>
+<li>否则令$s^k = -P_M \nabla f(x^k)$为迭代方向</li>
+</ul>
+</li>
+<li><p>若$|s^k|_2^2 \geq \epsilon$</p>
+<ul>
+<li>若$M$为空（无可下降方向），停止</li>
+<li>若$M$非空、$u &gt; 0$，停止</li>
+<li>否则，构建$M = \bar M$继续</li>
+</ul>
+</li>
+<li><p>若$|s^k|_2^2 &gt; \epsilon$，确定步长$\lambda_k$</p>
+<ul>
+<li><p>显然只需保证$A_2 x_k + \lambda_k A_2 d_k \leq b_2$
+即可</p>
+</li>
+<li><p>若$A_2 d_k &lt; 0$，则$\lambda_k$无约束，否则</p>
+<script type="math/tex; mode=display">
+\lambda_k = \max \{\frac {(b_2 - A_2 x_k)_i}
+  {(A_2 d_k)_i}\}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>即单纯型法中确定步长方法</li>
+</ul>
+</blockquote>
+</li>
+<li><p>得到新迭代点$x^{k+1} = x^k + \lambda_k s^k$、$k=k+1$</p>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">7 minutes read (About 1006 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/constrained_problems_thoeries.html">约束问题</a></h1><div class="content"><h2 id="约束问题局部解"><a href="#约束问题局部解" class="headerlink" title="约束问题局部解"></a>约束问题局部解</h2><script type="math/tex; mode=display">\begin{array}{l}
+\min & f(x), x \in R^n \\
+s.t. & c_i(x) = 0, i \in E = \{1,2,\cdots,l\}, \\
+& c_i(x) \leq 0, i \in I = \{l,l+1,\cdots,l+m\}
+\end{array}</script><ul>
+<li><p>对于一般约束优化问题，记其可行域为</p>
+<script type="math/tex; mode=display">
+D = \{x| c_i(x) = 0, i \in E, c_i(x) \leq 0, i \in I\}</script></li>
+<li><p>若 $\forall x^{<em>} \in D, \exists \epsilon$，使得当 $x \in D, |x - x^{</em>}| \leq \epsilon$ 时，总有</p>
+<script type="math/tex; mode=display">f(x) \geq f(x^{*})</script><p>则称$x^{*}$为约束问题的局部解，简称为最优解</p>
+</li>
+<li><p>若 $x \in D, 0 &lt; |x - x^{*}| \leq \epsilon$ 时，总有</p>
+<script type="math/tex; mode=display">f(x) > f(x^{*})</script><p>则称$x^{*}$是约束问题的严格局部最优解</p>
+</li>
+</ul>
+<h2 id="约束问题局部解一阶必要条件"><a href="#约束问题局部解一阶必要条件" class="headerlink" title="约束问题局部解一阶必要条件"></a>约束问题局部解一阶必要条件</h2><h3 id="定理1"><a href="#定理1" class="headerlink" title="定理1"></a>定理1</h3><blockquote>
+<ul>
+<li>设 $a_1,a_2,\cdots,a_m$ 和 $w \in R^n$，$C$ 定义如下 $$<pre><code>  C = \&#123;v |\sum_&#123;i=1&#125;^m \lambda_i a_i, \lambda_i \geq 0,
+  i=1,2,\cdots,m \&#125;
+</code></pre><script type="math/tex; mode=display">
+  若 $w \notin C$，则存在超平面 $d^T w = 0$，分离 $C$ 和 $w$，即</script>  \begin{align*}<pre><code>  d^T w &amp; \leq 0 \\
+  d^T w &amp; &gt; 0
+</code></pre>  \end{align*}$$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>显然C是闭凸集，则$\exists d \in R^n, d \neq 0$，
+$\alpha \in R$，使得</p>
+<script type="math/tex; mode=display">\begin{array}{l}
+d^T x \leq \alpha, &  \forall x \in C \\
+d^T w > \alpha &
+\end{array}</script></li>
+<li><p>又C是锥，有$0 \in C$，所以$\alpha \geq 0$，即$d^T w &gt; 0$</p>
+</li>
+<li><p>若$\exists \bar x \in C, d^T \bar x &gt; 0$，则
+$\forall \lambda \geq 0, \lambda \bar x \in C$，则有</p>
+<script type="math/tex; mode=display">
+\lambda d^T \bar x \leq \alpha</script><p>而$\lambda \rightarrow \infty$，左端趋于无穷，矛盾</p>
+</li>
+</ul>
+<h3 id="Farkas引理"><a href="#Farkas引理" class="headerlink" title="Farkas引理"></a>Farkas引理</h3><blockquote>
+<ul>
+<li>设$a_1,a_2,\cdots,a_m$和$w \in R^n$，则以下两个系统有且
+  仅有一个有解<blockquote>
+<ul>
+<li>系统I：存在$d$满足<script type="math/tex; mode=display">\begin{align*}
+ a_i^T d & \leq 0, & i=1,2,\cdots,m \\
+ w^T d & > 0
+ \end{align*}</script></li>
+<li>系统II：存在非负常数$\lambda_1,\cdots,\lambda_m$使得<script type="math/tex; mode=display">
+ w =\sum_{i=1}^m \lambda_i a_i</script></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若系统II有解，则系统I无解</p>
+<ul>
+<li><p>若系统II有解，即存在$\lambda_1,…,\lambda_m$且
+$\lambda_i \geq 0,i=1,2,\cdot,m$，使得</p>
+<script type="math/tex; mode=display">
+w = \sum_{i=1}^m \lambda_i a_i</script></li>
+<li><p>若系统I有解，则有</p>
+<script type="math/tex; mode=display">
+0 < w^T d = \sum_{i=1}^m \lambda_i a_i^T d \leq 0</script><p>矛盾，因此系统I无解</p>
+</li>
+</ul>
+</li>
+<li><p>若系统II无解，则系统I有解</p>
+<ul>
+<li><p>系统II误解，构造闭凸锥</p>
+<script type="math/tex; mode=display">
+C = \{v |\sum_{i=1}^m \lambda_i a_i, \lambda_i \geq 0,
+  i=1,2,\cdots,m \}</script><p>显然$w \notin C$</p>
+</li>
+<li><p>由<strong>定理1</strong>，存在d满足</p>
+<script type="math/tex; mode=display">\begin{array}{l}
+d^T x \leq 0, & \forall x \in C, \\
+d^T w & > 0
+\end{array}</script></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>此定理就是<strong>点要么在凸锥C内、边缘（系统II），要么在凸锥
+  外（系统I）</strong></li>
+</ul>
+</blockquote>
+<h4 id="推论1"><a href="#推论1" class="headerlink" title="推论1"></a>推论1</h4><blockquote>
+<ul>
+<li>设$a_1,a_2,\cdots,a_m$和$w \in R^n$，则以下系统有且仅有
+  一个有解<blockquote>
+<ul>
+<li>系统I：存在d满足<script type="math/tex; mode=display">\begin{array}{l}
+ a_i^T d \leq 0, &  i=1,2,\cdots,m \\
+ d_j \geq 0, &  j=1,2,\cdots,n \\
+ w^T d > 0 &
+ \end{array}</script></li>
+<li>系统II：存在非负常数$\lambda_1,…,\lambda_m$使得<script type="math/tex; mode=display">
+ w \leq \sum_{i=1}^m \lambda_i a_i</script></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若系统II有解，则系统I无解</p>
+<ul>
+<li>若系统I有解，取d带入矛盾</li>
+</ul>
+</li>
+<li><p>若系统II无解，则系统I有解</p>
+<ul>
+<li>若系统I无解<h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1></li>
+</ul>
+</li>
+</ul>
+<h4 id="推论2"><a href="#推论2" class="headerlink" title="推论2"></a>推论2</h4><blockquote>
+<ul>
+<li>设$a<em>1,a_2,\cdots,a</em>{l+m}$和$w \in R^n$，则以下两个系统
+  有且进一有一个存在解<blockquote>
+<ul>
+<li>存在d满足<script type="math/tex; mode=display">\begin{array}{l}
+ a_i^T d = 0, & i=1,2,\cdots,l \\
+ a_i^T d \leq 0, & i=l+1,l+2,\cdots,l+m \\
+ w^T d > 0
+ \end{array}</script></li>
+<li>存在常数$\lambda<em>1,\lambda_2,\cdots,\lambda</em>{l+m}$
+ 且$\lambda_i \geq 0, i=l+1, l+2, \cdots, l+m$使得<script type="math/tex; mode=display">
+ w = \sum_{i+1}^{l+m} \lambda_i a_i</script></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h2 id="迭代求解"><a href="#迭代求解" class="headerlink" title="迭代求解"></a>迭代求解</h2><h3 id="参数部分更新"><a href="#参数部分更新" class="headerlink" title="参数部分更新"></a>参数部分更新</h3><p>参数部分更新：每次更新一个或一组待估参数</p>
+<ul>
+<li><p>应用场合</p>
+<ul>
+<li>适合待估参数较少、同时估计较慢，待估参数较多可能更新
+速度慢，往往需要多次迭代更新参数</li>
+<li>一般用在机器学习算法中比较多</li>
+</ul>
+</li>
+<li><p>特点（某些算法）</p>
+<ul>
+<li><p>良好的并行特性：能够同时更新多个参数</p>
+<ul>
+<li><em>Alternating Direction Method of Multipliers</em></li>
+</ul>
+</li>
+<li><p>采用贪心策略的算法：可能无法得到最优解</p>
+<ul>
+<li>前向回归</li>
+<li>深度学习：网络层次太深，有些算法采用<em>固化</em>部分
+网络结构，估计剩余部分</li>
+</ul>
+</li>
+<li><p>能够平衡全局、局部：得到较好的解</p>
+<ul>
+<li>LARS</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">7 minutes read (About 1060 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/unconstrained_problems_thoeries.html">无约束优化</a></h1><div class="content"><h2 id="无约束局部解"><a href="#无约束局部解" class="headerlink" title="无约束局部解"></a>无约束局部解</h2><script type="math/tex; mode=display">
+minf(x), x \in R^n</script><blockquote>
+<ul>
+<li>若存在$x^{ <em> } \in R^n, \epsilon &gt; 0, \forall x \in R^n$
+  使得$|x - x^{ </em> }| &lt; \epsilon$时，恒有</li>
+<li>$f(x) \geq f(x^{ <em> })$：则称$x^{ </em> }$为f(x)的
+  <em>local minimum point/solution</em>（局部极小点/局部解）</li>
+<li>$f(x) &gt; f(x^{ <em> })$：则称$x^{ </em> }$为f(x)的
+  严格局部极小点/局部解</li>
+</ul>
+</blockquote>
+<h2 id="最优性条件"><a href="#最优性条件" class="headerlink" title="最优性条件"></a>最优性条件</h2><h3 id="First-Order-Necessary-Condtion"><a href="#First-Order-Necessary-Condtion" class="headerlink" title="First-Order Necessary Condtion"></a><em>First-Order Necessary Condtion</em></h3><blockquote>
+<ul>
+<li>无约束问题局部解的一阶必要条件：设f(x)有连续的一阶偏导，
+  弱$x^{ * }$是无约束问题的局部解，则<script type="math/tex; mode=display">\triangledown f(x{* }) = 0</script></li>
+</ul>
+</blockquote>
+<h3 id="Second-Order-Necessary-Condition"><a href="#Second-Order-Necessary-Condition" class="headerlink" title="Second-Order Necessary Condition"></a><em>Second-Order Necessary Condition</em></h3><blockquote>
+<ul>
+<li>无约束问题局部解的二阶必要条件：设f(x)有连续二阶偏导，
+  若$x^{ * }$是无约束问题的局部解，则<blockquote>
+<ul>
+<li><script type="math/tex; mode=display">\triangledown f(x^{ * }) = 0</script></li>
+<li><script type="math/tex; mode=display">\triangledown^2 f(x^{ * })半正定</script></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h3 id="Second-Order-Sufficient-Condition"><a href="#Second-Order-Sufficient-Condition" class="headerlink" title="Second-Order Sufficient Condition"></a><em>Second-Order Sufficient Condition</em></h3><blockquote>
+<ul>
+<li>无约束问题局部解的二阶充分条件：设f(x)有连续二阶偏导，
+  若在$x^{ <em> }$处满足以下，则x^{ </em> }是无约束问题的
+  <strong>严格局部解</strong><blockquote>
+<ul>
+<li><script type="math/tex; mode=display">\triangledown f(x^{ * }) = 0</script></li>
+<li><script type="math/tex; mode=display">\triangledown^2 f(x^{ * })正定</script></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h2 id="下降算法"><a href="#下降算法" class="headerlink" title="下降算法"></a>下降算法</h2><p>迭代算法：将当前迭代点<strong>向正确方向</strong>移动<strong>一定步长</strong>，然后
+检验目标值是否满足一定要求</p>
+<ul>
+<li><strong>方向</strong>、<strong>步长</strong>就是不同优化算法主要关心的两个方面</li>
+<li>还关心算法的<em>rate of convergence</em>（收敛速率）</li>
+</ul>
+<h3 id="一般下降算法框架"><a href="#一般下降算法框架" class="headerlink" title="一般下降算法框架"></a>一般下降算法框架</h3><ol>
+<li><p>取初始点$x^{(1)}$，置精度要求$\epsilon$，置k=1</p>
+</li>
+<li><p>若在点$x^{(k)}$处满足某个终止准则，则停止计算，得无约束
+优化问题最优解$x^{(k)}$，否则<strong>适当地选择</strong>$x^{(k)}$处
+<strong>搜索方向</strong></p>
+</li>
+<li><p>进行<strong>适当的一维搜索</strong>，求解一维问题</p>
+<script type="math/tex; mode=display">
+\arg\min_{\alpha} \phi(\alpha) =
+  f(x^{(k)} + \alpha d^{(k)})</script></li>
+<li><p>置k=k+1，转2</p>
+</li>
+</ol>
+<p>要使下降算法可行，需要确定</p>
+<ul>
+<li>某点出搜索方向<ul>
+<li>负梯度方向</li>
+<li>Newton方向：求方向的时候已确定步长，也可用做步长搜索</li>
+<li>拟Newton方向</li>
+</ul>
+</li>
+<li>求步长地一维搜索方式<ul>
+<li>试探法<ul>
+<li>0.618法</li>
+<li>Fibonacci方法（分数法）</li>
+<li>二分法</li>
+</ul>
+</li>
+<li>插值法<ul>
+<li>三点二次插值法</li>
+<li>二点二次插值法</li>
+<li>两点三次插值法</li>
+</ul>
+</li>
+<li>非精确一维搜索方法<ul>
+<li>Glodstein方法</li>
+<li>Armijo方法</li>
+<li>Wolfe-Powell方法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>算法终止准则</p>
+<ul>
+<li>$|\triangledown f(x^{(k)})| &lt; \epsilon$</li>
+<li>$|x^{(k+1)} - x^{(k)}| &lt; \epsilon$</li>
+<li>$|f(x^{(k+1)}) - f(x^{(k)})| &lt; \epsilon$</li>
+</ul>
+<blockquote>
+<ul>
+<li>实际计算中最优解可能永远无法迭代达到，应该采用较弱
+ 终止准则</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="算法收敛性"><a href="#算法收敛性" class="headerlink" title="算法收敛性"></a>算法收敛性</h3><blockquote>
+<ul>
+<li>收敛：序列${x^{(k)}}$或其一个子列（仍记${x^{(k)}}$）
+  满足<script type="math/tex; mode=display">
+  \lim_{k \rightarrow \infty} x^{(k)} = x^{ * }</script><blockquote>
+<ul>
+<li>$x^{ * }$：无约束问题局部解</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<p>但是这样强的结果难以证明</p>
+<ul>
+<li>往往只能证明${x^{(k)}}$的任一聚点的稳定点</li>
+<li>或是更弱的<script type="math/tex; mode=display">
+\lim_{k \rightarrow \infty} inf
+   \|\triangledown f(x^{(k)}) \| = 0</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>局部收敛算法：只有初始点充分靠近极小点时，才能保证产生
+  序列收敛</li>
+<li>全局收敛算法：对任意初始点，产生序列均能收敛</li>
+</ul>
+</blockquote>
+<h4 id="收敛速率"><a href="#收敛速率" class="headerlink" title="收敛速率"></a>收敛速率</h4><p>设序列${x^{(k)}}$收敛到$x^{ * }$，若以下极限存在</p>
+<script type="math/tex; mode=display">
+\lim _ {k \rightarrow \infty} \frac {\|x^{(k+1)} - x^{*}\|}
+    {\|x^{(k)} - x^{*}\|} = \beta</script><blockquote>
+<ul>
+<li>$0 &lt; \beta &lt; 1$：线性收敛</li>
+<li>$\beta = 0$：超线性收敛</li>
+<li>$\beta = 1$：次线性收敛（收敛速率太慢，一般不考虑）</li>
+</ul>
+</blockquote>
+<h4 id="算法的二次终止性"><a href="#算法的二次终止性" class="headerlink" title="算法的二次终止性"></a>算法的二次终止性</h4><blockquote>
+<ul>
+<li>二次终止性：若某算法对任意正定二次函数，从任意初始点出发
+  ，都能经过有限步迭代达到其极小点，则称该算法有二次终止性</li>
+</ul>
+</blockquote>
+<p>具有二次终止性的算法被认为时好算法，否则计算效果较差，原因</p>
+<ul>
+<li><p>正定二次目标函数有某些好的性质，好的算法应该能在有限步内
+达到其极小点</p>
+</li>
+<li><p>对于一个一般的目标函数，若其在极小点处的Hesse矩阵
+$\triangledown f(x^{( * )})$，则由泰勒展开式得到</p>
+<script type="math/tex; mode=display">\begin{align*}
+f(x) & = f(x^{*}) + \triangledown f(x^ {*})^T(x - x^{*}) \\
+   & + \frac 1 2 (x - x^{*})^T \triangledown^2 f(x^{*})
+       (x - x^{*}) \\
+   & + o(\|x - x^{*}\|^2)
+\end{align*}</script><p>即目标函数f(x)在极小点附近与一个正定二次函数近似，所以对
+正定二次函数好的算法，对一般目标函数也应该具有较好的性质</p>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item"><a class="link-muted" href="/categories/Math-Analysis/">Math Analysis</a><span> / </span><a class="link-muted" href="/categories/Math-Analysis/Optimization/">Optimization</a></span><span class="level-item">17 minutes read (About 2586 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Math-Analysis/Optimization/optimization_problems.html">凸优化问题</a></h1><div class="content"><h2 id="Linear-Programming"><a href="#Linear-Programming" class="headerlink" title="Linear Programming"></a><em>Linear Programming</em></h2><h3 id="数学模型"><a href="#数学模型" class="headerlink" title="数学模型"></a>数学模型</h3><h4 id="一般数学模型"><a href="#一般数学模型" class="headerlink" title="一般数学模型"></a>一般数学模型</h4><p>线性规划问题（LP）可以抽象为一般的数学模型</p>
+<script type="math/tex; mode=display">\begin{array}{l}
+(\min_x, \max_x) & S=c_1 x_1 + c_2 x_2 + \cdots + c_n x_n \\
+s.t. & \left \{ \begin{array} {l}
+        a_{1,1} x_1 + a_{1,2} x_2 + \cdots + a_{1,n} x_n (\geq = \leq) b_1 \\
+        a_{2,1} x_1 + a_{2,2} x_2 + \cdots + a_{2,n} x_n (\geq = \leq) b_2 \\
+        \vdots \\
+        a_{m,1} x_1 + a_{m,2} x_2 + \cdots + a_{m,n} x_n (\geq = \leq) b_m
+    \end{array} \right.
+\end{array}</script><blockquote>
+<ul>
+<li>$S = c_1 x_1 + c_2 x_2 + \cdots + c_n x_n$：目标函数</li>
+<li>$x_1, x_2, …, x_n$：待求解变量</li>
+<li>$b<em>i、c_i、a</em>{ij}$：实常数</li>
+<li>$(\geq = \leq)$：在三种符号中取一种</li>
+</ul>
+</blockquote>
+<h4 id="标准形式"><a href="#标准形式" class="headerlink" title="标准形式"></a>标准形式</h4><script type="math/tex; mode=display">\begin{array}{l}
+\min_x & S=c_1 x_1 + c_2 x_2 + \cdots + c_n x_n \\
+s.t. & a_{1,1} x_1 + a_{1,2} x_2 + \cdots + a_{1,n} x_n = b_1 \\
+& \vdots \\
+& a_{t,1} x_1 + a_{t,2} x_2 + \cdots + a_{t,n} x_n = b_t \\
+& a_{t+1,1} x_1 + a_{t+1,2} x_2 + \cdots + a_{t+1, n} x_n
+    \leq b_{t+1} \\
+& \vdots \\
+& a_{t+l,1} x_1 + a_{t+l,2} x_2 + \cdots + a_{t+l, n} x_n
+    \leq b_{t+l} \\
+\end{array}</script><blockquote>
+<ul>
+<li>$\max_x$：目标函数取翻转换为$\min_x$</li>
+<li><p>$\geq$：不等式左右取反转换为$\leq$</p>
+</li>
+<li><p>线性规划一般模式都可以等价转换为标准形式</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="Simplex-Method"><a href="#Simplex-Method" class="headerlink" title="Simplex Method"></a>Simplex Method</h3><p>单纯型法：利用线性规划极值点必然在单纯型顶点取得，不断迭代顶点求出极值</p>
+<h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><ul>
+<li>初始化：标准化线性规划问题，建立初始表格<ul>
+<li>最小化目标函数：目标函数系数取反，求极大</li>
+<li>不等式约束：加入松弛变量（代表不等式两端差值）</li>
+<li>变量非负：定义为两个非负变量之差</li>
+</ul>
+</li>
+<li>最优测试<ul>
+<li>若目标行系数都为非负，得到最优解，迭代停止</li>
+<li>基变量解在右端列中，非基变量解为 0</li>
+</ul>
+</li>
+<li>确定主元列<ul>
+<li>从目标行的前 $n$ 个单元格中选择一个非负单元格，确定主元列</li>
+<li>选择首个非负：解稳定，若存在最优解总是能取到</li>
+<li>选择绝对值最大：目标函数下降快，但有可能陷入死循环，无法得到最优解（不满足最优条件）</li>
+</ul>
+</li>
+<li><p>确定主元（分离变量）（行）</p>
+<ul>
+<li>对主元列所有正系数，计算右端项和其比值 $\Theta$ 比率</li>
+<li>最小 $\Theta$ 比率确定主元（行）（类似的为避免死循环，总是选择首个最小者）</li>
+</ul>
+</li>
+<li><p>转轴变换（建立新单纯形表）</p>
+<ul>
+<li>主元变 1：主元行所有变量除以主元</li>
+<li>主元列变 0：其余行减去其主元列倍主元行</li>
+<li>交换基变量：主元行变量标记为主元列对应变量</li>
+</ul>
+</li>
+</ul>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>算法时间效率<ul>
+<li>极点规模随着问题规模指数增长，所以最差效率是指数级</li>
+<li>实际应用表明，对 $m$ 个约束、$n$ 个变量的问题，算法迭代次数在 $m$ 到 $3m$ 之间，每次迭代次数正比于 $nm$</li>
+</ul>
+</li>
+<li>迭代改进</li>
+</ul>
+<h3 id="Two-Phase-Simplex-Method"><a href="#Two-Phase-Simplex-Method" class="headerlink" title="Two-Phase Simplex Method"></a>Two-Phase Simplex Method</h3><p>两阶段单纯形法：单纯型表中没有单元矩阵，无法方便找到基本可行解时使用</p>
+<ul>
+<li>在给定问题的约束等式中加入人工变量，使得新问题具有明显可行解</li>
+<li>利用单纯形法求解最小化新的线性规划问题</li>
+</ul>
+<h3 id="其他一些算法"><a href="#其他一些算法" class="headerlink" title="其他一些算法"></a>其他一些算法</h3><ul>
+<li>大 M 算法</li>
+<li><em>Ellipsoid Method</em> 椭球算法<ul>
+<li>算法时间效率<ul>
+<li>可以在多项式时间内对任意线性规划问题求解</li>
+<li>实际应用效果较单纯形法差，但是最差效率更好</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><em>Karmarkar</em> 算法<ul>
+<li>内点法（迭代改进）</li>
+</ul>
+</li>
+</ul>
+<h2 id="凸优化"><a href="#凸优化" class="headerlink" title="凸优化"></a>凸优化</h2><script type="math/tex; mode=display">\begin{array}{l}
+\min_x & f(x) \\
+s.t. & g_i(x) \leq 0, i=1，2,\cdots,k \\
+& h_i(x) = 0, i=1,2,\cdots,l
+\end{array}</script><blockquote>
+<ul>
+<li>$f(x), g(x)$：$R^n$ 上连续可微的凸函数</li>
+<li>$h_i(x)$：$R^n$ 上仿射函数</li>
+<li>仿射函数：满足 $f(x)=ax+b, a \in R^n, b \in R, x \in R^n$</li>
+</ul>
+</blockquote>
+<h3 id="二次规划"><a href="#二次规划" class="headerlink" title="二次规划"></a>二次规划</h3><script type="math/tex; mode=display">\begin{array}{l}
+\min_x & f(x)=\frac 1 2 x^TGx + c^Tx \\
+s.t. & Ax \leq b
+\end{array}</script><blockquote>
+<ul>
+<li>$G \in R^{n * n}$：$n$ 阶实对称矩阵</li>
+<li>$A \in R^{m <em> n}$：$m </em> n$ 实矩阵</li>
+<li>$b \in R^m$</li>
+<li>$c \in R^n$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>$G$ 正定</p>
+<ul>
+<li>此时目标函数 $f(x)$ 为凸函数</li>
+<li>凸二次规划</li>
+<li>问题有唯一全局最小值</li>
+<li>问题可可由椭球法在多项式时间内求解</li>
+</ul>
+</li>
+<li><p>$G$ 半正定</p>
+<ul>
+<li>此时目标函数 $f(x)$ 为凸函数</li>
+<li>半定规划</li>
+<li>若约束条件可行域不空，且目标函数在此可行域有下界，则问题有全局最小值</li>
+</ul>
+</li>
+<li><p>$G$非正定</p>
+<ul>
+<li>目标函数有多个平稳点（局部极小），<em>NP-hard</em> 问题</li>
+</ul>
+</li>
+</ul>
+<h4 id="求解"><a href="#求解" class="headerlink" title="求解"></a>求解</h4><ul>
+<li>椭球法</li>
+<li>内点法</li>
+<li>增广拉格朗日法</li>
+<li>投影梯度法</li>
+</ul>
+<h3 id="二阶锥规划"><a href="#二阶锥规划" class="headerlink" title="二阶锥规划"></a>二阶锥规划</h3><script type="math/tex; mode=display">\begin{array}{l}
+\min_x & f^Tx \\
+s.t. & \|A_ix + b_i \|_2 \leq c_i^Tx + d_i, i=1,2,\cdots,m  \\
+    & Bx=g
+\end{array}</script><blockquote>
+<ul>
+<li>$f \in R^n$</li>
+<li>$A_i \in R^{n_i * n}$，$b_i \in R^{n_i}$，$c_i \in R^{n_i}$，$d_i \in R$</li>
+<li>$B \in R^{p * n}$，$g \in R^n$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>$A_i=0,i=1,\cdots,m$：退化为线性规划</p>
+</li>
+<li><p>一般的二阶规划可以转换为二阶锥规划</p>
+<script type="math/tex; mode=display">
+X^TAX + qTX + C \leq 0 \Rightarrow
+   \|A^{1/2}x + \frac 1 2 A^{-1/2}q\|^{1/2} \leq
+   -\frac 1 4 q^TA^{-1}q - c</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>二阶锥规划可以使用内点法很快求解（多项式时间）</li>
+</ul>
+</blockquote>
+<h2 id="非线性最小二乘"><a href="#非线性最小二乘" class="headerlink" title="非线性最小二乘"></a>非线性最小二乘</h2><script type="math/tex; mode=display">\begin{align*}
+f(x) & = \frac 1 2 \sum_{i=1}^m r^2_i(x) \\
+& = \frac 1 2 r(x) r^T(x)
+\end{align*}</script><blockquote>
+<ul>
+<li>$r_i(x)$：通常为非线性函数</li>
+<li>$r(x) = (r_1(x), \cdots, r_n(x))^T$</li>
+<li>$x \in R^n, m \geq n$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>考虑目标函数梯度、<em>Hesse</em> 矩阵</p>
+<script type="math/tex; mode=display">\begin{align*}
+\nabla f(x) & = \sum_{i=1}^m \nabla r_i(x)
+   r_i(x) \\
+& = J(x)^T r(x) \\
+
+\nabla^2 f(x) & = \sum_{i=1}^m \nabla r_i(x)
+   r_i(x) + \sum_{i=1}^m r_i \nabla^2 r_i(x) \\
+& = J(x)^T J(x) + \sum_{i=1}^m r_i(x) \nabla^2 r_i(x)
+\end{align*}</script></li>
+</ul>
+<blockquote>
+<ul>
+<li><script type="math/tex; mode=display">
+  J(x) = \begin{bmatrix}
+  \frac {\partial r_1} {\partial x_1} &
+      \frac {\partial r_1} {\partial x_2} & \cdots &
+      \frac {\partial r_1} {\partial x_n} \\
+  \frac {\partial r_2} {\partial x_1} &
+      \frac {\partial r_2} {\partial x_2} & \cdots &
+      \frac {\partial r_2} {\partial x_n} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \frac {\partial r_m} {\partial x_1} &
+      \frac {\partial r_m} {\partial x_2} & \cdots &
+      \frac {\partial r_m} {\partial x_n}
+  \end{bmatrix}
+  = \begin{bmatrix}
+  \nabla r_1(x)^T \\
+  \nabla r_2(x)^T \\
+  \vdots \\
+  \nabla r_m(x)^T \\
+  \end{bmatrix}</script>  为$r(x)$的 <em>Jacobi</em> 矩阵</li>
+</ul>
+</blockquote>
+<h3 id="Gauss-Newton-法"><a href="#Gauss-Newton-法" class="headerlink" title="Gauss-Newton 法"></a><em>Gauss-Newton</em> 法</h3><ul>
+<li><p>为简化计算，略去 <em>Newton</em> 法中 <em>Hesse</em> 矩阵中 $\sum_{i=1}^m r_i(x) \nabla^2 r_i(x)$ 项，即直接求解方程组</p>
+<script type="math/tex; mode=display">
+J(x^{(k)})^T J(x^{(k)}) d = -J(x^{(k)})^T r(x^{(k)})</script></li>
+<li><p>求解同一般 <em>Newton</em> 法</p>
+</li>
+</ul>
+<h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>实际问题中</p>
+<ul>
+<li>局部解 $x^{ <em> }$ 对应的目标函数值 $f(x^{ </em> })$ 接近 0 时，采用 <em>Gauss-Newton</em> 法效果较好，此时<ul>
+<li>$|r(x^{(k)})|$ 较小</li>
+<li>曲线$r_i(x)$接近直线</li>
+<li>$\nabla^2 r_i(x) \approx 0$</li>
+</ul>
+</li>
+<li>否则效果一般</li>
+</ul>
+</li>
+<li><p>矩阵 $J(x^{(k)})^T J(x^{(k)})$ 是半正定矩阵</p>
+<ul>
+<li>当 <em>Jacobi</em> 矩阵列满秩时为正定矩阵，此时虽然 $d^{(k)}$ 是下降方向，但仍需类似修正牛顿法增加一维搜索策略保证目标函数值不上升</li>
+</ul>
+</li>
+</ul>
+<h3 id="Levenberg-Marquardt-方法"><a href="#Levenberg-Marquardt-方法" class="headerlink" title="Levenberg-Marquardt 方法"></a><em>Levenberg-Marquardt</em> 方法</h3><ul>
+<li><p>考虑到 $J(x^{(k)})$ 中各列线性相关、接近线性相关，求解 <em>Newton-Gauss </em>方法中的方程组会出现困难，可以改为求解</p>
+<script type="math/tex; mode=display">
+(J(x^{(k)})^T J(x^{(k)}) + vI) d = -J(x^{(k)})^T r(x^{(k)})</script></li>
+</ul>
+<blockquote>
+<ul>
+<li>$v$：迭代过程中需要调整的参数，<em>LM</em> 方法的关键即如何调整</li>
+</ul>
+</blockquote>
+<h4 id="定理1"><a href="#定理1" class="headerlink" title="定理1"></a>定理1</h4><blockquote>
+<ul>
+<li>若 $d(v)$ 是以上方程组的解，则 $|d(v)|^2$ 是 $v$ 的连续下降函数，且 $v \rightarrow +\infty, |d(v)| \rightarrow 0$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>$J(x^{(k)})^T J(x^{(k)})$ 是对称半正定矩阵，则存在正交阵</p>
+<script type="math/tex; mode=display">
+(P^{(k)})^T J(x^{(k)})^T J(x^{(k)}) P^{(k)} = \Lambda^{(k)}</script></li>
+<li><p>则可以解出 $|d(v)|^2$</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>增大 $v$ 可以限制 $|d^{(k)}|$，所以 <em>LM</em> 方法也被称为阻尼最小二乘法</li>
+</ul>
+</blockquote>
+<h4 id="定理2"><a href="#定理2" class="headerlink" title="定理2"></a>定理2</h4><blockquote>
+<ul>
+<li>若 $d(v)$ 是以上方程的解，则 $d(v)$ 是 $f(x)$ 在 $x^{(k)}$ 处的下降方向，且 $v \rightarrow + \infty$ 时，$d(v)$ 的方向与 $-J(x^{(k)})^T r(x^{(k)})$ 方向一致</li>
+</ul>
+</blockquote>
+<ul>
+<li>下降方向：$\nabla f(x^{(k)}) d(v) &lt; 0$ 即可</li>
+<li>方向一致：夹角余弦</li>
+</ul>
+<blockquote>
+<ul>
+<li>$v$充分大时，<em>LM</em> 方法产生的搜索方向 $d^{(k)}$ 和负梯度方向一致</li>
+</ul>
+</blockquote>
+<h4 id="参数调整方法"><a href="#参数调整方法" class="headerlink" title="参数调整方法"></a>参数调整方法</h4><blockquote>
+<ul>
+<li>使用梯度、近似 <em>Hesse</em> 矩阵定义二次函数<script type="math/tex; mode=display">
+  q(d) = f(x^{(k)}) + (J(x^{(k)})^T r(x^{(k)}))^T d + \frac 1 2 d^T (J(x^{(k)})^T J(x^{(k)})) d</script></li>
+</ul>
+</blockquote>
+<ul>
+<li><p>其增量为</p>
+<script type="math/tex; mode=display">\begin{align*}
+\Delta q^{(k)} & = q(d^{(k)}) - q(0) \\
+& = (J(x^{(k)})^T r(x^{(k)}))^T d^{(k)} + \frac 1 2
+   (d^{(k)})^T (J(x^{(k)})^T J(x^{(k)})) d^{(k)}
+\end{align*}</script></li>
+<li><p>目标函数增量</p>
+<script type="math/tex; mode=display">\begin{align*}
+\Delta f^{(k)} & = f(x^{(k)} + d^{(k)}) - f(x^{(k)}) \\
+& = f(x^{(k+1)}) - f(x^{(k)})
+\end{align*}</script></li>
+<li><p>定义$\gamma_k = \frac {\Delta f^{(k)}} {\Delta q^{(k)}}$</p>
+<ul>
+<li><p>$\gamma_k$接近1说明$\Delta f^{(k)}$接近$\Delta q^{(k)}$</p>
+<ul>
+<li>即$f(x^{(k)} + d^{(k+1)})$接近$q(d^{(k)})$</li>
+<li>即$f(x)$在$x^{(k)}$附近接近二次函数</li>
+<li>即使用Gauss-Newton方法求解最小二乘问题效果较好</li>
+<li>即LM方法求解时$v$参数应该较小</li>
+</ul>
+</li>
+<li><p>$\gamma_k$接近0说明$\Delta f^{(k)}$与$\Delta q^{(k)}$
+近似程度不好</p>
+<ul>
+<li>$d^{(k)}$不应取得过大，应减少$d^{(k)}$得模长</li>
+<li>应该增加参数$v$进行限制</li>
+<li>迭代方向趋近于负梯度方向</li>
+</ul>
+</li>
+<li><p>$\gamma_k$适中时，认为参数$v$选取合适，不做调整</p>
+<ul>
+<li>临界值通常为0.25、0.75</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h4><ol>
+<li><p>初始点 $x^{(1)}$、初始参数 $v$（小值）、精度要求 $\epsilon$，置 $k=k+1$</p>
+</li>
+<li><p>若 $|J(x^{(k)})^T r(x^{(k)})| &lt; \epsilon$，则停止计算，得到问题解 $x^{(k)}$，否则求解线性方程组</p>
+<script type="math/tex; mode=display">
+(J(x^{(k)})^T J(x^{(k)}) + v_kI) d = -J(x^{(k)})^T
+  r(x^{(k)})</script><p>得到 $d^{(k)}$</p>
+</li>
+<li><p>置 $x^{(k+1)} = x^{(k)} + d^{(k)}$，计算 $\gamma_k$</p>
+</li>
+<li><p>考虑 $\gamma$</p>
+<ul>
+<li>$\gamma &lt; 0.25$，置$v_{k+1} = 4 v_k$</li>
+<li>$\gamma &gt; 0.75$，置$v_{k+1} = v_k / 2$</li>
+<li>否则置$v_{k+1} = v_k$</li>
+</ul>
+</li>
+<li><p>置k=k+1，转2</p>
+</li>
+</ol>
+<h2 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h2><h3 id="整形规划"><a href="#整形规划" class="headerlink" title="整形规划"></a>整形规划</h3><p>整形规划：求线性函数的最值，函数包含若干<strong>整数变量</strong>，并且满足线性等式、不等式的有限约束</p>
+<h3 id="Unregularized-Least-Squares-Learning-Problem"><a href="#Unregularized-Least-Squares-Learning-Problem" class="headerlink" title="Unregularized Least Squares Learning Problem"></a><em>Unregularized Least Squares Learning Problem</em></h3><script type="math/tex; mode=display">
+w_T = \frac \gamma n \sum_{i=0}^{T-1} (I - \frac \gamma n
+    {\hat X}^T \hat X)^i {\hat X}^T \hat Y</script><blockquote>
+<ul>
+<li>$\gamma$：被引入保证 $|I - \frac \gamma n {\hat X}^T \hat X| &lt; 1$</li>
+</ul>
+</blockquote>
+<h4 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h4><ul>
+<li><p>考虑</p>
+<script type="math/tex; mode=display">
+\min_w I_s(w) = \frac 1 {2n} \|\hat X w - \hat Y\|^2</script></li>
+<li><p>将$w_{t+1}$带入$I_s(w)$即可证明每次迭代$I_s(w)$减小</p>
+<script type="math/tex; mode=display">
+w_0 = 0 \\
+w_{t+1} = (I - \frac \gamma n {\hat X}^T \hat X)w_t + \frac \gamma n {\hat X}^T \hat Y</script></li>
+</ul>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous is-invisible is-hidden-mobile"><a href="/categories/Math-Analysis/Optimization/page/0/">Previous</a></div><div class="pagination-next"><a href="/categories/Math-Analysis/Optimization/page/2/">Next</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link is-current" href="/categories/Math-Analysis/Optimization/">1</a></li><li><a class="pagination-link" href="/categories/Math-Analysis/Optimization/page/2/">2</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

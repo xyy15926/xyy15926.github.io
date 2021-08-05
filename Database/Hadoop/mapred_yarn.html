@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>MapReduce YARN - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="MapReduce YARN"><meta property="og:type" content="blog"><meta property="og:title" content="MapReduce YARN"><meta property="og:url" content="https://xyy15926.github.io/Database/Hadoop/mapred_yarn.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="MapReduce YARN"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/imgs/yarn_procedure.png"><meta property="article:published_time" content="2019-03-21T09:27:37.000Z"><meta property="article:modified_time" content="2019-02-17T03:57:08.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Hadoop"><meta property="article:tag" content="MapReduce"><meta property="article:tag" content="YARN"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/imgs/yarn_procedure.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Database/Hadoop/mapred_yarn.html"},"headline":"MapReduce YARN","image":["https://xyy15926.github.io/imgs/yarn_procedure.png"],"datePublished":"2019-03-21T09:27:37.000Z","dateModified":"2019-02-17T03:57:08.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"MapReduce YARN"}</script><link rel="canonical" href="https://xyy15926.github.io/Database/Hadoop/mapred_yarn.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-02-17T03:57:08.000Z" title="2/17/2019, 11:57:08 AM">2019-02-17</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Hadoop/">Hadoop</a></span><span class="level-item">20 minutes read (About 3030 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">MapReduce YARN</h1><div class="content"><h2 id="MapReduce1-0组件"><a href="#MapReduce1-0组件" class="headerlink" title="MapReduce1.0组件"></a>MapReduce1.0组件</h2><p>MapReduce1.0是指Hadoop1.0中组件，不是指MapReduce计算模型</p>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><ul>
+<li><p>方便扩展：能够运行在普通服务器构成的超大规模集群上</p>
+</li>
+<li><p>IO瓶颈：通过将IO分散在大规模集群的各个节点上，可以提高
+数据装载速度（大规模数据时只有部分数据可以状态在内存中）</p>
+</li>
+</ul>
+<h3 id="局限"><a href="#局限" class="headerlink" title="局限"></a>局限</h3><ul>
+<li><p>MapReduce计算模型问题（参见<em>MapReduce计算模型</em>）</p>
+</li>
+<li><p>数据处理延迟大</p>
+<ul>
+<li>MapReduce作业在Map阶段、Reduce阶段执行过程中，需要
+把中间结果存盘</li>
+<li>在MR作业间也需要通过磁盘实现作业间的数据交换</li>
+</ul>
+</li>
+<li><p>资源利用率低</p>
+<ul>
+<li>任务调度方法远未达到优化资源利用率的效果，给每个
+TaskTracker分配任务的过程比较简单</li>
+</ul>
+</li>
+</ul>
+<h3 id="资源分配"><a href="#资源分配" class="headerlink" title="资源分配"></a>资源分配</h3><ul>
+<li><p>每个TaskTracker拥有一定数量的slots，每个活动的Map、
+Reduce任务占用一个slot</p>
+</li>
+<li><p>JobTracker把任务分配给最靠近数据、有slot空闲TT</p>
+</li>
+<li><p>不考虑Task运算量大小，所有Task视为相同，如果有某个TT
+当前负载过高，会影响整体的执行</p>
+</li>
+<li><p>也可以通过Speculative Execution模式，在多个slave上
+启动同一个任务，只要其中有一个任务完成即可</p>
+</li>
+</ul>
+<h3 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h3><p>MapReduce执行引擎运行在HDFS上</p>
+<ul>
+<li><p>JobTracker：运行在NameNode上</p>
+<ul>
+<li>分解客户端提交的job为数据处理tasks，分发给集群里相关
+节点上的TaskTacker运行</li>
+<li>发送任务原则：尽量把任务推送到离数据最近的节点上，
+甚至推送到数据所在的节点上运行</li>
+</ul>
+</li>
+<li><p>TaskTracker：运行在DataNode上</p>
+<ul>
+<li>在节点上执行数据处理map、reduce tasks</li>
+<li>可能需要从其他DataNode中获取需要数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="MapRedudce2-0"><a href="#MapRedudce2-0" class="headerlink" title="MapRedudce2.0"></a>MapRedudce2.0</h2><h3 id="Shuffle"><a href="#Shuffle" class="headerlink" title="Shuffle"></a>Shuffle</h3><p>Shuffle：系统执行排序的过程</p>
+<ul>
+<li>为了确保MapReduce的输入是按键排序的</li>
+</ul>
+<h4 id="Map端"><a href="#Map端" class="headerlink" title="Map端"></a>Map端</h4><p>每个Map Task都有一个内存缓冲区用于存储map输出结果，缓冲区
+快满时需要将缓冲区数据以临时文件方式存放到磁盘中，整个Task
+结束后再对此Map Task产生所有临时作合并，生成最终正式输出文件
+，等待Reduce Task拉数据</p>
+<h2 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h2><p>Yet Another Resource Negotiator，通用任务、集群资源分配框架
+，面向<em>Hadoop</em>的编程模型</p>
+<h3 id="YARN优势"><a href="#YARN优势" class="headerlink" title="YARN优势"></a>YARN优势</h3><h4 id="扩展性"><a href="#扩展性" class="headerlink" title="扩展性"></a>扩展性</h4><ul>
+<li><p>YARN将classic/MapReduce1中Jobtracker职能划分为多个独立
+实体，改善了其面临的扩展瓶颈问题</p>
+</li>
+<li><p>MapReduce现在只是批数据处理框架，是YARN支持的数据处理
+框架的一种，独立于资源管理层，单独演化、改进</p>
+</li>
+<li><p>YARN精妙的设计可以让不同的YARN应用在同一个集群上共存，
+如一个MapReduce应用可以同时作为MPI应用运行，提高可管理性
+、集群利用率</p>
+</li>
+</ul>
+<h4 id="高效率"><a href="#高效率" class="headerlink" title="高效率"></a>高效率</h4><ul>
+<li><p>ResourceManager是单独的资源管理器</p>
+</li>
+<li><p>Job Scheduler指负责作业调度</p>
+</li>
+<li><p>根据资源预留要求、公平性、Service Level Agreement等标准
+，优化整个集群的资源利用</p>
+</li>
+</ul>
+<h4 id="一般性"><a href="#一般性" class="headerlink" title="一般性"></a>一般性</h4><p>YARN是通用资源管理框架，在其上可以搭建多种数据处理框架</p>
+<ul>
+<li>批处理：MapReduce</li>
+<li>交互式处理：Tez</li>
+<li>迭代处理：Spark</li>
+<li>实时流处理：Storm</li>
+<li>图数据处理：GraphLab/Giraph</li>
+</ul>
+<h3 id="YARN中实体"><a href="#YARN中实体" class="headerlink" title="YARN中实体"></a>YARN中实体</h3><h4 id="ResourceManager"><a href="#ResourceManager" class="headerlink" title="ResourceManager"></a>ResourceManager</h4><p>RM物理上对应主节点，逻辑上管理集群上的资源使用，其功能由
+Scheduler、ApplicationManager协调完成</p>
+<ul>
+<li><p>AppplicatonManager：接受、监控任务</p>
+<ul>
+<li><p>接受客户端提交的job</p>
+</li>
+<li><p>判断启动该job的ApplicationMaster所需的资源</p>
+</li>
+<li><p>监控ApplicationMaster的状态，并在失败时重启其</p>
+</li>
+</ul>
+</li>
+<li><p>Scheduler：分配资源、调度</p>
+<ul>
+<li><p>Schedular计算启动ApplicationManager提交的job的AM所需
+资源，将资源封装成Container</p>
+</li>
+<li><p>然后根据调度算法调度，在某个NM上启动job的AM</p>
+</li>
+<li><p>不提供失败重启、监控功能</p>
+</li>
+<li><p>Scheduler收到AM任务完成汇报之后，回收资源、向RM返回
+执行结果</p>
+</li>
+<li><p>调度算法可自定以，YARN根据不同场景提供</p>
+<ul>
+<li>FIFO Scheduler</li>
+<li>Capacity Scheduler</li>
+<li>Fair Scheduler</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="NodeManager"><a href="#NodeManager" class="headerlink" title="NodeManager"></a>NodeManager</h4><p>NM物理上对应计算节点，逻辑上<strong>监控、管理</strong>当前节点资源</p>
+<ul>
+<li><p>仅仅抽象本节点资源（cpu、内存、磁盘、网络等），并且定时
+像RM的Scheduler汇报</p>
+</li>
+<li><p>接受并处理AM的tasks启动、停止等请求</p>
+</li>
+</ul>
+<h4 id="ApplicationMaster"><a href="#ApplicationMaster" class="headerlink" title="ApplicationMaster"></a>ApplicationMaster</h4><p>AM管理集群上运行任务生命周期</p>
+<ul>
+<li><p>每个job都有一个专用的AM</p>
+</li>
+<li><p>AM启动后会计算job所需资源，并向Scheduler申请资源</p>
+</li>
+<li><p>AM运行在job运行期间，负责整个job执行过程的监控</p>
+<ul>
+<li>NM分配完任务container后，AM开始监控这些containers
+、tasks状态</li>
+<li>任务失败则回收资源重新生成</li>
+<li>成功则释放资源</li>
+<li>任务执行完毕后回报Scheduler</li>
+</ul>
+</li>
+</ul>
+<h4 id="Containers"><a href="#Containers" class="headerlink" title="Containers"></a>Containers</h4><p>YARN为将来的资源隔离提出的框架，是一组资源的集合，每个task
+对应一个container，只能在container中运行</p>
+<ul>
+<li><p>容器有特定的内存分配范围</p>
+<ul>
+<li><p>容器内存最小值即为内存分配单位，内存最大值也应该是
+内存分配单位整数倍</p>
+</li>
+<li><p>根据任务所需资源多少分配给容器整数倍内存单位，但是
+如果任务所需内存大于容器内存最大值，运行时可能会报错</p>
+</li>
+</ul>
+</li>
+<li><p>由NM确保task使用的资源不会超过分配的资源</p>
+</li>
+<li><p>注意</p>
+<ul>
+<li>AM并不运行于container中，真正的task才运行在container</li>
+</ul>
+</li>
+</ul>
+<p><img src="/imgs/yarn_procedure.png" alt="yarn_procedure"></p>
+<h3 id="Job运行过程"><a href="#Job运行过程" class="headerlink" title="Job运行过程"></a>Job运行过程</h3><h4 id="作业提交"><a href="#作业提交" class="headerlink" title="作业提交"></a>作业提交</h4><ul>
+<li>从RM获取新的作业ID</li>
+<li>作业客户端检查作业输出说明，计算输入分片（也可以配置
+在集群中产生分片）</li>
+<li>将作业资源复制到HDFS</li>
+<li>调用RM上的<code>submitApplication</code>方法提交作业</li>
+</ul>
+<h4 id="作业初始化"><a href="#作业初始化" class="headerlink" title="作业初始化"></a>作业初始化</h4><ol>
+<li>RM收到调用<code>submitApplication</code>消息后，将请求传递给
+内部scheduler，scheduler分配一个container</li>
+<li>NM在RM的管理下在容器中启动应用程序的master进程AM，
+其对作业进行初始化</li>
+<li>AM创建多个簿记对象用于接受任务进度、完成报告，保持
+对作业进度的跟踪</li>
+<li>AM接受来自共享文件系统的在客户端计算的输入分片，对
+每个分片创建一个map对象，及由<code>mapreduce.job.reduces</code>
+属性确定的多个reduce任务对象</li>
+<li>AM根据任务大小决定如何运行job，如果在新容器中分配、
+运行任务的开销大于并行运行时的开销，AM会在单个节点
+上运行，这样的作业称为<em>uberized</em></li>
+<li>AM在任何tasks执行之前通过job的<code>setup</code>方法设置job的
+<code>OutputCommiter</code>，建立作业输出目录</li>
+</ol>
+<h4 id="任务分配"><a href="#任务分配" class="headerlink" title="任务分配"></a>任务分配</h4><ol>
+<li>若作业不适合作为<em>uber</em>任务运行，AM为该作业中所有map
+、reduce任务向RM请求容器</li>
+<li>请求附着heart beat，包括每个map任务的数据本地化信息
+，特别是输入分片所在的主机、机架信息，scheduler据此
+做调度决策<ul>
+<li>理想化情况下任务分配到数据本地化节点</li>
+<li>否则优先使用机架本地化</li>
+</ul>
+</li>
+<li>请求同时指定了任务内存需求，YARN中的资源分为更细粒度
+，task可以请求最小到最大限制范围、任意最小值倍数的
+内存容量</li>
+</ol>
+<h4 id="任务执行"><a href="#任务执行" class="headerlink" title="任务执行"></a>任务执行</h4><ol>
+<li>当NM的scheduler为task分配了container，AM就可以通过
+与NM通信启动容器</li>
+<li>任务由<code>YarnChild</code>执行，在执行任务之前，需要将任务
+所需资源本地化，包括作业的配置、JAR文件、所有来自
+分布式缓存的文件，然后运行map、reduce任务</li>
+<li>对于Streaming、Pipes程序，<code>YarnChild</code>启动Streaming、
+Pipes进程，使用标准输入输出、socket与其通信（以
+MapReduce1方式运行）</li>
+</ol>
+<h4 id="进度和状态更新"><a href="#进度和状态更新" class="headerlink" title="进度和状态更新"></a>进度和状态更新</h4><ol>
+<li>task每3s通过<code>umbilical</code>接口向AM汇报进度、状态（包括
+计数器），作为job的aggregate view</li>
+<li>客户端则默认没1s查询AM接受进度更新</li>
+</ol>
+<h4 id="作业完成"><a href="#作业完成" class="headerlink" title="作业完成"></a>作业完成</h4><ol>
+<li>客户端每5s通过调用job的<code>waitForCompletion</code>检查作业
+是否完成，也可以通过HTTP callback完成作业</li>
+<li>作业完成后AM和task容器清理工作状态，OutputCommiter
+作业清理方法被调用</li>
+</ol>
+<h1 id="todo：这里逻辑有问题，要删"><a href="#todo：这里逻辑有问题，要删" class="headerlink" title="todo：这里逻辑有问题，要删"></a>todo：这里逻辑有问题，要删</h1><h2 id="MapReduce计算模型"><a href="#MapReduce计算模型" class="headerlink" title="MapReduce计算模型"></a>MapReduce计算模型</h2><ul>
+<li>分布式系统，不像一般的数据库、文件系统，无法从上至下
+、从头到尾进行求和等操作</li>
+<li>需要由分散的节点不断向一个点聚拢的计算过程，即分布式系统
+上计算模型基本都是由map、reduce步骤组成</li>
+</ul>
+<h3 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h3><p>MapReduce每步数据处理流程包括两个阶段</p>
+<ul>
+<li><p><em>Map</em>：映射</p>
+<ul>
+<li>map过程相互独立、各mapper见不通信，所以mapreduce
+只适合处理<strong>独立计算</strong>的任务</li>
+</ul>
+</li>
+<li><p><em>Reduce</em>：归一</p>
+<ul>
+<li>reduce直接处理map的输出，reduce的<strong>键</strong>为map输出
+<strong>值</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="数据处理过程"><a href="#数据处理过程" class="headerlink" title="数据处理过程"></a>数据处理过程</h4><ul>
+<li><p>需要把任何计算任务转换为一系列MapReduce作业，然后依次
+执行这些作业</p>
+</li>
+<li><p>计算过程的各个步骤之间，各个作业输出的中间结果需要存盘，
+然后才能被下个步骤使用（因为各个步骤之间没有明确流程）</p>
+</li>
+<li><p>One Pass Computation：只需要一遍扫描处理的计算任务
+MapReduce计算模型非常有效</p>
+</li>
+<li><p>Multi Pass Computation：需要在数据上进行多遍扫描、处理
+的计算任务，需要执行多个MapReduce作业计算任务，因为
+多副本复制、磁盘存取，其效率不高</p>
+</li>
+</ul>
+<h3 id="Mapred-on-DAG"><a href="#Mapred-on-DAG" class="headerlink" title="Mapred on DAG"></a>Mapred on DAG</h3><p>Directed Acyclic Graph；表示数据处理流程的有向无环图</p>
+<ul>
+<li>顶点：数据处理任务，反映一定的业务逻辑，即如何对数据进行
+转换和分析</li>
+<li>边：数据在不同的顶点间的传递</li>
+</ul>
+<h3 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>比较方面</th>
+<th>MapReduce</th>
+<th>DAG</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>操作原语</td>
+<td>map、reduce</td>
+<td>较多</td>
+</tr>
+<tr>
+<td>抽象层次</td>
+<td>低</td>
+<td>高</td>
+</tr>
+<tr>
+<td>表达能力</td>
+<td>差</td>
+<td>强</td>
+</tr>
+<tr>
+<td>易用性</td>
+<td>要手动处理job之间依赖关系，易用性差</td>
+<td>DAG本身体现数据处理流程</td>
+</tr>
+<tr>
+<td>可读性</td>
+<td>处理逻辑隐藏在代码中，没有整体逻辑</td>
+<td>较好</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><p>正是MapReduce提供操作原语少、抽象层次低，所以其表达能力
+差，同时需要用户处理更多的逻辑，易用性、可读性差</p>
+<ul>
+<li><p>复杂数据处理任务，如：机器学习算法、SQL连接查询很难
+表示用MapReduce计算默认表达</p>
+</li>
+<li><p>操作原语多并不是DAG本身的要求，DAG本身只是有向无环图，
+只是使用DAG计算模型可以提供更多的操作原语</p>
+</li>
+</ul>
+</li>
+<li><p>由于DAG的表达能力强于MapReduce，对某些处理逻辑，DAG
+   所需作业数目小于MapReduce，消除不必要的任务</p>
+<ul>
+<li><p>DAG显著提高了数据处理效率，对小规模、低延迟和大规模、
+高吞吐量的负载均有效</p>
+</li>
+<li><p>MapReduce需要通过把中间结果存盘实现同步，而DAG整合
+部分MapReduce作业，减少磁盘I/O</p>
+</li>
+<li><p>reduce任务需要等待map任务全部完成才能继续，DAG优化
+数据处理流程，减少同步Barrier</p>
+</li>
+</ul>
+</li>
+<li><p>DAG部分计算模型也由map、reduce任务构成，只是不像传统
+MapReduce计算模型中map、reduce必须成对出现</p>
+<ul>
+<li><p>或者说DAG只有一次map任务（扫描数据时），其余都是
+reduce任务？</p>
+</li>
+<li><p>从MapReduce配置也可以看出，MapReduce可以选择基于
+<code>yarn</code>或<code>yarn-tez</code></p>
+</li>
+</ul>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>MapReduce YARN</p><p><a href="https://xyy15926.github.io/Database/Hadoop/mapred_yarn.html">https://xyy15926.github.io/Database/Hadoop/mapred_yarn.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-03-21</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2019-02-17</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Hadoop/">Hadoop</a><a class="link-muted mr-2" rel="tag" href="/tags/MapReduce/">MapReduce</a><a class="link-muted mr-2" rel="tag" href="/tags/YARN/">YARN</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Database/Hadoop/hdp_family.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Hadoop概述</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Database/Hadoop/tez.html"><span class="level-item">Tez</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "3ee1a51e629eb6c236db1d1a08574324",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><ul class="menu-list"><li><a class="level is-mobile" href="#MapReduce1-0组件"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">MapReduce1.0组件</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#优势"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">优势</span></span></a></li><li><a class="level is-mobile" href="#局限"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">局限</span></span></a></li><li><a class="level is-mobile" href="#资源分配"><span class="level-left"><span class="level-item">1.1.3</span><span class="level-item">资源分配</span></span></a></li><li><a class="level is-mobile" href="#执行引擎"><span class="level-left"><span class="level-item">1.1.4</span><span class="level-item">执行引擎</span></span></a></li></ul></li><li><a class="level is-mobile" href="#MapRedudce2-0"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">MapRedudce2.0</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Shuffle"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">Shuffle</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Map端"><span class="level-left"><span class="level-item">1.2.1.1</span><span class="level-item">Map端</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#YARN"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">YARN</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#YARN优势"><span class="level-left"><span class="level-item">1.3.1</span><span class="level-item">YARN优势</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#扩展性"><span class="level-left"><span class="level-item">1.3.1.1</span><span class="level-item">扩展性</span></span></a></li><li><a class="level is-mobile" href="#高效率"><span class="level-left"><span class="level-item">1.3.1.2</span><span class="level-item">高效率</span></span></a></li><li><a class="level is-mobile" href="#一般性"><span class="level-left"><span class="level-item">1.3.1.3</span><span class="level-item">一般性</span></span></a></li></ul></li><li><a class="level is-mobile" href="#YARN中实体"><span class="level-left"><span class="level-item">1.3.2</span><span class="level-item">YARN中实体</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#ResourceManager"><span class="level-left"><span class="level-item">1.3.2.1</span><span class="level-item">ResourceManager</span></span></a></li><li><a class="level is-mobile" href="#NodeManager"><span class="level-left"><span class="level-item">1.3.2.2</span><span class="level-item">NodeManager</span></span></a></li><li><a class="level is-mobile" href="#ApplicationMaster"><span class="level-left"><span class="level-item">1.3.2.3</span><span class="level-item">ApplicationMaster</span></span></a></li><li><a class="level is-mobile" href="#Containers"><span class="level-left"><span class="level-item">1.3.2.4</span><span class="level-item">Containers</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Job运行过程"><span class="level-left"><span class="level-item">1.3.3</span><span class="level-item">Job运行过程</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#作业提交"><span class="level-left"><span class="level-item">1.3.3.1</span><span class="level-item">作业提交</span></span></a></li><li><a class="level is-mobile" href="#作业初始化"><span class="level-left"><span class="level-item">1.3.3.2</span><span class="level-item">作业初始化</span></span></a></li><li><a class="level is-mobile" href="#任务分配"><span class="level-left"><span class="level-item">1.3.3.3</span><span class="level-item">任务分配</span></span></a></li><li><a class="level is-mobile" href="#任务执行"><span class="level-left"><span class="level-item">1.3.3.4</span><span class="level-item">任务执行</span></span></a></li><li><a class="level is-mobile" href="#进度和状态更新"><span class="level-left"><span class="level-item">1.3.3.5</span><span class="level-item">进度和状态更新</span></span></a></li><li><a class="level is-mobile" href="#作业完成"><span class="level-left"><span class="level-item">1.3.3.6</span><span class="level-item">作业完成</span></span></a></li></ul></li></ul></li></ul><li><a class="level is-mobile" href="#todo：这里逻辑有问题，要删"><span class="level-left"><span class="level-item">2</span><span class="level-item">todo：这里逻辑有问题，要删</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#MapReduce计算模型"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">MapReduce计算模型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#MapReduce"><span class="level-left"><span class="level-item">2.1.1</span><span class="level-item">MapReduce</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#数据处理过程"><span class="level-left"><span class="level-item">2.1.1.1</span><span class="level-item">数据处理过程</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Mapred-on-DAG"><span class="level-left"><span class="level-item">2.1.2</span><span class="level-item">Mapred on DAG</span></span></a></li><li><a class="level is-mobile" href="#比较"><span class="level-left"><span class="level-item">2.1.3</span><span class="level-item">比较</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

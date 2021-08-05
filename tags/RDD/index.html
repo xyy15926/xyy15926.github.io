@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: RDD - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">RDD</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-08-02T15:17:39.000Z" title="8/2/2019, 11:17:39 PM">2019-08-02</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-19T01:03:11.000Z" title="7/19/2021, 9:03:11 AM">2021-07-19</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Spark/">Spark</a></span><span class="level-item">17 minutes read (About 2506 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/Spark/spark_rdd.html">Resilient Distributed Dataset</a></h1><div class="content"><h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><p>RDD：容错的、immutable、分布式、确定可重复计算的数据集</p>
+<ul>
+<li><p>RDD可分配在集群中的多个节点中以支持并行处理</p>
+<ul>
+<li>隶属于同一RDD数据，被划分为不同的Partition，以此为
+单位分布到集群环境中各个节点上</li>
+</ul>
+</li>
+<li><p>RDD是<strong>无结构的数据表</strong>，可以存放任何数据类型</p>
+</li>
+<li><p>RDD immutable</p>
+<ul>
+<li>对RDD进行转换，不会修改原RDD，只是返回新RDD</li>
+<li>这也是基于Lineage容错机制的要求</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>是Spark软件系统的核心概念</li>
+</ul>
+</blockquote>
+<h3 id="RDD容错机制"><a href="#RDD容错机制" class="headerlink" title="RDD容错机制"></a>RDD容错机制</h3><ul>
+<li><p>RDD采用基于Lineage的容错机制</p>
+<ul>
+<li>每个RDD记住确定性操作的lineage，即从其他RDD转换而来
+的路径</li>
+<li>若所有RDD的转换操作是确定的，则最终转换数据一致，
+无论机器发生的错误</li>
+<li>当某个RDD损坏时，Spark可以从上游RDD重新计算、创建
+其数据</li>
+</ul>
+</li>
+<li><p>容错语义</p>
+<ul>
+<li>输入源文件：Spark运行在HDFS、S3等容错文件系统上，从
+任何容错数据而来的RDD都是容错的</li>
+<li>receiver：可靠接收者告知可靠数据源，保证所有数据总是
+会被恰好处理一次</li>
+<li>输出：输出操作可能会使得数据被重复写出，但文件会被
+之后写入覆盖</li>
+</ul>
+</li>
+<li><p>故障类型</p>
+<ul>
+<li>worker节点故障：节点中内存数据丢失，其上接收者缓冲
+数据丢失</li>
+<li>driver节点故障：spark context丢失，所有执行算子丢失</li>
+</ul>
+</li>
+</ul>
+<h2 id="RDD操作"><a href="#RDD操作" class="headerlink" title="RDD操作"></a>RDD操作</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.rdd.<span class="type">RDD</span></span><br></pre></td></tr></table></figure>
+<h3 id="Transformation"><a href="#Transformation" class="headerlink" title="Transformation"></a>Transformation</h3><p>转换：从已有数据集创建新数据集</p>
+<ul>
+<li><p>返回新RDD，原RDD保持不变</p>
+</li>
+<li><p>转换操作Lazy</p>
+<ul>
+<li>仅记录转换操作作用的基础数据集</li>
+<li>仅当某个<strong>动作</strong>被Driver Program（客户操作）调用DAG
+的动作操作时，动作操作的一系列proceeding转换操作才会
+被启动</li>
+</ul>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Transformation</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>map(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>flatMap(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>filter(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reduceByKey(func[, numTasks])</code></td>
+<td>包含<code>(K, V)</code>键值对，返回按键聚集键值对</td>
+<td></td>
+</tr>
+<tr>
+<td><code>groupByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>aggregateByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pipe()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>coalesce()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>repartition(numPartitions)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>union(other)</code></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><code>XXXByKey</code>：RDD中应为<code>(K, V)</code>键值对</li>
+</ul>
+</blockquote>
+<p><img src="/imgs/spark_rdd_transformation.png" alt="spark_rdd_transformation"></p>
+<blockquote>
+<ul>
+<li>绿色、黑色：单、多RDD窄依赖转换</li>
+<li>紫色：KV shuffle转换</li>
+<li>黄色：重分区转换</li>
+<li>蓝色：特例转换</li>
+</ul>
+</blockquote>
+<h3 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h3><p>动作：在数据集上进行计算后返回值到驱动程序</p>
+<ul>
+<li>施加于一个RDD，通过对RDD数据集的计算返回新的结果<ul>
+<li>默认RDD会在每次执行动作时重新计算，但可以使用
+<code>cache</code>、<code>persist</code>持久化RDD至内存、硬盘中，加速下次
+查询速度</li>
+</ul>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>count()</code></td>
+<td></td>
+<td>返回包含单元素RDD的DStream</td>
+</tr>
+<tr>
+<td><code>collect()</code></td>
+<td>将RDD数据聚集至本地</td>
+<td></td>
+</tr>
+<tr>
+<td><code>countByValue()</code></td>
+<td>返回<code>(T, long)</code>键值对</td>
+<td></td>
+</tr>
+<tr>
+<td><code>countByKey()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>first()</code></td>
+<td></td>
+<td>返回包含单元素RDDd的DStream</td>
+</tr>
+<tr>
+<td><code>reduce(func)</code></td>
+<td></td>
+<td>返回包含单元素RDD的DStream</td>
+</tr>
+<tr>
+<td><code>take(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>foreach(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>foreachPartition(func)</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>join(other[, numTasks])</code></td>
+<td>包含<code>(K,V)</code>，与另一<code>(K,W)</code>连接</td>
+<td></td>
+</tr>
+<tr>
+<td><code>cogroup(other[, numTasks])</code></td>
+<td>包含<code>(K,V)</code>、输入<code>(K,W)</code>，返回<code>(K, Seq(V), Seq(W)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><code>numTasks</code>：默认使用Spark默认并发数目</li>
+</ul>
+</blockquote>
+<h3 id="DStream-RDD"><a href="#DStream-RDD" class="headerlink" title="DStream RDD"></a>DStream RDD</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RDD级`map`：`func`以RDD为参数，自定义转换操作</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transform</span></span>(func)</span><br><span class="line"><span class="comment">// RDD级`foreach`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foreachRDD</span></span>(func)</span><br><span class="line"></span><br><span class="line"><span class="comment">// RDD级`reduce`</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateStateByKey</span></span>[<span class="type">S</span>: <span class="type">ClassTag</span>](</span><br><span class="line">	<span class="comment">// `K`、`Seq[V]`：当前RDD中键`K`对应值`V`集合</span></span><br><span class="line">	<span class="comment">// `Option[S]`：上个RDD结束后键`K`对应状态</span></span><br><span class="line">	updateFunc: (<span class="type">Iterator</span>[(<span class="type">K</span>, <span class="type">Seq</span>[<span class="type">V</span>], <span class="type">Option</span>[<span class="type">S</span>])]) =&gt; <span class="type">Iterator</span>[(<span class="type">K</span>, <span class="type">S</span>)],</span><br><span class="line">	<span class="comment">// 分区算法</span></span><br><span class="line"></span><br><span class="line">	partitioner: <span class="type">Partitioner</span>,</span><br><span class="line">	<span class="comment">// 是否在接下来Streaming执行过程中产生的RDD使用相同分区算法</span></span><br><span class="line">	remmemberPartition: <span class="type">Boolean</span>,</span><br><span class="line">	<span class="comment">// 键值对的初始状态</span></span><br><span class="line">	initRDD: <span class="type">RDD</span>[(<span class="type">K</span>,<span class="type">S</span>)]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>RDD分布在多个worker节点上，对不可序列化传递对象，需要在
+每个worker节点独立创建</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dstream.foreachRDD(rdd =&gt; &#123;</span><br><span class="line">	rdd.foreachPartition(partitionOfRecords =&gt; &#123;</span><br><span class="line">		<span class="comment">// 为每个partition创建不可序列化网络连接</span></span><br><span class="line">		<span class="comment">// 为每个record创建成本过高</span></span><br><span class="line">		<span class="keyword">val</span> connection = createNewConnnection()</span><br><span class="line">		<span class="comment">// 进一步可以维护静态连接对象池</span></span><br><span class="line">		<span class="comment">// val connection = ConnectionPool.getConnection()</span></span><br><span class="line">		partitionOfRecords.foreach(record =&gt; connection.send(record))</span><br><span class="line">		connection.close()</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="DStream-Window-Action"><a href="#DStream-Window-Action" class="headerlink" title="DStream Window Action"></a>DStream Window Action</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Window Action</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>window(windowLength, slideInterval)</code></td>
+<td>基于DStream产生的窗口化批数据产生DStream</td>
+</tr>
+<tr>
+<td><code>countByWindow(windowLenght, slideInterval)</code></td>
+<td>返回滑动窗口数</td>
+</tr>
+<tr>
+<td><code>reduceByWindow(func, windowLength, slideInterval)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reduceByKeyAndWindow(func, windowLength, slidenInterval[, numTasks])</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reduceByKeyAndWindow(func, invFunc, windowLength, slideInterval[, numTasks])</code></td>
+<td>须提供<code>invFunc</code>消除离开窗口RDD对reduce结果影响</td>
+</tr>
+<tr>
+<td><code>countByValueAndWindow(windowLength, slideInterval[, numTasks])</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ul>
+<li><code>windowLength</code>：窗口长度</li>
+<li><p><code>slideInterval</code>：滑动间隔</p>
+</li>
+<li><p>以上操作默认会持久化RDD至内存，无需手动调用<code>persist</code>等方法</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/imgs/spark_streaming_dstream_window_based_transformation.png" alt="spark_streaming_dstream_window_based_operation"></p>
+<h3 id="Output"><a href="#Output" class="headerlink" title="Output"></a>Output</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Output Operation</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>print</code></td>
+<td>打印前10条元素</td>
+<td>每个RDD打印前10条元素</td>
+</tr>
+<tr>
+<td><code>saveAsObjectFile(prefix[, suffix])</code></td>
+<td>保存为序列化文件</td>
+<td>命名为<code>&lt;prefix&gt;-TIME_IN_M.&lt;suffix&gt;</code></td>
+</tr>
+<tr>
+<td><code>saveAsTextFile(prefix[, suffix])</code></td>
+<td>保存为文本文件</td>
+<td></td>
+</tr>
+<tr>
+<td><code>saveAsHadoopFile(prefix[, suffix])</code></td>
+<td>保存为Hadoop文件</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Persistence"><a href="#Persistence" class="headerlink" title="Persistence"></a>Persistence</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Persistence</th>
+<th>RDD</th>
+<th>DStream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>persist()</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>cache()</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="Directed-Asycled-Graph"><a href="#Directed-Asycled-Graph" class="headerlink" title="Directed Asycled Graph"></a>Directed Asycled Graph</h2><p>Spark中DAG：可以看作由RDD、转换操作、动作操作构成，用于表达
+复杂计算</p>
+<ul>
+<li><p>当需要<strong>执行</strong>某个操作时，将重新从上游RDD进行计算</p>
+</li>
+<li><p>也可以对RDD进行缓存、持久化，以便再次存取，获得更高查询
+速度</p>
+<ul>
+<li>In-mem Storage as Deserialized Java Objects</li>
+<li>In-mem Storage as Serialized Data</li>
+<li>On-Disk Storage</li>
+</ul>
+</li>
+</ul>
+<h3 id="DAG工作流示例"><a href="#DAG工作流示例" class="headerlink" title="DAG工作流示例"></a>DAG工作流示例</h3><p><img src="/imgs/spark_dag_procedure.png" alt="spark_dag_procedure"></p>
+<ul>
+<li>从HDFS装载数据至两个RDD中</li>
+<li>对RDD（和中间生成的RDD）施加一系列转换操作</li>
+<li>最后动作操作施加于最后的RDD生成最终结果、存盘</li>
+</ul>
+<h3 id="宽依赖、窄依赖"><a href="#宽依赖、窄依赖" class="headerlink" title="宽依赖、窄依赖"></a>宽依赖、窄依赖</h3><p><img src="/imgs/spark_dag_wide_narrow_dependecies.png" alt="spark_dag_wide_narrow_dependencies"></p>
+<ul>
+<li><p>窄依赖：每个父RDD最多被一个子RDD分区使用</p>
+<ul>
+<li>即单个父RDD分区经过转换操作生成子RDD分区</li>
+<li>窄依赖可以在一台机器上处理，无需Data Shuffling，
+在网络上进行数据传输</li>
+</ul>
+</li>
+<li><p>宽依赖：多个子RDD分区，依赖同一个父RDD分区</p>
+<ul>
+<li>涉及宽依赖操作<ul>
+<li><code>groupByKey</code></li>
+<li><code>reduceByKey</code></li>
+<li><code>sortByKey</code></li>
+</ul>
+</li>
+<li>宽依赖一般涉及Data Shuffling</li>
+</ul>
+</li>
+</ul>
+<h3 id="DAG-Scheduler"><a href="#DAG-Scheduler" class="headerlink" title="DAG Scheduler"></a>DAG Scheduler</h3><p><em>DAG Scheduler</em>：<em>Stage-Oriented</em>的DAG执行调度器</p>
+<p><img src="/imgs/spark_dag_job_stage.png" alt="spark_dag_job_stage"></p>
+<ul>
+<li><p>使用Job、Stage概念进行作业调度</p>
+<ul>
+<li>作业：一个提交到DAG Scheduler的工作项目，表达成DAG，
+以一个RDD结束</li>
+<li>阶段：一组并行任务，每个任务对应RDD一个分区，是作业
+的一部分、数据处理基本单元，负责计算部分结果，</li>
+</ul>
+</li>
+<li><p>DAG Scheduler检查依赖类型</p>
+<ul>
+<li>把一系列窄依赖RDD组织成一个阶段<ul>
+<li>所以说阶段中并行的每个任务对应RDD一个分区</li>
+</ul>
+</li>
+<li>宽依赖需要跨越连续阶段<ul>
+<li>因为宽依赖子RDD分区依赖多个父RDD分区，涉及
+Data Shuffling，数据处理不能在单独节点并行执行</li>
+<li>或者说阶段就是根据宽依赖进行划分</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>DAG Scheduler对整个DAG进行分析</p>
+<ul>
+<li>为作业产生一系列阶段、其间依赖关系</li>
+<li>确定需要持久化的RDD、阶段的输出</li>
+<li>找到作业运行最小代价的执行调度方案、根据Cache Status
+确定的运行每个task的优选位置，把信息提交给
+Task Sheduler执行</li>
+</ul>
+</li>
+<li><p>容错处理</p>
+<ul>
+<li>DAG Scheduler负责对shuffle output file丢失情况进行
+处理，把已经执行过的阶段重新提交，以便重建丢失的数据</li>
+<li>stage内其他失败情况由Task Scheduler本身进行处理，
+将尝试执行任务一定次数、直到取消整个阶段</li>
+</ul>
+</li>
+</ul>
+<h2 id="DataFrame"><a href="#DataFrame" class="headerlink" title="DataFrame"></a>DataFrame</h2><ul>
+<li><p><em>DataFrame</em>：类似关系型数据库中表，数据被组织到具名列中</p>
+<ul>
+<li>相较于RDD是对分布式、结构化数据集的高层次抽象，提供
+特定领域的专用API进行处理</li>
+<li>静态类型安全：相较于SQL查询语句，在编译时即可发现
+语法错误</li>
+</ul>
+</li>
+<li><p><em>Dataset</em>：有明确类型数据、或无明确数据类型集合，相应API
+也分为两类</p>
+<ul>
+<li>相较于DataFrame，也可组织半结构化数据，同样提供方便
+易用的结构化API</li>
+<li>静态类型、运行时类型安全：相较于DataFrame，集合元素
+有明确类型，在编译时即可发现分析错误</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Spark2.0中二者API统一</li>
+<li>DataFrame可视为无明确数据类型<code>Dataset[Row]</code>别名，每行是
+  无类型JVM对象</li>
+</ul>
+</blockquote>
+<h3 id="创建方式"><a href="#创建方式" class="headerlink" title="创建方式"></a>创建方式</h3><ul>
+<li><p><code>.toDF</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> sqlContext = <span class="keyword">new</span> org.apache.spark.sql.<span class="type">SQLContext</span>(sc)</span><br><span class="line"><span class="keyword">import</span> sqlContext.implicits._</span><br><span class="line"></span><br><span class="line"><span class="comment">// `.toDF` + `Seq`创建</span></span><br><span class="line"><span class="keyword">val</span> df = <span class="type">Seq</span>(</span><br><span class="line">	(<span class="number">1</span>, <span class="string">&quot;F&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-02&quot;</span>)),</span><br><span class="line">	(<span class="number">2</span>, <span class="string">&quot;G&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-01&quot;</span>))</span><br><span class="line">).toDF(<span class="string">&quot;id&quot;</span>, <span class="string">&quot;level&quot;</span>, <span class="string">&quot;date&quot;</span>)</span><br><span class="line"><span class="comment">// 不指定列名，则默认为`_1`、`_2`等</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// `.toDF` + `case Class`创建</span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">name: <span class="type">String</span>, age: <span class="type">Int</span></span>)</span></span><br><span class="line"><span class="keyword">val</span> people = sc.textFile(<span class="string">&quot;people.txt&quot;</span>)</span><br><span class="line">	.map(_.split(<span class="string">&quot;,&quot;</span>))</span><br><span class="line">	.map(p =&gt; <span class="type">Person</span>(p(<span class="number">0</span>),p(<span class="number">1</span>).trim.toInt))</span><br><span class="line">	.toDF()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>.createDataFrame</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.spark.sql.types._</span><br><span class="line"><span class="keyword">val</span> schema = <span class="type">StrucType</span>(<span class="type">List</span>(</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">&quot;id&quot;</span>, <span class="type">IntegerType</span>, nullable=<span class="type">False</span>),</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">&quot;level&quot;</span>, <span class="type">StringType</span>, nullable=<span class="type">False</span>),</span><br><span class="line">	<span class="type">StructField</span>(<span class="string">&quot;date&quot;</span>, <span class="type">DateType</span>, nullable=<span class="type">False</span>)</span><br><span class="line">))</span><br><span class="line"><span class="keyword">val</span> rdd = sc.parallelize(<span class="type">Seq</span>(</span><br><span class="line">	(<span class="number">1</span>, <span class="string">&quot;F&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-02&quot;</span>)),</span><br><span class="line">	(<span class="number">2</span>, <span class="string">&quot;G&quot;</span>, java.sql.<span class="type">Date</span>.valueOf(<span class="string">&quot;2019-08-01&quot;</span>))</span><br><span class="line">))</span><br><span class="line"><span class="keyword">val</span> df = sqlContext.createDataFrame(rdd, schema)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>读取文件创建</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> df = sqlContext.read.parquet(<span class="string">&quot;hdfs:/peopole.parq&quot;</span>)</span><br><span class="line"><span class="keyword">val</span> df = spark.read.json(<span class="string">&quot;people.json&quot;</span>)</span><br><span class="line"><span class="comment">// 读取csv仅2.0版本`SparkSession`后可</span></span><br><span class="line"><span class="keyword">val</span> df = spark.read.format(<span class="string">&quot;com.databricks.spark.csv&quot;</span>)</span><br><span class="line">	.option(<span class="string">&quot;header&quot;</span>, <span class="string">&quot;true&quot;</span>)</span><br><span class="line">	.option(<span class="string">&quot;mode&quot;</span>, <span class="string">&quot;DROPMALFORMED&quot;</span>)</span><br><span class="line">	.load(<span class="string">&quot;people.csv&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="三种数据集对比"><a href="#三种数据集对比" class="headerlink" title="三种数据集对比"></a>三种数据集对比</h3><ul>
+<li><p>空间、时间效率：DataFrame &gt;= Dataset &gt; RDD</p>
+<ul>
+<li>DataFrame、Dataset基于SparkSQL引擎构建，使用Catalyst
+生成优化后的逻辑、物理查询计划；无类型DataFrame相较
+有类型Dataset运行更快</li>
+<li>Spark作为编译器可以理解Dataset类型JVM对象，会使用
+编码器将其映射为Tungsten内存内部表示</li>
+</ul>
+</li>
+<li><p>RDD适合场景</p>
+<ul>
+<li>对数据集进行最基本的转换、处理、控制</li>
+<li>希望以函数式编程而不是以特定领域表达处理数据</li>
+<li>数据为非结构化，如：流媒体、字符流</li>
+</ul>
+</li>
+<li><p>DataFrame、Dataset使用场景</p>
+<ul>
+<li>需要语义丰富、高级抽象、通用平台、特定领域API</li>
+<li>需要对半结构化数据进行高级处理，如：filter、SQL查询</li>
+<li>需要编译时/运行时类型安全、Catalyst优化、内存优化</li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T09:10:43.000Z" title="7/16/2021, 5:10:43 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/Database/">Database</a><span> / </span><a class="link-muted" href="/categories/Database/Hadoop/">Hadoop</a></span><span class="level-item">5 minutes read (About 724 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Database/Hadoop/computing_schema.html">Hadoop 计算模型</a></h1><div class="content"><h2 id="分布式计算模型"><a href="#分布式计算模型" class="headerlink" title="分布式计算模型"></a>分布式计算模型</h2><p>分布式系统，不像一般的数据库、文件系统，无法从上至下、从头
+到尾进行求和等操作，需要由分散的节点不断向一个点聚拢计算过程
+，考虑将分布式计算模型可以考虑分为两部分</p>
+<ul>
+<li>分布：操作原语</li>
+<li>聚合：处理流程</li>
+</ul>
+<h3 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h3><p>MapReduce计算模型主要描述是<strong>分布：操作原语</strong>部分，
+但是此也包含了<strong>聚合：处理流程</strong></p>
+<h4 id="操作原语"><a href="#操作原语" class="headerlink" title="操作原语"></a>操作原语</h4><ul>
+<li><em>map</em>：映射<ul>
+<li>以键值对二元组为主要处理对象</li>
+<li>map过程相互独立、各mapper相互不通信的</li>
+<li>所以mapper比较适合<strong>可</strong>独立计算任务</li>
+</ul>
+</li>
+<li><em>reduce</em>：规约<ul>
+<li>直接处理map输出，reduce中二元组键位map过程中输出值</li>
+</ul>
+</li>
+</ul>
+<h4 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h4><p>以hadoop中MapReduce为例</p>
+<ul>
+<li><p>需要把任何计算任务转换为一系列MapReduce作业，然后依次
+执行这些作业</p>
+</li>
+<li><p>计算过程的各个步骤之间，各个作业输出的中间结果需要存盘，
+然后才能被下个步骤使用（因为各个步骤之间没有明确流程）</p>
+</li>
+</ul>
+<h4 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h4><h5 id="操作原语部分"><a href="#操作原语部分" class="headerlink" title="操作原语部分"></a>操作原语部分</h5><ul>
+<li><p>提供原语少：需要用户处理更多逻辑，易用性差</p>
+</li>
+<li><p>所以抽象层次低：数据处理逻辑隐藏在用户代码中，可读性差</p>
+</li>
+<li><p>所以其表达能力有限：</p>
+<ul>
+<li>复杂数据处理任务，如：机器学习算法、SQL连接查询很难
+表示用MapReduce计算默认表达</li>
+</ul>
+</li>
+</ul>
+<h5 id="处理流程部分"><a href="#处理流程部分" class="headerlink" title="处理流程部分"></a>处理流程部分</h5><ul>
+<li><p>MapReduce需要通过把中间结果存盘实现同步，I/O延迟高</p>
+</li>
+<li><p>reduce任务需要等待map任务全部完成才能继续，同步Barrier
+大</p>
+</li>
+</ul>
+<h4 id="适合场景"><a href="#适合场景" class="headerlink" title="适合场景"></a>适合场景</h4><ul>
+<li><p>One Pass Computation：只需要一遍扫描处理的计算任务
+MapReduce计算模型非常有效</p>
+<ul>
+<li>批数据处理</li>
+</ul>
+</li>
+<li><p>Multi Pass Computation：需要在数据上进行多遍扫描、处理
+的计算任务，需要执行多个MapReduce作业计算任务，因为
+多副本复制、磁盘存取，其效率不高</p>
+</li>
+</ul>
+<h3 id="DAG"><a href="#DAG" class="headerlink" title="DAG"></a>DAG</h3><p>Directed Acyclic Graph：只是表示数据处理流程的有向无环图</p>
+<ul>
+<li>顶点：数据处理任务，反映一定的业务逻辑，即如何对数据进行
+转换和分析</li>
+<li>边：数据在不同的顶点间的传递</li>
+</ul>
+<h4 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h4><ul>
+<li><p>DAG本身并不涉及如何处理数据，只是对数据数据流程的规划</p>
+</li>
+<li><p>所以DAG并不能改进MapReduce计算模型中原语部分的缺陷，只能
+优化数据处理流程</p>
+<ul>
+<li>减少MapReduce作业中间结果存盘，减少磁盘I/O</li>
+<li>优化map、reduce任务执行，减少同步Barrier</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>   这也正是Tez所做的事情</p>
+</blockquote>
+<h3 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h3></div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

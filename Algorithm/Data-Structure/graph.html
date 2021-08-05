@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>图 - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="图"><meta property="og:type" content="blog"><meta property="og:title" content="图"><meta property="og:url" content="https://xyy15926.github.io/Algorithm/Data-Structure/graph.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="图"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/imgs/orthogonal_list_structure.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/adjacency_multilist_structure.png"><meta property="article:published_time" content="2019-04-11T04:25:59.000Z"><meta property="article:modified_time" content="2021-08-02T10:07:33.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Algorithm"><meta property="article:tag" content="Data Structure"><meta property="article:tag" content="Graph"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/imgs/orthogonal_list_structure.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Algorithm/Data-Structure/graph.html"},"headline":"图","image":["https://xyy15926.github.io/imgs/orthogonal_list_structure.png","https://xyy15926.github.io/imgs/adjacency_multilist_structure.png"],"datePublished":"2019-04-11T04:25:59.000Z","dateModified":"2021-08-02T10:07:33.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"图"}</script><link rel="canonical" href="https://xyy15926.github.io/Algorithm/Data-Structure/graph.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-04-11T04:25:59.000Z" title="4/11/2019, 12:25:59 PM">2019-04-11</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T10:07:33.000Z" title="8/2/2021, 6:07:33 PM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/Algorithm/">Algorithm</a><span> / </span><a class="link-muted" href="/categories/Algorithm/Data-Structure/">Data Structure</a></span><span class="level-item">22 minutes read (About 3269 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">图</h1><div class="content"><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>图$G=<V, E>$：由一些称为顶点的点构成的集合，其中某些顶点由
+称为边的线段相连</p>
+<ul>
+<li>有限集合V：元素为顶点<em>vertex</em></li>
+<li>有限集合E：元素为<strong>顶点二元组</strong>，称为边<em>edge</em>/弧<em>arc</em></li>
+</ul>
+<h3 id="边方向"><a href="#边方向" class="headerlink" title="边方向"></a>边方向</h3><h4 id="Undigraph-Undirected-Graph"><a href="#Undigraph-Undirected-Graph" class="headerlink" title="Undigraph/Undirected Graph"></a><em>Undigraph</em>/<em>Undirected Graph</em></h4><blockquote>
+<ul>
+<li>无向图：所有边都是无向边的图</li>
+<li>无向边：若有序对$(u, v) \in E$，必有$(v, u) \in E$，
+  即E是对称的，顶点对$(u, v)$等同于$(v, u)$，没有顺序</li>
+</ul>
+</blockquote>
+<p>对无向边$(u, v)$</p>
+<ul>
+<li>则顶点u、v相互<em>adjcent</em></li>
+<li>其通过<em>undirected edge</em>$(u, v)$相连接</li>
+<li>顶点u、v称为边$(u, v)$的<em>endpoint</em></li>
+<li>u、v和该边<em>incident</em>（相依附）</li>
+</ul>
+<h4 id="Digraph"><a href="#Digraph" class="headerlink" title="Digraph"></a><em>Digraph</em></h4><blockquote>
+<ul>
+<li>有向图：所有边都是有向边的图</li>
+<li>有向边：若有序对对$(u, v) \in E$无法得到$(v, u) \in E$，
+  即两者不等同，有顺序</li>
+</ul>
+</blockquote>
+<p>对有向边$(u, v)$</p>
+<ul>
+<li>边$(u, v)$的方向是从顶点u到顶点v</li>
+<li>u称为tail，v称为head</li>
+</ul>
+<h3 id="边权重"><a href="#边权重" class="headerlink" title="边权重"></a>边权重</h3><h4 id="Ordered-Graph"><a href="#Ordered-Graph" class="headerlink" title="Ordered Graph"></a><em>Ordered Graph</em></h4><p>有序图：各边地位有序</p>
+<h4 id="Weighted-Graph-Network"><a href="#Weighted-Graph-Network" class="headerlink" title="Weighted Graph/Network"></a><em>Weighted Graph</em>/<em>Network</em></h4><p>加权图/网络：给边赋值的图</p>
+<ul>
+<li>值称为<em>weight</em>或<em>cost</em></li>
+<li>有大量的现实应用</li>
+</ul>
+<h3 id="边数量"><a href="#边数量" class="headerlink" title="边数量"></a>边数量</h3><ul>
+<li><em>complete graph</em>：任意两个顶点直接都有的边相连的图<ul>
+<li>使用$K_{|v|}$表示有|V|个顶点的完全图</li>
+</ul>
+</li>
+<li><em>dense graph</em>：图中所缺的边数量相对较少</li>
+<li><em>sparse</em>：图中边相对顶点数量较少</li>
+</ul>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>不考虑<strong>loop</strong>（顶点连接自身边），则含有|V|个顶点无向图
+包含边的数量|E|满足：
+$ 0 \leq |E| \leq \frac {|V|(|V| - 1)} {2} $</p>
+</li>
+<li><p>对于稀疏图、稠密图可能会影响图的表示方法，影响设计、使用
+算法的运行时间</p>
+</li>
+</ul>
+<h2 id="图表示方法（存储结构）"><a href="#图表示方法（存储结构）" class="headerlink" title="图表示方法（存储结构）"></a>图表示方法（存储结构）</h2><h3 id="Adjacency-Matrix"><a href="#Adjacency-Matrix" class="headerlink" title="Adjacency Matrix"></a><em>Adjacency Matrix</em></h3><p>邻接矩阵：两个数组分别存储数据元素（顶点）信息、数据元素之间
+关系（边）的信息</p>
+<ul>
+<li>n个顶点的图对应n * n的bool矩阵<ul>
+<li>图中每个顶点使用一行和一列表示</li>
+<li>i、j节点间有边，则矩阵第i行、j列元素为1，否则为0</li>
+</ul>
+</li>
+<li>无向图邻接矩阵一定是对称的，有向图邻接矩阵不一定</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span>&#123;</span>DG, DN&lt; UDG, UDN&#125; GraphKind;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ArcCell</span>&#123;</span></span><br><span class="line">	VRType adj;</span><br><span class="line">		<span class="comment">// 顶点关系类型：无权图0、1是否相邻，加权图权值类型</span></span><br><span class="line">	InfoType * info;</span><br><span class="line">		<span class="comment">// 弧相关信息</span></span><br><span class="line">&#125;ArcCell, AdjMatrix[MAX_VERTEX_NUM][MAX_VERTEX_NUM];</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	VertexType vexs[MAX_VERTEX_NUM];</span><br><span class="line">		<span class="comment">// 顶点向量</span></span><br><span class="line">	AdjMatrix arcs;</span><br><span class="line">	<span class="keyword">int</span> vexnum, arcnum;</span><br><span class="line">		<span class="comment">// 图当前顶点弧数</span></span><br><span class="line">	GraphKind kind;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Adjacency-List"><a href="#Adjacency-List" class="headerlink" title="Adjacency List"></a><em>Adjacency List</em></h3><p>邻接表：n条单链表代替邻接矩阵的n行，对应图G的n个顶点</p>
+<ul>
+<li><p>每个顶点用一个邻接表表示</p>
+<ul>
+<li>线性表的<em>header</em>表示对应的顶点</li>
+<li>链表中结点表示依附于顶点的边</li>
+</ul>
+</li>
+<li><p>无向图一条边在邻接链表中对应两条链，有向图对应一条</p>
+<ul>
+<li>有向图出度计算简单</li>
+<li>计算入度则比较复杂，如果需要频繁计算入度，可以再存储
+一个反向邻接表</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ArcNode</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> adjvex;</span><br><span class="line">		<span class="comment">// 弧指向顶点信息</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ArcNode</span> *<span class="title">nextarc</span>;</span></span><br><span class="line">		<span class="comment">// 指向下条弧指针</span></span><br><span class="line">	InfoType * info;</span><br><span class="line">		<span class="comment">// 弧相关信息</span></span><br><span class="line">&#125;ArcNode;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">VNode</span>&#123;</span></span><br><span class="line">	VertexType data;</span><br><span class="line">		<span class="comment">// 顶点信息</span></span><br><span class="line">	ArcNode * firstarc;</span><br><span class="line">		<span class="comment">// 首条依附该顶点的弧指针</span></span><br><span class="line">&#125;VNode, AdjList[MAX_VERTEX_NUM];</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	AdjList vertices;</span><br><span class="line">	<span class="keyword">int</span> vexnum, arcnum;</span><br><span class="line">	<span class="keyword">int</span> kind;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Orthogonal-List"><a href="#Orthogonal-List" class="headerlink" title="Orthogonal List"></a><em>Orthogonal List</em></h3><p>十字链表：将<strong>有向图</strong>的邻接表、逆邻接表结合起来</p>
+<ul>
+<li>有向图中每条弧、每个顶点对应一个结点</li>
+<li>弧结点所在链表为非循环链表，<ul>
+<li>结点之间相对位置自然形成，不一定按照顶点序号有序</li>
+</ul>
+</li>
+<li>表头结点即顶点结点，顺序存储</li>
+</ul>
+<p><img src="/imgs/orthogonal_list_structure.png" alt="orthogonal_list_structure"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ArcBox</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> tailvex, headvex;</span><br><span class="line">		<span class="comment">// 头、尾顶点链域</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ArcBox</span> *<span class="title">hlink</span>, *<span class="title">tlink</span>;</span></span><br><span class="line">		<span class="comment">// 头相同、尾相同弧链域</span></span><br><span class="line">	InfoType *info;</span><br><span class="line">		<span class="comment">// 弧相关信息</span></span><br><span class="line">&#125;ArcBox;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">VexNode</span>&#123;</span></span><br><span class="line">	VertexType data;</span><br><span class="line">		<span class="comment">// 顶点信息</span></span><br><span class="line">	ArcBox *firstin, *firstout;</span><br><span class="line">		<span class="comment">// 顶点第一条出、入弧</span></span><br><span class="line">&#125;VexNode;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	VexNode xlist[MAX_VERTEX _NUM];</span><br><span class="line">		<span class="comment">// 表头</span></span><br><span class="line">	<span class="keyword">int</span> vexnum, arcnum;</span><br><span class="line">&#125;OLGraph;</span><br></pre></td></tr></table></figure>
+<h3 id="Adjacency-Multilist"><a href="#Adjacency-Multilist" class="headerlink" title="Adjacency Multilist"></a><em>Adjacency Multilist</em></h3><p>邻接多重表：<strong>无向图</strong>的另一种存储形式</p>
+<ul>
+<li>一条边对应<strong>唯一结点</strong><ul>
+<li>所有依附于同一顶点的串联在同一链表中</li>
+<li>每个边界点同时链接在两个链表中</li>
+<li>避免无向图邻接表中一条边两次出现</li>
+</ul>
+</li>
+<li>类似十字链表，仅无需区分头尾结点</li>
+</ul>
+<p><img src="/imgs/adjacency_multilist_structure.png" alt="adjacency_multilist_structure"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">EBox</span>&#123;</span></span><br><span class="line">	VisitIf mark;</span><br><span class="line">		<span class="comment">// 访问标记</span></span><br><span class="line">	<span class="keyword">int</span> ivex, jvex;</span><br><span class="line">		<span class="comment">// 边依附的两个顶点</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">EBox</span> *<span class="title">ilink</span>, *<span class="title">jlink</span>;</span></span><br><span class="line">		<span class="comment">// 依附两个顶点的下条边</span></span><br><span class="line">	InfoType *info;</span><br><span class="line">		<span class="comment">// 边信息指针</span></span><br><span class="line">&#125;EBox;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">VexBox</span>&#123;</span></span><br><span class="line">	VertexType data;</span><br><span class="line">	EBox *firstedge;</span><br><span class="line">		<span class="comment">// 第一条依附该顶点的边</span></span><br><span class="line">&#125;VexBox;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	VexBox adjmulist[MAX_VERTEX_NUM];</span><br><span class="line">	<span class="keyword">int</span> vexnum, edgenum;</span><br><span class="line">&#125;AMLGraph;</span><br></pre></td></tr></table></figure>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul>
+<li><p>稀疏图：尽管链表指针会占用额外存储器，但是相对于邻接矩阵
+占用空间依然较少</p>
+</li>
+<li><p>稠密图：邻接矩阵占用空间较少</p>
+</li>
+<li><p>邻接矩阵、邻接链表都可以方便的表示加权图</p>
+<ul>
+<li>邻接矩阵元素A[i, j]设置为有限值表示存在的边的权重，
+设置为$\infty$表示不存在边，此时矩阵也称
+<strong>weighted matrix</strong>或<strong>cost matrix</strong></li>
+<li>邻接链表在节点中型跨同时包含节点名称和相应边权重</li>
+</ul>
+</li>
+<li><p>任何可以存储顶点、边的数据结构（如集合）都可以表示图，
+只是存储效率低、无法高效操作</p>
+</li>
+</ul>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h3><h4 id="有向图"><a href="#有向图" class="headerlink" title="有向图"></a>有向图</h4><ul>
+<li><p><em>directed path</em>：有向图中顶点的一个序列，序列中每对连续
+顶点都被边连接，边方向为一个顶点指向下一个顶点</p>
+</li>
+<li><p><em>directed cycle</em>：有向图中节点序列，起点、终点相同，每个
+节点和其直接前趋之间，都有一条从前趋指向后继的边</p>
+</li>
+<li><p><em>directed acyclic graph</em>：DAG，有向无环图</p>
+</li>
+</ul>
+<h4 id="无向图"><a href="#无向图" class="headerlink" title="无向图"></a>无向图</h4><ul>
+<li><p><em>path</em>：（无向）图G中始于u而止于v的邻接顶点序列，即为顶点u
+到顶点v的路径</p>
+</li>
+<li><p><em>simple path</em>：路径上所有点互不相同</p>
+</li>
+<li><p><em>cycle</em>：特殊的path</p>
+<ul>
+<li>起点、终点都是同一顶点</li>
+<li>长度大于0</li>
+<li>不包含同一条边两次</li>
+</ul>
+</li>
+<li><p><em>acyclic</em>：不包含回路的图</p>
+</li>
+</ul>
+<h4 id="长度"><a href="#长度" class="headerlink" title="长度"></a>长度</h4><ul>
+<li><em>length</em>：路径中代表顶点序列中的顶点数目减1，等于路径中
+包含的边数目</li>
+<li><em>distance</em>：顶点间距离，顶点之间最短路径长度</li>
+</ul>
+<h3 id="连通性"><a href="#连通性" class="headerlink" title="连通性"></a>连通性</h3><h4 id="无向图-1"><a href="#无向图-1" class="headerlink" title="无向图"></a>无向图</h4><ul>
+<li><p><em>connected</em>：顶点u、v连通，当且仅当存在u到v的路径</p>
+</li>
+<li><p><em>connected graph</em>：连通图，对图中的每对顶点$(u, v)$，
+都有从u到v的路径</p>
+</li>
+<li><p><em>connected component</em>：连通分量，给定图的极大连通子图，
+即没有可以添加的连通子图用于扩充</p>
+<ul>
+<li>非连通图中包含的几个自我连通的部分</li>
+</ul>
+</li>
+<li><p><em>articulation point</em>：关节点，如果从连通图$G$中删除顶点
+$v$、极其邻接边各点之后的的图$G^{‘}$至少有两个连通分量，
+则称顶点$v$为关节点</p>
+</li>
+<li><p><em>biconnected graph</em>：重连通图，没有关节点的连通图</p>
+</li>
+<li><p><em>biconnected component</em>：重连通分量，连通图的最大重连通
+子图，即不是其他重连通分量的真子图</p>
+<ul>
+<li>两个重连通分量不可能共享一个以上节点，即图的一条边
+不可能同时出现在两个重连通分量中
+（否则两个“重连通分量”可以合并）</li>
+<li>所以可以说重连通分量是对原图的<strong>边的划分</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="有向图-1"><a href="#有向图-1" class="headerlink" title="有向图"></a>有向图</h4><ul>
+<li>强连通图：对所有不同顶点u、v，都存在u到v、v到u的路径</li>
+<li><em>strongly connected component</em>：强连通分量，有向图的
+极大连通子图</li>
+</ul>
+<h5 id="源点、汇点"><a href="#源点、汇点" class="headerlink" title="源点、汇点"></a>源点、汇点</h5><ul>
+<li><em>soruce</em>：源，没有输入边的顶点</li>
+<li><em>sink</em>：汇点，没有输出边顶点</li>
+</ul>
+<h2 id="图遍历"><a href="#图遍历" class="headerlink" title="图遍历"></a>图遍历</h2><p>遍历图：实质是对每个顶点查找其邻接顶点的过程</p>
+<blockquote>
+<ul>
+<li>具体算法参见<em>algorithm/problem/graph</em></li>
+</ul>
+</blockquote>
+<h3 id="遍历方式"><a href="#遍历方式" class="headerlink" title="遍历方式"></a>遍历方式</h3><blockquote>
+<ul>
+<li>BFS：<em>Breadth First Search</em>：广度优先搜索，类似树的先序
+  遍历</li>
+<li><p>DFS：<em>Depth First Search</em>：深度优先搜索，类似树的按层次
+  遍历</p>
+</li>
+<li><p>具体算法参见<em>algorithm/problem/graph</em></p>
+</li>
+</ul>
+</blockquote>
+<h3 id="结点处理顺序"><a href="#结点处理顺序" class="headerlink" title="结点处理顺序"></a>结点处理顺序</h3><blockquote>
+<ul>
+<li><em>post-order</em>：后序，先处理子节点，再处理当前结点</li>
+<li><em>pre-order</em>：前序，先处理当前结点，再处理子节点</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>搜索森林中<strong>仅有一棵树</strong>时</p>
+<ul>
+<li>前序、后序均满足处理顺序（后序为逆处理顺序）</li>
+<li>前序、后序处理仅是处理顺序刚好相反</li>
+</ul>
+</li>
+<li><p>搜索森林中<strong>有多棵树</strong>时，将每棵树视为一个结点考虑</p>
+<ul>
+<li>每个树内前序、后序顶点处理顺序相反</li>
+<li><strong>不同树整体</strong>前序、后序处理顺序相反</li>
+<li>此时前序不再满足处理顺序，后序仍为逆处理顺序，所以
+前序不常用</li>
+</ul>
+</li>
+<li><p>节点处理记录方式</p>
+<ul>
+<li>栈：出栈顺序同记录反向</li>
+<li>队列：出队列顺序同记录顺序</li>
+</ul>
+</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li><p><em>Pre-Order</em>：正前序，先当前顶点、后子顶点，队列存储</p>
+</li>
+<li><p><em>Reverse Pre-Order</em>：逆前序，先子顶点、后当前顶点，
+栈存储</p>
+</li>
+<li><p><em>Post-Order</em>：正后序，先当前顶点、后子顶点，队列存储</p>
+</li>
+<li><p><em>Reversed Post-Order</em>：逆后序，先子顶点、后当前顶点，
+栈存储，也称为<strong>伪拓扑排序</strong></p>
+<ul>
+<li>可以用于得到DAG的拓扑有序序列</li>
+<li>也可以用于得到有环有向图的<strong>伪拓扑序列</strong><ul>
+<li>强连通分量整体看作结点，组成DAG</li>
+<li>各强连通分量必然可以选出某个顶点，满足在伪拓扑
+序列中次序<strong>先于DAG中先驱强连通分量所有顶点</strong></li>
+</ul>
+</li>
+<li>用途最广<ul>
+<li>有向图拓扑排序</li>
+<li>Kosaraju算法中用到</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="BFS、DFS森林"><a href="#BFS、DFS森林" class="headerlink" title="BFS、DFS森林"></a>BFS、DFS森林</h3><p>广度优先、深度优先生成森林</p>
+<ul>
+<li>遍历的初始顶点可以作为森林中树的根</li>
+<li>遇到新未访问的顶点，将其附加为<strong>直接前趋</strong>子女</li>
+<li>其实<strong>仅有树向边</strong>才是符合森林定义（其他边都只是搜索过程
+中遇到）</li>
+</ul>
+<blockquote>
+<ul>
+<li>DFS森林中边是<strong>从左到右</strong>逐渐生成</li>
+<li>BFS森林中边是<strong>从上到下</strong>逐渐生成</li>
+</ul>
+</blockquote>
+<h4 id="边类型"><a href="#边类型" class="headerlink" title="边类型"></a>边类型</h4><ul>
+<li><em>tree edge</em>：树向边，连接父母、子女的边</li>
+<li><em>back edge</em>：回边，连接非直接前驱的边<ul>
+<li>对有向图包括连接父母的边</li>
+<li>对无向图不存在连接父母边</li>
+</ul>
+</li>
+<li><em>cross edge</em>：交叉边，连接非前驱、后继的边</li>
+<li><em>forward edge</em>：前向边，连接非直接后代的边</li>
+</ul>
+<h4 id="边存在性"><a href="#边存在性" class="headerlink" title="边存在性"></a>边存在性</h4><ul>
+<li>无向图<ul>
+<li>DFS森林：只可能有回边</li>
+<li>BFS森林：只可能有交叉边</li>
+</ul>
+</li>
+<li>有向图<ul>
+<li>DFS森林：可以都有</li>
+<li>BFS森林：只可能有回边、交叉边</li>
+</ul>
+</li>
+</ul>
+<h3 id="Spanning-Tree"><a href="#Spanning-Tree" class="headerlink" title="Spanning Tree"></a><em>Spanning Tree</em></h3><p>生成树/极小连通子图：包含图中所有顶点的连通无环子图（树）</p>
+<ul>
+<li><p>n个顶点的生成树有且仅有n-1条边，反之不成立</p>
+</li>
+<li><p>在生成树添加一条边必定构成一个环，因为其实使得其依附的
+两个顶点之间生成了第二条路径</p>
+</li>
+</ul>
+<h4 id="Minimum-Cost-Spanning-Tree"><a href="#Minimum-Cost-Spanning-Tree" class="headerlink" title="Minimum Cost Spanning Tree"></a><em>Minimum Cost Spanning Tree</em></h4><p>最小生成树：图的一棵权重最小的生成树（权重指所有边权重之和）</p>
+<h5 id="MST性质"><a href="#MST性质" class="headerlink" title="MST性质"></a>MST性质</h5><blockquote>
+<ul>
+<li>若$N=(V, {E})$是连通网，U是顶点集V的非空子集，若
+  $(u, v), u \in U, v \in V-U$是一条具有最小权值（代价）边
+  ，则图中<strong>存在</strong>最小生成树包含该边</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>假设网N中最小生成树T不包含边$(u, v)$，将其加入T中</p>
+</li>
+<li><p>因为T为生成树，所以必存在边
+$(u^{‘}, v^{‘}), u^{‘} \in U, v^{‘} \in V-U$，且
+$u, u^{‘}$、$v, v^{‘}$之间均有路径连通</p>
+</li>
+<li><p>则删除$(u^{‘}, v^{‘})$可以消去上述回路，得到新生成树
+$T^{‘}$，且代价不大于$T$，矛盾</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><strong>存在</strong>是考虑到存在其他同权值边，若权值严格最小，则所有
+  最小生成树必然包含</li>
+<li>依此性质生成算法参见<em>algorithm/problems/graph</em></li>
+</ul>
+</blockquote>
+<h3 id="连通性-1"><a href="#连通性-1" class="headerlink" title="连通性"></a>连通性</h3><ul>
+<li>对图进行遍历是判断图连通性、求解连通分量的好方法</li>
+</ul>
+<h4 id="有向图-2"><a href="#有向图-2" class="headerlink" title="有向图"></a>有向图</h4><ul>
+<li><p>连通图：从图中任意顶点出发，进行深度、广度优先搜索即可
+访问到图中所有顶点</p>
+<ul>
+<li>利用DFS生成树可以找出图的重连通分量</li>
+</ul>
+</li>
+<li><p>非连通图：需要从多个顶点起始进行搜索</p>
+<ul>
+<li>每次<strong>从新的起始点出发</strong>进行搜索过程中得到顶点访问
+序列就是各个连通分量的顶点集</li>
+</ul>
+</li>
+</ul>
+<h4 id="无向图-2"><a href="#无向图-2" class="headerlink" title="无向图"></a>无向图</h4><ul>
+<li>深度优先搜索是求有向图<strong>强连通分量</strong>的有效方法</li>
+</ul>
+<blockquote>
+<ul>
+<li>具体算法参见<em>algorithm/problem/graph</em></li>
+</ul>
+</blockquote>
+</div><div class="article-licensing box"><div class="licensing-title"><p>图</p><p><a href="https://xyy15926.github.io/Algorithm/Data-Structure/graph.html">https://xyy15926.github.io/Algorithm/Data-Structure/graph.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-04-11</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-08-02</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Algorithm/">Algorithm</a><a class="link-muted mr-2" rel="tag" href="/tags/Data-Structure/">Data Structure</a><a class="link-muted mr-2" rel="tag" href="/tags/Graph/">Graph</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Algorithm/Problem/graph.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">图算法</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Algorithm/Data-Structure/graphdi_specials.html"><span class="level-item">有向图衍生</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "a1a0cec460ee5a6b7fb61395696718e5",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#分类"><span class="level-left"><span class="level-item">1</span><span class="level-item">分类</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#边方向"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">边方向</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Undigraph-Undirected-Graph"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">Undigraph/Undirected Graph</span></span></a></li><li><a class="level is-mobile" href="#Digraph"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">Digraph</span></span></a></li></ul></li><li><a class="level is-mobile" href="#边权重"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">边权重</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Ordered-Graph"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">Ordered Graph</span></span></a></li><li><a class="level is-mobile" href="#Weighted-Graph-Network"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">Weighted Graph/Network</span></span></a></li></ul></li><li><a class="level is-mobile" href="#边数量"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">边数量</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#特点"><span class="level-left"><span class="level-item">1.3.1</span><span class="level-item">特点</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#图表示方法（存储结构）"><span class="level-left"><span class="level-item">2</span><span class="level-item">图表示方法（存储结构）</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Adjacency-Matrix"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">Adjacency Matrix</span></span></a></li><li><a class="level is-mobile" href="#Adjacency-List"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">Adjacency List</span></span></a></li><li><a class="level is-mobile" href="#Orthogonal-List"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">Orthogonal List</span></span></a></li><li><a class="level is-mobile" href="#Adjacency-Multilist"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">Adjacency Multilist</span></span></a></li><li><a class="level is-mobile" href="#说明"><span class="level-left"><span class="level-item">2.5</span><span class="level-item">说明</span></span></a></li></ul></li><li><a class="level is-mobile" href="#概念"><span class="level-left"><span class="level-item">3</span><span class="level-item">概念</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#路径"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">路径</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#有向图"><span class="level-left"><span class="level-item">3.1.1</span><span class="level-item">有向图</span></span></a></li><li><a class="level is-mobile" href="#无向图"><span class="level-left"><span class="level-item">3.1.2</span><span class="level-item">无向图</span></span></a></li><li><a class="level is-mobile" href="#长度"><span class="level-left"><span class="level-item">3.1.3</span><span class="level-item">长度</span></span></a></li></ul></li><li><a class="level is-mobile" href="#连通性"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">连通性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#无向图-1"><span class="level-left"><span class="level-item">3.2.1</span><span class="level-item">无向图</span></span></a></li><li><a class="level is-mobile" href="#有向图-1"><span class="level-left"><span class="level-item">3.2.2</span><span class="level-item">有向图</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#源点、汇点"><span class="level-left"><span class="level-item">3.2.2.1</span><span class="level-item">源点、汇点</span></span></a></li></ul></li></ul></li></ul></li><li><a class="level is-mobile" href="#图遍历"><span class="level-left"><span class="level-item">4</span><span class="level-item">图遍历</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#遍历方式"><span class="level-left"><span class="level-item">4.1</span><span class="level-item">遍历方式</span></span></a></li><li><a class="level is-mobile" href="#结点处理顺序"><span class="level-left"><span class="level-item">4.2</span><span class="level-item">结点处理顺序</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#总结"><span class="level-left"><span class="level-item">4.2.1</span><span class="level-item">总结</span></span></a></li></ul></li><li><a class="level is-mobile" href="#BFS、DFS森林"><span class="level-left"><span class="level-item">4.3</span><span class="level-item">BFS、DFS森林</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#边类型"><span class="level-left"><span class="level-item">4.3.1</span><span class="level-item">边类型</span></span></a></li><li><a class="level is-mobile" href="#边存在性"><span class="level-left"><span class="level-item">4.3.2</span><span class="level-item">边存在性</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Spanning-Tree"><span class="level-left"><span class="level-item">4.4</span><span class="level-item">Spanning Tree</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Minimum-Cost-Spanning-Tree"><span class="level-left"><span class="level-item">4.4.1</span><span class="level-item">Minimum Cost Spanning Tree</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#MST性质"><span class="level-left"><span class="level-item">4.4.1.1</span><span class="level-item">MST性质</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#连通性-1"><span class="level-left"><span class="level-item">4.5</span><span class="level-item">连通性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#有向图-2"><span class="level-left"><span class="level-item">4.5.1</span><span class="level-item">有向图</span></span></a></li><li><a class="level is-mobile" href="#无向图-2"><span class="level-left"><span class="level-item">4.5.2</span><span class="level-item">无向图</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

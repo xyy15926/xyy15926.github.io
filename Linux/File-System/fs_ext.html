@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Ext 文件系统 - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="介绍 Linux Ext2&amp;#x2F;3 文件系统"><meta property="og:type" content="blog"><meta property="og:title" content="Ext 文件系统"><meta property="og:url" content="https://xyy15926.github.io/Linux/File-System/fs_ext.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="介绍 Linux Ext2&amp;#x2F;3 文件系统"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/imgs/linux_file_system_ext_structure.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/linux_file_system_storage_ext.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/linux_file_system_ext_super_block_mbr.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/linux_file_system_ext_data_block_directory.png"><meta property="og:image" content="https://xyy15926.github.io/imgs/linux_file_system_ext4_extent_structure.png"><meta property="article:published_time" content="2021-07-29T07:36:10.000Z"><meta property="article:modified_time" content="2021-07-29T12:38:33.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Linux"><meta property="article:tag" content="Kernel"><meta property="article:tag" content="File System"><meta property="article:tag" content="Ext2/3"><meta property="article:tag" content="Ext4"><meta property="article:tag" content="Inode"><meta property="article:tag" content="Block"><meta property="article:tag" content="Block Group"><meta property="article:tag" content="Hard Link"><meta property="article:tag" content="Symbolic Link"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/imgs/linux_file_system_ext_structure.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Linux/File-System/fs_ext.html"},"headline":"Ext 文件系统","image":["https://xyy15926.github.io/imgs/linux_file_system_ext_structure.png","https://xyy15926.github.io/imgs/linux_file_system_storage_ext.png","https://xyy15926.github.io/imgs/linux_file_system_ext_super_block_mbr.png","https://xyy15926.github.io/imgs/linux_file_system_ext_data_block_directory.png","https://xyy15926.github.io/imgs/linux_file_system_ext4_extent_structure.png"],"datePublished":"2021-07-29T07:36:10.000Z","dateModified":"2021-07-29T12:38:33.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"介绍 Linux Ext2&#x2F;3 文件系统"}</script><link rel="canonical" href="https://xyy15926.github.io/Linux/File-System/fs_ext.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-07-29T07:36:10.000Z" title="7/29/2021, 3:36:10 PM">2021-07-29</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-29T12:38:33.000Z" title="7/29/2021, 8:38:33 PM">2021-07-29</time></span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a><span> / </span><a class="link-muted" href="/categories/Linux/File-System/">File System</a></span><span class="level-item">26 minutes read (About 3885 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">Ext 文件系统</h1><div class="content"><h2 id="Ext-文件系统"><a href="#Ext-文件系统" class="headerlink" title="Ext 文件系统"></a><em>Ext</em> 文件系统</h2><h3 id="Ext-文件系统结构"><a href="#Ext-文件系统结构" class="headerlink" title="Ext 文件系统结构"></a><em>Ext</em> 文件系统结构</h3><p><img src="/imgs/linux_file_system_ext_structure.png" alt="linux_file_system_ext_structure"></p>
+<blockquote>
+<ul>
+<li><code>dumpe2fs</code> 命令可以获取 <em>Ext</em> 类文件系统信息</li>
+<li><a target="_blank" rel="noopener" href="https://www.junmajinlong.com/linux/ext_filesystem/">https://www.junmajinlong.com/linux/ext_filesystem/</a></li>
+</ul>
+</blockquote>
+<h2 id="Index-Node"><a href="#Index-Node" class="headerlink" title="Index Node"></a><em>Index Node</em></h2><p><em>Index Node</em>/<em>Inode</em> 索引节点：记录文件的元信息</p>
+<ul>
+<li><p>文件元信息</p>
+<ul>
+<li>文件大小</li>
+<li>访问权限</li>
+<li>创建时间</li>
+<li>修改时间</li>
+<li>数据块位置</li>
+</ul>
+</li>
+<li><p><em>Inode</em> 是文件的唯一标识，和文件一一对应</p>
+<ul>
+<li>存储在磁盘中，占用磁盘空间，大小为 126B 整数倍</li>
+<li>通常会把索引节点加载到内存中，加速文件的访问</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Inode</em> 并未存储 <em>Inode</em> 号、文件名，而是存储在文件所在目录的数据块中</li>
+</ul>
+</blockquote>
+<h3 id="Inode-号"><a href="#Inode-号" class="headerlink" title="Inode 号"></a><em>Inode</em> 号</h3><ul>
+<li><p><em>Inode</em> 号在同一文件系统内部唯一，可以、且被用于确定、定位 <em>Inode</em></p>
+<ul>
+<li>创建文件系统时，每个块组中起始 <em>Inode</em> 号、<em>Inode Table</em> 起始地址确定<ul>
+<li><em>Inode</em> 号按分配比率（间隔字节数）预分配</li>
+<li>若系统中大文件较多，<em>Inode</em> 分配比率应较大，避免 <em>Inode Table</em> 占用过大空间</li>
+</ul>
+</li>
+<li>根据 <em>Inode</em> 号、<em>Inode</em> 结构大小计算偏移即可查确定</li>
+</ul>
+</li>
+<li><p><em>Ext</em> 预留部分 <em>Inode</em> 作特殊用途</p>
+<ul>
+<li><code>0</code>：不存在，用于标识已删除文件</li>
+<li><code>1</code>：虚拟文件系统，如：<code>/proc</code>、<code>/sys</code></li>
+<li><code>2</code>：根目录</li>
+<li><code>3</code>：<em>ACL</em> 索引</li>
+<li><code>4</code>：<em>ACL</em> 数据</li>
+<li><code>5</code>：<em>boot loader</em></li>
+<li><code>6</code>：未删除的目录</li>
+<li><code>7</code>：<em>Reserved GDT</em></li>
+<li><code>8</code>：日志</li>
+<li><code>11</code>：首个非预留 <em>Inode</em> 号，通常是 <em>lost+found</em> 目录</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Inode</em> 大小默认值在 <code>/etc/mke2fs.conf</code> 文件中指定</li>
+<li><code>ls -i</code> 可查看文件 <em>Inode</em> 号</li>
+<li><code>find</code> 可以使用 <code>-inum</code> 参数寻找指定 <em>Inode</em> 号文件</li>
+</ul>
+</blockquote>
+<h4 id="Inode-寻址"><a href="#Inode-寻址" class="headerlink" title="Inode 寻址"></a><em>Inode</em> 寻址</h4><blockquote>
+<ul>
+<li><em>Ext2/3</em> 中 <em>Inode</em> 寻址混合直接查找、多级索引</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><em>Inode</em> 中包含 15 个指针 <code>i_block[0..14]</code>，分为 4 级</p>
+<ul>
+<li><code>i_block[0..11]</code>：直接寻址指针，直接指向数据块</li>
+<li><code>i_block[12]</code>：一级间接寻址指针，指向存储指针的块</li>
+<li><code>i_block[13]</code>：二级间接寻址指针</li>
+<li><code>i_block[14]</code>：三级间接寻址指针</li>
+</ul>
+</li>
+<li><p>根据文件大小选择不同的寻址方法</p>
+<ul>
+<li>文件小于 12block 时，直接用直接寻址指针</li>
+<li>文件较大时则利用更高级别的间接寻址指针，多级索引</li>
+<li><em>Ext2/3</em> 对超大文件存取效率低下，需要核对指针过多</li>
+</ul>
+<p><img src="/imgs/linux_file_system_storage_ext.png" alt="linux_file_system_storage_ext"></p>
+</li>
+</ul>
+<h3 id="Inode-内容"><a href="#Inode-内容" class="headerlink" title="Inode 内容"></a><em>Inode</em> 内容</h3><h4 id="Hard-Link"><a href="#Hard-Link" class="headerlink" title="Hard Link"></a><em>Hard Link</em></h4><ul>
+<li><p>硬链接：指向 <em>Inode</em>（文件） 的 <strong>目录项</strong></p>
+<ul>
+<li>此处文件、硬链接说明<ul>
+<li>文件：<em>Inode</em>、相应数据块</li>
+<li>硬链接：<strong>目录文件中目录项</strong></li>
+</ul>
+</li>
+<li>硬链接是目录项<ul>
+<li>同一个文件的多个硬链接应是仅文件名不同的目录项</li>
+<li><em>Ext</em> 文件系统中 <em>Inode</em> 号、文件名均在存储在目录项中即完美支持硬链接</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>硬链接创建、删除</p>
+<ul>
+<li>创建硬链接会增加文件的硬链接数<ul>
+<li>不能跨分区创建硬链接：不同分区 <em>Inode</em> 号会重复</li>
+<li>不能手动对目录文件创建硬链接：防止路径混乱，文件系统已经为目录创建硬链接<ul>
+<li><code>.</code>：当前目录硬链接</li>
+<li><code>..</code>：上级目录硬链接</li>
+</ul>
+</li>
+<li>目录的硬链接数 = 2 + 一级子目录数<ul>
+<li>父目录中目录项</li>
+<li>自身 <code>.</code> 目录项</li>
+<li>子目录中 <code>..</code> 目录项</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>删除文件实质上就是删除硬链接，文件的硬链接数量归 0 时才被真正删除</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>ls -l</code> 中第二行即为文件的硬链接数（包含文件自身）</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>/</code> 根目录是自引用的（唯一），即 <code>..</code> 也指向自身</li>
+</ul>
+</blockquote>
+<h4 id="Symbolic-Link"><a href="#Symbolic-Link" class="headerlink" title="Symbolic Link"></a><em>Symbolic Link</em></h4><ul>
+<li>符号链接 / 软链接：通过文件名的链接文件的 <strong>文件</strong><ul>
+<li>符号链接是文件<ul>
+<li>文件内容可认为是指向的目标路径，这也决定温文件大小</li>
+<li>符号链接文件本身也可以有多个硬链接、符号链接</li>
+</ul>
+</li>
+<li>一般不占用数据块，<em>Inode</em> 记录即可描述完成<ul>
+<li>只有符号链接指向的目标路径过长（大于 60B）时才会分配数据块</li>
+</ul>
+</li>
+<li>符号链接权限不重要，取决于最终目标文件</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>readlink</code> 可以查看符号链接之</li>
+</ul>
+</blockquote>
+<h4 id="设备文件、FIFO、Socket"><a href="#设备文件、FIFO、Socket" class="headerlink" title="设备文件、FIFO、Socket"></a>设备文件、<em>FIFO</em>、<em>Socket</em></h4><ul>
+<li>设备文件、<em>FIFO</em>、<em>Socket</em><ul>
+<li>没有大小，不占用数据块，在 <em>Inode</em> 记录中即可描述完成<ul>
+<li>主设备号：标识设备类型</li>
+<li>次设备号：标识同种设备类型的不同编号</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Block-Group"><a href="#Block-Group" class="headerlink" title="Block Group"></a><em>Block Group</em></h2><p><em>Block Group</em> 块组：逻辑上对块分组，提高查询效率</p>
+<ul>
+<li><p>块组划分是文件系统创建的一部分</p>
+<ul>
+<li>一个磁盘分区包含多个块组</li>
+<li>块组是逻辑层面的划分，不会类似分区在磁盘上标记、划分</li>
+</ul>
+</li>
+<li><p>每个块组包含多个元数据区、数据区</p>
+<ul>
+<li>元数据区：存储 <em>Bmap</em>、<em>Inode Table</em>、<em>Imap</em> 等数据</li>
+<li>数据区：存储文件数据</li>
+</ul>
+</li>
+<li><p>块组特点</p>
+<ul>
+<li>块组大小（包含块数）= 块 <em>bit</em> 数，即单个 <em>block</em> （作为）<em>Bmap</em> 能标记的块数量<ul>
+<li>此大小包含元数据区（也需要 <em>Bmap</em> 标记是否被占用）</li>
+</ul>
+</li>
+<li>块组设置的 <em>Inode</em> 数量、<em>Inode Table</em> 由系统决定</li>
+</ul>
+</li>
+</ul>
+<h3 id="分区级-Block"><a href="#分区级-Block" class="headerlink" title="分区级 Block"></a>分区级 <em>Block</em></h3><blockquote>
+<ul>
+<li>以下这些块不会出现在所有块组中，存储文件系统级别信息</li>
+</ul>
+</blockquote>
+<h4 id="Boot-Block"><a href="#Boot-Block" class="headerlink" title="Boot Block"></a><em>Boot Block</em></h4><ul>
+<li><p><em>Boot Block</em> / <em>Boot Sector</em>：存放有 <em>boot loader</em> 的块</p>
+<ul>
+<li>特点<ul>
+<li>位于分区的首个块</li>
+<li>占用 1024B</li>
+<li>只有装有系统的主分区、逻辑分区才有 <em>Boot Block</em></li>
+</ul>
+</li>
+<li><em>Boot Block</em> 在不同分区时称为<ul>
+<li>主分区装有操作系统时：<em>Volume Boot Records</em></li>
+<li>逻辑分区装有操作系统时：<em>Extended Boot Records</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>MBR</em> 会引导 <em>VBR</em>/<em>EBR</em>，开机启动时，首先加载 <em>MBR</em> 上 <em>boot loader</em></p>
+<ul>
+<li>单操作系统时，直接定位到所在分区的 <em>Boot Block</em>，加载此处的 <em>boot loader</em></li>
+<li>多操作系统时，加载 <em>MBR</em> 中 <em>boot loader</em> 后列出操作系统菜单，指向各分区的 <em>boot block</em></li>
+</ul>
+<p><img src="/imgs/linux_file_system_ext_super_block_mbr.png" alt="linux_file_system_ext_super_block_mbr"></p>
+<blockquote>
+<ul>
+<li>通过 <em>MBR</em> 管理启动菜单方式已经被 <em>Grub</em> 取代</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="Super-Block"><a href="#Super-Block" class="headerlink" title="Super Block"></a><em>Super Block</em></h4><ul>
+<li><p><em>Super Block</em>：存储文件系统信息、属性元数据</p>
+<ul>
+<li>存储的信息包括<ul>
+<li>块组的 <em>block</em> 数量、<em>Inode</em> 号数量</li>
+<li>文件系统本身的空闲 <em>block</em> 数量、<em>Inode</em> 数量</li>
+<li>文件系统本身的属性信息：时间戳、是否正常、自检时间</li>
+</ul>
+</li>
+<li>（首个）超级块的位置取决于块大小<ul>
+<li>块大小为 1KB 时，引导块正好占用 1 个 <em>block</em>，则超级块号为 1</li>
+<li>块大小大于 1KB 时，超级块和引导块均位于 0 号块</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>超级块对文件系统至关重要</p>
+<ul>
+<li>超级块丢失和损坏必然导致文件系统损坏</li>
+<li><p><em>Ext2</em> 只在 0、1 和 3、5、7 的幂次块组中保存超级块信息</p>
+<ul>
+<li>但文件系统只使用首个块组的超级块信息获取文件系统属性，除非损坏或丢失</li>
+</ul>
+<blockquote>
+<ul>
+<li>有些旧式文件系统将超级块备份至每个块组</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>df</code> 命令读取文件系统的超级块，统计速度快</li>
+</ul>
+</blockquote>
+<h4 id="Group-Descriptor-Table"><a href="#Group-Descriptor-Table" class="headerlink" title="Group Descriptor Table"></a><em>Group Descriptor Table</em></h4><ul>
+<li><p><em>GDT</em> 块组描述符表：存储块组的信息、属性元数据</p>
+<ul>
+<li><em>Ext</em> 每个块组使用 32B 描述，被称为块组描述符，所有块组描述符组成 <em>GBT</em><ul>
+<li><em>GDT</em> 和超级块同时出现在某些块组中</li>
+<li>默认也只会读取 0 号块组的中 <em>GDT</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>Reserved GDT</em>：保留作为 <em>GDT</em> 使用的块（扩容之后块组增加）</p>
+<ul>
+<li>和 <em>GDT</em>、超级块同时出现，同时修改</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>GDT</em>、<em>Reserved GDT</em>、超级块在某些块组同时出现，能提升维护效率</li>
+</ul>
+</blockquote>
+<h3 id="块组级-Block"><a href="#块组级-Block" class="headerlink" title="块组级 Block"></a>块组级 <em>Block</em></h3><h4 id="Block-Bitmap"><a href="#Block-Bitmap" class="headerlink" title="Block Bitmap"></a><em>Block Bitmap</em></h4><p><em>Block Bitmap</em>/<em>Bmap</em> 块位图：标记各块空闲状态</p>
+<ul>
+<li><em>Bmap</em> 只优化写效率<ul>
+<li>向磁盘写数据时才需要寻找空闲块，读数据时按照索引读取即可</li>
+<li><em>Bamp</em> 查询速度足够快，则向磁盘写数据效率极大取决于磁盘的随机读写效率</li>
+</ul>
+</li>
+</ul>
+<h4 id="Inode-Table"><a href="#Inode-Table" class="headerlink" title="Inode Table"></a><em>Inode Table</em></h4><ul>
+<li><em>Inode Table</em>：物理上将多个 <em>Inode</em> 合并存储在块中<ul>
+<li><em>Inode</em> 大小一般小于块大小，合并存储能节约存储空间</li>
+</ul>
+</li>
+</ul>
+<h4 id="Inode-Bitmap"><a href="#Inode-Bitmap" class="headerlink" title="Inode Bitmap"></a><em>Inode Bitmap</em></h4><p><em>Inode Bitmap</em>/<em>Imap</em> 位图：标记各 <em>Inode</em> 号占用状态</p>
+<h3 id="Data-Blocks"><a href="#Data-Blocks" class="headerlink" title="Data Blocks"></a><em>Data Blocks</em></h3><ul>
+<li><em>Data Blocks</em>：直接存储数据的块<ul>
+<li>数据占用的块由文件对应 <em>Inode</em> 记录中块指针找到</li>
+<li>不同类型文件在数据块中存储的内容不同<ul>
+<li>常规文件：存储文件数据</li>
+<li>目录：存储目录下文件、一级子目录</li>
+<li>符号链接：目标路径名较短则直接存储在 <em>Inode</em> 中，否则分配数据块保存</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="目录文件数据块"><a href="#目录文件数据块" class="headerlink" title="目录文件数据块"></a>目录文件数据块</h4><p><img src="/imgs/linux_file_system_ext_data_block_directory.png" alt="linux_file_system_ext_data_block_directory"></p>
+<ul>
+<li>目录文件数据块存储多条目录项，每条目录项包含目录下<ul>
+<li>文件 <em>Inode</em> 号</li>
+<li>目录项长度 <code>rec_len</code></li>
+<li>文件名长度 <code>name_len</code></li>
+<li>文件类型<ul>
+<li><code>0</code>：未知</li>
+<li><code>1</code>：普通文件</li>
+<li><code>2</code>：目录</li>
+<li><code>3</code>：*character devicev</li>
+<li><code>4</code>：<em>block device</em></li>
+<li><code>5</code>：命名管道</li>
+<li><code>6</code>：<em>socket</em></li>
+<li><code>7</code>：符号链接</li>
+</ul>
+</li>
+<li>文件名：文件名、一级子目录名、<code>.</code>、<code>..</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="Directory-Entry"><a href="#Directory-Entry" class="headerlink" title="Directory Entry"></a><em>Directory Entry</em></h2><p><em>Directory Entry</em>/<em>Dentry</em> 目录项（缓存）：存放内存中的缩略版磁盘文件系统目录树结构</p>
+<ul>
+<li><p><em>Dentry</em> 中需要记录</p>
+<ul>
+<li>文件名称</li>
+<li><em>Inode</em> 指针：与文件名建立映射关系</li>
+<li>与其他目录项的层级关联关系<ul>
+<li>包括：父目录、子目录链表</li>
+<li>多个目录项通过指针关联起来就形成目录结构</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>Dentry</em> 是由内核维护，缓存在内存中</p>
+<ul>
+<li>内核会把读过的文件用 <em>Dentry</em> 缓存在内存中，提高文件系统效率</li>
+</ul>
+</li>
+<li><p><em>Inode</em>、<em>Dentry</em> 是一对多的关系</p>
+<ul>
+<li>即一个文件可以有多个别字</li>
+<li>硬链接实现就是多个 <em>Dentry</em> 中的 <em>Inode</em> 指向同一个文件</li>
+</ul>
+</li>
+</ul>
+<h2 id="文件系统挂载"><a href="#文件系统挂载" class="headerlink" title="文件系统挂载"></a>文件系统挂载</h2><ul>
+<li><p><em>Mount</em> 挂载：将文件系统关联到路径</p>
+</li>
+<li><p>文件系统必须要挂载在一定路径下才能被使用</p>
+<ul>
+<li>文件系统体现在系统中即目录，即其文件系统的入口目录（根目录）</li>
+<li>而入口目录无名、无显式 <em>Inode</em> 号<ul>
+<li><em>Ext</em> 中文件名、<em>Inode</em> 号存储在父目录中，入口目录是文件系统最底层目录，不存在父目录</li>
+<li>入口目录无名，所以挂载在任何目录下都是合理的</li>
+<li>入口目录被预留 <em>Inode</em> 号为 2，可直接寻址</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>挂载方式</p>
+<ul>
+<li><code>/</code> 根目录下挂载根文件系统，在系统启动之初即挂载</li>
+<li>其余文件系统则挂载在根文件系统的目录之下</li>
+</ul>
+</li>
+</ul>
+<h3 id="挂载逻辑"><a href="#挂载逻辑" class="headerlink" title="挂载逻辑"></a>挂载逻辑</h3><ul>
+<li><p>挂载实现逻辑 </p>
+<ul>
+<li>新建 <em>Inode</em>，将其寻址指针指向待挂载文件系统</li>
+<li>将挂载点目录 <em>Inode</em> 标记为不可用</li>
+<li>修改挂载点目录在其父目录目录项至新建 <em>Inode</em><ul>
+<li>挂载期间原目录会被遮蔽</li>
+<li>挂载点仍然是所在文件系统的文件，但是其数据不在</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>同步挂载信息</p>
+<ul>
+<li>挂载完成后，将挂载记录、相关信息写入 <code>/proc/self/&#123;mounts, mountstats, mountinfo&#125;</code></li>
+<li>同步 <code>/proc/self/mounts</code> 同步至 <code>/etc/mtab</code>（若有必要）</li>
+</ul>
+</li>
+</ul>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><h3 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h3><blockquote>
+<ul>
+<li><code>/</code> 文件系统在系统启动时即挂载，此时已经读取超级块、<em>GDT</em> 等文件系统块</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>同文件系统内 <code>/</code> 开头绝对地址</p>
+<ul>
+<li>根据 <em>GDT</em> 确定各块组 <em>Inode Table</em> 块号</li>
+<li>在 <em>Inode Table</em> 中查找 <code>/</code> 目录文件 <em>Inode</em><ul>
+<li><code>/</code> <em>Inode</em> 号已知为预留 <em>Inode</em> 号 2，可直接在 <em>Inode Table</em> 中定位</li>
+</ul>
+</li>
+<li>获取 <code>/</code> 数据块，并读取其中目录项</li>
+<li>在目录项中查找目标记录，获取文件 <em>Inode</em> 号</li>
+<li>如上重复，直到找到目标文件 <em>Inode</em>，根据 <code>i_block</code> 寻址指针读取数据块</li>
+</ul>
+</li>
+<li><p>相对地址</p>
+<ul>
+<li>按照所处目录的目录项获取 <em>Inode</em> 号，同绝对地址即可</li>
+</ul>
+</li>
+<li><p>跨文件系统地址</p>
+<ul>
+<li>类似同文件系统</li>
+<li>但挂载点目录会指向目标文件系统入口目录，再同绝对地址即可</li>
+</ul>
+</li>
+</ul>
+<h3 id="文件删除"><a href="#文件删除" class="headerlink" title="文件删除"></a>文件删除</h3><ul>
+<li><p>删除普通文件</p>
+<ul>
+<li>同读取找到文件 <em>Inode</em>、数据块<ul>
+<li>将文件 <em>Inode</em> 硬链接数量减一</li>
+<li>若硬链接数量归 0，执行删除，否则不变</li>
+</ul>
+</li>
+<li>将 <em>Inode</em> 中寻址指针删除<ul>
+<li>此时即无法找到文件数据</li>
+</ul>
+</li>
+<li>在 <em>Imap</em> 中标记文件 <em>Inode</em> 号为未使用</li>
+<li>删除文件所属目录的目录项<ul>
+<li>实务中会将目录项 <em>Inode</em> 号标记为 0，避免产生空洞</li>
+<li>此时文件即不可见</li>
+</ul>
+</li>
+<li>将 <em>Bmap</em> 中文件数据块块号标记为未使用<ul>
+<li>此时即释放文件占用空间，若此时有其他进程持有数据块的指针，则文件系统不会立即释放该空间</li>
+<li><em>Ext</em> 系统中此步骤会导致删除大文件效率低</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>删除目录文件</p>
+<ul>
+<li>若目录非空，则尝试递归删除其中文件、子目录</li>
+<li>若目录为空，类似普通文件删除目录</li>
+</ul>
+</li>
+</ul>
+<h3 id="文件移动、重命名"><a href="#文件移动、重命名" class="headerlink" title="文件移动、重命名"></a>文件移动、重命名</h3><ul>
+<li><p>同目录文件重命名：修改文件所属目录的目录项中文件名</p>
+</li>
+<li><p>同文件系统下移动：增、删目录项</p>
+<ul>
+<li>文件移动不修改 <em>Inode</em>、<em>Inode</em> 号等</li>
+</ul>
+</li>
+<li><p>不同文件系统下移动：先复制、再删除</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>命名冲突时，覆盖会删除冲突文件，并修改相应目录项至新文件</li>
+<li>因此，<em>Ext</em> 无法用同名子目录覆盖父目录，在尝试删除父目录时即失败</li>
+</ul>
+</blockquote>
+<h3 id="文件存储、复制"><a href="#文件存储、复制" class="headerlink" title="文件存储、复制"></a>文件存储、复制</h3><ul>
+<li><p>文件存储</p>
+<ul>
+<li>读取 <em>GDT</em>，寻找空闲块组</li>
+<li>根据块组 <em>Imap</em> 为文件分配未使用 <em>Inode</em> 号</li>
+<li>在 <em>Inode Table</em> 中完善 <em>Inode</em> 中文件元数据</li>
+<li>在所属目录中添加目录项</li>
+<li>将数据写入数据块<ul>
+<li><em>Ext2/3</em> 中每次调用 <em>block</em> 分配器为数据分配 1 个数据块，直至写入完毕</li>
+<li><em>Ext4</em> 中允许一次分配多个数据块</li>
+</ul>
+</li>
+<li>在 <em>Inode Table</em> 中更新 <em>Inode</em> 寻址指针</li>
+</ul>
+</li>
+<li><p>文件复制同文件存储</p>
+</li>
+</ul>
+<h2 id="Ext2-3-4-迭代"><a href="#Ext2-3-4-迭代" class="headerlink" title="Ext2/3/4 迭代"></a><em>Ext2/3/4</em> 迭代</h2><ul>
+<li><em>Ext</em> 文件系统特点<ul>
+<li>在创建时即划分好，方便使用时分配<ul>
+<li>不支持动态划分、分配</li>
+<li>格式化超大磁盘时较慢</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Ext3-日志功能"><a href="#Ext3-日志功能" class="headerlink" title="Ext3 日志功能"></a><em>Ext3</em> 日志功能</h3><ul>
+<li><p><em>Ext2</em> 中只有两个区：元数据区、数据区</p>
+<ul>
+<li>从数据块中写入数据的中断中恢复检查一致性需要大量时间，甚至失败</li>
+</ul>
+</li>
+<li><p><em>Ext3</em> 增加日志区</p>
+<ul>
+<li>在向数据块中写入数据前会在日志区标记</li>
+<li>则根据日志区的标记即可判断操作完成情况，提高一致性确认效率</li>
+</ul>
+</li>
+</ul>
+<h3 id="Ext4-段分配"><a href="#Ext4-段分配" class="headerlink" title="Ext4 段分配"></a><em>Ext4</em> 段分配</h3><ul>
+<li><p><em>Ext2/3</em> 中</p>
+<ul>
+<li><em>Bmap</em> 标记、分配块能提高效率，但扫描 <em>Bmap</em> 效率仍很低</li>
+<li>多级索引寻址效率低</li>
+</ul>
+</li>
+<li><p><em>Ext4</em> 中使用 <em>extent</em> 管理数据块</p>
+<ul>
+<li><em>extent</em> 尽可能包含物理上连续的块</li>
+<li><em>Inode</em> 中使用 4 个 <em>extent</em> 片段流替代多级索引指针<ul>
+<li>每个 <em>extent</em> 片段流设定起始块号、块数量</li>
+<li><em>extent</em> 指向的块保存数据或索引指针</li>
+</ul>
+</li>
+<li>支持调用一次 <em>block</em> 分配器分配多个块，并标记对应 <em>Bmap</em></li>
+</ul>
+<p><img src="/imgs/linux_file_system_ext4_extent_structure.png" alt="linux_file_system_ext4_extent_structure"></p>
+</li>
+<li><p><em>Ext</em> 删除数据</p>
+<ul>
+<li>会依次释放 <em>Bmap</em> 位、更新目录结构、释放 <em>Inode</em> 空间</li>
+</ul>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Ext 文件系统</p><p><a href="https://xyy15926.github.io/Linux/File-System/fs_ext.html">https://xyy15926.github.io/Linux/File-System/fs_ext.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-07-29</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-07-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Linux/">Linux</a><a class="link-muted mr-2" rel="tag" href="/tags/Kernel/">Kernel</a><a class="link-muted mr-2" rel="tag" href="/tags/File-System/">File System</a><a class="link-muted mr-2" rel="tag" href="/tags/Ext2-3/">Ext2/3</a><a class="link-muted mr-2" rel="tag" href="/tags/Ext4/">Ext4</a><a class="link-muted mr-2" rel="tag" href="/tags/Inode/">Inode</a><a class="link-muted mr-2" rel="tag" href="/tags/Block/">Block</a><a class="link-muted mr-2" rel="tag" href="/tags/Block-Group/">Block Group</a><a class="link-muted mr-2" rel="tag" href="/tags/Hard-Link/">Hard Link</a><a class="link-muted mr-2" rel="tag" href="/tags/Symbolic-Link/">Symbolic Link</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/Linux/File-System/fs_cmds.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Linux 文件系统命令</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Probability/stat_inference.html"><span class="level-item">统计推断</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "1374dcbe8d62d9f723c138ed6699c530",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#Ext-文件系统"><span class="level-left"><span class="level-item">1</span><span class="level-item">Ext 文件系统</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Ext-文件系统结构"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">Ext 文件系统结构</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Index-Node"><span class="level-left"><span class="level-item">2</span><span class="level-item">Index Node</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Inode-号"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">Inode 号</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Inode-寻址"><span class="level-left"><span class="level-item">2.1.1</span><span class="level-item">Inode 寻址</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Inode-内容"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">Inode 内容</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Hard-Link"><span class="level-left"><span class="level-item">2.2.1</span><span class="level-item">Hard Link</span></span></a></li><li><a class="level is-mobile" href="#Symbolic-Link"><span class="level-left"><span class="level-item">2.2.2</span><span class="level-item">Symbolic Link</span></span></a></li><li><a class="level is-mobile" href="#设备文件、FIFO、Socket"><span class="level-left"><span class="level-item">2.2.3</span><span class="level-item">设备文件、FIFO、Socket</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Block-Group"><span class="level-left"><span class="level-item">3</span><span class="level-item">Block Group</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#分区级-Block"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">分区级 Block</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Boot-Block"><span class="level-left"><span class="level-item">3.1.1</span><span class="level-item">Boot Block</span></span></a></li><li><a class="level is-mobile" href="#Super-Block"><span class="level-left"><span class="level-item">3.1.2</span><span class="level-item">Super Block</span></span></a></li><li><a class="level is-mobile" href="#Group-Descriptor-Table"><span class="level-left"><span class="level-item">3.1.3</span><span class="level-item">Group Descriptor Table</span></span></a></li></ul></li><li><a class="level is-mobile" href="#块组级-Block"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">块组级 Block</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Block-Bitmap"><span class="level-left"><span class="level-item">3.2.1</span><span class="level-item">Block Bitmap</span></span></a></li><li><a class="level is-mobile" href="#Inode-Table"><span class="level-left"><span class="level-item">3.2.2</span><span class="level-item">Inode Table</span></span></a></li><li><a class="level is-mobile" href="#Inode-Bitmap"><span class="level-left"><span class="level-item">3.2.3</span><span class="level-item">Inode Bitmap</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Data-Blocks"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">Data Blocks</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#目录文件数据块"><span class="level-left"><span class="level-item">3.3.1</span><span class="level-item">目录文件数据块</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Directory-Entry"><span class="level-left"><span class="level-item">4</span><span class="level-item">Directory Entry</span></span></a></li><li><a class="level is-mobile" href="#文件系统挂载"><span class="level-left"><span class="level-item">5</span><span class="level-item">文件系统挂载</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#挂载逻辑"><span class="level-left"><span class="level-item">5.1</span><span class="level-item">挂载逻辑</span></span></a></li></ul></li><li><a class="level is-mobile" href="#文件操作"><span class="level-left"><span class="level-item">6</span><span class="level-item">文件操作</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#文件读取"><span class="level-left"><span class="level-item">6.1</span><span class="level-item">文件读取</span></span></a></li><li><a class="level is-mobile" href="#文件删除"><span class="level-left"><span class="level-item">6.2</span><span class="level-item">文件删除</span></span></a></li><li><a class="level is-mobile" href="#文件移动、重命名"><span class="level-left"><span class="level-item">6.3</span><span class="level-item">文件移动、重命名</span></span></a></li><li><a class="level is-mobile" href="#文件存储、复制"><span class="level-left"><span class="level-item">6.4</span><span class="level-item">文件存储、复制</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Ext2-3-4-迭代"><span class="level-left"><span class="level-item">7</span><span class="level-item">Ext2/3/4 迭代</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Ext3-日志功能"><span class="level-left"><span class="level-item">7.1</span><span class="level-item">Ext3 日志功能</span></span></a></li><li><a class="level is-mobile" href="#Ext4-段分配"><span class="level-left"><span class="level-item">7.2</span><span class="level-item">Ext4 段分配</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

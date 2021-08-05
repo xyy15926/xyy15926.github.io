@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Lexical Analysis - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Lexical Analysis"><meta property="og:type" content="blog"><meta property="og:title" content="Lexical Analysis"><meta property="og:url" content="https://xyy15926.github.io/Python/Py3Ref/lexical_analysis.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="Lexical Analysis"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:published_time" content="2019-07-31T17:38:59.000Z"><meta property="article:modified_time" content="2019-07-31T17:38:59.000Z"><meta property="article:author" content="UBeaRLy"><meta property="article:tag" content="Python"><meta property="article:tag" content="Grammer"><meta property="article:tag" content="Py3Ref"><meta property="article:tag" content="Lexical"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io/Python/Py3Ref/lexical_analysis.html"},"headline":"Lexical Analysis","image":["https://xyy15926.github.io/img/og_image.png"],"datePublished":"2019-07-31T17:38:59.000Z","dateModified":"2019-07-31T17:38:59.000Z","author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":"Lexical Analysis"}</script><link rel="canonical" href="https://xyy15926.github.io/Python/Py3Ref/lexical_analysis.html"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-31T17:38:59.000Z" title="8/1/2019, 1:38:59 AM">2019-08-01</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-07-31T17:38:59.000Z" title="8/1/2019, 1:38:59 AM">2019-08-01</time></span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a><span> / </span><a class="link-muted" href="/categories/Python/Py3Ref/">Py3Ref</a></span><span class="level-item">22 minutes read (About 3283 words)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>&nbsp;visits</span></div></div><h1 class="title is-3 is-size-4-mobile">Lexical Analysis</h1><div class="content"><ul>
+<li>python将读取的程序问题转换为Unicode码点<ul>
+<li>源文件的文本编码可由编码声明指定</li>
+<li>默认<em>UTF-8</em></li>
+</ul>
+</li>
+<li>词法分析器将文件拆分为token</li>
+<li>解释器以词法分析器生成的token流作为输入</li>
+</ul>
+<h2 id="行结构"><a href="#行结构" class="headerlink" title="行结构"></a>行结构</h2><h3 id="逻辑行"><a href="#逻辑行" class="headerlink" title="逻辑行"></a>逻辑行</h3><p>逻辑行：逻辑行的结束以<code>NEWLINE</code> token表示</p>
+<ul>
+<li>语句不能跨越逻辑行边集，除非其语法允许包含<code>NEWLINE</code>
+（如复合语句包含多个子语句）</li>
+<li>逻辑行可由一个、多个物理行按照明确、隐含行拼接规则
+构成</li>
+</ul>
+<blockquote>
+<p>python程序可以分为很多逻辑行</p>
+</blockquote>
+<h3 id="物理行"><a href="#物理行" class="headerlink" title="物理行"></a>物理行</h3><p>物理行：以行终止序列结束的字符序列</p>
+<ul>
+<li>源文件、字符串中可以使用任何标准平台上行终止序列<ul>
+<li>Unix：<code>\n</code>换行符<code>LF</code></li>
+<li>Win：<code>\r\n</code>回车加换行<code>CR LF</code></li>
+<li>Macintosh：<code>\r</code>回车<code>CR</code></li>
+</ul>
+</li>
+<li>输入结束会被作为最后物理行的隐含终止标志</li>
+</ul>
+<blockquote>
+<ul>
+<li>嵌入Python源码字符串应使用标准C传统换行符<code>\n</code></li>
+</ul>
+</blockquote>
+<h4 id="显式行拼接"><a href="#显式行拼接" class="headerlink" title="显式行拼接"></a>显式行拼接</h4><p>显式行拼接：两个、多个物理行使用<code>\</code>拼接为一个逻辑行</p>
+<ul>
+<li>物理行以<strong>不在字符串、注释内</strong>的反斜杠结尾时，将与下行
+拼接构成一个单独逻辑行<ul>
+<li>反斜杠、其后换行符将被删除</li>
+</ul>
+</li>
+<li>以反斜杠结束的行不能带有注释</li>
+<li>反斜杠不能用于<ul>
+<li>拼接注释</li>
+<li>拼接字符串外token</li>
+</ul>
+</li>
+<li>不允许原文字符串以外反斜杠存在于物理行其他位置</li>
+</ul>
+<h4 id="隐式行拼接"><a href="#隐式行拼接" class="headerlink" title="隐式行拼接"></a>隐式行拼接</h4><p>隐式行拼接</p>
+<ul>
+<li><p>圆括号、方括号、花括号内表达式允许被分为多个物理行，无需
+使用反斜杠</p>
+<ul>
+<li>拼接行可以带有注释</li>
+<li>后续行缩进不影响程序结构、允许为空白行</li>
+<li>拼接行之间不会有<code>NEWLINE</code> token</li>
+</ul>
+</li>
+<li><p>三引号<code>&quot;&quot;&quot;</code>/<code>&#39;&#39;&#39;</code>字符串允许被分为多个物理行</p>
+<ul>
+<li>拼接行中不允许带有注释</li>
+</ul>
+</li>
+</ul>
+<h4 id="空白行"><a href="#空白行" class="headerlink" title="空白行"></a>空白行</h4><p>空白行：只包含空格符、制表符、进纸符、注释的逻辑行会被忽略，
+不生成<code>NEWLINE</code> token</p>
+<ul>
+<li><p>交互式输入语句时，对空白行处理可能因为读取-求值-打印循环
+的<strong>具体实现</strong>而存在差异</p>
+<ul>
+<li>标准交互模式解释器中：完全空白逻辑行将会结束一条多行
+复合语句</li>
+</ul>
+</li>
+</ul>
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><p>注释：一不包含在字符串内的<code>#</code>开头，在物理行末尾结束</p>
+<ul>
+<li>注释标志逻辑行的结束，除非存在隐含行拼接规则</li>
+<li>注释在语法分析中被忽略，不属于token</li>
+</ul>
+<h3 id="编码声明"><a href="#编码声明" class="headerlink" title="编码声明"></a>编码声明</h3><p>编码声明：位于python脚本第一、第二行，匹配正则表达式
+<code>coding[=:]\s*([-\w.]+)</code>的注释将被作为编码声明处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: &lt;encoding-name&gt; -*-</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>表达式第一组指定了源码文件编码<ul>
+<li>编码声明指定编码名称必须是python所认可的编码</li>
+<li>词法分析将使用此编码：语义字符串、注释、标识符</li>
+</ul>
+</li>
+<li>编码声明须独占一行，若在第二行，则第一行也必须为注释</li>
+<li>没有编码声明，默认编码为<em>UTF-8</em><ul>
+<li>若文件首字节为<em>UTF-8</em>字节顺序标志<code>b\xef\xbb\xbf</code>，
+文件编码也声明为<em>UTF-8</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h3><p>缩进：<strong>逻辑行开头</strong>的空白（空格符、制表符）被用于计算该行
+的缩进等级，决定语句段落组织结构</p>
+<ul>
+<li>首个非空白字符之前的空格总数确定该行的缩进层次<ul>
+<li>缩进不能使用反斜杠进行拼接，首个反斜杠之前空格将确定
+缩进层次</li>
+</ul>
+</li>
+<li>制表符被替换为1-8个空白，使得缩进的空格总数为8倍数<ul>
+<li>源文件若混合使用制表符、空格符缩进，并使得确定缩进
+层次需要依赖于制表符对应空格数量设置，将引发
+<code>TabError</code></li>
+<li>由于非Unix平台上文本编辑器本身特性，源文件中混合使用
+制表符、空格符是不明智的</li>
+</ul>
+</li>
+<li>进纸符<ul>
+<li>在行首时：在缩进层级计算中被忽略</li>
+<li>行首空格内其他位置：效果未定义，可能导致空格计数重置
+为0</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>不同平台可能会显式限制最大缩进层级</li>
+</ul>
+</blockquote>
+<h4 id="INDENT-DEDENT-token"><a href="#INDENT-DEDENT-token" class="headerlink" title="INDENT/DEDENT token"></a><code>INDENT</code>/<code>DEDENT</code> token</h4><ul>
+<li>读取文件第一行前，向堆栈中压入零值，不再弹出</li>
+<li>被压入栈的层级数值从底至顶持续增加</li>
+<li>每个逻辑行开头的行缩进层级将和栈顶进行比较<ul>
+<li>相同：不做处理</li>
+<li>新行层级较高：压入栈中，生成<code>INDENT</code> token</li>
+<li>新行层级较低：应为栈中层级数值之一<ul>
+<li>栈中高于该层级所有数值被弹出</li>
+<li>每弹出一级数值生成一个<code>DEDENT</code> token</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>文件末尾，栈中剩余每个大于0数值生成一个<code>DEDENT</code> token</li>
+</ul>
+<h2 id="Tokens"><a href="#Tokens" class="headerlink" title="Tokens"></a>Tokens</h2><p>型符</p>
+<ul>
+<li>空白字符不属于token<ul>
+<li>除逻辑行开头、字符串内，空格符、制表符、进纸符等
+空白符均可分隔token</li>
+<li>否则彼此相连的token会被解析为一个不同的token</li>
+</ul>
+</li>
+<li>若存在二义性，将从左至右尽可能长读取合法字符串组成token</li>
+</ul>
+<h3 id="Indentifiers"><a href="#Indentifiers" class="headerlink" title="Indentifiers"></a>Indentifiers</h3><p>标识符/名称：python标识符语法基于Unicode标准附件UAX-31，有
+修改</p>
+<ul>
+<li><p>ASCII字符集内可用于标识符与py2一致</p>
+<ul>
+<li>大、小写字母</li>
+<li>下划线<code>_</code></li>
+<li>数字<code>0-9</code></li>
+</ul>
+</li>
+<li><p>py3中引入ASCII字符集以外的额外字符</p>
+<ul>
+<li>其分类使用包含于<code>unicodedata</code>模块中Unicode字符数据库
+版本</li>
+</ul>
+</li>
+<li><p>标识符没有长度限制、大小写敏感</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">identifier   ::=  xid_start xid_continue*</span><br><span class="line">id_start     ::=  &lt;all characters in general categories Lu, Ll, Lt, Lm, Lo, Nl, the underscore, and characters with the Other_ID_Start property&gt;</span><br><span class="line">id_continue  ::=  &lt;all characters in id_start, plus characters in the categories Mn, Mc, Nd, Pc and others with the Other_ID_Continue property&gt;</span><br><span class="line">xid_start    ::=  &lt;all characters in id_start whose NFKC normalization is in &quot;id_start xid_continue*&quot;&gt;</span><br><span class="line">xid_continue ::=  &lt;all characters in id_continue whose NFKC normalization is in &quot;id_continue*&quot;&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>Lu</code>：大写字母</li>
+<li><code>Ll</code>：小写字母</li>
+<li><code>Lt</code>：词首大写字母</li>
+<li><code>Lm</code>：修饰字母</li>
+<li><code>Lo</code>：其他字母</li>
+<li><code>Nl</code>：字母数字</li>
+<li><code>Mn</code>：非空白标识</li>
+<li><code>Mc</code>：含空白标识</li>
+<li><code>Nd</code>：十进制数字</li>
+<li><code>Pc</code>：连接标点</li>
+<li><code>Other_ID_Start</code>：由<code>PropList.txt</code>定义的显式字符列表，
+  用来支持向后兼容</li>
+<li><code>Other_ID_Continue</code>：同上</li>
+</ul>
+</blockquote>
+<h4 id="Keywords"><a href="#Keywords" class="headerlink" title="Keywords"></a>Keywords</h4><p>关键字：以下标识符作为语言的保留字、关键字，不能用作普通
+标识符</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">False      await      else       import     pass</span><br><span class="line">None       break      except     in         raise</span><br><span class="line">True       class      finally    is         return</span><br><span class="line">and        continue   for        lambda     try</span><br><span class="line">as         def        from       nonlocal   while</span><br><span class="line">assert     del        global     not        with</span><br><span class="line">async      elif       if         or         yield</span><br></pre></td></tr></table></figure>
+<h4 id="保留标识符类"><a href="#保留标识符类" class="headerlink" title="保留标识符类"></a>保留标识符类</h4><p>以下划线字符开头、结尾的标识符类：具有特殊函数</p>
+<ul>
+<li><p><code>_*</code>：不会被<code>from module import *</code>导入</p>
+<ul>
+<li>特殊标识符<code>_</code>：交互式解释器中用于存放最近一次求值
+结果，不处于交互模式时无特殊含义、无预定义</li>
+</ul>
+</li>
+<li><p><code>__*__</code>：系统定义名称</p>
+<ul>
+<li>由解释器极其实现（包括标准库）定义</li>
+<li>任何不遵循文档指定方式使用<code>__*__</code>行为可能导致无警告
+出错</li>
+</ul>
+</li>
+<li><p><code>__*</code>：类私有名称</p>
+<ul>
+<li>在类定义中使用</li>
+<li>会以<strong>混合形式</strong>重写避免基类、派生类私有属性之间出现
+名称冲突</li>
+</ul>
+</li>
+</ul>
+<h3 id="字面值"><a href="#字面值" class="headerlink" title="字面值"></a>字面值</h3><p>字面值：表示一些内置类型常量</p>
+<h4 id="字符串、字节串字面值"><a href="#字符串、字节串字面值" class="headerlink" title="字符串、字节串字面值"></a>字符串、字节串字面值</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">stringliteral   ::=  [stringprefix](shortstring | longstring)</span><br><span class="line">stringprefix    ::=  &quot;r&quot; | &quot;u&quot; | &quot;R&quot; | &quot;U&quot; | &quot;f&quot; | &quot;F&quot;</span><br><span class="line">                     | &quot;fr&quot; | &quot;Fr&quot; | &quot;fR&quot; | &quot;FR&quot; | &quot;rf&quot; | &quot;rF&quot; | &quot;Rf&quot; | &quot;RF&quot;</span><br><span class="line">shortstring     ::=  &quot;&#x27;&quot; shortstringitem* &quot;&#x27;&quot; | &#x27;&quot;&#x27; shortstringitem* &#x27;&quot;&#x27;</span><br><span class="line">longstring      ::=  &quot;&#x27;&#x27;&#x27;&quot; longstringitem* &quot;&#x27;&#x27;&#x27;&quot; | &#x27;&quot;&quot;&quot;&#x27; longstringitem* &#x27;&quot;&quot;&quot;&#x27;</span><br><span class="line">shortstringitem ::=  shortstringchar | stringescapeseq</span><br><span class="line">longstringitem  ::=  longstringchar | stringescapeseq</span><br><span class="line">shortstringchar ::=  &lt;any source character except &quot;\&quot; or newline or the quote&gt;</span><br><span class="line">longstringchar  ::=  &lt;any source character except &quot;\&quot;&gt;</span><br><span class="line">stringescapeseq ::=  &quot;\&quot; &lt;any source character&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bytesliteral   ::=  bytesprefix(shortbytes | longbytes)</span><br><span class="line">bytesprefix    ::=  &quot;b&quot; | &quot;B&quot; | &quot;br&quot; | &quot;Br&quot; | &quot;bR&quot; | &quot;BR&quot; | &quot;rb&quot; | &quot;rB&quot; | &quot;Rb&quot; | &quot;RB&quot;</span><br><span class="line">shortbytes     ::=  &quot;&#x27;&quot; shortbytesitem* &quot;&#x27;&quot; | &#x27;&quot;&#x27; shortbytesitem* &#x27;&quot;&#x27;</span><br><span class="line">longbytes      ::=  &quot;&#x27;&#x27;&#x27;&quot; longbytesitem* &quot;&#x27;&#x27;&#x27;&quot; | &#x27;&quot;&quot;&quot;&#x27; longbytesitem* &#x27;&quot;&quot;&quot;&#x27;</span><br><span class="line">shortbytesitem ::=  shortbyteschar | bytesescapeseq</span><br><span class="line">longbytesitem  ::=  longbyteschar | bytesescapeseq</span><br><span class="line">shortbyteschar ::=  &lt;any ASCII character except &quot;\&quot; or newline or the quote&gt;</span><br><span class="line">longbyteschar  ::=  &lt;any ASCII character except &quot;\&quot;&gt;</span><br><span class="line">bytesescapeseq ::=  &quot;\&quot; &lt;any ASCII character&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>stringprefix</code>、<code>bytesprefix</code>与字面值剩余部分之间不允许
+  由空白符</li>
+<li>源字符集由编码声明定义</li>
+<li>字节串字面值只允许ASCII字符（但允许存储不大于256）</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>两种字面值都可以使用成对（连续三个）单引号、双引号标示
+首尾</p>
+<ul>
+<li>单引号<code>&#39;&#39;</code>：允许包含双引号<code>&quot;&quot;</code></li>
+<li>双引号<code>&quot;&quot;</code>：允许包含单引号<code>&#39;&#39;</code></li>
+<li>三重引号<code>&#39;&#39;&#39;</code>、<code>&quot;&quot;&quot;</code><ul>
+<li>原样保留：未经转义的换行、（非三联）引号、空白符</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>反斜杠<code>\</code>用于对特殊含义字符进行转义</p>
+</li>
+</ul>
+<h5 id="字符串前缀"><a href="#字符串前缀" class="headerlink" title="字符串前缀"></a>字符串前缀</h5><ul>
+<li><p><code>b</code>/<code>B</code>前缀：字节串字面值</p>
+<ul>
+<li>创建<code>bytes</code>类型而非<code>str</code>类型实例</li>
+<li>只能包含ASCII字符</li>
+<li>字节对应数值大于128必须以转义形式表示</li>
+</ul>
+</li>
+<li><p><code>r</code>/<code>R</code>：原始字符串/字节串</p>
+<ul>
+<li>其中反斜杠<code>\</code>被当作其本身字面字符处理</li>
+<li>转换序列不在有效</li>
+<li>原始字面值不能以单个<code>\</code>结束，会转义之后引号字符</li>
+</ul>
+</li>
+<li><p><code>f</code>/<code>F</code>：格式化字符串字面值</p>
+</li>
+</ul>
+<h5 id="转义规则"><a href="#转义规则" class="headerlink" title="转义规则"></a>转义规则</h5><ul>
+<li><p>字符串、字节串字面值中转义序列基本类似标准C转义规则</p>
+<ul>
+<li><code>\xhh</code>：必须接受2个16进制数码</li>
+</ul>
+</li>
+<li><p>以下转义序列仅在字符串字面值中可用</p>
+<ul>
+<li><code>\N&#123;name&#125;</code>：Unicode数据库中名称为name的字符</li>
+<li><code>\uxxxx</code>：必须接受4个16进制数码</li>
+<li><code>\Uxxxxxxxx</code>：必须接受8个16进制数码</li>
+</ul>
+</li>
+<li><p>无法识别的转义序列</p>
+<ul>
+<li>py3.6之前将原样保留在字符串中</li>
+<li>py3.6开始，将引发<code>DeprecationWarning</code>，未来可能会
+引发<code>SyntaxError</code></li>
+</ul>
+</li>
+</ul>
+<h5 id="字符串字面值拼接"><a href="#字符串字面值拼接" class="headerlink" title="字符串字面值拼接"></a>字符串字面值拼接</h5><ul>
+<li><p>多个相邻字符串、字符串字面值（空白符分隔），含义等同于
+全部拼接为一体</p>
+<ul>
+<li>所用引号可以彼此不同（三引号风格也可用）</li>
+<li>每部分字符串可以分别加注释</li>
+<li>可以包括格式化字符串字面值</li>
+</ul>
+</li>
+<li><p>此特性是在<strong>句法层面定义</strong>，在编译时实现</p>
+<ul>
+<li>在运行时拼接字符串表达式必须使用<code>+</code>运算符</li>
+</ul>
+</li>
+</ul>
+<h5 id="格式化字符串字面值"><a href="#格式化字符串字面值" class="headerlink" title="格式化字符串字面值"></a>格式化字符串字面值</h5><p>格式化字符串字面值：带有<code>f/F</code>前缀的字符串字面值</p>
+<ul>
+<li><p>包含可替换字段，即以<code>&#123;&#125;</code>标示的格式表达式</p>
+<ul>
+<li>字符串<code>&#123;&#125;</code>以外部分按字面值处理</li>
+<li>双重花括号<code>&#123; &#123; &#125; &#125;</code>被替换为相应单个花括号</li>
+</ul>
+</li>
+<li><p>格式表达式<strong>被当作正常的包含在圆括号中python表达式</strong>处理
+，在运行时从左至右被求值</p>
+<ul>
+<li>不允许空表达式</li>
+<li><code>lambda</code>空表达式必须显式加上圆括号</li>
+<li>可以包含换行：如三引号字符串</li>
+<li>不能包含注释</li>
+<li>不能<code>\</code>反斜杠，考虑创建临时变量</li>
+</ul>
+</li>
+<li><p>格式化字符串字面值可以拼接，但是一个替换字段不能拆分到
+多个字面值中</p>
+</li>
+<li><p>格式化字符串不能用作文档字符串，即使其中没有包含表达式</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">f_string          ::=  (literal_char | &quot;&#123;&#123;&quot; | &quot;&#125;&#125;&quot; | replacement_field)*</span><br><span class="line">replacement_field ::=  &quot;&#123;&quot; f_expression [&quot;!&quot; conversion] [&quot;:&quot; format_spec] &quot;&#125;&quot;</span><br><span class="line">f_expression      ::=  (conditional_expression | &quot;*&quot; or_expr)</span><br><span class="line">                         (&quot;,&quot; conditional_expression | &quot;,&quot; &quot;*&quot; or_expr)* [&quot;,&quot;]</span><br><span class="line">                       | yield_expression</span><br><span class="line">conversion        ::=  &quot;s&quot; | &quot;r&quot; | &quot;a&quot;</span><br><span class="line">format_spec       ::=  (literal_char | NULL | replacement_field)*</span><br><span class="line">literal_char      ::=  &lt;any code point except &quot;&#123;&quot;, &quot;&#125;&quot; or NULL&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>!</code>：标识转换字段</p>
+<ul>
+<li><code>!s</code>：对结果调用<code>str()</code></li>
+<li><code>!r</code>：调用<code>repr()</code></li>
+<li><code>!a</code>：调用<code>ascii()</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name = <span class="string">&quot;Fred&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;he said his name is <span class="subst">&#123;name!r&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;he said his name is &#123;repr(name)&#125;&quot;</span>)</span><br><span class="line">	<span class="comment"># 二者等价</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>:</code>：标识格式说明符，结果使用<code>format()</code>协议格式化</p>
+<ul>
+<li>格式说明符被传入表达式或转换结果的<code>.__format__()</code>
+方法</li>
+<li>省略格式说明符则传入空字符串</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">width, precision = <span class="number">4</span>, <span class="number">10</span></span><br><span class="line">value = decimal.Deciaml(<span class="string">&quot;12.345&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;result: <span class="subst">&#123;value: &#123;width&#125;</span>.<span class="subst">&#123;precision&#125;</span>&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line">today = datetime(yeat=<span class="number">2017</span>, month=<span class="number">1</span>, day=<span class="number">27</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;today: %B %d, %Y&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">number = <span class="number">1024</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;number: #0x&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>顶层格式说明符可以包含嵌套替换字段</p>
+<ul>
+<li>嵌套字段可以包含有自身的转换字段、格式说明符，但不能
+包含更深层嵌套替换字段</li>
+</ul>
+</li>
+</ul>
+<h4 id="数字字面值"><a href="#数字字面值" class="headerlink" title="数字字面值"></a>数字字面值</h4><ul>
+<li>数字字面值不包括正负号<ul>
+<li>负数实际上是由单目运算符<code>-</code>和字面值组合而成</li>
+</ul>
+</li>
+<li>没有专门复数字面值<ul>
+<li>复数以一对浮点数表示</li>
+<li>取值范围同浮点数</li>
+</ul>
+</li>
+<li>数字字面值可以使用下划线<code>_</code>将数码分组提高可读性<ul>
+<li>确定数字大小时，字面值之间的下滑线被忽略</li>
+<li>下划线可以放在数码之间、基数说明符<code>0x</code>等之后</li>
+<li>浮点数中不能直接放在<code>.</code>后</li>
+</ul>
+</li>
+</ul>
+<h5 id="整形数字字面值"><a href="#整形数字字面值" class="headerlink" title="整形数字字面值"></a>整形数字字面值</h5><ul>
+<li>整形数字字面值没有长度限制，只受限于内存</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">integer      ::=  decinteger | bininteger | octinteger | hexinteger</span><br><span class="line">decinteger   ::=  nonzerodigit ([&quot;_&quot;] digit)* | &quot;0&quot;+ ([&quot;_&quot;] &quot;0&quot;)*</span><br><span class="line">bininteger   ::=  &quot;0&quot; (&quot;b&quot; | &quot;B&quot;) ([&quot;_&quot;] bindigit)+</span><br><span class="line">octinteger   ::=  &quot;0&quot; (&quot;o&quot; | &quot;O&quot;) ([&quot;_&quot;] octdigit)+</span><br><span class="line">hexinteger   ::=  &quot;0&quot; (&quot;x&quot; | &quot;X&quot;) ([&quot;_&quot;] hexdigit)+</span><br><span class="line">nonzerodigit ::=  &quot;1&quot;...&quot;9&quot;</span><br><span class="line">digit        ::=  &quot;0&quot;...&quot;9&quot;</span><br><span class="line">bindigit     ::=  &quot;0&quot; | &quot;1&quot;</span><br><span class="line">octdigit     ::=  &quot;0&quot;...&quot;7&quot;</span><br><span class="line">hexdigit     ::=  digit | &quot;a&quot;...&quot;f&quot; | &quot;A&quot;...&quot;F&quot;</span><br></pre></td></tr></table></figure>
+<h5 id="浮点数字字面值"><a href="#浮点数字字面值" class="headerlink" title="浮点数字字面值"></a>浮点数字字面值</h5><ul>
+<li>整形数部分、指数部分解析时总以10为计数</li>
+<li>浮点数字面值允许范围依赖于具体实现</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">floatnumber   ::=  pointfloat | exponentfloat</span><br><span class="line">pointfloat    ::=  [digitpart] fraction | digitpart &quot;.&quot;</span><br><span class="line">exponentfloat ::=  (digitpart | pointfloat) exponent</span><br><span class="line">digitpart     ::=  digit ([&quot;_&quot;] digit)*</span><br><span class="line">fraction      ::=  &quot;.&quot; digitpart</span><br><span class="line">exponent      ::=  (&quot;e&quot; | &quot;E&quot;) [&quot;+&quot; | &quot;-&quot;] digitpart</span><br></pre></td></tr></table></figure>
+<h5 id="虚数字面值"><a href="#虚数字面值" class="headerlink" title="虚数字面值"></a>虚数字面值</h5><ul>
+<li>序数字面值将生成实部为<code>0.0</code>的复数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">imagnumber ::=  (floatnumber | digitpart) (&quot;j&quot; | &quot;J&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+       -       *       **      /       //      %      @</span><br><span class="line">&lt;&lt;      &gt;&gt;      &amp;       |       ^       ~</span><br><span class="line">&lt;       &gt;       &lt;=      &gt;=      ==      !=</span><br></pre></td></tr></table></figure>
+<h3 id="分隔符"><a href="#分隔符" class="headerlink" title="分隔符"></a>分隔符</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(       )       [       ]       &#123;       &#125;</span><br><span class="line">,       :       .       ;       @       =       -&gt;</span><br><span class="line">+=      -=      *=      /=      //=     %=      @=</span><br><span class="line">&amp;=      |=      ^=      &gt;&gt;=     &lt;&lt;=     **=</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以上列表中后半部分为<strong>增强赋值操作符</strong><ul>
+<li>在词法中作为分隔符，同时起运算作用</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;       &quot;       #       \</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以上可打印ASCII字符<ul>
+<li>作为其他token组成部分时有特殊意义</li>
+<li>或对词法分析器有特殊意义</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$       ?</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以上可打印ASCII字符不再Python词法中使用<ul>
+<li>出现在字符串字面值、注释之外将<strong>无条件引发错误</strong></li>
+</ul>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Lexical Analysis</p><p><a href="https://xyy15926.github.io/Python/Py3Ref/lexical_analysis.html">https://xyy15926.github.io/Python/Py3Ref/lexical_analysis.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>UBeaRLy</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-08-01</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2019-08-01</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Python/">Python</a><a class="link-muted mr-2" rel="tag" href="/tags/Grammer/">Grammer</a><a class="link-muted mr-2" rel="tag" href="/tags/Py3Ref/">Py3Ref</a><a class="link-muted mr-2" rel="tag" href="/tags/Lexical/">Lexical</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=610bd3d2f4ee8700126a0c93&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetBuT.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="https://z3.ax1x.com/2021/08/05/fetDDU.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/ML-Theory/Loss/func_loss.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Loss Function</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Linux/Bash-Programming/flow_control.html"><span class="level-item">Shell执行控制</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "ec029c9240359b17f410e2053efc8ee4",
+            repo: "xyy15926.github.io",
+            owner: "xyy15926",
+            clientID: "af2bd51bbe151a8f6261",
+            clientSecret: "f38f610edfe7bc367d5a20d22d43b10d887199eb",
+            admin: ["xyy15926"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#行结构"><span class="level-left"><span class="level-item">1</span><span class="level-item">行结构</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#逻辑行"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">逻辑行</span></span></a></li><li><a class="level is-mobile" href="#物理行"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">物理行</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#显式行拼接"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">显式行拼接</span></span></a></li><li><a class="level is-mobile" href="#隐式行拼接"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">隐式行拼接</span></span></a></li><li><a class="level is-mobile" href="#空白行"><span class="level-left"><span class="level-item">1.2.3</span><span class="level-item">空白行</span></span></a></li><li><a class="level is-mobile" href="#注释"><span class="level-left"><span class="level-item">1.2.4</span><span class="level-item">注释</span></span></a></li></ul></li><li><a class="level is-mobile" href="#编码声明"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">编码声明</span></span></a></li><li><a class="level is-mobile" href="#缩进"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">缩进</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#INDENT-DEDENT-token"><span class="level-left"><span class="level-item">1.4.1</span><span class="level-item">INDENT/DEDENT token</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#Tokens"><span class="level-left"><span class="level-item">2</span><span class="level-item">Tokens</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Indentifiers"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">Indentifiers</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Keywords"><span class="level-left"><span class="level-item">2.1.1</span><span class="level-item">Keywords</span></span></a></li><li><a class="level is-mobile" href="#保留标识符类"><span class="level-left"><span class="level-item">2.1.2</span><span class="level-item">保留标识符类</span></span></a></li></ul></li><li><a class="level is-mobile" href="#字面值"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">字面值</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#字符串、字节串字面值"><span class="level-left"><span class="level-item">2.2.1</span><span class="level-item">字符串、字节串字面值</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#字符串前缀"><span class="level-left"><span class="level-item">2.2.1.1</span><span class="level-item">字符串前缀</span></span></a></li><li><a class="level is-mobile" href="#转义规则"><span class="level-left"><span class="level-item">2.2.1.2</span><span class="level-item">转义规则</span></span></a></li><li><a class="level is-mobile" href="#字符串字面值拼接"><span class="level-left"><span class="level-item">2.2.1.3</span><span class="level-item">字符串字面值拼接</span></span></a></li><li><a class="level is-mobile" href="#格式化字符串字面值"><span class="level-left"><span class="level-item">2.2.1.4</span><span class="level-item">格式化字符串字面值</span></span></a></li></ul></li><li><a class="level is-mobile" href="#数字字面值"><span class="level-left"><span class="level-item">2.2.2</span><span class="level-item">数字字面值</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#整形数字字面值"><span class="level-left"><span class="level-item">2.2.2.1</span><span class="level-item">整形数字字面值</span></span></a></li><li><a class="level is-mobile" href="#浮点数字字面值"><span class="level-left"><span class="level-item">2.2.2.2</span><span class="level-item">浮点数字字面值</span></span></a></li><li><a class="level is-mobile" href="#虚数字面值"><span class="level-left"><span class="level-item">2.2.2.3</span><span class="level-item">虚数字面值</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#运算符"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">运算符</span></span></a></li><li><a class="level is-mobile" href="#分隔符"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">分隔符</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

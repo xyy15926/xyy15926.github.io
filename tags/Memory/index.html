@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: Memory - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">Memory</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-05-20T14:27:04.000Z" title="5/20/2019, 10:27:04 PM">2019-05-20</time></span><span class="level-item">Updated&nbsp;<time dateTime="2019-05-20T14:27:04.000Z" title="5/20/2019, 10:27:04 PM">2019-05-20</time></span><span class="level-item"><a class="link-muted" href="/categories/C-C/">C/C++</a></span><span class="level-item">41 minutes read (About 6075 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/C-C/mem_ctl.html">C++内存控制</a></h1><div class="content"><h2 id="内存布局"><a href="#内存布局" class="headerlink" title="内存布局"></a>内存布局</h2><h3 id="程序内存结构"><a href="#程序内存结构" class="headerlink" title="程序内存结构"></a>程序内存结构</h3><ul>
+<li><p><em>static area</em>：静态区，存储程序指令（按位存储）、
+全局变量</p>
+<blockquote>
+<ul>
+<li>位于地址编址号较小、接近地址空间开始处</li>
+<li>该区域中分配的内存大小在程序整个执行期间不发生改变</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>正文段：CPU执行机器指令</p>
+<ul>
+<li>每个程序只有一个副本</li>
+<li>只读，避免程序因为意外事故而修改自身指令</li>
+</ul>
+</li>
+<li><p>初始化数据段：程序中所有赋初值全局变量</p>
+</li>
+<li><p>非初始化数据段（bss段）：程序中所有未初始化全局变量</p>
+<ul>
+<li>内核将此段初始化为0</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><em>heap area</em>：堆区，程序运行期间动态分配</p>
+<ul>
+<li>程序中未分配的可用内存池</li>
+<li>处于栈区、静态区之间</li>
+<li>缺乏组织</li>
+<li>需要寻址、操作速度慢</li>
+<li>可以用于存储编译时未知大小、可变数据</li>
+</ul>
+</li>
+<li><p><em>stack area</em>：栈区，存放函数栈帧</p>
+<ul>
+<li>最高地址区</li>
+<li>程序每调用函数、方法都会在此内存区域中创建新的栈帧，
+函数返回所创建栈帧会被撤销，释放内存</li>
+<li>操作迅速，不需要寻址</li>
+<li>数据大小已知、固定</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>堆、栈以相反方向增长，方便任一区域都可以依照需要增长，
+  直到所有可用内存耗尽</li>
+</ul>
+</blockquote>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><blockquote>
+<ul>
+<li><em>static allocation</em>：静态分配，声明全局变量、常量时，
+  编译器为其在静态区中分配在整个程序生命周期内持久的内存
+  空间</li>
+<li><em>automatic allocation</em>：自动分配，调用函数时，编译器为
+  局部变量在栈帧分配存储空间，函数返回时空间自动释放</li>
+<li><em>dynamical allocation</em>：程序允许时，动态获得内存空间</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><em>stack frame</em>：栈帧</p>
+<ul>
+<li>栈帧随机为函数中局部变量分配内存、地址</li>
+<li>栈帧中还包含额外信息，其结构取决于机器架构</li>
+</ul>
+</li>
+<li><p>变量：C++中声明变量时，编译器必须保证给声明变量分配足够
+内存存储该类型变量值，分配内存大小取决于变量类型</p>
+</li>
+</ul>
+<h2 id="Pointer"><a href="#Pointer" class="headerlink" title="Pointer"></a><em>Pointer</em></h2><blockquote>
+<ul>
+<li>C++设计原则：应该尽可能多的访问到有底层硬件提供的机制，
+  所以C++语言使得内存位置的地址对程序员可见</li>
+</ul>
+</blockquote>
+<p>指针：值是内存中一个地址的数据项</p>
+<ul>
+<li>指针允许以压缩方式引用大的数据结构</li>
+<li>指针使得程序在运行时能够预订新的内存</li>
+<li>指针可以用于记录数据项之间关系</li>
+</ul>
+<h3 id="Lvalue、Rvalue"><a href="#Lvalue、Rvalue" class="headerlink" title="Lvalue、Rvalue"></a><em>Lvalue</em>、<em>Rvalue</em></h3><blockquote>
+<ul>
+<li><em>lvalue</em>：左值，引用内存中能够存储数据的内存单元的表达式</li>
+<li><em>rvalue</em>：右值，非左值表达式</li>
+<li><em>xvalue</em>：返回右值引用的函数、表达式</li>
+<li><p><em>gvalue</em>：lvalue、xvalue总称</p>
+</li>
+<li><p>具体参见<em>cs_program/program_design/language_design</em></p>
+</li>
+</ul>
+</blockquote>
+<h4 id="左值引用"><a href="#左值引用" class="headerlink" title="左值引用"></a>左值引用</h4><p>左值引用：只能绑定左值，绑定有其他对象内存空间的变量</p>
+<ul>
+<li><p>建立引用时是将<strong>内存空间绑定</strong></p>
+<ul>
+<li>使用的是对象在内存中位置</li>
+<li>则被引用对象<strong>需要是左值</strong></li>
+<li>则不能将右值绑定到左值引用上</li>
+</ul>
+</li>
+<li><p><strong>常量左值引用</strong>保证不能通过引用改变对应内存空间值</p>
+<ul>
+<li>尝试绑定右值引用时，编译器会自动为右值分配空间</li>
+<li>则可以将右值绑定在常量（左值）引用上</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">(<span class="number">42</span>)</span></span>;</span><br><span class="line"><span class="keyword">int</span>&amp; bar = foo;</span><br><span class="line">	<span class="comment">// OK：`foo`是左值，使用其在内存中位置</span></span><br><span class="line"><span class="keyword">int</span>&amp; baz = <span class="number">42</span>;</span><br><span class="line">	<span class="comment">// Err：`42`是右值，不能将其绑定在左值引用上</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span>&amp; quz = <span class="number">42</span>;</span><br><span class="line">	<span class="comment">// OK：`42`是右值，但编译器可以为其开辟内存空间</span></span><br><span class="line"><span class="keyword">int</span>&amp; garply = ++foo;</span><br><span class="line">	<span class="comment">// OK：前置自增运算符返回左值</span></span><br></pre></td></tr></table></figure>
+<h4 id="右值引用"><a href="#右值引用" class="headerlink" title="右值引用"></a>右值引用</h4><p>右值引用<code>&amp;&amp;</code>：<strong>只能且必须</strong>绑定右值</p>
+<ul>
+<li><p>考虑右值只能是字面常量、或临时对象，则右值引用</p>
+<ul>
+<li>是临时的、即将销毁</li>
+<li><strong>不会在其他地方使用</strong></li>
+</ul>
+</li>
+<li><p>则接受、使用右值引用的代码，可以自由的接管所引用对象
+的资源，无需担心对其他代码逻辑造成数据破坏</p>
+<ul>
+<li><em>move sematics</em>：与右值引用交换成员</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">(<span class="number">42</span>)</span></span>;</span><br><span class="line"><span class="keyword">int</span>&amp;&amp; baz = foo;</span><br><span class="line">	<span class="comment">// Err：`foo`是左值，不能绑定在右值引用上</span></span><br><span class="line"><span class="keyword">int</span>&amp;&amp; quz = <span class="number">42</span>;</span><br><span class="line">	<span class="comment">// OK：`42`是右值，可以绑定在右值引用上</span></span><br><span class="line"><span class="keyword">int</span>&amp;&amp; quux = foo * <span class="number">1</span>;</span><br><span class="line">	<span class="comment">// OK：`foo * 1`结果是右值，可以绑定在右值引用上</span></span><br><span class="line"><span class="keyword">int</span>&amp;&amp; waldo = foo--;</span><br><span class="line">	<span class="comment">// OK：后置自减运算符返回右值</span></span><br></pre></td></tr></table></figure>
+<h5 id="Move-Sematics"><a href="#Move-Sematics" class="headerlink" title="Move Sematics"></a><em>Move Sematics</em></h5><ul>
+<li><p>使用左值引用对类型<code>X</code>赋值操作流程如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">X&amp; X::<span class="keyword">operator</span>=(X <span class="keyword">const</span> &amp; rhs)&#123;</span><br><span class="line">	<span class="comment">// make a clone of what rhs.m_pResource refers to</span></span><br><span class="line">	<span class="comment">// destruct the resource this.m_pResource refers to</span></span><br><span class="line">	<span class="comment">// attach the clone to this.m_pResource</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>m_pResource</code>为<code>X</code>拥有某种<strong>资源</strong></li>
+</ul>
+</blockquote>
+</li>
+<li><p>考虑如下代码中最后一行赋值的执行</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">X <span class="title">foo</span><span class="params">()</span></span>;</span><br><span class="line">X x;</span><br><span class="line">x = <span class="built_in">foo</span>();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>克隆<code>foo()</code>返回的临时对象中资源</li>
+<li>析构<code>x</code>中资源，替换为<code>foo()</code>返回临时对象中资源副本</li>
+<li>析构<code>foo()</code>返回临时对象</li>
+</ul>
+</li>
+<li><p>以上赋值流程效率低、没有必要，考虑交换<code>x</code>和<code>foo()</code>返回
+临时对象资源副本，即<em>move</em>语义</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X&amp; x::<span class="keyword">operator</span>=(X&amp;&amp; rhs)&#123;</span><br><span class="line">	<span class="comment">// swap this-&gt;m_pResource and rhs.m_pResource</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>执行同样<code>x=foo()</code></p>
+<ul>
+<li>此赋值操作只有由编译器自动析构<code>foo()</code>返回的临时
+对象</li>
+<li><code>x.m_pResource</code>被转移给临时对象，在临时对象析构
+时被析构</li>
+</ul>
+</li>
+<li><p>交换成员其实和右值引用没有必然联系</p>
+<ul>
+<li>在其他方法中同样可以交换成员对象</li>
+<li>但是只有在参为右值引用时，交换成员对象确保
+<strong>不会对其他代码逻辑</strong>造成破坏</li>
+</ul>
+</li>
+<li><p>右值引用参数函数是对左值引用参数函数的重载</p>
+<ul>
+<li>编译器优先为右值引用调用以右值引用为形参的函数</li>
+<li>区分右值引用、左值引用可以尽量节省资源</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="Perfect-Forwarding"><a href="#Perfect-Forwarding" class="headerlink" title="Perfect Forwarding"></a><em>Perfect Forwarding</em></h5><p>完美转发：</p>
+<h4 id="引用值类型"><a href="#引用值类型" class="headerlink" title="引用值类型"></a>引用值类型</h4><ul>
+<li><p>无论左值引用、右值引用</p>
+<ul>
+<li>引用作为变量被保留，则其为左值</li>
+<li>否则为右值</li>
+</ul>
+</li>
+<li><p>左值引用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">(<span class="number">42</span>)</span></span>;</span><br><span class="line"><span class="keyword">int</span> &amp; bar = foo;</span><br><span class="line">	<span class="comment">// `bar`是对`foo`的左值引用</span></span><br><span class="line"><span class="keyword">int</span> &amp; baz = bar;</span><br><span class="line">	<span class="comment">// `baz`是对`bar`的左值引用</span></span><br><span class="line">	<span class="comment">// `bar`左值引用本身是左值</span></span><br><span class="line"><span class="keyword">int</span> qux = ++foo;</span><br><span class="line">	<span class="comment">// 前置自增运算符返回左值引用</span></span><br><span class="line">	<span class="comment">// 此时左值引用作为右值</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>右值引用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Type</span>;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(Type&amp;&amp; bar)</span></span>&#123;</span><br><span class="line">	<span class="function">Type <span class="title">baz</span><span class="params">(bar)</span></span>;</span><br><span class="line">	<span class="comment">// `bar`是左值</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function">Type&amp;&amp; <span class="title">qux</span><span class="params">()</span></span>;</span><br><span class="line">quxx = <span class="built_in">qux</span>();</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="引用叠加"><a href="#引用叠加" class="headerlink" title="引用叠加"></a>引用叠加</h4><ul>
+<li><p>C++11中引用叠加规则如下</p>
+<ul>
+<li><code>Type&amp; &amp;</code> -&gt; <code>Type&amp;</code></li>
+<li><code>Type&amp; &amp;&amp;</code> -&gt; <code>Type&amp;</code></li>
+<li><code>Type&amp;&amp; &amp;</code> -&gt; <code>Type&amp;</code></li>
+<li><code>Type&amp;&amp; &amp;&amp;</code> -&gt; <code>Type&amp;&amp;</code></li>
+</ul>
+</li>
+<li><p>C++11之前不支持引用叠加，以下代码报错</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span>&amp; intR;</span><br><span class="line"><span class="keyword">typedef</span> intR&amp; intRR;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="指针使用"><a href="#指针使用" class="headerlink" title="指针使用"></a>指针使用</h3><h4 id="声明指针"><a href="#声明指针" class="headerlink" title="声明指针"></a>声明指针</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *p1, *p2;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>编译器需要知道指针<em>base type</em>，才能正确的解释指针地址
+中的数据</p>
+</li>
+<li><p><code>*</code>用于指明变量为指针变量</p>
+<ul>
+<li>语法上属于变量名：声明时需要给每个指针变量标记<code>*</code></li>
+<li>但拥有基类型：是用于声明、定义的类型</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>base type</em>：基类型，指针所指对象的类型</li>
+</ul>
+</blockquote>
+<h4 id="指针使用-1"><a href="#指针使用-1" class="headerlink" title="指针使用"></a>指针使用</h4><ul>
+<li><code>&amp;</code>：取地址</li>
+<li><code>*</code>：<em>dereferencing</em>，解析引用，取指针所指向对象的值</li>
+<li><code>-&gt;</code>：解析+选择操作符，取指针指向对象的成员</li>
+</ul>
+<h4 id="特殊指针"><a href="#特殊指针" class="headerlink" title="特殊指针"></a>特殊指针</h4><ul>
+<li><p><code>this</code>：<strong>指向当前对象</strong></p>
+<ul>
+<li>解决二义性：引用当前对象的实例变量，即使其被形参、
+局部变量覆盖</li>
+<li>有建议：总是使用<code>this</code>引用当前实例变量使代码更具有
+可读性</li>
+<li>类方法调用都将<code>this</code>作为隐含参数，指向当前实例，即
+主调函数中类实例</li>
+</ul>
+</li>
+<li><p><code>NULL</code>：<em>null pointer</em>，空指针，不指向任何实际内存地址</p>
+<ul>
+<li>在内部表示为0</li>
+<li>在<code>&lt;cstddef&gt;</code>中已定义</li>
+<li>使用<code>*</code>解释空指针不合法，但不总是能检测出来</li>
+</ul>
+</li>
+</ul>
+<h4 id="引用调用"><a href="#引用调用" class="headerlink" title="引用调用"></a>引用调用</h4><p>C++内部通过指针实现引用调用</p>
+<ul>
+<li>参数通过引用传递时，栈帧会在调用时存储一个指针指向该值
+的内存单元<ul>
+<li>引用参数被声明为引用类型，编译器会自动解析其指针值</li>
+</ul>
+</li>
+<li>可以通过明确调用指针替代引用调用的效果</li>
+</ul>
+<h3 id="Pointer-Arithmetic"><a href="#Pointer-Arithmetic" class="headerlink" title="Pointer Arithmetic"></a><em>Pointer Arithmetic</em></h3><p>指针运算：对指针进行加减的运算</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">p + k</span><br><span class="line">	<span class="comment">// **定义**为：`&amp;array[k]`</span></span><br><span class="line">*p++</span><br><span class="line">	<span class="comment">// 一元运算符右结合，等价于`*(p++)`</span></span><br><span class="line">	<span class="comment">// 检索数组当前元素，并将索引指向下个元素</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>只有<code>+-</code>运算有意义，且有约束</p>
+<ul>
+<li>可以<code>+-</code>整数</li>
+<li>不能指针相加</li>
+<li>可以指针相减，返回两个指针之间数组元素数量</li>
+</ul>
+</li>
+<li><p>建议使用数组索引而不是指针运算提高可靠性</p>
+</li>
+</ul>
+<h2 id="Array"><a href="#Array" class="headerlink" title="Array"></a><em>Array</em></h2><p>数组：较低级的多个数据值的集合</p>
+<ul>
+<li>特性<ul>
+<li>有序</li>
+<li>同质</li>
+</ul>
+</li>
+<li>约束<ul>
+<li>数组分配内存大小固定</li>
+<li>数组大小不允许被获得</li>
+<li>不支持插入、删除元素</li>
+<li>不检查越界：重大安全隐患</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>C++提供的内置数组类型，基于从C语言继承而来的语言模型</li>
+<li>考虑到<code>Vector</code>集合类更加灵活方便，没有什么理由继续使用
+  数组</li>
+</ul>
+</blockquote>
+<h3 id="数组使用"><a href="#数组使用" class="headerlink" title="数组使用"></a>数组使用</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type name[size];</span><br><span class="line">	<span class="comment">// 声明大小为`size`、类型为`type`的数组`name`</span></span><br><span class="line">name[idx];</span><br><span class="line">	<span class="comment">// 选择数组`name`中`idx`处元素</span></span><br><span class="line">type static_arr [] = &#123;&#125;;</span><br><span class="line">	<span class="comment">// 数组静态初始化</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> ARR_LEN = <span class="keyword">sizeof</span> static_arr / <span class="keyword">sizeof</span> static_arr[<span class="number">0</span>];</span><br><span class="line">	<span class="comment">// 获取数组长度</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>声明：多数情况下，应该使用符号常量而不是确定的整数值指定
+数组大小，以便修改代码</p>
+</li>
+<li><p><em>selection</em>：通过数组名+<code>[idx]</code>选择元素</p>
+</li>
+<li><p>静态初始化：可以忽略数组容量，编译器自动从初始化的元素
+数目推断</p>
+</li>
+<li><p>获取数组分配容量：基于数组同质性</p>
+</li>
+</ul>
+<h4 id="数组容量"><a href="#数组容量" class="headerlink" title="数组容量"></a>数组容量</h4><blockquote>
+<ul>
+<li><em>allocated size</em>：声明时指定的数组容量</li>
+<li><em>effective size</em>：实际使用到的元素数目</li>
+</ul>
+</blockquote>
+<ul>
+<li>声明比需求大的数组<ul>
+<li>定义常量表示数组元素数目最大值，以此声明数组</li>
+</ul>
+</li>
+</ul>
+<h4 id="指针-amp-数组"><a href="#指针-amp-数组" class="headerlink" title="指针&amp;数组"></a>指针&amp;数组</h4><p>数组名同时也<strong>用作</strong>一个指针值，表示数组中首个元素地址</p>
+<ul>
+<li><p>如果编译器遇到数组变量名没带下标，则将其解释为指向数组
+开始内存的指针变量</p>
+</li>
+<li><p>C++将数组视为指针最重要的原因：数组形参和实参共享</p>
+<ul>
+<li>数组和指针作为形参声明函数完全相同</li>
+<li>数组作为实参传递时，其值（首个元素地址）类似指针被
+复制，调用函数中对数组的改变持久</li>
+<li>应该使用能反映其用途的方式声明参数，打算用数组作为
+参数就声明参数为数组</li>
+</ul>
+</li>
+<li><p>C++中指针、数组最关键区别：变量声明时内存分配</p>
+<ul>
+<li>数组：连续的、可以存储数组元素的内存</li>
+<li>指针：存储机器地址的一个字的内存，不能直接存储数据</li>
+</ul>
+</li>
+<li><p>指针作为数组使用</p>
+<ul>
+<li>将已存在数组首地址赋给指针有严格限制</li>
+<li>真正优势是程序运行时动态分配内存创建数组</li>
+</ul>
+</li>
+</ul>
+<h2 id="动态内存管理"><a href="#动态内存管理" class="headerlink" title="动态内存管理"></a>动态内存管理</h2><h3 id="分配内存"><a href="#分配内存" class="headerlink" title="分配内存"></a>分配内存</h3><ul>
+<li>动态分配的内存在分配其的栈帧被释放后仍然保持</li>
+<li><strong>动态内存分配一定要手动及时释放</strong></li>
+</ul>
+<h4 id="new"><a href="#new" class="headerlink" title="new"></a><code>new</code></h4><p><code>new</code>：以某种类型，从堆中分配一块空间给所指定类型的变量</p>
+<ul>
+<li><p><code>new</code>操作符返回堆中预留的、存储某类型值的地址</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *ip = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br><span class="line">	<span class="comment">// 从堆中分配单个类型空间给指定指针变量</span></span><br><span class="line"><span class="keyword">int</span> *array = <span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">4</span>];</span><br><span class="line">	<span class="comment">// 从堆上给数组分配空间给指定指针变量</span></span><br><span class="line">	<span class="comment">// 动态数组</span></span><br><span class="line">Point *p_1 = <span class="keyword">new</span> Point;</span><br><span class="line">	<span class="comment">// 从堆上给对象、结构体分配空间，调用默认构造函数</span></span><br><span class="line">Point *p_2 = <span class="keyword">new</span> <span class="built_in">Point</span>(<span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">	<span class="comment">// 类型名后提供参数，则`new`会调用相应构造函数</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>一旦在堆中分配了空间，可以通过解析指针来引用</p>
+</li>
+</ul>
+<h4 id="xlloc"><a href="#xlloc" class="headerlink" title="xlloc"></a><code>xlloc</code></h4><h3 id="释放内存"><a href="#释放内存" class="headerlink" title="释放内存"></a>释放内存</h3><h4 id="delete"><a href="#delete" class="headerlink" title="delete"></a><code>delete</code></h4><p><code>delete</code>：取<code>new</code>操作符事先分配内存的指针，释放该指针指向
+的内存空间</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> ip;</span><br><span class="line">	<span class="comment">// 释放单个类型空间指针变量</span></span><br><span class="line"><span class="keyword">delete</span>[] array;</span><br><span class="line">	<span class="comment">// 释放动态数组</span></span><br></pre></td></tr></table></figure>
+<h4 id="释放内存策略"><a href="#释放内存策略" class="headerlink" title="释放内存策略"></a>释放内存策略</h4><ul>
+<li><em>garbage collection</em>：垃圾回收，自动查找不再使用的内存，
+然后释放</li>
+</ul>
+<h3 id="拷贝"><a href="#拷贝" class="headerlink" title="拷贝"></a>拷贝</h3><ul>
+<li><p><em>shallow copying</em>：浅拷贝，C++默认拷贝</p>
+<ul>
+<li>如果值是指针，不会拷贝指针所指的值</li>
+<li>可以通过重载赋值操作符、构造拷贝构造函数改变默认的
+浅拷贝行为</li>
+</ul>
+</li>
+<li><p><em>deep copying</em>：深拷贝</p>
+<ul>
+<li>拷贝指针时，拷贝指针所指的值</li>
+</ul>
+</li>
+</ul>
+<h2 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h2><h3 id="Global-Variable"><a href="#Global-Variable" class="headerlink" title="Global Variable"></a><em>Global Variable</em></h3><h3 id="const"><a href="#const" class="headerlink" title="const"></a><code>const</code></h3><p><code>const</code>：常量，初始化之后不能改变</p>
+<ul>
+<li><p>优势</p>
+<ul>
+<li>描述性常量名使得程序更易于阅读</li>
+<li>大大简化程序日常中代码维护问题</li>
+</ul>
+</li>
+<li><p><code>const</code>修饰经过依据优先级、其他关键字处理后的主体</p>
+<ul>
+<li>指针、值、参数：其他关键字处理得到目标语义主体处</li>
+<li>返回值：<code>const</code>置于函数签名头</li>
+<li>函数主体：函数体<code>&#123;&#125;</code>前、函数签名后</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>C++中常量声明中字符应全部为大写</li>
+<li>所以常量类成员必须在初始化列表中设置值</li>
+</ul>
+</blockquote>
+<h3 id="static"><a href="#static" class="headerlink" title="static"></a><code>static</code></h3><h4 id="非成员静态变量"><a href="#非成员静态变量" class="headerlink" title="非成员静态变量"></a>非成员静态变量</h4><p>非成员静态变量：程序执行前既已在静态数据区分配内存</p>
+<ul>
+<li><p>静态全局变量</p>
+<ul>
+<li><strong>未经初始化</strong>时会<strong>被自动初始化为0</strong></li>
+<li><em>internal</em>属性，仅在声明文件内部可见，文件外不可见，
+较一般全局变量不容易冲突</li>
+</ul>
+<blockquote>
+<ul>
+<li>普通全局变量：默认<em>external</em>，可以通过<code>extern</code>关键字
+ 被其他文件访问，随机值初始化</li>
+</ul>
+</blockquote>
+</li>
+<li><p>静态局部变量</p>
+<ul>
+<li>仅会在首次声明时被初始化，之后重复声明不会初始化</li>
+<li>具有<em>static-storage duration</em>/<em>static extent</em>，仅在
+声明其的局部作用域中可见，但不会随函数栈退出而销毁，
+适合函数重入需要保存局部状态场合</li>
+</ul>
+</li>
+</ul>
+<h4 id="非成员静态函数"><a href="#非成员静态函数" class="headerlink" title="非成员静态函数"></a>非成员静态函数</h4><p>非成员静态函数：作用域仅限于声明文件</p>
+<ul>
+<li><p>仅在声明其的文件中可见，不能被其他文件使用，较一般函数
+不容易发生冲突</p>
+<blockquote>
+<ul>
+<li>函数定义、声明默认<em>extern</em>，可通过<code>extern</code>关键字在
+ 其他文件中使用</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="静态成员变量"><a href="#静态成员变量" class="headerlink" title="静态成员变量"></a>静态成员变量</h4><p>静态成员变量：程序执行前既已在静态数据区分配内存</p>
+<ul>
+<li><p>静态成员变量属于类</p>
+<ul>
+<li>在内存中只有一份拷贝，所有类对象共享</li>
+<li>可以通过类名直接访问<code>&lt;cls&gt;::&lt;static_var&gt;</code>，若访问
+权限允许</li>
+</ul>
+</li>
+<li><p>只能在类中声明，在类外初始化</p>
+<ul>
+<li>初始化：<code>&lt;var_type&gt; &lt;cls&gt;::&lt;static_var&gt; = &lt;value&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="静态成员函数"><a href="#静态成员函数" class="headerlink" title="静态成员函数"></a>静态成员函数</h4><p>静态成员函数</p>
+<ul>
+<li><p>静态成员函数属于类</p>
+<ul>
+<li>没有<code>this</code>指针</li>
+<li>只能访问静态成员变量、静态成员函数</li>
+<li>可通过类名直接调用<code>&lt;cls&gt;::&lt;static_func&gt;()</code>，若访问
+权限允许</li>
+</ul>
+</li>
+<li><p>类内声明静态成员函数需要<code>static</code>关键字，在类外定义时
+无需<code>static</code>关键字</p>
+</li>
+</ul>
+<h3 id="extern"><a href="#extern" class="headerlink" title="extern"></a><code>extern</code></h3><p><code>extern</code>：<strong>声明</strong>使用未定义（全局）变量、函数</p>
+<ul>
+<li><p><code>extern</code>修饰的变量可在当前文件、或其他文件中定义</p>
+<ul>
+<li>当前文件<code>extern</code>声明处后定义：扩展（全局）变量作用
+范围</li>
+<li>在其他文件中定义：引用在其他文件中定义的（全局）变量</li>
+</ul>
+</li>
+<li><p>函数声明中<code>extern</code>：仅表示函数可能在其他源文件中定义，
+即<code>extern</code>总是可以省略</p>
+<ul>
+<li>因为函数声明默认无定义，而变量声明默认同时定义</li>
+</ul>
+</li>
+<li><p><code>extern</code>声明要严格对应定义格式</p>
+<ul>
+<li><code>extern char *a</code>不能用于声明<code>char a[6]</code></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>extern</code>不能用于访问其他文件中静态全局变量</li>
+<li>编译器遇到<code>extern</code>函数、变量时在其他模块中寻找定义</li>
+</ul>
+</blockquote>
+<h4 id="external全局变量"><a href="#external全局变量" class="headerlink" title="external全局变量"></a><em>external</em>全局变量</h4><ul>
+<li><p>全局变量默认为<em>external</em></p>
+<ul>
+<li>虽然作用域默认仅限于为当前文件，但是可以通过
+<code>external</code>关键字在其他文件中声明访问</li>
+<li>可以通过<code>static</code>关键字使变量<em>internal</em>，在其他文件
+中不可见</li>
+</ul>
+</li>
+<li><p>程序中不能有多个同名非静态全局变量</p>
+<ul>
+<li>编译时：C++以文件为单位进行编译，可以有多个文件定义
+同名非静态全局变量</li>
+<li>链接时：链接器将无法确定链接目标报错</li>
+</ul>
+</li>
+</ul>
+<h4 id="头文件全局变量"><a href="#头文件全局变量" class="headerlink" title="头文件全局变量"></a>头文件全局变量</h4><ul>
+<li><p>引入头文件相当于直接复制头文件内容，若在头文件中定义
+全局变量</p>
+<ul>
+<li>头文件可以被多个源文件引入</li>
+<li>相当于在多个文件中定义同名全局变量报错</li>
+</ul>
+</li>
+<li><p><strong>头文件中不应定义非静态全局变量</strong></p>
+<ul>
+<li>定义静态全局变量：在多源文件中定义不共享、互相独立、
+不可见全局变量</li>
+<li>在头文件中声明<code>extern</code>全局变量：在某个源文件中仅定义
+一次该全局变量，包含该头文件源文件共享该全局变量</li>
+</ul>
+</li>
+</ul>
+<h4 id="extern-quot-C-quot"><a href="#extern-quot-C-quot" class="headerlink" title="extern &quot;C&quot;"></a><code>extern &quot;C&quot;</code></h4><p><code>extern &quot;C&quot;</code>：指定编译、链接规约，不影响语义</p>
+<ul>
+<li><p><code>extern &quot;C&quot;</code>是为C++编译器指定的</p>
+<ul>
+<li>编译C++文件时：对<code>extern &quot;C&quot;</code>声明的函数按照C编译规约
+翻译名称、编译</li>
+<li>链接时：对<code>extern &quot;C&quot;</code>声明的函数按照C链接规约链接</li>
+</ul>
+</li>
+<li><p><code>&quot;C&quot;</code>：是指编译、链接规约，不是指C语言</p>
+<ul>
+<li>其他符合类C语言编译、链接规约的语言，如：Fortran、
+Assembler，均可以使用<code>extern &quot;C&quot;</code>声明</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>C++支持重载，编译器会联合函数名、参数生成中间函数名，
+  在C++中使用C函数可能导致链接器无法到对应C函数</li>
+</ul>
+</blockquote>
+<h5 id="C-环境使用C函数"><a href="#C-环境使用C函数" class="headerlink" title="C++环境使用C函数"></a>C++环境使用C函数</h5><p>C++可以直接使用C函数接口，只是需要指明使用C函数</p>
+<ul>
+<li><p>使用<code>extern &quot;C&quot;</code>逐个声明C函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>适合需要声明函数数量较少、分散在不同文件中</li>
+</ul>
+</li>
+<li><p>在头文件中设置宏编译编译条件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*...c code...*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>仅在C++源文件中有<code>extern &quot;C&quot;</code>声明，保证正常编译、
+链接</li>
+<li>适合C函数声明集中在同一头文件中</li>
+</ul>
+</li>
+</ul>
+<h5 id="C环境使用C-函数"><a href="#C环境使用C-函数" class="headerlink" title="C环境使用C++函数"></a>C环境使用C++函数</h5><p>C环境无法直接使用C++函数，必须转换为C函数接口才能使用</p>
+<ul>
+<li><p>通过<code>extern &quot;C&quot;</code>将C++中函数声明为C函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>带有<code>extern &quot;C&quot;</code>、不带是两个中函数声明，可以共存</li>
+<li>虽然C++中不能对重载函数声明<code>extern &quot;C&quot;</code>，但C不支持
+函数重载，也没有必要对重载函数声明<code>extern &quot;C&quot;</code></li>
+</ul>
+</li>
+<li><p>通过<code>extern &quot;C&quot;</code>创建包装C函数</p>
+<ul>
+<li><p>可以类似C++翻译重载函数名，将重载函数包装为多个C函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(doubel)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">f_i</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123; <span class="built_in">f</span>(i); &#125;</span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">f_d</span><span class="params">(<span class="keyword">double</span> d)</span></span>&#123; <span class="built_in">f</span>(d); &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以包装类成员方法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span>&#123;</span></span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> doubel <span class="title">f</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">double</span> <span class="title">call_C_f</span><span class="params">(C* p, <span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> p-&gt;<span class="built_in">f</span>(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="register"><a href="#register" class="headerlink" title="register"></a><code>register</code></h3><p><code>register</code>：寄存器变量，将局部变量值放在运算器的寄存器中</p>
+<ul>
+<li>存放在寄存器中的变量参与运算时，无需从内存中获取，节省
+时间、提高效率</li>
+</ul>
+<h3 id="auto"><a href="#auto" class="headerlink" title="auto"></a><code>auto</code></h3><p><code>auto</code>：要求编译器对变量类型进行自动推导</p>
+<ul>
+<li><p><code>auto</code>声明变量必须初始化，以使编译器能够推导变量类型</p>
+<ul>
+<li>从此意义上说，<code>auto</code>是类型声明占位符，编译器在编译时
+将<code>auto</code>替换变量实际类型</li>
+</ul>
+</li>
+<li><p><code>auto</code>优势、用途</p>
+<ul>
+<li>声明有初始化表达式的复杂类型变量时简化代码</li>
+<li>避免声明变量类型时错误：编译器自动选择最合适类型<ul>
+<li>函数返回值类型不确定，使用<code>auto</code>代替</li>
+</ul>
+</li>
+<li>一定程度上支持泛型编程<ul>
+<li>修改函数返回值类型时，无需修改代码</li>
+<li><code>auto</code>可以结合模板使用，加强泛型能力</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>C++11前，<code>auto</code>指具有自动存储期的局部变量，而没有声明为
+  <code>static</code>变量总是具有自动存储期的变量，使用频率极低<blockquote>
+<ul>
+<li>具有自动存储期变量在进入声明该变量的程序块时被建立</li>
+<li>存在于程序块存活时，退出程序块时被销毁</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li><p><code>auto</code>可以联合<code>volatile</code>、<code>*</code>、<code>&amp;</code>、<code>&amp;&amp;</code>使用</p>
+</li>
+<li><p><code>auto</code>需要被推导为类型</p>
+<ul>
+<li>声明变量必须初始化</li>
+<li>不能和其他类型联合使用</li>
+<li>函数参数、模板参数不能被声明为<code>auto</code></li>
+</ul>
+</li>
+<li><p><code>auto</code>只是占位符，不是独立类型，不能用于类型转换或其他
+涉及具体类型操作，如：<code>sizeof</code>、<code>typeid</code></p>
+</li>
+<li><p>定义在一个<code>auto</code>序列中变量必须推导为同一类型</p>
+</li>
+<li><p>但<code>auto</code>不会被自动推导为<em>constant&amp;volatile qualifiers</em>，
+除非被声明为引用类型</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> i = <span class="number">99</span>;</span><br><span class="line"><span class="keyword">auto</span> j = i; <span class="comment">// `j`为`int`类型，不是`const int`</span></span><br><span class="line"><span class="keyword">auto</span>&amp; k = i; <span class="comment">// `i`为`const int&amp;`类型</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>auto</code>会退化为指向数组的指针，除非被声明为引用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">9</span>];</span><br><span class="line"><span class="keyword">auto</span> j = a;</span><br><span class="line">count &lt;&lt; <span class="built_in"><span class="keyword">typeid</span></span>(j).<span class="built_in">name</span>() &lt;&lt; endl;</span><br><span class="line">	<span class="comment">// 输出`int*`</span></span><br><span class="line"><span class="keyword">auto</span>&amp; k = a;</span><br><span class="line">count &lt;&lt; <span class="built_in"><span class="keyword">typeid</span></span>(k).<span class="built_in">name</span>() &lt;&lt; endl;</span><br><span class="line">	<span class="comment">// 输出`int[9]`</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="decltype"><a href="#decltype" class="headerlink" title="decltype"></a><code>decltype</code></h3><p><code>decltype</code>：要求编译器在编译时进行类型推导</p>
+<ul>
+<li><p>以普通表达式作为参数，返回表达式类型</p>
+<ul>
+<li><code>decltype</code>不会对表达式进行求值</li>
+</ul>
+</li>
+<li><p><code>decltype</code>用途、优势</p>
+<ul>
+<li>推导表达式类型</li>
+<li>与<code>using</code>/<code>typedef</code>联合使用，定义类型</li>
+<li>重用匿名类型</li>
+<li>结合<code>auto</code>，追踪函数返回值类型</li>
+</ul>
+</li>
+</ul>
+<h4 id="推导规则"><a href="#推导规则" class="headerlink" title="推导规则"></a>推导规则</h4><ul>
+<li><p>若<code>e</code>为无括号的标记符表达式、类成员访问表达式</p>
+<ul>
+<li>则<code>decltype(e)</code>为<code>e</code>所命名的实体类型</li>
+<li>若<code>e</code>为被重载函数、或实体不存在，将导致编译错误</li>
+</ul>
+</li>
+<li><p>设<code>e</code>类型为<code>T</code></p>
+<ul>
+<li>若<code>e</code>为将亡值，则<code>decltype(e)</code>为<code>T&amp;&amp;</code></li>
+<li>若<code>e</code>为左值，则<code>decltype(e)</code>为<code>T&amp;</code></li>
+<li>若<code>e</code>为纯右值，则<code>decltype(e)</code>为<code>T</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a><code>volatile</code></h3><blockquote>
+<ul>
+<li>volatile: a situation that is likely to change suddenly
+  and unexpectedly</li>
+</ul>
+</blockquote>
+<p><code>volatile</code>：变量可能<strong>受到程序外因素影响</strong>，不应该对其做出
+任何假设</p>
+<ul>
+<li><p>C/C++中对<code>volatile</code>对象访问，有编译器优化上的副作用，
+降低性能</p>
+<ul>
+<li>对<code>volatile</code>对象访问<strong>必须与内存进行交互</strong>，不能直接
+使用寄存器中已有值</li>
+<li><code>volatile</code>对象相关代码块<strong>不允许被优化消失</strong></li>
+<li>多个<code>volatile</code>对象<strong>访问保序</strong>：<strong>编译器</strong>不可交换
+对<code>volatile</code>对象访问的执行次序<ul>
+<li>不能保证CPU乱序执行不交换执行次序</li>
+<li>因此<code>volatile</code>无法解决多线程同步问题</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>X86、AMD64等常用架构CPU只允许<em>store-load</em>乱序，
+ 不允许<em>store-store</em>乱序，此时<code>volatile</code>用于线程同步
+ 是安全的，但是这依赖于硬件规范，且会降低执行效率</li>
+<li>推荐使用原子操作、互斥量等实现</li>
+</ul>
+</blockquote>
+</li>
+<li><p>用途</p>
+<ul>
+<li>信号处理相关场合</li>
+<li>内存映射硬件相关场合</li>
+<li>非本地跳转相关场合</li>
+</ul>
+</li>
+</ul>
+<h4 id="错误线程同步"><a href="#错误线程同步" class="headerlink" title="错误线程同步"></a>错误线程同步</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">bool</span> flag = <span class="literal">false</span>;</span><br><span class="line"><span class="built_in">thread1</span>()&#123;</span><br><span class="line">	flag = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">volatile</span> Type* value = <span class="keyword">new</span> <span class="built_in">Type</span>();</span><br><span class="line">	<span class="built_in">thread2</span>(value);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(flag == <span class="literal">true</span>)&#123;</span><br><span class="line">		<span class="comment">// 希望`thread2`更新完`value`后继续执行</span></span><br><span class="line">		<span class="comment">// `flag`为`volatile`保证此语句块不会被优化消失</span></span><br><span class="line">			<span class="built_in">apply</span>(value);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	thread.<span class="built_in">join</span>();</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">nullptr</span> != value)&#123;</span><br><span class="line">		<span class="keyword">delete</span> value;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">thread2</span>(<span class="keyword">volatile</span> Type* value)&#123;</span><br><span class="line">	value-&gt;<span class="built_in">update</span>();</span><br><span class="line">	flag = <span class="literal">true</span>;</span><br><span class="line">	<span class="comment">// `flag`、`value`均为`volatile`保证两语句不会交换执行次序</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以上代码即使对相关变量都设为<code>volatile</code>，也依赖CPU执行
+规范才能保证安全</li>
+</ul>
+<h3 id="unaligned"><a href="#unaligned" class="headerlink" title="__unaligned"></a><code>__unaligned</code></h3></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-21T09:27:37.000Z" title="3/21/2019, 5:27:37 PM">2019-03-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-08-02T10:02:17.000Z" title="8/2/2021, 6:02:17 PM">2021-08-02</time></span><span class="level-item"><a class="link-muted" href="/categories/C-C/">C/C++</a><span> / </span><a class="link-muted" href="/categories/C-C/Cstd/">Cstd</a></span><span class="level-item">a few seconds read (About 0 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/C-C/Cstd/dyn_alloc.html">内存分配</a></h1><div class="content"></div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

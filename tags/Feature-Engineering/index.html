@@ -1,0 +1,1934 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: Feature Engineering - Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="UBeaRLy&#039;s Proxy"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="UBeaRLy&#039;s Proxy"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="https://xyy15926.github.io/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://xyy15926.github.io/img/og_image.png"><meta property="article:author" content="UBeaRLy"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyy15926.github.io"},"headline":"Hexo","image":["https://xyy15926.github.io/img/og_image.png"],"author":{"@type":"Person","name":"UBeaRLy"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"https://xyy15926.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/darcula.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><script data-ad-client="ca-pub-5385776267343559" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" async></script><meta name="generator" content="Hexo 5.4.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Visit on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">Feature Engineering</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2020-11-03T11:57:29.000Z" title="11/3/2020, 7:57:29 PM">2020-11-03</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:48:34.000Z" title="7/16/2021, 2:48:34 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Technique/">ML Technique</a><span> / </span><a class="link-muted" href="/categories/ML-Technique/Feature-Engineering/">Feature Engineering</a></span><span class="level-item">14 minutes read (About 2059 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Technique/Feature-Engineering/feature_selection.html">特征选择</a></h1><div class="content"><h2 id="Feature-Selection"><a href="#Feature-Selection" class="headerlink" title="Feature Selection"></a><em>Feature Selection</em></h2><p>特征选择：从特征集合中选择<strong>最具统计意义</strong>的特征子集</p>
+<ul>
+<li><p>特征分类</p>
+<ul>
+<li><em>relevant feature</em>：相关特征，对当前学习任务有用的属性、特征<ul>
+<li>特征选择最重要的是确保不丢失重要特征</li>
+</ul>
+</li>
+<li><em>irrelevant feature</em>：无关特征，对当前学习任务无用的属性、特征</li>
+<li><em>redundant feature</em>：冗余特征，包含的信息可以由其他特征中推演出来<ul>
+<li>冗余特征通常不起作用，剔除可以减轻模型训练负担</li>
+<li>若冗余特征恰好对应完成学习任务所需要的中间概念，则是有益的，可以降低学习任务的难度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>特征选择会降低模型预测能力，因为被剔除特征中可能包含有效信息</p>
+<ul>
+<li>保留尽可能多特征，模型性能会提升，模型更复杂、计算复杂度同样提升</li>
+<li>剔除尽可能多特征，模型性能会下降，模型更简单、降低计算复杂度</li>
+</ul>
+</li>
+<li><p>特征选择原因</p>
+<ul>
+<li>维数灾难问题：仅需要选择一部分特征构建模型，可以减轻
+维数灾难问题，从此意义上特征选择和降维技术有相似动机</li>
+<li>剔除无关特征可以降低学习任务难度，简化模型、降低计算复杂度</li>
+</ul>
+</li>
+<li><p>特征选择方法可以分解为</p>
+<ul>
+<li>特征子集搜索</li>
+<li>特征子集评价：能判断划分之间差异的机制都能作为特征子集的准则</li>
+</ul>
+</li>
+</ul>
+<h3 id="特征选择过程"><a href="#特征选择过程" class="headerlink" title="特征选择过程"></a>特征选择过程</h3><p><img src="/imgs/feature_selection_procedure.png" alt="feature_selection_procedure"></p>
+<ul>
+<li><em>generation procedure</em>：产生过程，搜索特征子集</li>
+<li><em>evaluation function</em>：评价函数，评价特征子集优劣</li>
+<li><em>stopping criterion</em>：停止准则，与评价函数相关的阈值，评价函数达到与阈值后可以停止搜索</li>
+<li><em>validation procedure</em>：验证过程，在验证数据集上验证选择特征子集的有效性</li>
+</ul>
+<h3 id="特征子集搜索"><a href="#特征子集搜索" class="headerlink" title="特征子集搜索"></a>特征子集搜索</h3><ul>
+<li><p>遍历：从初始特征集合选择包含所有重要信息的特征子集</p>
+<ul>
+<li>适合没有先验（问题相关领域）知识的情况</li>
+<li>特征数量稍多会出现组合爆炸</li>
+</ul>
+</li>
+<li><p>迭代：产生候选子集、评价优劣，基于评价结果产生下个候选子集</p>
+<ul>
+<li>不断迭代，直至<strong>无法找到更好的后续子集</strong></li>
+<li>需要评价得子集数量较少</li>
+<li>可能无法找到最优子集</li>
+</ul>
+</li>
+</ul>
+<h4 id="迭代搜索"><a href="#迭代搜索" class="headerlink" title="迭代搜索"></a>迭代搜索</h4><ul>
+<li><p>给定特征 $A={A_1, A_2, \cdots, A_d}$，将每个特征视为候选子集（每个子集只有一个元素），对 $d$ 个候选子集进行评价</p>
+</li>
+<li><p>在上轮选定子集中加入特征，选择包含两个特征的最优候选子集</p>
+</li>
+<li><p>假定在 $k+1$ 轮时，最优特征子集不如上轮最优的特征子集，则停止生成候选子集，将上轮选定特征子集作为特征选择结果</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>Forward Feature Elimination</em>：前向特征选择，逐渐增加相关特征</li>
+<li><em>Backward Feature Elimination</em>：后向特征选择，从完整特征集合开始，每次尝试去掉无关特征，逐渐剔除特征</li>
+<li><em>Bidirectional Feature Elimination</em>：双向特征选择，结合前向、后向搜索<blockquote>
+<ul>
+<li>每轮逐渐增加选定的相关特征，特征在后续迭代中确定不会被去除，同时减少无关特征</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h2 id="特征子集评价"><a href="#特征子集评价" class="headerlink" title="特征子集评价"></a>特征子集评价</h2><p>特征子集评价：能判断划分之间差异的机制都能作为特征子集的选择准则</p>
+<ul>
+<li><p>方差</p>
+<ul>
+<li>方差越大，特征对预测值区分能力越强</li>
+</ul>
+</li>
+<li><p>相关系数</p>
+<ul>
+<li><em>Pearson</em> 积矩相关系数</li>
+<li><em>Kendell</em> 秩相关系数</li>
+<li><em>Spearman</em> 秩相关系数</li>
+<li>卡方统计量</li>
+</ul>
+</li>
+<li><p>距离指标</p>
+</li>
+<li><p>划分增益</p>
+<ul>
+<li><em>Gini</em> 指数</li>
+<li><em>IG</em> 信息增益/互信息</li>
+<li>信息增益比</li>
+</ul>
+</li>
+<li><p>排序指标</p>
+<ul>
+<li><em>AUC</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="特征问题定位"><a href="#特征问题定位" class="headerlink" title="特征问题定位"></a>特征问题定位</h3><blockquote>
+<ul>
+<li>模型出现过拟合问题时，可能是特征工程步骤中出现信息泄露（数据穿越、标签入特征），一般通过单变量特征评价指标定位有问题的特征</li>
+</ul>
+</blockquote>
+<ul>
+<li>数据泄露涉及的特征的定位（经验）<ul>
+<li>线性模型<ul>
+<li>单变量 <em>AUC</em> 值：超过 0.8 则高度可疑</li>
+</ul>
+</li>
+<li>非线性模型（树）<ul>
+<li>基于信息增益的特征重要性</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a><em>Filter</em></h2><p>过滤式：对数据集进行的特征选择过程与后续学习器无关，即设计统计量过滤特征，不考虑后续学习器问题</p>
+<ul>
+<li><p>通过分析特征子集内部特点衡量特征优劣，描述自变量、目标变量的关联</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>时间效率高</li>
+<li>对过拟合问题较稳健</li>
+<li>倾向于选择<strong>单个</strong>、<strong>冗余</strong>特征，没有考虑特征之间相关性</li>
+</ul>
+</li>
+</ul>
+<h3 id="单特征过滤"><a href="#单特征过滤" class="headerlink" title="单特征过滤"></a>单特征过滤</h3><p>单特征过滤：直接选择合适特征子集评价标准处理各特征，选择满足要求特征</p>
+<h3 id="Relief-Relavant-Features"><a href="#Relief-Relavant-Features" class="headerlink" title="Relief: Relavant Features"></a><em>Relief: Relavant Features</em></h3><p><em>Relief</em> 方法：设置相关统计量度量特征重要性</p>
+<ul>
+<li><p>特征子集对应统计量中每个分量对应一个初始特征，特征子集重要性由子集中每个特征对应的相关统计量分量之和决定</p>
+</li>
+<li><p>特征选择方法</p>
+<ul>
+<li>指定阈值 $k$：选择比 $k$ 大的相关统计量分量对应特征</li>
+<li>指定特征个数 $m$：选择相关统计量分量最大的 $m$ 个特征</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>只适合二分类问题，扩展变体 <em>Relief-F</em> 可以处理多分类问题</li>
+</ul>
+</blockquote>
+<h2 id="Wrapper"><a href="#Wrapper" class="headerlink" title="Wrapper"></a><em>Wrapper</em></h2><p>包裹式：把最终要使用的<strong>学习器性能作为特征子集评价标准</strong>，为给定学习器选择最有利其性能、特化的特征子集</p>
+<ul>
+<li>优点<ul>
+<li>直接针对特定学习器进行优化</li>
+<li>考虑了特征之间的关联性，通常训练效果较过滤式好</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>特征选择过程中需要多次训练学习器，计算效率较低</li>
+<li>观测数据较少时容易过拟合</li>
+</ul>
+</li>
+</ul>
+<h3 id="Las-Vegas-Wrapper"><a href="#Las-Vegas-Wrapper" class="headerlink" title="Las Vegas Wrapper"></a><em>Las Vegas Wrapper</em></h3><p><em>LVW</em>：在 <em>Las Vegas Method</em> 框架下使用随机策略进行子集搜索，以最终分类器误差作为特征子集评价标准</p>
+<ul>
+<li>包含停止条件控制参数T，避免每次子集评价训练特征子集开销过大</li>
+<li>若初始特征数量很多、T设置较大、每轮训练时间较长，算法执行很长时间都不会停止<ul>
+<li><em>LVM</em> 可能无法得到解（拉斯维加斯算法本身性质）</li>
+</ul>
+</li>
+</ul>
+<h3 id="递归特征消除法"><a href="#递归特征消除法" class="headerlink" title="递归特征消除法"></a>递归特征消除法</h3><p>递归特征消除法：使用基模型进行多轮训练，每轮训练消除若干权值系数的特征，再基于特征集进行下一轮训练</p>
+<h3 id="Stepwise变量选择"><a href="#Stepwise变量选择" class="headerlink" title="Stepwise变量选择"></a>Stepwise变量选择</h3><ul>
+<li>前向变量选择</li>
+<li>后向变量选择</li>
+<li>前向-后向变量选择</li>
+<li>最优子集选择</li>
+</ul>
+<h2 id="Embedded"><a href="#Embedded" class="headerlink" title="Embedded"></a><em>Embedded</em></h2><p>嵌入式：将特征选择、学习器训练过程融合，在同一优化过程中同时完成，即学习器训练过程中自动进行特征选择</p>
+<ul>
+<li>优点：兼具筛选器、封装器的优点</li>
+<li>缺点：需要明确<strong>好的选择</strong></li>
+</ul>
+<h3 id="正则化约束"><a href="#正则化约束" class="headerlink" title="正则化约束"></a>正则化约束</h3><p>$L_1$、$L_2$ 范数：主要用于线性回归、逻辑回归、<em>SVM</em> 等算法</p>
+<ul>
+<li><em>Ridge</em>：$L_2$ 范数</li>
+<li><em>Lasso</em>：$L_1$ 范数<ul>
+<li>除降低过拟合风险，还容易获得稀疏解</li>
+<li>参数 $\lambda$ 越大，稀疏性越大，被选择特征越少</li>
+</ul>
+</li>
+<li><em>SVM</em>、逻辑回归<ul>
+<li>超参参数范数权重越大，稀疏性越大，被选择特征越少</li>
+</ul>
+</li>
+</ul>
+<h3 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h3><p>决策树思想：决策树自上而下选择分裂特征就是特征选择</p>
+<ul>
+<li>所有树结点划分属性根据先后顺序组成的集合就是选择出来的特征子集</li>
+</ul>
+<blockquote>
+<ul>
+<li>参见<em>ml_models/unlinear_models/decision_tree</em></li>
+</ul>
+</blockquote>
+<h3 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h3><p>神经网络：训练时同时处理贡献度问题，不重要特征权重被剔除</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2020-11-03T11:56:42.000Z" title="11/3/2020, 7:56:42 PM">2020-11-03</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T06:47:17.000Z" title="7/16/2021, 2:47:17 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Technique/">ML Technique</a><span> / </span><a class="link-muted" href="/categories/ML-Technique/Feature-Engineering/">Feature Engineering</a></span><span class="level-item">16 minutes read (About 2372 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Technique/Feature-Engineering/feature_extraction.html">特征提取</a></h1><div class="content"><h2 id="Feature-Extraction-Feature-Construction"><a href="#Feature-Extraction-Feature-Construction" class="headerlink" title="Feature Extraction/Feature Construction"></a><em>Feature Extraction</em>/<em>Feature Construction</em></h2><p>特征提取/构建：把原始数据中转换为具有物理、统计学意义特征，构建新的人工特征</p>
+<ul>
+<li><p>主观要求高</p>
+<ul>
+<li>对问题实际意义、相关领域有研究：思考问题形式、数据结构</li>
+<li>对数据敏感：需要观察原始数据</li>
+<li>分析能力强</li>
+</ul>
+</li>
+<li><p>目的：自动构建新特征</p>
+<ul>
+<li>信号表示：抽取后特征尽可能丢失较少信息</li>
+<li>信号分类：抽取后特征尽可能提高分类准确率</li>
+</ul>
+</li>
+<li><p>方法</p>
+<ul>
+<li>组合属性：混合属性创建新特征</li>
+<li>切分属性：分解、切分原有特征创建新特征，如将时间戳分割为日期、上下午</li>
+</ul>
+</li>
+<li><p>特征工程和复杂模型在某些方便不冲突</p>
+<ul>
+<li>虽然很多复炸模型能够学习复杂规律，类似自行构造特征</li>
+<li>但是考虑到计算资源、特征数量、学习效率，人工经验构造衍生特征是必要且有益的</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>特征选择：表示出每个特征对于模型构建的重要性</li>
+<li>特征提取：有时能发现更有意义的特征属性</li>
+<li>有时从额外划分特征构建，其相较于特征提取，需要人为的手工构建特征，偏经验、规则</li>
+</ul>
+</blockquote>
+<h2 id="通用特征提取"><a href="#通用特征提取" class="headerlink" title="通用特征提取"></a>通用特征提取</h2><h3 id="数值型"><a href="#数值型" class="headerlink" title="数值型"></a>数值型</h3><ul>
+<li>幅度调整：提高 <em>SGD</em> 收敛速度<ul>
+<li>归一化</li>
+<li>标准化</li>
+</ul>
+</li>
+<li>数据变换<ul>
+<li>数据标准化（参见 <em>data_preprocessing</em>）</li>
+<li>二阶、三阶变换</li>
+</ul>
+</li>
+<li>数据离散化：连续值分段<ul>
+<li>等距切分：各类分布不均</li>
+<li>分位数切分：各类分布均匀，但异质性不均</li>
+</ul>
+</li>
+<li>平方、开根：增加非线性化</li>
+</ul>
+<h3 id="分类型"><a href="#分类型" class="headerlink" title="分类型"></a>分类型</h3><ul>
+<li><em>one-hot</em> 编码：赋予各特征等权</li>
+<li><em>hash</em> 技巧：针对文本类别数据，统计文本词表、倾向</li>
+<li>多分类转二分类：输入变量类别合并，超类<ul>
+<li><em>twoing</em> 策略：使两个超类差异足够大的合并点（分割点）</li>
+<li><em>ordering</em> 策略：对有序类型，只有两个连续基类才能合并</li>
+</ul>
+</li>
+</ul>
+<h3 id="统计型"><a href="#统计型" class="headerlink" title="统计型"></a>统计型</h3><ul>
+<li>统计特征<ul>
+<li>跨记录聚集：特征取值在样本全体中的情况<ul>
+<li>分位线</li>
+<li>比例</li>
+<li>次序</li>
+<li><em>count</em>（出现次数）</li>
+<li>均值</li>
+<li>方查</li>
+</ul>
+</li>
+<li>记录内聚合：属于同记录的同类特征统计指标<ul>
+<li>均值</li>
+<li>方查</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>时序特征<ul>
+<li>视为连续型：持续时间、间隔时间</li>
+<li>视为离散值：一年中某些时间段</li>
+</ul>
+</li>
+</ul>
+<h3 id="组合特征"><a href="#组合特征" class="headerlink" title="组合特征"></a>组合特征</h3><ul>
+<li>特征拼接：<em>GBDT</em> 生成特征组合路径</li>
+<li>特征冲突验证：匹配、等于、不等于</li>
+<li>关联特征：图传播<ul>
+<li>依赖于内部、外部关联图数据，如：<ul>
+<li>账户作为节点：已能确认正、负例样本</li>
+<li>交易、社会关系作为边</li>
+<li>交易频次、金额作为权重</li>
+</ul>
+</li>
+<li>图传播可以考虑多次传播，即考虑前一次的传播结果中置信度较高者作为下次的起始节点</li>
+</ul>
+</li>
+<li><strong>特征交叉衍生</strong>：探索的范围较大，人工特征交叉衍生时建议最后考虑，根据经验：<ul>
+<li>优先从单变量评价指标较好的特征开始</li>
+<li>连续特征内部可能会做交叉衍生</li>
+<li>但离散特征内部往往不做交叉衍生<ul>
+<li><em>one-hot</em> 后特征对应维数较大</li>
+<li>单个维度信息量不多，交叉后维数爆炸，不适合某些模型，如：树模型</li>
+</ul>
+</li>
+<li>从离散、连续特征中 <strong>分别选择</strong> 进行交叉<ul>
+<li>交叉方式：连续特征为记录内聚合特征时，按离散特征分组聚合</li>
+<li>优先考虑此种交叉衍生</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="降维"><a href="#降维" class="headerlink" title="降维"></a>降维</h2><h3 id="Principal-Component-Analysis"><a href="#Principal-Component-Analysis" class="headerlink" title="Principal Component Analysis"></a><em>Principal Component Analysis</em></h3><p><em>PCA</em>：主成分分析，找到数据中主成分，用主成分来表征原始数据，达到降维目的</p>
+<ul>
+<li>思想：通过<strong>坐标轴转换，寻找数据分布的最优子空间</strong><ul>
+<li>特征向量可以理解为坐标转换中新坐标轴方向</li>
+<li>特征值表示对应特征向量方向上方差<ul>
+<li>特征值越大、方差越大、信息量越大</li>
+<li>抛弃较小方差特征</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PCA缺陷：线性降维方法<ul>
+<li><em>KPCA</em>：核主成分分析，核映射对PCA进行扩展</li>
+<li>流形映射降维方法：等距映射、局部线性嵌入、拉普拉斯
+特征映射</li>
+</ul>
+</li>
+</ul>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>对样本数据进行中心化处理（和统计中处理不同）</li>
+<li>求样本协方差矩阵</li>
+<li>对协方差矩阵进行特征值分解，将特征值从大至小排列</li>
+<li>取前p个最大特征值对应特征向量作为新特征，实现降维</li>
+</ul>
+<h3 id="Linear-Discriminant-Analysis"><a href="#Linear-Discriminant-Analysis" class="headerlink" title="Linear Discriminant Analysis"></a><em>Linear Discriminant Analysis</em></h3><p><em>LDA</em>：线性判别分析，寻找投影方向，使得投影后样本尽可能按照
+原始类别分开，即寻找可以最大化类间距离、最小化类内距离的方向</p>
+<ul>
+<li><p>相较于PCA，LDA考虑数据的类别信息，不仅仅是降维，还希望
+实现“分类”</p>
+</li>
+<li><p>优点：相较于PCA</p>
+<ul>
+<li>LDA更适合处理带有类别信息的数据</li>
+<li>模型对噪声的稳健性更好</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>对数据分布有很强假设：各类服从正太分布、协方差相等，
+实际数据可能不满足</li>
+<li>模型简单，表达能力有限，但可以通过核函数扩展LDA处理
+分布比较复杂的数据</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>Fisher判别分析</li>
+</ul>
+</blockquote>
+<h3 id="Independent-Component-Analysis"><a href="#Independent-Component-Analysis" class="headerlink" title="Independent Component Analysis"></a><em>Independent Component Analysis</em></h3><p><em>ICA</em>：独立成分分析，寻找线性变换$z=Wx$，使得$z$各特征分量
+之间独立性最大</p>
+<ul>
+<li>思想<ul>
+<li>假设随机信号$x$服从模型<script type="math/tex; mode=display">x = As</script><blockquote>
+<ul>
+<li>$s$：未知源信号，分量相互独立</li>
+<li>$A$：未知混合矩阵</li>
+</ul>
+</blockquote>
+</li>
+<li>ICA通过观察$x$估计混合矩阵$A$、源信号$s$，认为源信号
+携带更多信息</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>若原信号非高斯，则分解唯一，否则可能有无穷多分解</li>
+<li>因子分析，也称<em>Blind Source Separation</em>（盲源分离）</li>
+</ul>
+</blockquote>
+<h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><ul>
+<li><p>大多数ICA算法需要进行数据预处理：先用PCA得到主成分$Y$，
+再把各个主成分各分量标准化得到$Z$满足</p>
+<ul>
+<li>$Z$各分量不相关</li>
+<li>$Z$各分量方差为1</li>
+</ul>
+</li>
+<li><p><em>FastICA</em>算法：寻找方向$w$使得随机变量$w^T z$某种
+“非高斯性”度量最大化</p>
+<ul>
+<li>四阶矩</li>
+</ul>
+</li>
+</ul>
+<h2 id="图像特征提取"><a href="#图像特征提取" class="headerlink" title="图像特征提取"></a>图像特征提取</h2><ul>
+<li>提取边缘、尺度不变特征变换特征</li>
+</ul>
+<blockquote>
+<ul>
+<li>以下是传统的图像特征提取方法，现在应该都是CNN进行特征
+  提取、分类</li>
+<li>详情参见<em>machine_learning/cv</em></li>
+</ul>
+</blockquote>
+<h3 id="LBP特征"><a href="#LBP特征" class="headerlink" title="LBP特征"></a><em>LBP</em>特征</h3><ul>
+<li><em>Sobel Operator</em></li>
+<li><em>Laplace Operator</em></li>
+<li><em>Canny Edge Detector</em></li>
+</ul>
+<h3 id="基于角点"><a href="#基于角点" class="headerlink" title="基于角点"></a>基于角点</h3><ul>
+<li><em>Moravec</em></li>
+<li><em>Harris</em></li>
+<li><em>GoodFeaturesToTrack</em></li>
+<li><em>FAST</em></li>
+</ul>
+<h3 id="基于尺度空间"><a href="#基于尺度空间" class="headerlink" title="基于尺度空间"></a>基于尺度空间</h3><ul>
+<li><em>Scale-Invariant Feature Transform</em></li>
+<li><em>Speeded Up Robust Feature</em></li>
+<li><em>Brief</em></li>
+<li><em>Oriented Brief</em></li>
+</ul>
+<h3 id="HOG特征"><a href="#HOG特征" class="headerlink" title="HOG特征"></a><em>HOG</em>特征</h3><p>方向梯度直方图特征：通过计算、统计图像局部区域梯度方向直方图
+实现特征描述</p>
+<h4 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>归一化处理：图像转换为灰度图像，再利用伽马校正实现<ul>
+<li>提高图像特征描述对光照、环境变量稳健性</li>
+<li>降低图像局部阴影、局部曝光、纹理失真</li>
+<li>尽可能抵制噪声干扰</li>
+</ul>
+</li>
+<li>计算图像梯度</li>
+<li>统计梯度方向</li>
+<li>特征向量归一化（块内）<ul>
+<li>克服光照不均匀变化及前景、背景对比差异</li>
+</ul>
+</li>
+<li>生成特征向量</li>
+</ul>
+<h2 id="文本特征提取"><a href="#文本特征提取" class="headerlink" title="文本特征提取"></a>文本特征提取</h2><blockquote>
+<ul>
+<li>具体参见<em>ml_specification/natural_language_processing/#todo</em></li>
+</ul>
+</blockquote>
+<h3 id="词袋模型"><a href="#词袋模型" class="headerlink" title="词袋模型"></a>词袋模型</h3><p>词袋模型：将文本以词为单位切分token化</p>
+<ul>
+<li><p>文章可以表示为稀疏长向量，向量每个维度代表一个单词</p>
+<ul>
+<li>针对有序语句，将单词两两相连</li>
+<li>维度权重反映单词在原文章中重要程度<ul>
+<li>通常使用<em>TF-IDF</em>统计量表示词权重</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>TF-IDF</em></p>
+<script type="math/tex; mode=display">\begin{align*}
+TF-IDF(t, d) & = TF(t, d) * IDF(t) \\
+IDF(t) & = log \frac {文章总数}
+   {包含单词t的文章总数 + 1}
+\end{align*}</script><blockquote>
+<ul>
+<li>$TF(t, d)$：单词$t$在文档$d$中出现的频率</li>
+<li>$IDF(t)$：逆文档频率，衡量单词对表达语义的重要性<blockquote>
+<ul>
+<li>若单词在多篇文章中出现过，则可能是通用词汇，对区分
+文章贡献较小，$IDF(t)$较小、权重较小</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="N-gram模型"><a href="#N-gram模型" class="headerlink" title="N-gram模型"></a><em>N-gram</em>模型</h3><p>N-gram模型：将连续出现的$n, n \leq N$个词组成的词组N-gram
+作为单独特征放到向量中</p>
+<ul>
+<li>相较于词袋模型，考虑单词组合意义</li>
+<li><em>word stemming</em>：将不同词性单词统一为同一词干形式<ul>
+<li>同一个词可能有多种词性变化，却拥有相同含义</li>
+</ul>
+</li>
+</ul>
+<h3 id="Word-Embedding模型"><a href="#Word-Embedding模型" class="headerlink" title="Word-Embedding模型"></a><em>Word-Embedding</em>模型</h3><p>词嵌入模型：将每个词都映射为低维空间上的稠密向量</p>
+<ul>
+<li><p><em>Word2Vec</em>：常用词嵌入模型，底层神经网络</p>
+<ul>
+<li><em>Continuous Bag of Words</em>：根据上下文词语预测当前词
+生成概率</li>
+<li><em>Skip-gram</em>：根据当前词预测上下文中各个词的生成概率</li>
+</ul>
+</li>
+<li><p>实际上直接使用矩阵作为源文本特征作为输入进行训练，难以
+得到好结果，往往需要提取、构造更高层特征</p>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2020-08-17T13:20:05.000Z" title="8/17/2020, 9:20:05 PM">2020-08-17</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:56:12.000Z" title="7/16/2021, 4:56:12 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Technique/">ML Technique</a><span> / </span><a class="link-muted" href="/categories/ML-Technique/Feature-Engineering/">Feature Engineering</a></span><span class="level-item">13 minutes read (About 1986 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Technique/Feature-Engineering/sampling.html">抽样方法</a></h1><div class="content"><h2 id="数据抽样"><a href="#数据抽样" class="headerlink" title="数据抽样"></a>数据抽样</h2><ul>
+<li><p>抽样作用</p>
+<ul>
+<li>提高速度、效率，将精力放在建立模型、选择模型上</li>
+<li>帮助分析特殊性问题：有些问题涉及到破坏性试验，抽取产品的一部分做耐用性实验经济有效</li>
+<li>降低成本：合理抽样可以保证在大部分信息不丢失情况下，降低数据采集、社会调查成本</li>
+</ul>
+</li>
+<li><p>从效率、成本角度看，适当、合理抽样有必要</p>
+<ul>
+<li>数据越多信息越丰富、数据量尽量多为好</li>
+<li>抽样可以降低求解的时空代价，但是可能会丢失部分信息，可能会使分析结果产生偏差</li>
+<li>在分析阶段，若抽样误差能够接受，完全可以抽样</li>
+</ul>
+</li>
+<li><p>样本应能充分代表总体</p>
+<ul>
+<li>一般样本容量越大，和总体的相似程度越高，样本质量越高</li>
+<li>但大样本不等于总体：理论上再大的局部抽样也不如随机抽样有代表性</li>
+</ul>
+</li>
+</ul>
+<h2 id="样本评价"><a href="#样本评价" class="headerlink" title="样本评价"></a>样本评价</h2><ul>
+<li>样本容量、样本质量是衡量抽样样本的两个最重要因素<ul>
+<li>样本容量：抽样过程中抽取的样本数</li>
+<li>样本质量：衡量抽样样本的代表性</li>
+</ul>
+</li>
+</ul>
+<h3 id="样本质量"><a href="#样本质量" class="headerlink" title="样本质量"></a>样本质量</h3><p>样本质量：抽样样本与整体的相似性</p>
+<script type="math/tex; mode=display">\begin{align*}
+J(S, D) & = \frac {1} {D} \sum_{k=1}^{r} J_{k}(S, D) \\
+J_{k}(S, D) & = \sum_{j=1}^{N_k}(P_{Sj} - P_{Dj})
+    log \frac {P_{Sj}} {P_{Dj}} \\
+Q(s) & = exp(-J)
+\end{align*}</script><blockquote>
+<ul>
+<li>$D$：数据集，包含 $r$ 个属性</li>
+<li>$S$：抽样样本集</li>
+<li>$J_k=J(S, D)$：<em>Kullblack-Laible</em> 散度，数据集 $S$、$D$ 在属性 $k$ 上偏差程度，越小偏差越小</li>
+<li>$Q(S) \in [0, 1]$：抽样集 $S$ 在数据集 $D$ 中的质量，越大样本集质量越高</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>若整体 $D$ 分布稀疏，容易得到 $S$ 在某些数据点观测值数为 0，得到 $I(S, D) \rightarrow infty$</p>
+<ul>
+<li>可以把该点和附近的点频率进行合并，同时调整总体频率分布</li>
+<li>过度合并会导致无法有效衡量数据集局部差异性</li>
+</ul>
+</li>
+<li><p>对于连续型变量</p>
+<ul>
+<li>可以把变量进行适当分组：粗糙，不利于刻画数据集直接的局部差异</li>
+<li>计算数据集各个取值点的非参估计，如核估计、最近邻估计等，再在公式中用各自的非参估计代替相应频率，计算样本质量</li>
+</ul>
+</li>
+<li><p>数据包含多个指标时</p>
+<ul>
+<li>可以用多个指标的平均样本质量衡量整体样本质量</li>
+<li>也可以根据指标重要程度，设置不同的权重</li>
+</ul>
+</li>
+</ul>
+<h3 id="样本容量"><a href="#样本容量" class="headerlink" title="样本容量"></a>样本容量</h3><ul>
+<li>样本容量是评价样本的另一个重要维度<ul>
+<li>样本量大、质量好、准确性高，但计算效率低</li>
+<li>样本质量差、准确性低、计算效率高</li>
+<li>样本质量提高不是线性的，高位样本容量上，边际效用往往较低</li>
+<li>同一样本容量的不同样本的样本质量也会有差异，即样本质量不是样本容量的单调函数，包含随机扰动</li>
+</ul>
+</li>
+</ul>
+<h4 id="Statistical-Optimal-Sample-Size"><a href="#Statistical-Optimal-Sample-Size" class="headerlink" title="Statistical Optimal Sample Size"></a><em>Statistical Optimal Sample Size</em></h4><p><em>SOSS</em>：统计最优样本数</p>
+<blockquote>
+<ul>
+<li>输入：数据集 $D$，包含 $N$ 个实例</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>根据某种抽样方法，随机产生 $R$ 个样本容量分别为 $n_i, n_i \in [1, N]$ 的样本 $S$</p>
+<ul>
+<li>$n_i$ 取值较小处应密度比较大，因为随着 $n_i$ 增加，样本质量趋近 1，不需要太多样本</li>
+<li>可以考虑使用指数序列产生在较大值处稀疏的序列作为 $n_i$ 序列的取值</li>
+</ul>
+</li>
+<li><p>计算每个样本 $S$ 在数据集 $D$ 中的样本质量 $Q$</p>
+<ul>
+<li>并计算各个样本容量对应的样本质量均值 $\bar {Q_{n}}$</li>
+<li>绘制曲线 $(n, \bar {Q_{n}})$</li>
+</ul>
+</li>
+<li><p>根据给定的样本质量要求，在样本容量对应样本质量的曲线上确定近似的最优样本容量</p>
+</li>
+</ul>
+<h2 id="测试集、训练集"><a href="#测试集、训练集" class="headerlink" title="测试集、训练集"></a>测试集、训练集</h2><ul>
+<li><p>测试集、训练集划分逻辑前提</p>
+<ul>
+<li>在样本量足够的情况下，减少部分样本量不会影响模型精度</li>
+<li>模型评价需要使用未参与建模数据验证，否则可能夸大模型效果</li>
+</ul>
+</li>
+<li><p>测试集、训练集划分作用</p>
+<ul>
+<li>测试集直接参与建模，其包含信息体现在模型中</li>
+<li>训练集仅仅用于评价模型效果，其包含信息<strong>未被利用</strong>，</li>
+<li>因此，若无评价、对比模型需求，或有其他无需划分测试集即可评价模型，则划分测试集无意义</li>
+</ul>
+</li>
+</ul>
+<h3 id="测试集、训练集划分"><a href="#测试集、训练集划分" class="headerlink" title="测试集、训练集划分"></a>测试集、训练集划分</h3><h4 id="Hold-Out"><a href="#Hold-Out" class="headerlink" title="Hold Out"></a><em>Hold Out</em></h4><p>旁置法：将样本集随机划分为训练集、测试集，只利用训练集训练
+模型</p>
+<ul>
+<li>适合样本量较大的场合<ul>
+<li>减少部分训练数据对模型精度影响小</li>
+<li>否则大量样本未参与建模，影响模型精度</li>
+</ul>
+</li>
+<li>常用划分比例<ul>
+<li>8:2</li>
+<li>7:3</li>
+</ul>
+</li>
+<li>旁置法建立模型可直接作为最终输出模型<ul>
+<li>旁置法一般只建立一个模型</li>
+<li>且使用旁置法场合，模型应该和全量数据训练模型效果差别不大</li>
+</ul>
+</li>
+</ul>
+<h4 id="N-fold-Cross-Validation"><a href="#N-fold-Cross-Validation" class="headerlink" title="N-fold Cross Validation"></a><em>N-fold Cross Validation</em></h4><p><em>N</em> 折交叉验证：将数据分成N份，每次将其中一份作为测试样本集，
+其余N-1份作为训练样本集</p>
+<ul>
+<li><p>N折交叉验证可以视为旁置法、留一法的折中</p>
+<ul>
+<li>克服了旁置法中测试样本选取随机性的问题：每个样本都
+能作为测试样本</li>
+<li>解决了留一法计算成本高的问题：重复次数少</li>
+</ul>
+</li>
+<li><p>典型的“袋外验证”</p>
+<ul>
+<li>袋内数据（训练样本）、袋外数据（测试样本）分开</li>
+</ul>
+</li>
+<li><p>N折交叉验证会训练、得到N个模型，不能直接输出</p>
+<ul>
+<li>最终应该输出全量数据训练的模型</li>
+<li>N折建立N次模型仅是为了合理的评价模型效果，以 <em>N</em> 个模型的评价指标（均值）作为全量模型的评价</li>
+</ul>
+</li>
+</ul>
+<h4 id="Leave-One-Out-Cross-Validation"><a href="#Leave-One-Out-Cross-Validation" class="headerlink" title="Leave-One-Out Cross Validation"></a><em>Leave-One-Out Cross Validation</em></h4><p>留一法：每次选择一个样本作为测试样本集，剩余 <em>n-1</em> 个观测值作为训练样本集，重复 <em>n</em> 次计算模型误差</p>
+<ul>
+<li>可以看作是 <em>N</em> 折交叉验证的特例</li>
+</ul>
+<h3 id="数据泄露"><a href="#数据泄露" class="headerlink" title="数据泄露"></a>数据泄露</h3><ul>
+<li><p>特征泄露：训练过程中使用有包含有上线之后无法获取的数据</p>
+<ul>
+<li>时序数据中数据穿越：使用未来数据训练模型，模型将学习不应获取的未来信息</li>
+</ul>
+</li>
+<li><p>记录泄露/训练数据泄露：切分数据集时训练集包含了测试集中部分数据</p>
+<ul>
+<li>会导致评估指标失真</li>
+</ul>
+</li>
+</ul>
+<h2 id="样本重抽样"><a href="#样本重抽样" class="headerlink" title="样本重抽样"></a>样本重抽样</h2><h3 id="Bootstrap"><a href="#Bootstrap" class="headerlink" title="Bootstrap"></a><em>Bootstrap</em></h3><p>重抽样自举：有放回的重复抽样，以模拟多组独立样本</p>
+<ul>
+<li>对样本量为 $n$ 的样本集 $S$</li>
+<li>做$k$次有放回的重复抽样<ul>
+<li>每轮次抽取 $n$ 个样本</li>
+<li>抽取得到样本仍然放回样本集中</li>
+</ul>
+</li>
+<li>得到 $k$ 个样本容量仍然为 $n$ 的随机样本 $S_i，(i=1,2,…,k)$</li>
+</ul>
+<h3 id="过采样"><a href="#过采样" class="headerlink" title="过采样"></a>过采样</h3><blockquote>
+<ul>
+<li><em>over-sampling</em>：过采样，小类数据样本增加样本数量</li>
+</ul>
+</blockquote>
+<ul>
+<li><em>synthetic minority over-sampling technique</em>：过采样算法，构造不同于已有样本小类样本<ul>
+<li>基于距离度量选择小类别下相似样本</li>
+<li>选择其中一个样本、随机选择一定数据量邻居样本</li>
+<li>对选择样本某属性增加噪声，构造新数据</li>
+</ul>
+</li>
+</ul>
+<h4 id="SMOTE"><a href="#SMOTE" class="headerlink" title="SMOTE"></a><em>SMOTE</em></h4><h4 id="Borderline-SMOTE"><a href="#Borderline-SMOTE" class="headerlink" title="Borderline-SMOTE"></a><em>Borderline-SMOTE</em></h4><h3 id="欠采样"><a href="#欠采样" class="headerlink" title="欠采样"></a>欠采样</h3><blockquote>
+<ul>
+<li><em>under-sampling</em>：欠采样，大类数据样本减少样本数量</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2020-08-17T13:20:05.000Z" title="8/17/2020, 9:20:05 PM">2020-08-17</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:54:29.000Z" title="7/16/2021, 4:54:29 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Technique/">ML Technique</a><span> / </span><a class="link-muted" href="/categories/ML-Technique/Feature-Engineering/">Feature Engineering</a></span><span class="level-item">20 minutes read (About 3005 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Technique/Feature-Engineering/feature_encoding.html">特征编码</a></h1><div class="content"><h2 id="数值化：分类-gt-数值"><a href="#数值化：分类-gt-数值" class="headerlink" title="数值化：分类-&gt;数值"></a>数值化：分类-&gt;数值</h2><h3 id="Ordinal-Encoding"><a href="#Ordinal-Encoding" class="headerlink" title="Ordinal Encoding"></a><em>Ordinal Encoding</em></h3><p>序号编码：使用一位序号编码类别</p>
+<ul>
+<li>一般用于处理类别间具有大小关系的数据<ul>
+<li>编码后依然保留了大小关系</li>
+</ul>
+</li>
+</ul>
+<h3 id="One-hot-Encoding"><a href="#One-hot-Encoding" class="headerlink" title="One-hot Encoding"></a><em>One-hot Encoding</em></h3><p>独热编码：采用N位状态位对N个可能取值进行编码</p>
+<ul>
+<li><p>一般用于处理类别间不具有大小关系的特征</p>
+</li>
+<li><p>独热编码后<strong>特征表达能力变差</strong>，特征的预测能力被人为拆分为多份</p>
+<ul>
+<li>通常只有部分维度是对分类、预测有帮助，需要借助特征选择降低维度</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>在经典统计中，为避免完全多重共线性，状态位/哑变量会比取值数量少 1</li>
+</ul>
+</blockquote>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li>能处理非数值属性</li>
+<li>一定程度上扩充了特征</li>
+<li>编码后向量时稀疏向量：可以使用向量的稀疏存储节省空间</li>
+<li>能够处理缺失值：高维映射方法中增加维度表示缺失</li>
+</ul>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><ul>
+<li><p><em>k-NN</em> 算法：高维空间两点间距离难以有效衡量</p>
+</li>
+<li><p>逻辑回归模型：参数数量随维度增加而增大，增加模型复杂度，容易出现过拟合</p>
+</li>
+<li><p>决策树模型</p>
+<ul>
+<li>产生样本切分不平衡问题，切分增益非常小<ul>
+<li>每个特征只有少量样本是 1，大量样本是 0</li>
+<li>较小的拆分样本集占总体比例太小，增益乘以所占比例之后几乎可以忽略</li>
+<li>较大拆分样本集的几乎就是原始样本集，增益几乎为 0</li>
+</ul>
+</li>
+<li>影响决策树的学习<ul>
+<li>决策树依赖数据统计信息，独热编码将数据切分到零散小空间上，统计信息不准确、学习效果差</li>
+<li>独热编码后特征表达能力边人为拆分，与其他特征竞争最优划分点失败，最终特征重要性会比实际值低</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Binary-Encoding"><a href="#Binary-Encoding" class="headerlink" title="Binary Encoding"></a><em>Binary Encoding</em></h3><p>二进制编码：先用序号编码给每个类别赋予类别 <em>ID</em>，然后将类别 <em>ID</em> 对应二进制编码作为结果</p>
+<ul>
+<li>本质上利用二进制类别 <em>ID</em> 进行哈希映射，得到 <em>0/1</em> 特征向量</li>
+<li>特征维度小于独热编码，更节省存储空间</li>
+</ul>
+<h3 id="Weight-of-Evidence-Encoding"><a href="#Weight-of-Evidence-Encoding" class="headerlink" title="Weight of Evidence Encoding"></a><em>Weight of Evidence Encoding</em></h3><p><em>WOE</em> 编码：以分类变量各取值的 <em>WOE</em> 值作为编码值</p>
+<script type="math/tex; mode=display">\begin{align*}
+WOE_i & = log(\frac {\%B_i} {\%G_i}) \\
+& = log(\frac {\#B_i / \#B_T} {\#G_i / \#G_T})
+\end{align*}</script><blockquote>
+<ul>
+<li>$\%B_i, \%G_i$：分类变量取第 $i$ 值时，预测变量为 <em>B</em> 类、<em>G</em> 类占所有 <em>B</em> 类、<em>G</em> 类比例</li>
+<li>$#B_i, #B_T$：分类变量取第 $i$ 值时，预测变量为 <em>B</em> 类占所有 <em>B</em> 类样本比例</li>
+<li>$#G_i, #G_T$：分类变量取第 $i$ 值时，预测变量为 <em>G</em> 类占所有 <em>G</em> 类样本比例</li>
+</ul>
+</blockquote>
+<ul>
+<li><p><em>WOE</em> 编码是有监督的编码方式，可以衡量分类变量各取值中</p>
+<ul>
+<li><em>B</em> 类占所有 <em>B</em> 类样本比例、<em>G</em> 类占所有 <em>G</em> 类样本比例的差异</li>
+<li><em>B</em> 类、<em>G</em> 类比例，与所有样本中 <em>B</em> 类、<em>G</em> 类比例的差异</li>
+</ul>
+</li>
+<li><p><em>WOE</em> 编码值能体现分类变量取值的预测能力，变量各取值 <em>WOE</em> 值方差越大，变量预测能力越强</p>
+<ul>
+<li><em>WOE</em> 越大，表明该取值对应的取 <em>B</em> 类可能性越大</li>
+<li><em>WOE</em> 越小，表明该取值对应的取 <em>G</em> 类可能性越大</li>
+<li><em>WOE</em> 接近 0，表明该取值预测能力弱，对应取 <em>B</em> 类、<em>G</em> 类可能性相近</li>
+</ul>
+</li>
+</ul>
+<h4 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h4><ul>
+<li><p>相较于 <em>one-hot</em> 编码</p>
+<ul>
+<li>特征数量不会增加，同时避免特征过于稀疏、维度灾难</li>
+<li>避免特征筛选过程中，一部分特征取值被筛选，一部分被遗弃，造成特征不完整</li>
+<li>将特征规范到<strong>同一尺度</strong>的数值变量，同时也便于分析特征间相关性</li>
+</ul>
+</li>
+<li><p>在 <em>LR</em> 模型中，<em>WOE</em> 编码线性化赋予模型良好的解释性</p>
+<ul>
+<li><em>WOE</em> 编码本身即可反应特征各取值贡献</li>
+<li>可以用于给评分卡模型中各分箱评分</li>
+</ul>
+</li>
+</ul>
+<h2 id="分类化-离散化：数值-gt-分类"><a href="#分类化-离散化：数值-gt-分类" class="headerlink" title="分类化/离散化：数值-&gt;分类"></a>分类化/离散化：数值-&gt;分类</h2><ul>
+<li>分类型变量本质上无法建模，因为取值从含义上无法进行数值计算</li>
+<li>将数值型映射为分类型，往往只是中间步骤，最终会将分类型取值映射回数值型</li>
+</ul>
+<blockquote>
+<ul>
+<li>若分箱数量为 2，也被成为是二元化/布尔化</li>
+</ul>
+</blockquote>
+<h3 id="离散化综述"><a href="#离散化综述" class="headerlink" title="离散化综述"></a>离散化综述</h3><ul>
+<li><p>模型使用离散特征、连续特征，是“海量离散特征+简单模型”、“少量连续特征+复杂模型”的权衡</p>
+<ul>
+<li><strong>海量离散特征+简单模型</strong>：难点在于特征工程，成功经验可以推广，可以多人并行研究</li>
+<li><strong>少量连续特征+复杂模型</strong>：难点在于模型调优，不需要复杂的特征工程</li>
+</ul>
+</li>
+<li><p>一般的，连续特征对预测结果影响不会突变，合理的离散化不应造成<strong>大量信息丢失</strong></p>
+<ul>
+<li>且若特征存在突变，模型将难以拟合（线性模型尤其）</li>
+<li>反而更应该离散化为多个分类特征，方便引入非线性</li>
+</ul>
+</li>
+<li><p>事实上，根据Cover定理，离散化增加特征维度类似于投影至高维，更可能得到较优模型（也更容易过拟合）</p>
+<ul>
+<li>极限角度，对所有特征、取值均离散化，则可以得到完全可分模型（除特征完全一样分类不同）</li>
+</ul>
+</li>
+</ul>
+<h4 id="描述角度"><a href="#描述角度" class="headerlink" title="描述角度"></a>描述角度</h4><p><img src="/imgs/discretization_arch_2.png" alt="discretization_arch"></p>
+<ul>
+<li><p><em>supervised vs. unsupervised</em>：是否使用分类信息指导离散化过程</p>
+<ul>
+<li>无监督<ul>
+<li>如：等距、等频划分</li>
+<li>无法较好的处理异常值、不均匀分布</li>
+</ul>
+</li>
+<li>有监督<ul>
+<li>利用分类信息寻找合适切分点、间隔</li>
+<li>根据使用分类信息的方式有许多种</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>dynamic vs. static</em>：离散化、分类是否同时进行</p>
+</li>
+<li><p><em>global vs. local</em>：在特征空间的局部还是全局进行离散化</p>
+</li>
+<li><p><em>spliting vs. merging</em>/<em>top-down vs. bottom-up</em>：自顶向下划分还是自底向上合并</p>
+</li>
+<li><p><em>direct vs. incremental</em>：直接根据超参数确定分箱数量还是逐步改善直到中止准则</p>
+</li>
+</ul>
+<p><img src="/imgs/discretization_arch_1.png" alt="discretization_arch"></p>
+<h4 id="典型过程"><a href="#典型过程" class="headerlink" title="典型过程"></a>典型过程</h4><ul>
+<li><em>sort</em>：排序</li>
+<li><em>evaluate</em>：评估分割点</li>
+<li><em>split or merge</em>：划分、合并</li>
+<li><em>stop</em>：停止离散化</li>
+</ul>
+<p><img src="/imgs/discretization_steps.png" alt="discretization_steps"></p>
+<h4 id="评价"><a href="#评价" class="headerlink" title="评价"></a>评价</h4><ul>
+<li><em>Simplicity</em>：可用切分点数量衡量简单性</li>
+<li><em>Consistency</em>：可以通过<strong>最小不一致数量</strong>衡量一致性<ul>
+<li>不一致：样本具有相同的特征取值，但分类不同</li>
+<li>分箱最小不一致数量则为，箱内样本数量减最大类别数量</li>
+</ul>
+</li>
+<li><em>Accuracy</em>：可通过分类器进行交叉验证的准确率衡量</li>
+</ul>
+<h4 id="优势-1"><a href="#优势-1" class="headerlink" title="优势"></a>优势</h4><ul>
+<li><p>方便工业应用、实现</p>
+<ul>
+<li>离散特征的增加、减少容易，方便模型迭代</li>
+<li>特征离散化处理缺失值、异常值更方便，可直接将其映射为某取值</li>
+<li>数值化后可指定取值类型，如：<em>one-hot</em>编码为为稀疏向量<ul>
+<li>內积速度快</li>
+<li>存储方便</li>
+<li>容易扩展</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>方便引入历史经验</p>
+<ul>
+<li>可以自由调整离散化结果，结合机器学习和历史经验得到最终的离散化结果</li>
+</ul>
+</li>
+<li><p>模型更稳健</p>
+<ul>
+<li>模型不再拟合特征具体值，而是拟合某个概念，能够对抗数据扰动，更稳健</li>
+<li>对异常数据鲁棒性更好，降低模型过拟合风险</li>
+<li>某些场合需要拟合参数值更少，降低模型复杂度</li>
+</ul>
+</li>
+<li><p>（引入）非线性提升模型表达能力</p>
+<ul>
+<li>利用经验、其他信息将数值特征分段，相当于<strong>引入非线性</strong>，提升线性模型表达能力</li>
+<li>方便引入交叉特征，提升模型表达能力</li>
+</ul>
+</li>
+</ul>
+<h4 id="适合场景"><a href="#适合场景" class="headerlink" title="适合场景"></a>适合场景</h4><ul>
+<li><p>离散化特征更适合 <em>LR</em> 等线性模型</p>
+<ul>
+<li>如下离散化优势：方便引入非线性等</li>
+<li>模型中所有特征都会被考虑，考虑细节、个体（包括 $L_1$ 范数也是被考虑后剔除）</li>
+</ul>
+</li>
+<li><p><em>GBDT</em> 等树、抽样模型则不适合</p>
+<ul>
+<li>特征离散化后，由于抽样误差的存在，可能存在某些离散特征对<strong>样本预测能力非常强</strong>，非线性模型容易给这些特征更大权重，造成过拟合<ul>
+<li>如：刚好抽取的 1000 个样本中某离散特征取值为 1 者全为正样本</li>
+</ul>
+</li>
+<li>树模型每次使用一个特征划分节点，特征数量较多不利于模型训练<ul>
+<li>若单个离散化特征预测能力不强，由于树深度限制，只有少量特征被作为划分依据，模型可能不收敛、表达能力更差</li>
+<li>若单个离散化特征预测能力强，连续特征也应该也有较好效果</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="无监督"><a href="#无监督" class="headerlink" title="无监督"></a>无监督</h3><ul>
+<li>无监督分箱仅仅考虑特征自身数据结构，没有考虑特征与目标之间的关系</li>
+</ul>
+<h4 id="等频-等距-经验分箱"><a href="#等频-等距-经验分箱" class="headerlink" title="等频/等距/经验分箱"></a>等频/等距/经验分箱</h4><ul>
+<li><p>分箱逻辑</p>
+<ul>
+<li>等频分箱：排序后按数量等分<ul>
+<li>避免离散化后特征仍然为长尾分布、大量特征集中在少量组内</li>
+<li>对数据区分能力弱</li>
+</ul>
+</li>
+<li>等距分箱：取值范围等分</li>
+<li>经验分箱</li>
+</ul>
+</li>
+<li><p>分箱数量、边界超参需要人工指定</p>
+<ul>
+<li>根据业务领域经验指定</li>
+<li>根据模型指定：根据具体任务训练分箱之后的数据集，通过超参数搜索确定最优分桶数量、边界</li>
+</ul>
+</li>
+<li><p>分箱经验、准则</p>
+<ul>
+<li>若组距过大，组内属性取值差距过大<ul>
+<li>逻辑上分类不能够代表组内全部样本，组内取值影响可能完全不同</li>
+</ul>
+</li>
+<li>若组距过小，组内样本过少<ul>
+<li>随机性太强，不具备统计意义上说服力</li>
+<li>特征影响跳变过多</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="聚类分箱"><a href="#聚类分箱" class="headerlink" title="聚类分箱"></a>聚类分箱</h4><ul>
+<li><em>K-Means</em> 聚类</li>
+<li>层次聚类</li>
+</ul>
+<blockquote>
+<ul>
+<li>聚类过程中需要保证分箱有序</li>
+</ul>
+</blockquote>
+<h3 id="有监督"><a href="#有监督" class="headerlink" title="有监督"></a>有监督</h3><h4 id="Binning：1R-分箱"><a href="#Binning：1R-分箱" class="headerlink" title="Binning：1R 分箱"></a><em>Binning：1R</em> 分箱</h4><ul>
+<li>分箱逻辑、步骤<ul>
+<li>将样本排序，从当前位置开始<ul>
+<li>初始化：以允许的最少样本作为一箱，将箱内最多类别作为箱标签</li>
+<li>扩展：若下个样本类别与箱标签相同，则划至箱内</li>
+</ul>
+</li>
+<li>重复以上，得到多个分箱</li>
+<li>将相邻具有相同标签的箱合并，得到最终分箱结果</li>
+</ul>
+</li>
+</ul>
+<h4 id="Splitting"><a href="#Splitting" class="headerlink" title="Splitting"></a><em>Splitting</em></h4><p><img src="/imgs/discretization_split.png" alt="discretization_split"></p>
+<ul>
+<li>基于信息熵的 <em>split</em>，具体划分依据如下<ul>
+<li><em>ID3</em>：信息增益</li>
+<li><em>C4.5</em>：信息增益比</li>
+<li><em>D2</em>：</li>
+<li><em>Minimum Description Length Principle</em>：描述长度</li>
+</ul>
+</li>
+</ul>
+<h4 id="Merge分箱"><a href="#Merge分箱" class="headerlink" title="Merge分箱"></a>Merge分箱</h4><p><img src="/imgs/discretization_merge.png" alt="discretization_merge"></p>
+<ul>
+<li>基于依赖相关的 <em>merge</em>，具体划分依据如下<ul>
+<li><em>Chimerge</em>：使用卡方值衡量两个相邻区间是否具有类似分布，若具有类似分布则将其合并</li>
+</ul>
+</li>
+</ul>
+<h5 id="具体算法"><a href="#具体算法" class="headerlink" title="具体算法"></a>具体算法</h5><blockquote>
+<ul>
+<li>输入：目标分箱数量 $N$</li>
+<li>初始化<ul>
+<li>将变量升序排列</li>
+<li>为减少计算量，若初始分箱数量大于阈值 $N_{max}$，则利用等频分箱进行粗分箱</li>
+<li>缺失值单独作为一个分箱</li>
+</ul>
+</li>
+<li>合并区间<ul>
+<li>计算每对相邻区间的卡方值</li>
+<li>将卡方值最小区间合并</li>
+<li>重复以上直至分箱数量不大于 $N$</li>
+</ul>
+</li>
+<li>分箱后处理<ul>
+<li>合并纯度为 1（只含有某类样本）的分箱</li>
+<li>删除某类样本占比超过 95% 的分箱</li>
+<li>若缺失值分箱各类样本占比同非缺失值分箱，则合并</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:54:07.000Z" title="7/16/2021, 4:54:07 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Technique/">ML Technique</a><span> / </span><a class="link-muted" href="/categories/ML-Technique/Feature-Engineering/">Feature Engineering</a></span><span class="level-item">20 minutes read (About 2943 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Technique/Feature-Engineering/data_preprocessing.html">数据预处理</a></h1><div class="content"><h2 id="数据说明"><a href="#数据说明" class="headerlink" title="数据说明"></a>数据说明</h2><h3 id="数据模式"><a href="#数据模式" class="headerlink" title="数据模式"></a>数据模式</h3><ul>
+<li><p>结构化数据：行数据，可用二维表逻辑表达数据逻辑、存储在数据库中</p>
+<ul>
+<li>可以看作是关系型数据库中一张表</li>
+<li>行：记录、元组，表示一个样本信息</li>
+<li>列：字段、属性，有清晰定义</li>
+</ul>
+</li>
+<li><p>非结构化数据：相对于结构化数据而言，不方便用二维逻辑表达的数据</p>
+<ul>
+<li>包含信息无法用简单数值表示<ul>
+<li>没有清晰列表定义</li>
+<li>每个数据大小不相同</li>
+</ul>
+</li>
+<li>研究方向<ul>
+<li>社交网络数据</li>
+<li>文本数据</li>
+<li>图像、音视频</li>
+<li>数据流</li>
+</ul>
+</li>
+<li>针对不同类型数据、具体研究方面有不同的具体分析方法，不存在普适、可以解决所有具体数据的方法</li>
+</ul>
+</li>
+<li><p>半结构化数据：介于完全结构化数据、完全无结构数据之间的数据</p>
+<ul>
+<li>一般是自描述的，数据结构和内容混合、没有明显区分</li>
+<li>树、图（<em>XML</em>、<em>HTML</em> 文档也可以归为半结构化数据）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>结构化数据：先有结构、再有数据</li>
+<li>半结构化数据：先有数据、再有结构</li>
+</ul>
+</blockquote>
+<h3 id="数据拼接"><a href="#数据拼接" class="headerlink" title="数据拼接"></a>数据拼接</h3><ul>
+<li>利用外键拼接不同来源的数据时，注意不同数据间粒度差异<ul>
+<li>外键低于问题标签粒度时，考虑对数据作聚合操作再拼接<ul>
+<li>保证拼接后用于训练的记录粒度和问题一致</li>
+<li>避免维度爆炸</li>
+<li>各数据来源数据厚薄不同，会改变数据分布</li>
+</ul>
+</li>
+<li>外键高于、等于目标粒度时，可考虑直接直接连接</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据问题"><a href="#数据问题" class="headerlink" title="数据问题"></a>数据问题</h2><h3 id="稀疏特征"><a href="#稀疏特征" class="headerlink" title="稀疏特征"></a>稀疏特征</h3><ul>
+<li>产生原因<ul>
+<li>数据缺失</li>
+<li>统计数据频繁 0 值</li>
+<li>特征工程技术，如：独热编码</li>
+</ul>
+</li>
+</ul>
+<h3 id="缺失值"><a href="#缺失值" class="headerlink" title="缺失值"></a>缺失值</h3><h4 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h4><ul>
+<li>信息暂时无法获取、成本高</li>
+<li>信息被遗漏</li>
+<li>属性不存在</li>
+</ul>
+<h4 id="缺失值影响"><a href="#缺失值影响" class="headerlink" title="缺失值影响"></a>缺失值影响</h4><ul>
+<li>建模将丢失大量有用信息</li>
+<li>模型不确定性更加显著、蕴含规则更难把握</li>
+<li>包含空值可能使得建模陷入混乱，导致不可靠输出</li>
+</ul>
+<h4 id="缺失利用"><a href="#缺失利用" class="headerlink" title="缺失利用"></a>缺失利用</h4><ul>
+<li><p>直接使用含有缺失值特征：有些方法可以完全处理、不在意缺失值</p>
+<ul>
+<li>分类型变量可以将缺失值、异常值单独作为特征的一种取值</li>
+<li>数值型变量也可以离散化，类似分类变量将缺失值单独分箱</li>
+</ul>
+</li>
+<li><p>删除含有缺失值特征</p>
+<ul>
+<li>一般仅在特征缺失率比较高时才考虑采用，如缺失率达到 90%、95%</li>
+</ul>
+</li>
+</ul>
+<h4 id="插值补全"><a href="#插值补全" class="headerlink" title="插值补全"></a>插值补全</h4><ul>
+<li><p>非模型补全缺失值</p>
+<ul>
+<li>均值、中位数、众数</li>
+<li>同类/前后均值、中位数、众数</li>
+<li>固定值</li>
+<li>矩阵补全</li>
+<li>最近邻补全：寻找与样本最接近样本相应特征补全</li>
+</ul>
+</li>
+<li><p>手动补全：根据对所在领域理解，手动对缺失值进行插补</p>
+<ul>
+<li>需要对问题领域有很高认识理解</li>
+<li>缺失较多时费时、费力</li>
+</ul>
+</li>
+<li><p>建模预测：回归、决策树模型预测</p>
+<ul>
+<li>若其他特征和缺失特征无关，预测结果无意义</li>
+<li>若预测结果相当准确，缺失属性也没有必要纳入数据集</li>
+</ul>
+</li>
+<li><p>多重插补：认为待插补值是随机的</p>
+<ul>
+<li>通常估计处待插补值</li>
+<li>再加上<strong>不同噪声</strong>形成多组可选插补值</li>
+<li>依据某准则，选取最合适的插补值</li>
+</ul>
+</li>
+<li><p>高维映射：<em>one-hot</em> 编码增加维度表示某特征缺失</p>
+<ul>
+<li>保留所有信息、未人为增加额外信息</li>
+<li>可能会增加数据维度、增加计算量</li>
+<li>需要样本量较大时效果才较好</li>
+</ul>
+</li>
+<li><p>压缩感知：利用信号本身具有的<strong>稀疏性</strong>，从部分观测样本中恢复原信号</p>
+<ul>
+<li>感知测量阶段：对原始信号进行处理以获得稀疏样本表示<ul>
+<li>傅里叶变换</li>
+<li>小波变换</li>
+<li>字典学习</li>
+<li>稀疏编码</li>
+</ul>
+</li>
+<li>重构恢复阶段：基于稀疏性从少量观测中恢复信号</li>
+</ul>
+</li>
+</ul>
+<h3 id="异常值"><a href="#异常值" class="headerlink" title="异常值"></a>异常值</h3><blockquote>
+<ul>
+<li>异常值/离群点：样本中数值明显偏离其余观测值的个别值</li>
+</ul>
+</blockquote>
+<p>异常值分析：检验数据是否有录入错误、含有不合常理的数据</p>
+<h4 id="非模型异常值检测"><a href="#非模型异常值检测" class="headerlink" title="非模型异常值检测"></a>非模型异常值检测</h4><ul>
+<li><p>简单统计</p>
+<ul>
+<li>观察数据统计型描述、散点图</li>
+<li>箱线图：利用箱线图四分位距对异常值进行检测</li>
+</ul>
+</li>
+<li><p>$3\sigma$ 原则：取值超过均值 3 倍标准差，可以视为异常值</p>
+<ul>
+<li>依据小概率事件发生可能性“不存在”</li>
+<li>数据最好近似正态分布</li>
+</ul>
+</li>
+</ul>
+<h4 id="模型异常值检测"><a href="#模型异常值检测" class="headerlink" title="模型异常值检测"></a>模型异常值检测</h4><ul>
+<li><p>基于模型预测：构建概率分布模型，计算对象符合模型的概率，将低概率对象视为异常点</p>
+<ul>
+<li>分类模型：异常点为不属于任何类的对象</li>
+<li>回归模型：异常点为原理预测值对象</li>
+<li>特点<ul>
+<li>基于统计学理论基础，有充分数据和所用的检验类型知识时，检验可能非常有效</li>
+<li>对多元数据，可用选择少，维度较高时，检测效果不好</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>基于近邻度的离群点检测：对象离群点得分由其距离 <em>k-NN</em> 的距离确定</p>
+<ul>
+<li><em>k</em> 取值会影响离群点得分，取 <em>k-NN</em> 平均距离更稳健</li>
+<li>特点<ul>
+<li>简单，但时间复杂度高 $\in O(m^2)$，不适合大数据集</li>
+<li>方法对参数 <em>k</em> 取值敏感</li>
+<li>使用全局阈值，无法处理具有不同密度区域的数据集</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>基于密度的离群点检测</p>
+<ul>
+<li>定义密度方法<ul>
+<li><em>k-NN</em> 分类：<em>k</em> 个最近邻的平均距离的倒数</li>
+<li><em>DSSCAN</em> 聚类中密度：对象指定距离 <em>d</em> 内对象个数</li>
+</ul>
+</li>
+<li>特点<ul>
+<li>给出定量度量，即使数据具有不同区域也能很好处理</li>
+<li>时间复杂度 $\in O^(m^2)$，对低维数据使用特点数据结构可以达到 $\in O(mlogm)$</li>
+<li>参数难以确定，需要确定阈值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>基于聚类的离群点检测：不属于任何类别簇的对象为离群点</p>
+<ul>
+<li>特点<ul>
+<li>（接近）线性的聚类技术检测离群点高度有效</li>
+<li>簇、离群点互为补集，可以同时探测</li>
+<li>聚类算法本身对离群点敏感，类结构不一定有效，可以考虑：对象聚类、删除离群点再聚类</li>
+<li>检测出的离群点依赖类别数量、产生簇的质量</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>One-class SVM</em></p>
+</li>
+<li><p><em>Isolation Forest</em></p>
+</li>
+</ul>
+<h4 id="异常值处理"><a href="#异常值处理" class="headerlink" title="异常值处理"></a>异常值处理</h4><ul>
+<li><p>删除样本</p>
+<ul>
+<li>简单易行</li>
+<li>观测值很少时，可能导致样本量不足、改变分布</li>
+</ul>
+</li>
+<li><p>视为缺失值处理</p>
+<ul>
+<li>作为缺失值不做处理</li>
+<li>利用现有变量信息，对异常值进行填补</li>
+<li>全体/同类/前后均值、中位数、众数修正</li>
+<li>将缺失值、异常值单独作为特征的一种取值</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>很多情况下，要先分析异常值出现的可能原因，判断异常值是否为<strong>真异常值</strong></li>
+</ul>
+</blockquote>
+<h3 id="类别不平衡问题"><a href="#类别不平衡问题" class="headerlink" title="类别不平衡问题"></a>类别不平衡问题</h3><h4 id="创造新样本"><a href="#创造新样本" class="headerlink" title="创造新样本"></a>创造新样本</h4><ul>
+<li><p>对数据集重采样</p>
+<ul>
+<li>尝试随机采样、非随机采样</li>
+<li>对各类别尝试不同采样比例，不必保持 1:1 违反现实情况</li>
+<li>同时使用过采样、欠采样</li>
+</ul>
+</li>
+<li><p>属性值随机采样</p>
+<ul>
+<li>从类中样本每个特征随机取值组成新样本</li>
+<li>基于经验对属性值随机采样</li>
+<li>类似朴素贝叶斯方法：假设各属性之间相互独立进行采样，但是无法保证属性之前的线性关系</li>
+</ul>
+</li>
+<li><p>对模型进行惩罚</p>
+<ul>
+<li>类似 <em>AdaBoosting</em>：对分类器小类样本数据增加权值</li>
+<li>类似 <em>Bayesian</em>分类：增加小类样本错分代价，如：<em>penalized-SVM</em>、<em>penalized-LDA</em></li>
+<li>需要根据具体任务尝试不同惩罚矩阵</li>
+</ul>
+</li>
+</ul>
+<h4 id="新角度理解问题"><a href="#新角度理解问题" class="headerlink" title="新角度理解问题"></a>新角度理解问题</h4><ul>
+<li><p>将小类样本视为异常点：问题变为异常点检测、变化趋势检测</p>
+<ul>
+<li>尝试不同分类算法</li>
+<li>使用 <em>one-class</em> 分类器</li>
+</ul>
+</li>
+<li><p>对问题进行分析，将问题划分为多个小问题</p>
+<ul>
+<li>大类压缩为小类</li>
+<li>使用集成模型训练多个分类器、组合</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>需要具体问题具体分析</li>
+</ul>
+</blockquote>
+<h4 id="模型评价"><a href="#模型评价" class="headerlink" title="模型评价"></a>模型评价</h4><ul>
+<li>尝试其他评价指标：准确度在不平衡数据中不能反映实际情况<ul>
+<li>混淆矩阵</li>
+<li>精确度</li>
+<li>召回率</li>
+<li><em>F1</em> 得分</li>
+<li><em>ROC</em> 曲线</li>
+<li><em>Kappa</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="数据量缺少"><a href="#数据量缺少" class="headerlink" title="数据量缺少"></a>数据量缺少</h3><h4 id="图片数据扩充"><a href="#图片数据扩充" class="headerlink" title="图片数据扩充"></a>图片数据扩充</h4><p><em>Data Agumentation</em>：根据先验知识，在保留特点信息的前提下，对原始数据进行适当变换以达到扩充数据集的效果</p>
+<ul>
+<li><p>对原始图片做变换处理</p>
+<ul>
+<li>一定程度内随机旋转、平移、缩放、裁剪、填充、左右翻转，这些变换对应目标在不同角度观察效果</li>
+<li>对图像中元素添加噪声扰动：椒盐噪声、高斯白噪声</li>
+<li>颜色变换</li>
+<li>改变图像亮度、清晰度、对比度、锐度</li>
+</ul>
+</li>
+<li><p>先对图像进行特征提取，在特征空间进行变换，利用通用数据
+扩充、上采样方法</p>
+<ul>
+<li><em>SMOTE</em></li>
+</ul>
+</li>
+<li><p><em>Fine-Tuning</em> 微调：直接接用在大数据集上预训练好的模型，在小数据集上进行微调</p>
+<ul>
+<li>简单的迁移学习</li>
+<li>可以快速寻外效果不错针对目标类别的新模型</li>
+</ul>
+</li>
+</ul>
+<h2 id="特征缩放"><a href="#特征缩放" class="headerlink" title="特征缩放"></a>特征缩放</h2><blockquote>
+<ul>
+<li>正则化：<strong>针对单个样本</strong>，将每个样本缩放到单位范数</li>
+<li>归一化：针对单个属性，需要用到所有样本在该属性上值</li>
+</ul>
+</blockquote>
+<h3 id="Normalizaion"><a href="#Normalizaion" class="headerlink" title="Normalizaion"></a><em>Normalizaion</em></h3><p>归一化/标准化：将特征/数据缩放到指定大致相同的数值区间</p>
+<ul>
+<li>某些算法要求数据、特征数值具有零均值、单位方差</li>
+<li>消除样本数据、特征之间的量纲/数量级影响<ul>
+<li>量级较大属性占主导地位</li>
+<li>降低迭代收敛速度：梯度下降时，梯度方向会偏离最小值，学习率必须非常下，否则容易引起<strong>宽幅震荡</strong></li>
+<li>依赖样本距离的算法对数据量机敏感</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>决策树模型不需要归一化，归一化不会改变信息增益（比），<em>Gini</em> 指数变化</li>
+</ul>
+</blockquote>
+<h4 id="Min-Max-Scaling"><a href="#Min-Max-Scaling" class="headerlink" title="Min-Max Scaling"></a><em>Min-Max Scaling</em></h4><p>线性函数归一化：对原始数据进行线性变换，映射到 $[0, 1]$ 范围</p>
+<script type="math/tex; mode=display">
+X_{norm} = \frac {X - X_{min}} {X_{max} - X_{min}}</script><blockquote>
+<ul>
+<li>训练集、验证集、测试集都使用训练集归一化参数</li>
+</ul>
+</blockquote>
+<h4 id="Z-Score-Scaling"><a href="#Z-Score-Scaling" class="headerlink" title="Z-Score Scaling"></a><em>Z-Score Scaling</em></h4><p>零均值归一化：将原始数据映射到均值为 0，标准差为 1 的分布上</p>
+<script type="math/tex; mode=display">
+Z = \frac {X - \mu} {\sigma}</script><h4 id="其他一些变换方式"><a href="#其他一些变换方式" class="headerlink" title="其他一些变换方式"></a>其他一些变换方式</h4><ul>
+<li>对数变换：$X^{‘} = lg(X)$</li>
+<li>反余切函数变换：$X^{‘} = \frac {2 arctan(x)} {\pi}$</li>
+<li><em>Sigmoid</em> 变换：$X^{‘} = \frac 1 {1 + e^{-x}}$</li>
+<li>模糊向量变：$X^{‘} = \frac 1 2 + \frac 1 2 sin \frac {X - \frac{max(X) - min(X)} 2} {max(X) - min(X)} * \pi$</li>
+</ul>
+<h3 id="Regularization"><a href="#Regularization" class="headerlink" title="Regularization"></a><em>Regularization</em></h3><p>正则化：将样本/特征<strong>某个范数</strong>缩放到单位 1</p>
+<script type="math/tex; mode=display">\begin{align*}
+\overrightarrow x_i & = (
+    \frac {x_i^{(1)}} {L_p(\overrightarrow x_i)},
+    \frac {x_i^{(2)}} {L_p(\overrightarrow x_i)}, \cdots,
+    \frac {x_i^{(d)}} {L_p(\overrightarrow x_i)})^T \\
+L_p(\overrightarrow x_i) & = (|x_i^{(1)}|^p + |x_i^{(2)}|^p + 
+    \cdots + |x_i^{(d)}|^p)^{1/p}
+\end{align*}</script><blockquote>
+<ul>
+<li>$L_p$：样本的 $L_p$ 范数</li>
+</ul>
+</blockquote>
+<ul>
+<li>使用内积、二次型、核方法计算样本之间相似性时，正则化很有用</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-20T16:46:35.000Z" title="7/21/2019, 12:46:35 AM">2019-07-21</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T02:06:47.000Z" title="7/16/2021, 10:06:47 AM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Technique/">ML Technique</a><span> / </span><a class="link-muted" href="/categories/ML-Technique/Feature-Engineering/">Feature Engineering</a></span><span class="level-item">2 minutes read (About 319 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Technique/Feature-Engineering/feature_engineering.html">特征工程</a></h1><div class="content"><h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><ul>
+<li><p>特征工程：对原始数据进行工程处理，将其提炼为特征，作为输入供算法、
+模型使用</p>
+<ul>
+<li>本质上：表示、展示数据的过程</li>
+<li>目的：去除原始数据中的杂质、冗余，设计更高效的特征以刻画求解的
+问题、预测模型之间的关系<ul>
+<li>把原始数据转换为可以很好描述数据特征</li>
+<li>建立在其上的模型性能接近最优</li>
+</ul>
+</li>
+<li>方式：<strong>利用数据领域相关知识</strong>、<strong>人为设计输入变量</strong></li>
+</ul>
+</li>
+<li><p>数据、特征决定了机器学习的上限，模型、算法只是逼近上限，特征越好</p>
+<ul>
+<li>模型选择灵活性越高：较好特征在简单模型上也能有较好
+效果，允许选择简单模型</li>
+<li>模型构建越简单：较好特征即使在超参不是最优时效果也
+不错，不需要花时间寻找最优参数</li>
+<li>模型性能越好<ul>
+<li>排除噪声特征</li>
+<li>避免过拟合</li>
+<li>模型训练、预测更快</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>特征工程要：小步快跑、多次迭代</p>
+<ul>
+<li>便于及时发现问题、定位问题，如：数据穿越</li>
+</ul>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-07-14T12:58:18.000Z" title="7/14/2019, 8:58:18 PM">2019-07-14</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-07-16T08:43:03.000Z" title="7/16/2021, 4:43:03 PM">2021-07-16</time></span><span class="level-item"><a class="link-muted" href="/categories/ML-Specification/">ML Specification</a><span> / </span><a class="link-muted" href="/categories/ML-Specification/NLP/">NLP</a></span><span class="level-item">21 minutes read (About 3137 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/ML-Specification/NLP/features_extractions.html">文本预处理</a></h1><div class="content"><h2 id="文本预处理"><a href="#文本预处理" class="headerlink" title="文本预处理"></a>文本预处理</h2><ul>
+<li>去除噪声文档、文档中垃圾数据</li>
+<li>停用词去除</li>
+<li>词根还原（英文）</li>
+<li>分词（中文）</li>
+<li>词性标注</li>
+<li>短语识别</li>
+<li>词频统计</li>
+</ul>
+<h2 id="汉语分词"><a href="#汉语分词" class="headerlink" title="汉语分词"></a>汉语分词</h2><p>分词：添加合适的显性词语边界标志，使所形成的词串反映句子本意</p>
+<ul>
+<li><p>分词是正确处理中文信息的基础</p>
+<ul>
+<li>文本基于单字</li>
+<li>书面表达方式以汉字作为最小单位</li>
+<li>词之间没有显性界限标志</li>
+</ul>
+</li>
+<li><p>用单个汉字作特征，不考虑词语含义，直接利用汉字在文本中
+出现的<strong>统计特性</strong>对文本进行划分</p>
+<ul>
+<li>直观明了</li>
+<li>操作简单</li>
+<li>对西语文本划分非常容易（使用空格划分）</li>
+</ul>
+</li>
+<li><p>使用词作为特征</p>
+<ul>
+<li>词是中文语义的最小信息单位，可以更好的反映句子中信息</li>
+<li>分析难度更高，中文文本中词之间没有分隔标记，正确分词
+是关键</li>
+</ul>
+</li>
+</ul>
+<h3 id="分词方法"><a href="#分词方法" class="headerlink" title="分词方法"></a>分词方法</h3><ul>
+<li><p>基于词典</p>
+<ul>
+<li><em>FMM</em>：正向最大匹配分词</li>
+<li><em>BMM</em>：逆向最大匹配分词</li>
+<li>BM法：双向扫描法</li>
+<li>逐词遍历</li>
+</ul>
+</li>
+<li><p>基于统计模型</p>
+<ul>
+<li>N-最短路径</li>
+<li>HMM</li>
+<li>N元语法</li>
+<li>由字构词的汉语分词方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="分词难点"><a href="#分词难点" class="headerlink" title="分词难点"></a>分词难点</h3><h4 id="歧义切分"><a href="#歧义切分" class="headerlink" title="歧义切分"></a>歧义切分</h4><ul>
+<li><p>分词规范</p>
+<ul>
+<li>分词单位<ul>
+<li>二字、三字以及结合紧密、使用稳定的</li>
+<li>四字成语</li>
+<li>四字词或结合紧密、使用稳定的四字词组</li>
+</ul>
+</li>
+<li>五字、五字以上谚语、格言等，分开后如不违背原有组合
+意义，应切分</li>
+</ul>
+</li>
+<li><p>歧义切分</p>
+<ul>
+<li>交集型切分歧义</li>
+<li>组合型切分歧义</li>
+</ul>
+</li>
+</ul>
+<h4 id="未登录词识别"><a href="#未登录词识别" class="headerlink" title="未登录词识别"></a>未登录词识别</h4><blockquote>
+<ul>
+<li>词表词：记录在词表中的词</li>
+<li>未登录词：词表中没有的词、或已有训练语料中未曾出现词
+  （此时也称为<em>out of vocabulary</em>）</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>真实文本切分中，未登录词总数大约9成是专有名词，其余为
+新词</p>
+</li>
+<li><p>未登录词对分词精度影响是歧义词的10倍</p>
+</li>
+<li><p>命名实体识别：实体名词、专业名词</p>
+<ul>
+<li>界定规则不存在太大分歧、构成形式有一定规律</li>
+<li>在文本中只占8.7%，引起分词错误率59.2%</li>
+</ul>
+</li>
+</ul>
+<h4 id="词性标注"><a href="#词性标注" class="headerlink" title="词性标注"></a>词性标注</h4><p>词性标注：在给定句子中判定每个词的语法范畴，确定词性并加以
+标注的过程</p>
+<ul>
+<li><p><em>POS</em>作为特征可以更好的识别词语之间关系</p>
+<ul>
+<li><p>词性标注计数为<em>phrase chunking</em>词组组块的界定、
+<em>entities and relationship</em>实体与关系的识别打下良好
+基础，有利于深入探索文本语义信息</p>
+</li>
+<li><p>词组的形式提高了特征向量的语义含量，使得向量更稀疏</p>
+</li>
+</ul>
+</li>
+<li><p>难点</p>
+<ul>
+<li>汉语缺乏词形态变化</li>
+<li>常用词兼类现象严重：占11%</li>
+<li>研究者主观原因：不同语料库有不同规定、划分方法</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><em>part of speech</em>：<em>POS</em>，词性</li>
+</ul>
+</blockquote>
+<h3 id="Forward-Maximum-Matching-Method"><a href="#Forward-Maximum-Matching-Method" class="headerlink" title="Forward Maximum Matching Method"></a><em>Forward Maximum Matching Method</em></h3><p><em>FMM</em>：正向最大匹配分词</p>
+<ul>
+<li><p>步骤</p>
+<ul>
+<li>记词典中最长此表包含汉字数量为M</li>
+<li>从材料中选取前$m = M$个汉字去作为匹配字段，查找分词
+词典<ul>
+<li>若存在匹配词，则将其切分出</li>
+<li>否则$m = m - 1$，重复</li>
+</ul>
+</li>
+<li>重复直至材料分词完毕</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li>对交叉歧义、组合歧义没有解决办法</li>
+<li>错误切分率为$\frac 1 {169}$</li>
+</ul>
+</li>
+</ul>
+<h3 id="Backward-Maximum-Matching-Method"><a href="#Backward-Maximum-Matching-Method" class="headerlink" title="Backward Maximum Matching Method"></a><em>Backward Maximum Matching Method</em></h3><p><em>BMM</em>：逆向最大匹配分词</p>
+<ul>
+<li><p>步骤：类似FMM，仅从材料/句子末尾开始处理</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>错误切分率$\frac 1 {245}$，较FMM更有效</li>
+</ul>
+</li>
+</ul>
+<h3 id="Bi-direction-Matching-Method"><a href="#Bi-direction-Matching-Method" class="headerlink" title="Bi-direction Matching Method"></a><em>Bi-direction Matching Method</em></h3><p>BM法：双向扫描法</p>
+<ul>
+<li><p>步骤：比较FMM、BMM法切分结果，决定正确切分</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>可以识别分词中交叉语义</li>
+</ul>
+</li>
+</ul>
+<h3 id="N-最短路径"><a href="#N-最短路径" class="headerlink" title="N-最短路径"></a>N-最短路径</h3><ul>
+<li><p>思想</p>
+<ul>
+<li><p>考虑待切分字串$S=c_1 c_2 \cdots c_n$，其中$c_i$为
+单个字、$n$为串长</p>
+</li>
+<li><p>建立节点数为$n+1$的切分有向无环图，各节点编号为
+$V_0, V_1, \cdots, V_n$</p>
+<ul>
+<li>相邻节点间存在边</li>
+<li>若$w=c<em>i c</em>{i+1} \cdots c<em>j$是一个词，则节点
+$v</em>{i-1}, v_j$直接存在边</li>
+<li>所有边距离均为1</li>
+</ul>
+</li>
+<li><p>求有图无环图中最短路径</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
+<li><p>算法时间复杂度为$O(n<em>N</em>K)$</p>
+<blockquote>
+<ul>
+<li>$n$：字串长度</li>
+<li>$N$：最短路径数目</li>
+<li>$k$：某个字作为词末端字的平均次数</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="改进—考虑噪声"><a href="#改进—考虑噪声" class="headerlink" title="改进—考虑噪声"></a>改进—考虑噪声</h4><p>基于统计信息的粗分模型</p>
+<ul>
+<li><p>考虑词串$W$经过信道传输，由于噪声干扰丢失词界切分标志，
+到输出端为字串$C$</p>
+</li>
+<li><p>N-最短路径词语粗分模型可以改进为：求N个候选切分$W$，使得
+概率$P(W|C)$为前N个最大值</p>
+<script type="math/tex; mode=display">
+P(W|C) = \frac {P(W) P(C|W)} {P(C)}</script><blockquote>
+<ul>
+<li>$P(C)$：字串概率，常数</li>
+<li>$P(C|W)$：仅有</li>
+</ul>
+</blockquote>
+</li>
+<li><p>采用一元统计模型，设$W=w_1w_2\cdots W_m$是字串
+$S=c_1c_2\cdots c_n$的切分结果，则其切分概率为</p>
+<script type="math/tex; mode=display">\begin{align*}
+P(W) & = \prod_{i=1}^m P(w_i) \\
+P^{*}(W) = -ln P(w) = \sum_{i=1}^m (-ln P(W_i))
+\end{align*}</script><blockquote>
+<ul>
+<li>$P(w_i)$：词$w_i$出现概率，在大规模预料训练的基础上
+ 通过极大似然方法得到</li>
+</ul>
+</blockquote>
+</li>
+<li><p>则$-lnP(w_i)$可看作是词$w_i$在切分有向无环图中对应距离，
+改进N-最短路径方法</p>
+</li>
+</ul>
+<h3 id="由字构词"><a href="#由字构词" class="headerlink" title="由字构词"></a>由字构词</h3><h4 id="假设、背景"><a href="#假设、背景" class="headerlink" title="假设、背景"></a>假设、背景</h4><blockquote>
+<ul>
+<li>思想：将分词过程看作字分类问题，认为每个字在构造特定词语
+  时，<strong>占据确定的位置</strong></li>
+</ul>
+</blockquote>
+<ul>
+<li>中文词一般不超过4个字，字位数量很小<ul>
+<li>首部B</li>
+<li>词中M</li>
+<li>词尾E</li>
+<li>单独成词S</li>
+</ul>
+</li>
+<li>部分汉字按一定方式分布，有规律</li>
+<li>利用相对固定的字推断相对不定的字的位置问题</li>
+<li>虽然无法将所有词列入词典，但字基本稳定</li>
+</ul>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li>对所有字根据预定义的特征进行<strong>词位特征学习</strong>，获得概率
+模型</li>
+<li>在带待分字串上根据字与字之间的结合紧密程度得到词位的分类
+结果</li>
+<li>根据词位定义直接获得最终分词结果</li>
+</ul>
+<h4 id="Productivity"><a href="#Productivity" class="headerlink" title="Productivity"></a><em>Productivity</em></h4><p>能产度：词$c_i$在词位$t_j$的能产度定义为</p>
+<script type="math/tex; mode=display">
+P_{c_i}(t_j) = \frac {count(c_i, t_j)}
+    \sum_{t_j \in T} count(c_i, t_j)</script><blockquote>
+<ul>
+<li>$T = {B, B_2, B_3, M, E, S}$</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>主词位：给定字在其上能产度高于0.5的词位</p>
+<p>|标记|B|B2|B3|M|E|S|总字量|
+|——-|——-|——-|——-|——-|——-|——-|——-|
+|字量|1634|156|27|33|1438|632|3920|
+|百分比|31.74|3.03|0.52|0.64|27.94|12.28|76.16|</p>
+<blockquote>
+<ul>
+<li>MSRA2005语料库中有主词位的字量分布</li>
+</ul>
+</blockquote>
+</li>
+<li><p>自由字：没有主词位的字</p>
+<ul>
+<li>自由字是基于词位分类的分词操作得以有效进行的的基础
+之一</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>字：不仅限于汉字，包括标点、外文字母、注音符号、数字等
+  任何可能文字符号</li>
+</ul>
+</blockquote>
+<h4 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h4><ul>
+<li>能平衡词表词、未登录词</li>
+<li>简化分词系统设计<ul>
+<li>无需强调词表词信息</li>
+<li>无需设置特定未登录词识别模块</li>
+</ul>
+</li>
+</ul>
+<h3 id="分词评价指标"><a href="#分词评价指标" class="headerlink" title="分词评价指标"></a>分词评价指标</h3><ul>
+<li>正确率</li>
+<li>召回率</li>
+<li>F-测度值</li>
+</ul>
+<h2 id="Vector-Space-Model"><a href="#Vector-Space-Model" class="headerlink" title="Vector Space Model"></a><em>Vector Space Model</em></h2><p>向量空间模型：自然语言处理常用模型</p>
+<blockquote>
+<ul>
+<li><em>document</em>：文档，句子、段落、整篇文章</li>
+<li><em>term/feature</em>：词根、词、短语、其他</li>
+<li><em>weight</em>：项的权重，每个特征项在文档中重要程度</li>
+</ul>
+</blockquote>
+<h3 id="相似度比较"><a href="#相似度比较" class="headerlink" title="相似度比较"></a>相似度比较</h3><ul>
+<li><p>内积</p>
+<script type="math/tex; mode=display">
+sim(D_1, D_2) = \sum_{k=1}^n w_{1,k} w_{2,k}</script></li>
+<li><p>Cosine相似度</p>
+<script type="math/tex; mode=display">
+cos(D_1, D_2) = cos \theta = \frac
+   {\sum_{k=1}^n w_{1,k} w_{2,k}}
+   {\sqrt{\sum_{k=1}^n w_{1,k}^2 \sum_{k=1}^n w_{2,k}^2}}</script></li>
+</ul>
+<h3 id="权重"><a href="#权重" class="headerlink" title="权重"></a>权重</h3><ul>
+<li>布尔权重：$bw_{t,d} = {0, 1}$</li>
+<li><em>TF</em>：绝对词频，$TF<em>{t,d} = \frac {n</em>{t,d}} {n_d}$</li>
+<li><em>IDF</em>：倒排文档频度，$IDF_{t,d} = log \frac M {m_t}$</li>
+<li><em>TF-IDF</em>：$TF-IDF<em>{t,d} = TF</em>{t,d} * IDF_{t,d}$</li>
+<li><em>TF-IWF</em>：$TF<em>IWF</em>{t,d}= TF<em>{t,d} log \frac {\sum</em>{t=1}^T \sum<em>{d=1}^N n</em>{t,d}} {\sum<em>{t=1} n</em>{t,d}}$</li>
+</ul>
+<blockquote>
+<ul>
+<li>$t_{t,d}$：文档$d$中出现特征$t$的次数</li>
+<li>$t_d$：文档$d$中出现总词数</li>
+<li>$m_t$：训练集中出现特征$t$文档数</li>
+<li>$M$：训练集中文档总数</li>
+<li>$K$：特征总数量</li>
+</ul>
+</blockquote>
+<h4 id="特征加权"><a href="#特征加权" class="headerlink" title="特征加权"></a>特征加权</h4><ul>
+<li><p>特征加权主要包括三个部分（层次）</p>
+<ul>
+<li>局部加权：使用词语在文档中的统计量</li>
+<li>全局加权：词语在整个数据集中的统计量</li>
+<li>标准化</li>
+</ul>
+</li>
+<li><p>一般化特征加权表达式</p>
+<script type="math/tex; mode=display">
+L_d(w) G(w) N_d</script><blockquote>
+<ul>
+<li>$L_d(w)$：词$w$在文档$d$中的局部权重</li>
+<li>$G(w)$：词$w$在文档集合中的全局权重</li>
+<li>$N_d$：文档d的标准化因子</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="Document-Frequency"><a href="#Document-Frequency" class="headerlink" title="Document Frequency"></a><em>Document Frequency</em></h3><p><em>DF</em>：文档频率，文本数据中包含某词条的文档数目</p>
+<ul>
+<li><p>通过文档频率进行特征选择：按文档频率大小对词条进行排序</p>
+<ul>
+<li><p>将DF小于某阈值的词删除</p>
+<ul>
+<li>稀有词项全局影响力不大</li>
+<li>文档若有稀有词向，通常也会有常见词项</li>
+</ul>
+<blockquote>
+<ul>
+<li>和通常信息获取观念抵触：稀有更有代表性</li>
+</ul>
+</blockquote>
+</li>
+<li><p>将DF大于某阈值的词删除</p>
+<ul>
+<li>太频繁词词项没有区分度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>容易实现、可扩展性好</p>
+</li>
+</ul>
+<h3 id="其他指标"><a href="#其他指标" class="headerlink" title="其他指标"></a>其他指标</h3><ul>
+<li><p>信息增益/互信息</p>
+</li>
+<li><p>卡方统计量</p>
+</li>
+</ul>
+<h2 id="Latent-Semantic-Analysis"><a href="#Latent-Semantic-Analysis" class="headerlink" title="Latent Semantic Analysis"></a><em>Latent Semantic Analysis</em></h2><p><em>LSA</em>：潜在语义分析</p>
+<ul>
+<li><p>文本分析中常用的降维技术</p>
+<ul>
+<li>特征重构方法</li>
+<li>很好解决了同义词、一词多义等现象给文本分析造成的困难</li>
+</ul>
+</li>
+<li><p>理论依据、假设</p>
+<ul>
+<li>认为有潜在语义结构隐含在文档中词语的上下文使用模式中</li>
+<li>而文档词频共现矩阵在一定程度可以反映词和不同主题之间
+关系</li>
+</ul>
+</li>
+<li><p>以文档词频矩阵为基础进行分析</p>
+<ul>
+<li>得到向量空间模型中文档、词的高维表示</li>
+<li>并通过投影形成文档、词在潜在语义空间中的相对稠密的
+低维表示，缩小问题规模</li>
+<li>通过这种低维表示解释出“文档-语义-词语”之间的联系</li>
+</ul>
+</li>
+<li><p>数学描述</p>
+<ul>
+<li>LSA将每个文本视为以词语/特征为维度的空间的点，包含
+语义的文本出现在空间中分布服从某种语义结构</li>
+<li>LSA将每个词视为以文档为维度的空间中点</li>
+<li>文档由词语构成，词语需要放在文档中理解，体现词语和
+文档之间的双重概率关系</li>
+</ul>
+</li>
+</ul>
+<h3 id="应用SVD分解"><a href="#应用SVD分解" class="headerlink" title="应用SVD分解"></a>应用SVD分解</h3><ul>
+<li><p>词频共现矩阵$X=(x_{d,t})$：文档、词语的共现频率矩阵</p>
+<ul>
+<li>其中每行代表文档向量</li>
+<li>每列代表词语向量</li>
+<li>元素$x_{d,t}$表示文档$d$中词$t$出现的频率</li>
+</ul>
+</li>
+<li><p>对词频共现矩阵$X$进行SVD分解得到$X=U \Sigma V^T$</p>
+</li>
+<li><p>仅保留$\Sigma$中满足阈值要求的较大的前$r$特征值，
+其余置为0，得到
+$\tilde X = \tilde U \tilde \Sigma \tilde V^T$，达到信息
+过滤、去除噪声的目的</p>
+<ul>
+<li>$A = \tilde X$：矩阵特征分解后的文档词频矩阵近似</li>
+<li>$T = \tilde U$：文档和潜在语义的关系矩阵近似</li>
+<li>$S = \tilde V$：词语和潜在语义的关系矩阵近似</li>
+<li>$D = \tilde \Sigma$：各潜在语义的重要程度</li>
+</ul>
+</li>
+</ul>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><ul>
+<li><p>从数据压缩角度：近似矩阵是秩为$K$的前提下，矩阵$X$的最小
+二乘意义下最佳近似</p>
+</li>
+<li><p>r值过大会增加运算量，一般选择K使得贡献率满足</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^r d_i / \sum_{i=1}^K d_i \geq \theta</script><blockquote>
+<ul>
+<li>$\theta$：阈值</li>
+<li>$K$：原始词频共现矩阵秩</li>
+</ul>
+</blockquote>
+</li>
+<li><p>LSA缺点</p>
+<ul>
+<li>SVD的向量元素有正、有负，性质难以解释</li>
+<li>SVD的实际意义不够明确，难以控制词义据类的效果</li>
+<li>涉及高维矩阵运算</li>
+</ul>
+</li>
+</ul>
+<h3 id="相似关系计算"><a href="#相似关系计算" class="headerlink" title="相似关系计算"></a>相似关系计算</h3><ul>
+<li><p>潜在语义空间中存在：词-词、文本-文本、词-文本3种关系，
+可以通过近似矩阵$T, S, D$计算</p>
+</li>
+<li><p>比较词汇两两相似度：“正向乘法”</p>
+<script type="math/tex; mode=display">A A^T = T S D^T D S^T T^T = T S^2 T^T</script></li>
+<li><p>比较文本两两相似度：“逆向乘法”</p>
+<script type="math/tex; mode=display">A^T A = T^T S^T D D^T S T = T^T S^2 T</script></li>
+<li><p>词汇、文本两两相似度：就是原始矩阵$X$的近似矩阵本身$A$</p>
+<script type="math/tex; mode=display">A = T * S * D^T</script></li>
+</ul>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Algorithm/"><span class="level-start"><span class="level-item">Algorithm</span></span><span class="level-end"><span class="level-item tag">36</span></span></a><ul><li><a class="level is-mobile" href="/categories/Algorithm/Data-Structure/"><span class="level-start"><span class="level-item">Data Structure</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Heuristic/"><span class="level-start"><span class="level-item">Heuristic</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Issue/"><span class="level-start"><span class="level-item">Issue</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Problem/"><span class="level-start"><span class="level-item">Problem</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Algorithm/Specification/"><span class="level-start"><span class="level-item">Specification</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/C-C/"><span class="level-start"><span class="level-item">C/C++</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/C-C/Cppref/"><span class="level-start"><span class="level-item">Cppref</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/Cstd/"><span class="level-start"><span class="level-item">Cstd</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/MPI/"><span class="level-start"><span class="level-item">MPI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/C-C/STL/"><span class="level-start"><span class="level-item">STL</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/CS/"><span class="level-start"><span class="level-item">CS</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/CS/Character/"><span class="level-start"><span class="level-item">Character</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Parallel/"><span class="level-start"><span class="level-item">Parallel</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Program-Design/"><span class="level-start"><span class="level-item">Program Design</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/CS/Storage/"><span class="level-start"><span class="level-item">Storage</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Daily-Life/"><span class="level-start"><span class="level-item">Daily Life</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Daily-Life/Maxism/"><span class="level-start"><span class="level-item">Maxism</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Database/"><span class="level-start"><span class="level-item">Database</span></span><span class="level-end"><span class="level-item tag">27</span></span></a><ul><li><a class="level is-mobile" href="/categories/Database/Hadoop/"><span class="level-start"><span class="level-item">Hadoop</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/SQL-DB/"><span class="level-start"><span class="level-item">SQL DB</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Database/Spark/"><span class="level-start"><span class="level-item">Spark</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Scala/"><span class="level-start"><span class="level-item">Scala</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">42</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Bash-Programming/"><span class="level-start"><span class="level-item">Bash Programming</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Configuration/"><span class="level-start"><span class="level-item">Configuration</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/File-System/"><span class="level-start"><span class="level-item">File System</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/IPC/"><span class="level-start"><span class="level-item">IPC</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Process-Schedual/"><span class="level-start"><span class="level-item">Process Schedual</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Shell/"><span class="level-start"><span class="level-item">Shell</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/Linux/Tool/Vi/"><span class="level-start"><span class="level-item">Vi</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Model/"><span class="level-start"><span class="level-item">ML Model</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Model/Linear-Model/"><span class="level-start"><span class="level-item">Linear Model</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Model-Component/"><span class="level-start"><span class="level-item">Model Component</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Nolinear-Model/"><span class="level-start"><span class="level-item">Nolinear Model</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Model/Unsupervised-Model/"><span class="level-start"><span class="level-item">Unsupervised Model</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/"><span class="level-start"><span class="level-item">ML Specification</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/"><span class="level-start"><span class="level-item">Click Through Rate</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/Click-Through-Rate/Recommandation-System/"><span class="level-start"><span class="level-item">Recommandation System</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Computer-Vision/"><span class="level-start"><span class="level-item">Computer Vision</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/"><span class="level-start"><span class="level-item">FinTech</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Specification/FinTech/Risk-Control/"><span class="level-start"><span class="level-item">Risk Control</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Specification/Graph-Analysis/"><span class="level-start"><span class="level-item">Graph Analysis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Specification/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Technique/"><span class="level-start"><span class="level-item">ML Technique</span></span><span class="level-end"><span class="level-item tag">10</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Technique/Feature-Engineering/"><span class="level-start"><span class="level-item">Feature Engineering</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Technique/Neural-Network/"><span class="level-start"><span class="level-item">Neural Network</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/ML-Theory/"><span class="level-start"><span class="level-item">ML Theory</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/ML-Theory/Loss/"><span class="level-start"><span class="level-item">Loss</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Model-Enhencement/"><span class="level-start"><span class="level-item">Model Enhencement</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/ML-Theory/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Algebra/"><span class="level-start"><span class="level-item">Math Algebra</span></span><span class="level-end"><span class="level-item tag">4</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Algebra/Linear-Algebra/"><span class="level-start"><span class="level-item">Linear Algebra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Algebra/Universal-Algebra/"><span class="level-start"><span class="level-item">Universal Algebra</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Analysis/"><span class="level-start"><span class="level-item">Math Analysis</span></span><span class="level-end"><span class="level-item tag">23</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Analysis/Fourier-Analysis/"><span class="level-start"><span class="level-item">Fourier Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Functional-Analysis/"><span class="level-start"><span class="level-item">Functional Analysis</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Optimization/"><span class="level-start"><span class="level-item">Optimization</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Analysis/Real-Analysis/"><span class="level-start"><span class="level-item">Real Analysis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Math-Mixin/"><span class="level-start"><span class="level-item">Math Mixin</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Math-Mixin/Statistics/"><span class="level-start"><span class="level-item">Statistics</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Math-Mixin/Time-Series/"><span class="level-start"><span class="level-item">Time Series</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Probability/"><span class="level-start"><span class="level-item">Probability</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">89</span></span></a><ul><li><a class="level is-mobile" href="/categories/Python/Cookbook/"><span class="level-start"><span class="level-item">Cookbook</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Jupyter/"><span class="level-start"><span class="level-item">Jupyter</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Keras/"><span class="level-start"><span class="level-item">Keras</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Matplotlib/"><span class="level-start"><span class="level-item">Matplotlib</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Numpy/"><span class="level-start"><span class="level-item">Numpy</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pandas/"><span class="level-start"><span class="level-item">Pandas</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3Ref/"><span class="level-start"><span class="level-item">Py3Ref</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Py3std/"><span class="level-start"><span class="level-item">Py3std</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Pywin32/"><span class="level-start"><span class="level-item">Pywin32</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Readme/"><span class="level-start"><span class="level-item">Readme</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/Twists/"><span class="level-start"><span class="level-item">Twists</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/RLang/"><span class="level-start"><span class="level-item">RLang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Rust/"><span class="level-start"><span class="level-item">Rust</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/Set/"><span class="level-start"><span class="level-item">Set</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/"><span class="level-start"><span class="level-item">Tool</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/Tool/Editor/"><span class="level-start"><span class="level-item">Editor</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Markup-Language/"><span class="level-start"><span class="level-item">Markup Language</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Web-Browser/"><span class="level-start"><span class="level-item">Web Browser</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Tool/Windows/"><span class="level-start"><span class="level-item">Windows</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Web/"><span class="level-start"><span class="level-item">Web</span></span><span class="level-end"><span class="level-item tag">6</span></span></a><ul><li><a class="level is-mobile" href="/categories/Web/CSS/"><span class="level-start"><span class="level-item">CSS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/NPM/"><span class="level-start"><span class="level-item">NPM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Proxy/"><span class="level-start"><span class="level-item">Proxy</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Web/Thrift/"><span class="level-start"><span class="level-item">Thrift</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="UBeaRLy"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">UBeaRLy</p><p class="is-size-6 is-block">Protector of Proxy</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Earth, Solar System</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">392</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">93</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">522</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/xyy15926" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/xyy15926"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-04T15:07:54.896Z">2021-08-04</time></p><p class="title"><a href="/uncategorized/README.html"> </a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T07:46:51.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/hexo_config.html">Hexo 建站</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-03T02:32:45.000Z">2021-08-03</time></p><p class="title"><a href="/Web/NPM/config.html">NPM 总述</a></p><p class="categories"><a href="/categories/Web/">Web</a> / <a href="/categories/Web/NPM/">NPM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-08-02T08:11:11.000Z">2021-08-02</time></p><p class="title"><a href="/Python/Py3std/internet_data.html">互联网数据</a></p><p class="categories"><a href="/categories/Python/">Python</a> / <a href="/categories/Python/Py3std/">Py3std</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-07-29T13:55:00.000Z">2021-07-29</time></p><p class="title"><a href="/Linux/Shell/sh_apps.html">Shell 应用程序</a></p><p class="categories"><a href="/categories/Linux/">Linux</a> / <a href="/categories/Linux/Shell/">Shell</a></p></div></article></div></div><div class="card widget" data-type="adsense"><div class="card-content"><div class="menu"><h3 class="menu-label">Advertisement</h3><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5385776267343559" data-ad-slot="6371777973" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2021 UBeaRLy</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">Visited by <span id="busuanzi_value_site_uv">0</span> users</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/xyy15926/proxy"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
